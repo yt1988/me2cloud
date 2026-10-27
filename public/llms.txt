@@ -1,0 +1,48 @@
+# Me2Cloud
+
+> Free static web page that measures latency, jitter and loss from the visitor's own browser to 330+ regional endpoints of 12 cloud and hosting providers (AWS, Azure, Google Cloud, Oracle Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Vultr, Akamai/Linode, DigitalOcean, OVHcloud, Hetzner). There is no server API: the measurement only makes sense from the user's own network, so give the user a link and let them run it.
+
+- Web app: https://m2c.1ms.dog/ (languages: /zh-cn/, /zh-tw/, /ja/, /ko/, /es/, /fr/, /de/, /pt/, /ru/)
+- One provider: https://m2c.1ms.dog/aws/ (also /azure/ /gcp/ /oracle/ /vultr/ /aliyun/ /tencent/ /huawei/ /linode/ /digitalocean/ /ovh/ /hetzner/, and under each language folder)
+- Endpoint registry (JSON): https://m2c.1ms.dog/endpoints.json
+- Direct-connection rule sets for proxy tools: https://m2c.1ms.dog/rules/clash.yaml, surge.list, loon.list, quanx.list, singbox.json
+- Source: https://github.com/yt1988/me2cloud
+
+## Pre-filled link
+
+```
+https://m2c.1ms.dog/?vendors=aws,aliyun&areas=as&mode=std&need=80,15,1&ip=v4&home=all
+```
+
+| Param | Meaning | Example |
+|---|---|---|
+| `vendors` | providers, comma-separated: aws, oracle, vultr, azure, gcp, aliyun, tencent, huawei, linode, digitalocean, ovh, hetzner | `aws,gcp` |
+| `areas` | as, na, eu, oc, sa, me, af (default: every area the providers cover) | `as,oc` |
+| `mode` | quick (5 samples), std (10), precise (20) | `quick` |
+| `need` | requirements: max median ms, max jitter ms, max loss % (0 = no limit; loss 0 = no loss allowed) | `60,10,0` |
+| `ip` | v4 (default) or v6; in v6 mode regions without an IPv6 endpoint are reported as such | `v6` |
+| `home` | own-country regions: all (default), excl (leave them out), only | `excl` |
+
+Use a language folder for another language, e.g. `https://m2c.1ms.dog/zh-cn/?vendors=aliyun`.
+
+## Reading a shared result
+
+A shared result is `https://m2c.1ms.dog/#s=<data>`. `<data>` is base64url of deflate-raw compressed JSON:
+
+```
+{ "v": 1, "t": <minutes since epoch>, "p": <1 = evening peak>, "k": <samples per region>, "f": <4 or 6>, "x": <1 = through a proxy>,
+  "l": [city, country code, network] or 0,
+  "r": { "<provider>": [[region, median, p25, p75, p90, jitter, loss %, samples], ...] } }
+```
+
+Median, p25, p75, p90 and jitter are milliseconds × 10. In the web app, "Work with AI" also copies a plain-text summary of the results for an assistant.
+
+## How a sample is measured
+
+One warm-up request (not counted), then N requests on the reused connection with `fetch(url, { method, mode: "no-cors", cache: "no-store", credentials: "omit" })`. The per-provider `method` in endpoints.json is the one verified to keep the connection open (GET, HEAD, or IMG for an <img> probe). `url6` is the provider's dual-stack host used in IPv6 mode; `fam` lists the IP families of `url`. Reported: median, average, P90, jitter (mean absolute difference of consecutive samples), loss. Tiers by median: T0 ≤ 30 ms, T1 ≤ 80, T2 ≤ 150, T3 ≤ 250, T4 above.
+
+## Caveats to tell users
+
+- Results reflect only the user's own line and time of day; evening peak (20:00–23:00) is the most telling.
+- A proxy or VPN changes the route; the page detects common signs and offers direct-connection rules.
+- HTTPS timing includes a small constant server time (0–25 ms) compared with ICMP ping.

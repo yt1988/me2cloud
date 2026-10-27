@@ -1,0 +1,52 @@
+# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 25 rules, generated 2026-10-27.
+# https://m2c.1ms.dog/ · https://github.com/yt1988/me2cloud
+# AWS · DynamoDB /ping
+DOMAIN-WILDCARD,dynamodb.*.amazonaws.com
+# AWS · DynamoDB /ping · China
+DOMAIN-WILDCARD,dynamodb.*.amazonaws.com.cn
+# Oracle Cloud · Object Storage
+DOMAIN-WILDCARD,objectstorage.*.oraclecloud.com
+# Vultr · Looking glass
+DOMAIN-WILDCARD,*-ping.vultr.com
+# Microsoft Azure · Cognitive Services
+DOMAIN-SUFFIX,api.cognitive.microsoft.com
+# Google Cloud · Storage regional endpoint (rep)
+DOMAIN-SUFFIX,rep.googleapis.com
+# Alibaba Cloud · OSS
+DOMAIN-WILDCARD,oss-*.aliyuncs.com
+# Tencent Cloud · COS
+DOMAIN-WILDCARD,cos.*.myqcloud.com
+# Huawei Cloud · OBS
+DOMAIN-WILDCARD,obs.*.myhuaweicloud.com
+# Akamai (Linode) · Object Storage
+DOMAIN-SUFFIX,linodeobjects.com
+# DigitalOcean · Spaces
+DOMAIN-SUFFIX,digitaloceanspaces.com
+# OVHcloud · Speed test (proof)
+DOMAIN-SUFFIX,speedtest.network.ovh.net
+# OVHcloud · Speed test (proof) · Gravelines
+DOMAIN,proof.ovh.net
+# Hetzner · Speed test
+DOMAIN-WILDCARD,*-speed.hetzner.com
+# AWS · DynamoDB /ping · IPv6
+DOMAIN-WILDCARD,dynamodb.*.api.aws
+# Alibaba Cloud · OSS · IPv6
+DOMAIN-WILDCARD,*.oss.aliyuncs.com
+# IBM Cloud · Cloud Object Storage
+DOMAIN-WILDCARD,s3.*.cloud-object-storage.appdomain.cloud
+# Scaleway · Object Storage
+DOMAIN-WILDCARD,s3.*.scw.cloud
+# Volcengine · TOS
+DOMAIN-WILDCARD,tos-*.volces.com
+# Baidu AI Cloud · BOS
+DOMAIN-WILDCARD,*.bcebos.com
+# Naver Cloud · Object Storage
+DOMAIN-WILDCARD,*.object.ncloudstorage.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,speed.cloudflare.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,www.cloudflare.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,stun.cloudflare.com
+# Me2Cloud page
+DOMAIN,m2c.1ms.dog

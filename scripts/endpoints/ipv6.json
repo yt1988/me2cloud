@@ -1,0 +1,1133 @@
+{
+ "aws:us-east-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.us-east-1.api.aws/ping"
+ },
+ "aws:us-east-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.us-east-2.api.aws/ping"
+ },
+ "aws:us-west-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.us-west-1.api.aws/ping"
+ },
+ "aws:us-west-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.us-west-2.api.aws/ping"
+ },
+ "aws:ca-central-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.ca-central-1.api.aws/ping"
+ },
+ "aws:ca-west-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.ca-west-1.api.aws/ping"
+ },
+ "aws:mx-central-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.mx-central-1.api.aws/ping"
+ },
+ "aws:sa-east-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.sa-east-1.api.aws/ping"
+ },
+ "aws:eu-central-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-central-1.api.aws/ping"
+ },
+ "aws:eu-central-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-central-2.api.aws/ping"
+ },
+ "aws:eu-west-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-west-1.api.aws/ping"
+ },
+ "aws:eu-west-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-west-2.api.aws/ping"
+ },
+ "aws:eu-west-3": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-west-3.api.aws/ping"
+ },
+ "aws:eu-north-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-north-1.api.aws/ping"
+ },
+ "aws:eu-south-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-south-1.api.aws/ping"
+ },
+ "aws:eu-south-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.eu-south-2.api.aws/ping"
+ },
+ "aws:il-central-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.il-central-1.api.aws/ping"
+ },
+ "aws:me-central-1": {
+  "fam": "4"
+ },
+ "aws:af-south-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.af-south-1.api.aws/ping"
+ },
+ "aws:ap-east-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-east-1.api.aws/ping"
+ },
+ "aws:ap-east-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-east-2.api.aws/ping"
+ },
+ "aws:ap-northeast-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-northeast-1.api.aws/ping"
+ },
+ "aws:ap-northeast-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-northeast-2.api.aws/ping"
+ },
+ "aws:ap-northeast-3": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-northeast-3.api.aws/ping"
+ },
+ "aws:ap-south-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-south-1.api.aws/ping"
+ },
+ "aws:ap-south-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-south-2.api.aws/ping"
+ },
+ "aws:ap-southeast-1": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-1.api.aws/ping"
+ },
+ "aws:ap-southeast-2": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-2.api.aws/ping"
+ },
+ "aws:ap-southeast-3": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-3.api.aws/ping"
+ },
+ "aws:ap-southeast-4": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-4.api.aws/ping"
+ },
+ "aws:ap-southeast-5": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-5.api.aws/ping"
+ },
+ "aws:ap-southeast-6": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-6.api.aws/ping"
+ },
+ "aws:ap-southeast-7": {
+  "fam": "4",
+  "url6": "https://dynamodb.ap-southeast-7.api.aws/ping"
+ },
+ "aws:cn-north-1": {
+  "fam": "4"
+ },
+ "aws:cn-northwest-1": {
+  "fam": "4"
+ },
+ "aws:me-west-1": {
+  "fam": "4"
+ },
+ "aws:sa-west-1": {
+  "fam": "4"
+ },
+ "oracle:mx-monterrey-1": {
+  "fam": "4"
+ },
+ "oracle:ca-toronto-1": {
+  "fam": "4"
+ },
+ "oracle:eu-madrid-1": {
+  "fam": "4"
+ },
+ "oracle:me-abudhabi-1": {
+  "fam": "4"
+ },
+ "oracle:af-casablanca-1": {
+  "fam": "4"
+ },
+ "oracle:ap-seoul-1": {
+  "fam": "4"
+ },
+ "oracle:ap-osaka-1": {
+  "fam": "4"
+ },
+ "oracle:sa-saopaulo-1": {
+  "fam": "4"
+ },
+ "oracle:us-chicago-1": {
+  "fam": "4"
+ },
+ "oracle:us-sanjose-1": {
+  "fam": "4"
+ },
+ "oracle:ap-hyderabad-1": {
+  "fam": "4"
+ },
+ "oracle:ca-montreal-1": {
+  "fam": "4"
+ },
+ "oracle:me-jeddah-1": {
+  "fam": "4"
+ },
+ "oracle:eu-stockholm-1": {
+  "fam": "4"
+ },
+ "oracle:eu-marseille-1": {
+  "fam": "4"
+ },
+ "oracle:eu-milan-1": {
+  "fam": "4"
+ },
+ "oracle:uk-london-1": {
+  "fam": "4"
+ },
+ "oracle:eu-frankfurt-1": {
+  "fam": "4"
+ },
+ "oracle:eu-madrid-3": {
+  "fam": "4"
+ },
+ "oracle:ap-mumbai-1": {
+  "fam": "4"
+ },
+ "oracle:il-jerusalem-1": {
+  "fam": "4"
+ },
+ "oracle:me-riyadh-1": {
+  "fam": "4"
+ },
+ "oracle:af-johannesburg-1": {
+  "fam": "4"
+ },
+ "oracle:eu-amsterdam-1": {
+  "fam": "4"
+ },
+ "oracle:me-dubai-1": {
+  "fam": "4"
+ },
+ "oracle:uk-cardiff-1": {
+  "fam": "4"
+ },
+ "oracle:eu-paris-1": {
+  "fam": "4"
+ },
+ "oracle:us-ashburn-1": {
+  "fam": "4"
+ },
+ "oracle:ap-sydney-1": {
+  "fam": "4"
+ },
+ "oracle:us-phoenix-1": {
+  "fam": "4"
+ },
+ "oracle:ap-singapore-1": {
+  "fam": "4"
+ },
+ "oracle:ap-chuncheon-1": {
+  "fam": "4"
+ },
+ "oracle:ap-batam-1": {
+  "fam": "4"
+ },
+ "oracle:ap-melbourne-1": {
+  "fam": "4"
+ },
+ "oracle:ap-tokyo-1": {
+  "fam": "4"
+ },
+ "oracle:eu-zurich-1": {
+  "fam": "4"
+ },
+ "oracle:sa-vinhedo-1": {
+  "fam": "4"
+ },
+ "oracle:eu-dublin-3": {
+  "fam": "4"
+ },
+ "oracle:us-dallas-1": {
+  "fam": "4"
+ },
+ "oracle:mx-queretaro-1": {
+  "fam": "4"
+ },
+ "oracle:ap-singapore-2": {
+  "fam": "4"
+ },
+ "oracle:sa-valparaiso-1": {
+  "fam": "4"
+ },
+ "oracle:us-sanantonio-1": {
+  "fam": "4"
+ },
+ "oracle:sa-bogota-1": {
+  "fam": "4"
+ },
+ "oracle:us-saltlake-2": {
+  "fam": "4"
+ },
+ "oracle:us-lenexa-1": {
+  "fam": "4"
+ },
+ "oracle:ap-delhi-1": {
+  "fam": "4"
+ },
+ "oracle:us-desmoines-1": {
+  "fam": "4"
+ },
+ "oracle:us-abilene-1": {
+  "fam": "4"
+ },
+ "oracle:ap-kulai-1": {
+  "fam": "4"
+ },
+ "oracle:us-shawnee-1": {
+  "fam": "4"
+ },
+ "oracle:us-boardman-1": {
+  "fam": "4"
+ },
+ "oracle:us-quincy-1": {
+  "fam": "4"
+ },
+ "oracle:sa-riodejaneiro-2": {
+  "fam": "4"
+ },
+ "vultr:ams": {
+  "fam": "4"
+ },
+ "vultr:atl": {
+  "fam": "4"
+ },
+ "vultr:blr": {
+  "fam": "4"
+ },
+ "vultr:bom": {
+  "fam": "4"
+ },
+ "vultr:cdg": {
+  "fam": "4"
+ },
+ "vultr:del": {
+  "fam": "4"
+ },
+ "vultr:dfw": {
+  "fam": "4"
+ },
+ "vultr:ewr": {
+  "fam": "4"
+ },
+ "vultr:fra": {
+  "fam": "4"
+ },
+ "vultr:hnl": {
+  "fam": "4"
+ },
+ "vultr:icn": {
+  "fam": "4"
+ },
+ "vultr:itm": {
+  "fam": "4"
+ },
+ "vultr:jnb": {
+  "fam": "4"
+ },
+ "vultr:lax": {
+  "fam": "4"
+ },
+ "vultr:lhr": {
+  "fam": "4"
+ },
+ "vultr:mad": {
+  "fam": "4"
+ },
+ "vultr:man": {
+  "fam": "4"
+ },
+ "vultr:mel": {
+  "fam": "4"
+ },
+ "vultr:mex": {
+  "fam": "4"
+ },
+ "vultr:mia": {
+  "fam": "4"
+ },
+ "vultr:mxp": {
+  "fam": "4"
+ },
+ "vultr:nrt": {
+  "fam": "4"
+ },
+ "vultr:ord": {
+  "fam": "4"
+ },
+ "vultr:sao": {
+  "fam": "46"
+ },
+ "vultr:scl": {
+  "fam": "4"
+ },
+ "vultr:sea": {
+  "fam": "4"
+ },
+ "vultr:sgp": {
+  "fam": "4"
+ },
+ "vultr:sjc": {
+  "fam": "4"
+ },
+ "vultr:sto": {
+  "fam": "4"
+ },
+ "vultr:syd": {
+  "fam": "4"
+ },
+ "vultr:tlv": {
+  "fam": "4"
+ },
+ "vultr:waw": {
+  "fam": "46"
+ },
+ "vultr:yto": {
+  "fam": "4"
+ },
+ "aliyun:cn-hangzhou": {
+  "fam": "4",
+  "url6": "https://cn-hangzhou.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-shanghai": {
+  "fam": "4",
+  "url6": "https://cn-shanghai.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-nanjing": {
+  "fam": "4"
+ },
+ "aliyun:cn-fuzhou": {
+  "fam": "4"
+ },
+ "aliyun:cn-wuhan-lr": {
+  "fam": "4"
+ },
+ "aliyun:cn-qingdao": {
+  "fam": "4",
+  "url6": "https://cn-qingdao.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-beijing": {
+  "fam": "4",
+  "url6": "https://cn-beijing.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-zhangjiakou": {
+  "fam": "4",
+  "url6": "https://cn-zhangjiakou.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-huhehaote": {
+  "fam": "4",
+  "url6": "https://cn-huhehaote.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-wulanchabu": {
+  "fam": "4",
+  "url6": "https://cn-wulanchabu.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-shenzhen": {
+  "fam": "4",
+  "url6": "https://cn-shenzhen.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-heyuan": {
+  "fam": "4",
+  "url6": "https://cn-heyuan.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-guangzhou": {
+  "fam": "4",
+  "url6": "https://cn-guangzhou.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-chengdu": {
+  "fam": "4",
+  "url6": "https://cn-chengdu.oss.aliyuncs.com/"
+ },
+ "aliyun:cn-hongkong": {
+  "fam": "4",
+  "url6": "https://cn-hongkong.oss.aliyuncs.com/"
+ },
+ "aliyun:ap-northeast-1": {
+  "fam": "4"
+ },
+ "aliyun:ap-northeast-2": {
+  "fam": "4"
+ },
+ "aliyun:ap-southeast-1": {
+  "fam": "4",
+  "url6": "https://ap-southeast-1.oss.aliyuncs.com/"
+ },
+ "aliyun:ap-southeast-3": {
+  "fam": "4"
+ },
+ "aliyun:ap-southeast-5": {
+  "fam": "4"
+ },
+ "aliyun:ap-southeast-6": {
+  "fam": "4"
+ },
+ "aliyun:ap-southeast-7": {
+  "fam": "4"
+ },
+ "aliyun:eu-central-1": {
+  "fam": "4",
+  "url6": "https://eu-central-1.oss.aliyuncs.com/"
+ },
+ "aliyun:eu-west-1": {
+  "fam": "4"
+ },
+ "aliyun:us-west-1": {
+  "fam": "4",
+  "url6": "https://us-west-1.oss.aliyuncs.com/"
+ },
+ "aliyun:us-east-1": {
+  "fam": "4",
+  "url6": "https://us-east-1.oss.aliyuncs.com/"
+ },
+ "aliyun:na-south-1": {
+  "fam": "4"
+ },
+ "aliyun:me-east-1": {
+  "fam": "4"
+ },
+ "aliyun:me-central-1": {
+  "fam": "4"
+ },
+ "tencent:ap-beijing": {
+  "fam": "4"
+ },
+ "tencent:ap-nanjing": {
+  "fam": "4"
+ },
+ "tencent:ap-shanghai": {
+  "fam": "4"
+ },
+ "tencent:ap-guangzhou": {
+  "fam": "4"
+ },
+ "tencent:ap-chengdu": {
+  "fam": "4"
+ },
+ "tencent:ap-chongqing": {
+  "fam": "4"
+ },
+ "tencent:ap-hongkong": {
+  "fam": "4"
+ },
+ "tencent:ap-singapore": {
+  "fam": "4"
+ },
+ "tencent:ap-jakarta": {
+  "fam": "4"
+ },
+ "tencent:ap-seoul": {
+  "fam": "4"
+ },
+ "tencent:ap-bangkok": {
+  "fam": "4"
+ },
+ "tencent:ap-tokyo": {
+  "fam": "4"
+ },
+ "tencent:na-siliconvalley": {
+  "fam": "4"
+ },
+ "tencent:na-ashburn": {
+  "fam": "4"
+ },
+ "tencent:sa-saopaulo": {
+  "fam": "4"
+ },
+ "tencent:eu-frankfurt": {
+  "fam": "4"
+ },
+ "huawei:cn-north-1": {
+  "fam": "4"
+ },
+ "huawei:cn-north-4": {
+  "fam": "4"
+ },
+ "huawei:cn-north-9": {
+  "fam": "4"
+ },
+ "huawei:cn-east-2": {
+  "fam": "4"
+ },
+ "huawei:cn-east-3": {
+  "fam": "4"
+ },
+ "huawei:cn-east-5": {
+  "fam": "4"
+ },
+ "huawei:cn-south-1": {
+  "fam": "4"
+ },
+ "huawei:cn-south-4": {
+  "fam": "4"
+ },
+ "huawei:cn-southwest-2": {
+  "fam": "4"
+ },
+ "huawei:ap-southeast-1": {
+  "fam": "4"
+ },
+ "huawei:ap-southeast-2": {
+  "fam": "4"
+ },
+ "huawei:ap-southeast-3": {
+  "fam": "4"
+ },
+ "huawei:ap-southeast-4": {
+  "fam": "4"
+ },
+ "huawei:ap-southeast-5": {
+  "fam": "4"
+ },
+ "huawei:my-kualalumpur-1": {
+  "fam": "4"
+ },
+ "huawei:af-south-1": {
+  "fam": "4"
+ },
+ "huawei:af-north-1": {
+  "fam": "4"
+ },
+ "huawei:la-north-2": {
+  "fam": "4"
+ },
+ "huawei:na-mexico-1": {
+  "fam": "4"
+ },
+ "huawei:la-south-2": {
+  "fam": "4"
+ },
+ "huawei:sa-brazil-1": {
+  "fam": "4"
+ },
+ "huawei:tr-west-1": {
+  "fam": "4"
+ },
+ "huawei:me-east-1": {
+  "fam": "4"
+ },
+ "azure:eastus": {
+  "fam": "4"
+ },
+ "azure:eastus2": {
+  "fam": "4"
+ },
+ "azure:centralus": {
+  "fam": "4"
+ },
+ "azure:northcentralus": {
+  "fam": "4"
+ },
+ "azure:southcentralus": {
+  "fam": "4"
+ },
+ "azure:westcentralus": {
+  "fam": "4"
+ },
+ "azure:westus": {
+  "fam": "4"
+ },
+ "azure:westus2": {
+  "fam": "4"
+ },
+ "azure:westus3": {
+  "fam": "4"
+ },
+ "azure:canadacentral": {
+  "fam": "4"
+ },
+ "azure:canadaeast": {
+  "fam": "4"
+ },
+ "azure:brazilsouth": {
+  "fam": "4"
+ },
+ "azure:northeurope": {
+  "fam": "4"
+ },
+ "azure:westeurope": {
+  "fam": "4"
+ },
+ "azure:uksouth": {
+  "fam": "4"
+ },
+ "azure:ukwest": {
+  "fam": "4"
+ },
+ "azure:francecentral": {
+  "fam": "4"
+ },
+ "azure:germanywestcentral": {
+  "fam": "4"
+ },
+ "azure:switzerlandnorth": {
+  "fam": "4"
+ },
+ "azure:switzerlandwest": {
+  "fam": "4"
+ },
+ "azure:norwayeast": {
+  "fam": "4"
+ },
+ "azure:swedencentral": {
+  "fam": "4"
+ },
+ "azure:polandcentral": {
+  "fam": "4"
+ },
+ "azure:italynorth": {
+  "fam": "4"
+ },
+ "azure:spaincentral": {
+  "fam": "4"
+ },
+ "azure:eastasia": {
+  "fam": "4"
+ },
+ "azure:southeastasia": {
+  "fam": "4"
+ },
+ "azure:japaneast": {
+  "fam": "4"
+ },
+ "azure:japanwest": {
+  "fam": "4"
+ },
+ "azure:koreacentral": {
+  "fam": "4"
+ },
+ "azure:australiaeast": {
+  "fam": "4"
+ },
+ "azure:newzealandnorth": {
+  "fam": "4"
+ },
+ "azure:centralindia": {
+  "fam": "4"
+ },
+ "azure:southindia": {
+  "fam": "4"
+ },
+ "azure:jioindiawest": {
+  "fam": "4"
+ },
+ "azure:jioindiacentral": {
+  "fam": "4"
+ },
+ "azure:indonesiacentral": {
+  "fam": "4"
+ },
+ "azure:malaysiawest": {
+  "fam": "4"
+ },
+ "azure:uaenorth": {
+  "fam": "4"
+ },
+ "azure:qatarcentral": {
+  "fam": "4"
+ },
+ "azure:southafricanorth": {
+  "fam": "4"
+ },
+ "linode:us-east": {
+  "fam": "46"
+ },
+ "linode:us-southeast": {
+  "fam": "46"
+ },
+ "linode:eu-central": {
+  "fam": "46"
+ },
+ "linode:ap-south": {
+  "fam": "46"
+ },
+ "linode:gb-lon": {
+  "fam": "46"
+ },
+ "linode:se-sto": {
+  "fam": "46"
+ },
+ "linode:es-mad": {
+  "fam": "46"
+ },
+ "linode:in-maa": {
+  "fam": "46"
+ },
+ "linode:jp-osa": {
+  "fam": "46"
+ },
+ "linode:it-mil": {
+  "fam": "46"
+ },
+ "linode:us-mia": {
+  "fam": "46"
+ },
+ "linode:id-cgk": {
+  "fam": "46"
+ },
+ "linode:us-lax": {
+  "fam": "46"
+ },
+ "linode:nl-ams": {
+  "fam": "46"
+ },
+ "linode:au-mel": {
+  "fam": "46"
+ },
+ "linode:in-bom-2": {
+  "fam": "46"
+ },
+ "linode:de-fra-2": {
+  "fam": "46"
+ },
+ "linode:sg-sin-2": {
+  "fam": "46"
+ },
+ "linode:jp-tyo-3": {
+  "fam": "46"
+ },
+ "linode:us-iad-2": {
+  "fam": "46"
+ },
+ "linode:br-gru": {
+  "fam": "46"
+ },
+ "linode:us-sea": {
+  "fam": "46"
+ },
+ "linode:fr-par": {
+  "fam": "46"
+ },
+ "linode:us-ord": {
+  "fam": "46"
+ },
+ "linode:us-iad": {
+  "fam": "46"
+ },
+ "digitalocean:nyc3": {
+  "fam": "4"
+ },
+ "digitalocean:sfo2": {
+  "fam": "4"
+ },
+ "digitalocean:sfo3": {
+  "fam": "4"
+ },
+ "digitalocean:ams3": {
+  "fam": "4"
+ },
+ "digitalocean:sgp1": {
+  "fam": "4"
+ },
+ "digitalocean:lon1": {
+  "fam": "4"
+ },
+ "digitalocean:fra1": {
+  "fam": "4"
+ },
+ "digitalocean:tor1": {
+  "fam": "4"
+ },
+ "digitalocean:blr1": {
+  "fam": "4"
+ },
+ "digitalocean:syd1": {
+  "fam": "4"
+ },
+ "digitalocean:atl1": {
+  "fam": "4"
+ },
+ "digitalocean:ric1": {
+  "fam": "4"
+ },
+ "hetzner:fsn1": {
+  "fam": "46"
+ },
+ "hetzner:nbg1": {
+  "fam": "46"
+ },
+ "hetzner:hel1": {
+  "fam": "46"
+ },
+ "hetzner:ash": {
+  "fam": "46"
+ },
+ "hetzner:hil": {
+  "fam": "46"
+ },
+ "hetzner:sin": {
+  "fam": "46"
+ },
+ "ovh:gra": {
+  "fam": "46"
+ },
+ "ovh:rbx": {
+  "fam": "46"
+ },
+ "ovh:sbg": {
+  "fam": "46"
+ },
+ "ovh:eri": {
+  "fam": "46"
+ },
+ "ovh:bhs": {
+  "fam": "46"
+ },
+ "ovh:vin": {
+  "fam": "46"
+ },
+ "ovh:hil": {
+  "fam": "46"
+ },
+ "ovh:sgp": {
+  "fam": "46"
+ },
+ "ovh:syd": {
+  "fam": "46"
+ },
+ "gcp:us-central1": {
+  "fam": "4"
+ },
+ "gcp:us-central2": {
+  "fam": "4"
+ },
+ "gcp:us-east1": {
+  "fam": "4"
+ },
+ "gcp:us-east4": {
+  "fam": "4"
+ },
+ "gcp:us-east5": {
+  "fam": "4"
+ },
+ "gcp:us-east7": {
+  "fam": "46"
+ },
+ "gcp:us-south1": {
+  "fam": "4"
+ },
+ "gcp:us-west1": {
+  "fam": "4"
+ },
+ "gcp:us-west2": {
+  "fam": "4"
+ },
+ "gcp:us-west3": {
+  "fam": "4"
+ },
+ "gcp:us-west4": {
+  "fam": "4"
+ },
+ "gcp:us-west8": {
+  "fam": "4"
+ },
+ "gcp:northamerica-northeast1": {
+  "fam": "4"
+ },
+ "gcp:northamerica-northeast2": {
+  "fam": "4"
+ },
+ "gcp:northamerica-south1": {
+  "fam": "4"
+ },
+ "gcp:southamerica-east1": {
+  "fam": "4"
+ },
+ "gcp:southamerica-west1": {
+  "fam": "4"
+ },
+ "gcp:europe-west1": {
+  "fam": "4"
+ },
+ "gcp:europe-west2": {
+  "fam": "4"
+ },
+ "gcp:europe-west3": {
+  "fam": "4"
+ },
+ "gcp:europe-west4": {
+  "fam": "4"
+ },
+ "gcp:europe-west6": {
+  "fam": "4"
+ },
+ "gcp:europe-west8": {
+  "fam": "4"
+ },
+ "gcp:europe-west9": {
+  "fam": "4"
+ },
+ "gcp:europe-west10": {
+  "fam": "4"
+ },
+ "gcp:europe-west12": {
+  "fam": "4"
+ },
+ "gcp:europe-central2": {
+  "fam": "4"
+ },
+ "gcp:europe-north1": {
+  "fam": "4"
+ },
+ "gcp:europe-north2": {
+  "fam": "4"
+ },
+ "gcp:europe-southwest1": {
+  "fam": "4"
+ },
+ "gcp:me-central1": {
+  "fam": "4"
+ },
+ "gcp:me-central2": {
+  "fam": "4"
+ },
+ "gcp:me-west1": {
+  "fam": "4"
+ },
+ "gcp:africa-south1": {
+  "fam": "4"
+ },
+ "gcp:asia-east1": {
+  "fam": "4"
+ },
+ "gcp:asia-east2": {
+  "fam": "4"
+ },
+ "gcp:asia-northeast1": {
+  "fam": "4"
+ },
+ "gcp:asia-northeast2": {
+  "fam": "4"
+ },
+ "gcp:asia-northeast3": {
+  "fam": "4"
+ },
+ "gcp:asia-south1": {
+  "fam": "4"
+ },
+ "gcp:asia-south2": {
+  "fam": "4"
+ },
+ "gcp:asia-southeast1": {
+  "fam": "4"
+ },
+ "gcp:asia-southeast2": {
+  "fam": "4"
+ },
+ "gcp:australia-southeast1": {
+  "fam": "4"
+ },
+ "gcp:australia-southeast2": {
+  "fam": "4"
+ },
+ "ibm:us-south": {
+  "fam": "4"
+ },
+ "ibm:us-east": {
+  "fam": "4"
+ },
+ "ibm:ca-tor": {
+  "fam": "4"
+ },
+ "ibm:br-sao": {
+  "fam": "4"
+ },
+ "ibm:eu-gb": {
+  "fam": "4"
+ },
+ "ibm:eu-de": {
+  "fam": "4"
+ },
+ "ibm:eu-es": {
+  "fam": "4"
+ },
+ "ibm:jp-tok": {
+  "fam": "4"
+ },
+ "ibm:jp-osa": {
+  "fam": "4"
+ },
+ "ibm:au-syd": {
+  "fam": "4"
+ },
+ "scaleway:fr-par": {
+  "fam": "46"
+ },
+ "scaleway:nl-ams": {
+  "fam": "46"
+ },
+ "scaleway:pl-waw": {
+  "fam": "46"
+ },
+ "scaleway:it-mil": {
+  "fam": "46"
+ },
+ "volcengine:cn-beijing": {
+  "fam": "4"
+ },
+ "volcengine:cn-shanghai": {
+  "fam": "4"
+ },
+ "volcengine:cn-guangzhou": {
+  "fam": "4"
+ },
+ "volcengine:cn-hongkong": {
+  "fam": "4"
+ },
+ "volcengine:ap-southeast-1": {
+  "fam": "4"
+ },
+ "volcengine:ap-southeast-3": {
+  "fam": "4"
+ },
+ "baidu:bj": {
+  "fam": "46"
+ },
+ "baidu:bd": {
+  "fam": "4"
+ },
+ "baidu:su": {
+  "fam": "4"
+ },
+ "baidu:gz": {
+  "fam": "4"
+ },
+ "baidu:fwh": {
+  "fam": "4"
+ },
+ "baidu:hkg": {
+  "fam": "4"
+ },
+ "naver:kr": {
+  "fam": "4"
+ },
+ "naver:jp": {
+  "fam": "4"
+ },
+ "naver:sg": {
+  "fam": "4"
+ },
+ "naver:us": {
+  "fam": "4"
+ },
+ "naver:de": {
+  "fam": "4"
+ }
+}

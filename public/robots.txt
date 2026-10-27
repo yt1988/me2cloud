@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://m2c.1ms.dog/sitemap.xml

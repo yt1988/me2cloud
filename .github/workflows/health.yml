@@ -1,0 +1,48 @@
+name: Endpoint health
+
+# Every Monday, probes every endpoint in public/endpoints.json. Failures open or update
+# one issue labeled "endpoint-health"; a clean run closes it.
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: endpoint-health
+  cancel-in-progress: true
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: check
+        run: node scripts/endpoints/health.mjs health-report.md
+      - run: cat health-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Open, update or close the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FAILED: ${{ steps.check.outputs.failed }}
+          TOTAL: ${{ steps.check.outputs.total }}
+        run: |
+          gh label create endpoint-health --color d93f0b --description "Weekly endpoint health check" 2>/dev/null || true
+          num=$(gh issue list --label endpoint-health --state open --json number --jq '.[0].number')
+          if [ "$FAILED" -gt 0 ]; then
+            title="Endpoint health: $FAILED of $TOTAL failing"
+            if [ -n "$num" ]; then
+              gh issue edit "$num" --title "$title" --body-file health-report.md
+              gh issue comment "$num" --body "Re-checked on $(date -u +%F): $FAILED of $TOTAL failing. The issue body has the latest list."
+            else
+              gh issue create --title "$title" --label endpoint-health --body-file health-report.md
+            fi
+          elif [ -n "$num" ]; then
+            gh issue close "$num" --comment "All $TOTAL endpoints answered on $(date -u +%F)."
+          fi

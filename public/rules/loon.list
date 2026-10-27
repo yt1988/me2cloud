@@ -1,0 +1,52 @@
+# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 25 rules, generated 2026-10-27.
+# https://m2c.1ms.dog/ · https://github.com/yt1988/me2cloud
+# AWS · DynamoDB /ping
+DOMAIN-SUFFIX,amazonaws.com
+# AWS · DynamoDB /ping · China
+DOMAIN-SUFFIX,amazonaws.com.cn
+# Oracle Cloud · Object Storage
+DOMAIN-SUFFIX,oraclecloud.com
+# Vultr · Looking glass
+DOMAIN-SUFFIX,vultr.com
+# Microsoft Azure · Cognitive Services
+DOMAIN-SUFFIX,api.cognitive.microsoft.com
+# Google Cloud · Storage regional endpoint (rep)
+DOMAIN-SUFFIX,rep.googleapis.com
+# Alibaba Cloud · OSS
+DOMAIN-SUFFIX,aliyuncs.com
+# Tencent Cloud · COS
+DOMAIN-SUFFIX,myqcloud.com
+# Huawei Cloud · OBS
+DOMAIN-SUFFIX,myhuaweicloud.com
+# Akamai (Linode) · Object Storage
+DOMAIN-SUFFIX,linodeobjects.com
+# DigitalOcean · Spaces
+DOMAIN-SUFFIX,digitaloceanspaces.com
+# OVHcloud · Speed test (proof)
+DOMAIN-SUFFIX,speedtest.network.ovh.net
+# OVHcloud · Speed test (proof) · Gravelines
+DOMAIN,proof.ovh.net
+# Hetzner · Speed test
+DOMAIN-SUFFIX,hetzner.com
+# AWS · DynamoDB /ping · IPv6
+DOMAIN-SUFFIX,api.aws
+# Alibaba Cloud · OSS · IPv6
+DOMAIN-SUFFIX,aliyuncs.com
+# IBM Cloud · Cloud Object Storage
+DOMAIN-SUFFIX,cloud-object-storage.appdomain.cloud
+# Scaleway · Object Storage
+DOMAIN-SUFFIX,scw.cloud
+# Volcengine · TOS
+DOMAIN-SUFFIX,volces.com
+# Baidu AI Cloud · BOS
+DOMAIN-SUFFIX,bcebos.com
+# Naver Cloud · Object Storage
+DOMAIN-SUFFIX,ncloudstorage.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,speed.cloudflare.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,www.cloudflare.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,stun.cloudflare.com
+# Me2Cloud page
+DOMAIN,m2c.1ms.dog

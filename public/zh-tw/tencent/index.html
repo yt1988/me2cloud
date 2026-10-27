@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="zh-TW" data-paths="{&quot;en&quot;:&quot;/tencent/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/tencent/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/tencent/&quot;,&quot;ja&quot;:&quot;/ja/tencent/&quot;,&quot;ko&quot;:&quot;/ko/tencent/&quot;,&quot;es&quot;:&quot;/es/tencent/&quot;,&quot;fr&quot;:&quot;/fr/tencent/&quot;,&quot;de&quot;:&quot;/de/tencent/&quot;,&quot;pt&quot;:&quot;/pt/tencent/&quot;,&quot;ru&quot;:&quot;/ru/tencent/&quot;}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+  // Runs before first paint: apply a saved theme. On an English page, send visitors to their own language's page
+  // (a saved choice first, then the browser languages); crawlers and English readers stay where they are.
+  (function () {
+    var d = document.documentElement, th = null, s = null;
+    try { th = localStorage.getItem("me2cloud:theme"); s = localStorage.getItem("me2cloud:lang"); } catch (e) {}
+    if (th === "light" || th === "dark") d.setAttribute("data-theme", th);
+    if (!d.hasAttribute("data-root")) return;
+    var P = JSON.parse(d.getAttribute("data-paths") || "{}"), l = null;
+    try { var q = new URLSearchParams(location.search).get("lang"); if (P[q]) l = q; } catch (e) {}
+    if (!l && P[s]) l = s;
+    for (var ls = navigator.languages || [navigator.language || "en"], i = 0; !l && !s && i < ls.length; i++) {
+      var x = String(ls[i]).toLowerCase(), b = x.split("-")[0];
+      l = b === "zh" ? (/tw|hk|mo|hant/.test(x) ? "zh-TW" : "zh-CN") : P[b] ? b : null;
+    }
+    if (l && l !== "en") location.replace(P[l] + location.hash);
+  })();
+</script>
+<title>騰訊雲延遲測試：從你家網路實測 16 個區域｜Me2Cloud</title>
+<meta name="description" content="在你自己的瀏覽器裡實測騰訊雲全部 16 個區域的延遲、抖動和丟包，算上你的運營商和晚高峰。免費，無需安裝。">
+<meta name="keywords" content="騰訊雲, Tencent Cloud, 雲伺服器延遲測試, 雲伺服器 ping, 機房測速, AWS 延遲, 阿里雲 ping, 騰訊雲 延遲, 華為雲 ping, Vultr 測速, 哪個區域最快">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="application-name" content="Me2Cloud">
+<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://m2c.1ms.dog/zh-tw/tencent/">
+<link rel="alternate" hreflang="en" href="https://m2c.1ms.dog/tencent/">
+<link rel="alternate" hreflang="zh-CN" href="https://m2c.1ms.dog/zh-cn/tencent/">
+<link rel="alternate" hreflang="zh-TW" href="https://m2c.1ms.dog/zh-tw/tencent/">
+<link rel="alternate" hreflang="ja" href="https://m2c.1ms.dog/ja/tencent/">
+<link rel="alternate" hreflang="ko" href="https://m2c.1ms.dog/ko/tencent/">
+<link rel="alternate" hreflang="es" href="https://m2c.1ms.dog/es/tencent/">
+<link rel="alternate" hreflang="fr" href="https://m2c.1ms.dog/fr/tencent/">
+<link rel="alternate" hreflang="de" href="https://m2c.1ms.dog/de/tencent/">
+<link rel="alternate" hreflang="pt" href="https://m2c.1ms.dog/pt/tencent/">
+<link rel="alternate" hreflang="ru" href="https://m2c.1ms.dog/ru/tencent/">
+<link rel="alternate" hreflang="x-default" href="https://m2c.1ms.dog/tencent/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Me2Cloud">
+<meta property="og:title" content="騰訊雲延遲測試：從你家網路實測 16 個區域｜Me2Cloud">
+<meta property="og:description" content="在你自己的瀏覽器裡實測騰訊雲全部 16 個區域的延遲、抖動和丟包，算上你的運營商和晚高峰。免費，無需安裝。">
+<meta property="og:url" content="https://m2c.1ms.dog/zh-tw/tencent/">
+<meta property="og:image" content="https://m2c.1ms.dog/og/zh-tw.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="騰訊雲延遲測試：從你家網路實測 16 個區域｜Me2Cloud">
+<meta name="twitter:description" content="在你自己的瀏覽器裡實測騰訊雲全部 16 個區域的延遲、抖動和丟包，算上你的運營商和晚高峰。免費，無需安裝。">
+<meta name="twitter:image" content="https://m2c.1ms.dog/og/zh-tw.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Me2Cloud","url":"https://m2c.1ms.dog/zh-tw/tencent/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在你自己的瀏覽器裡實測騰訊雲全部 16 個區域的延遲、抖動和丟包，算上你的運營商和晚高峰。免費，無需安裝。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"為什麼從你自己的網路測，比測速網站和 Looking Glass 更靠譜","acceptedAnswer":{"@type":"Answer","text":"大部分“雲節點測速”網站，以及廠商自己的 Looking Glass，測試都是從 他們的 伺服器發起的。這些伺服器放在機房裡，接的是優質線路，測出來的只是“機房到機房”有多快。而你真正感受到的那一段，家裡寬頻或手機網路、運營商骨幹、國際出口，還有今晚堵不堵，它們統統測不到。 Me2Cloud 的每個請求都從 你的 瀏覽器發出，所以結果把這些全算進去了：Wi‑Fi、路由器、運營商、運營商選的路由，還有晚高峰。 測速網站 / Looking Glass 電腦上的 ICMP ping Me2Cloud 從哪裡發起 他們的機房 你的網路 你的網路 算上你的運營商和晚高峰 不算 算 算 跟網頁、應用同一種協議（TCP 443） 不一定 不是，ICMP 是，HTTPS 會被網路限速或過濾 有時 經常 很少 一鍵測幾百個區域 部分支援 不行 可以 要不要裝軟體 不用 不用 不用"}},{"@type":"Question","name":"每次取樣是怎麼測的","acceptedAnswer":{"@type":"Answer","text":"先發一次 預熱 請求，把 DNS、TCP、TLS 都建好。這次的時間會顯示出來，但不計入結果。 然後在 同一條連線 上，對同一個主機再發 5、10 或 20 次請求。每次只花一個往返，再加上廠商伺服器的處理時間。 每家廠商都用我們實測過、能保持連線的請求方式：AWS、Azure、Google Cloud、華為雲、DigitalOcean、Scaleway 用 GET ；Oracle、IBM Cloud、阿里雲、騰訊雲、火山引擎、百度智慧雲、Naver Cloud、Linode、Vultr、OVHcloud 用 HEAD （它們的 GET 會斷開連線，測出來會翻 3 倍）；只有 Hetzner 用 \u003cimg> 。 結果給出 中位數 （最典型的值）、 平均值 、 P90 （10 次裡有 9 次不超過它）、 抖動 （相鄰兩次的平均變化）和 丟包 （超時沒響應的次數）。 等級 按中位數劃分：T0 夯 ≤ 30 ms、T1 頂級 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推薦用的綜合分是“中位數 + 2 × 抖動 + 丟包懲罰”，所以穩定的 60 ms 會排在忽高忽低的 45 ms 前面。"}},{"@type":"Question","name":"為什麼 HTTPS 測速比 ICMP ping 更貼近真實體驗","acceptedAnswer":{"@type":"Answer","text":"跟你的流量走同一條路。 網頁、API、走 443 的隧道、遊戲登入、下載，用的都是 TCP。不少運營商對 ICMP 單獨排隊、限速，甚至單獨選路，所以經常 ping 看著挺好、網頁卻卡得要死，反過來也有。 不會被限速吞掉。 路由器和雲廠商經常限制甚至直接丟棄 ICMP，而訪問公共 HTTPS 端點總會有響應。 算上你的真實環境。 DNS、IPv4/IPv6 的選擇、代理、加速器，對瀏覽器流量都會生效，測出來的就是你實際能拿到的效果。 代價是： 每次取樣還包含一點很穩定的伺服器處理時間。我們實測 AWS 是 0–5 ms，阿里雲約 8 ms，華為雲 OBS 約 20 ms。延遲上百毫秒的節點完全可以忽略；離你特別近的區域，數字會比 ping 略高一點。"}},{"@type":"Question","name":"什麼時候測：專挑晚高峰","acceptedAnswer":{"@type":"Answer","text":"家庭寬頻在 晚上 20:00–23:00 最堵，出國線路更明顯。中午還是 T1 頂級的區域，到了晚上可能直接掉到 NPC。 建議白天測一次、晚高峰再測一次。儲存的結果會打上“晚高峰”標籤，在測試結果裡可以來回切換對比。 測試時先暫停大檔案下載、影片和網盤同步。有線比 Wi‑Fi 準；只能用 Wi‑Fi 的話，儘量離路由器近一點。 用手機流量測，結果會跟著訊號走。最好在你真正要用的地方測。"}},{"@type":"Question","name":"適合用來幹什麼","acceptedAnswer":{"@type":"Answer","text":"買伺服器、遊戲服、CDN 回源之前，先把候選區域篩一遍。 比較同一家廠商的不同區域，或者同一個城市不同廠商的表現。 看穩定性（抖動、丟包）夠不夠打遊戲、開視訊會議、遠端桌面和 SSH。 驗證你的代理、加速器或者新辦的寬頻到底行不行：開著測一次，關掉再測一次。 用自定義節點，把你自己的伺服器或 CDN 跟大廠放在一起比。"}},{"@type":"Question","name":"它做不到的事","acceptedAnswer":{"@type":"Answer","text":"只代表一個位置。 測的是你的線路，不是你使用者的。可以讓幾個使用者也測一下，匯出來對比。 測的是端點，不是你以後的雲主機。 我們測的是廠商在該區域的公共 API 或儲存端點。同區域的伺服器一般共用網路，但精品線路（比如 CN2、BGP 和單線、Lightsail 和 EC2）可能不一樣。 不測頻寬、不測 UDP、不做路由追蹤。 只測往返時間，不測下載速度、UDP 遊戲流量，也看不到中間經過哪些節點。 瀏覽器本身的影響。 外掛、代理、VPN、很忙的標籤頁都會帶來噪聲。測試時關掉佔資源的標籤頁，讓本頁保持在前臺。 Hetzner 在瀏覽器裡沒法保持連線，所以它的數字每次都包含握手時間。個別端點在某些國家和地區可能訪問不到。"}},{"@type":"Question","name":"所有請求都從你的瀏覽器發出","acceptedAnswer":{"@type":"Answer","text":"本頁是放在 Cloudflare 上的純靜態檔案。沒有後端、不用註冊、沒有統計程式碼，結果也從不上傳。 所有測試請求都由你的瀏覽器直接發給廠商。開啟上面的 請求記錄 ，或者瀏覽器開發者工具的 Network 面板，每一條都看得到。 網路資訊來自 Cloudflare（ speed.cloudflare.com/meta 和 /cdn-cgi/trace ）。可選的 WebRTC 檢測會向 stun.cloudflare.com 詢問你的 UDP 出口地址，不想用可以在設定裡關掉。 設定、自定義節點和最近幾次結果只存在這個瀏覽器的本地儲存裡，“清空全部資料”會把它們全刪掉。"}},{"@type":"Question","name":"對廠商友好：不觸發限流，也不會被封","acceptedAnswer":{"@type":"Answer","text":"對公共端點請求太猛，可能觸發廠商的限流或 WAF，結果也就不準了。所以測試節奏刻意壓得很低： 每個主機同一時間只有一個請求，兩次取樣之間停 250–370 ms（每個主機每秒最多 2–3 個請求）。 每家廠商最多同時測 2 個主機，總共最多 8 個（預設 4 個）。 每次測試每個主機最多 21 個請求（預熱 + 20 次），沒有持續轟炸的模式。 連續失敗 3 次就放棄這個主機，不會反覆重試。 全部是匿名、不帶 Cookie、不帶 Referer 的“簡單請求”：沒有預檢，響應只有幾百位元組，能用 HEAD 就用 HEAD，不會下載大檔案。 整個過程的流量比開啟一個普通網頁還少。每個端點都驗證過能正常響應匿名請求（返回 200、403、404 都不影響計時）。"}},{"@type":"Question","name":"開著代理或 VPN 怎麼辦？","acceptedAnswer":{"@type":"Answer","text":"流量走代理的話，瀏覽器測到的是“你到代理”加上“代理到廠商”，而不是你自己的線路。網路面板會檢查幾個常見跡象：出口網路屬於機房、時區和出口國家對不上、開了 WARP、WebRTC 出口和 HTTPS 出口不一致。 點 獲取直連規則 ，只把測試域名設成直連（支援 Clash / Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray、SwitchyOmega 和純域名列表），然後重新檢測。如果你想測的正是代理本身，那就開著測，得到的就是代理的真實表現。"}},{"@type":"Question","name":"怎麼看圖","acceptedAnswer":{"@type":"Answer","text":"每一行的條形圖都用同一把尺子（對數刻度，2 ms 到 3 s）。圓點是每次取樣，陰影框是中間一半取樣所在的範圍，豎線是中位數。 框越窄越穩；框很寬或者點很散，就是抖得厲害。紅色 × 是丟包的次數。 點開一行，能看到每次取樣的先後變化、全部統計資料和用到的端點。✓ 表示符合你的需求。"}}]}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Same design system as AWS Lightsail Cost Saver (ls.1ms.dog): tokens, toolbar, menu and pills are shared. */
+:root {
+  --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
+  --fg: #141416; --muted: #6e6e78; --ink: #1a8a5a; --ink-fg: #ffffff;
+  --pool: #1a8a5a; --pool-soft: #1a8a5a1f; --on-pool: #ffffff;
+  --sel: #1a8a5a; --sel-soft: #1a8a5a1f; --on-sel: #ffffff; --knob: #ffffff;
+  --warn: #b86e00; --warn-soft: #b86e001f;
+  --bad: #d23a2f; --bad-soft: #d23a2f1a;
+  /* tiers T0 → T4 */
+  --g1: #1a8a5a; --g2: #3d7d1e; --g3: #8a6700; --g4: #b0530a; --g5: #d23a2f;
+  --shadow: #00000024; --logo-bg: transparent; --logo-pad: 0px;
+  --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
+  --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --r: 12px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0; --ink: #3ecf8e; --ink-fg: #0b2a1c;
+  --pool: #3ecf8e; --pool-soft: #3ecf8e24; --on-pool: #0b2a1c;
+  --sel: #3ecf8e; --sel-soft: #3ecf8e1a; --on-sel: #0b2a1c; --knob: #ffffff;
+  --warn: #f5a524; --warn-soft: #f5a52424;
+  --bad: #f56565; --bad-soft: #f5656522;
+  --g1: #3ecf8e; --g2: #9fd356; --g3: #f5c524; --g4: #f59e42; --g5: #f56565;
+  --shadow: #00000099;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0; --ink: #3ecf8e; --ink-fg: #0b2a1c;
+  --pool: #3ecf8e; --pool-soft: #3ecf8e24; --on-pool: #0b2a1c;
+  --sel: #3ecf8e; --sel-soft: #3ecf8e1a; --on-sel: #0b2a1c; --knob: #ffffff;
+  --warn: #f5a524; --warn-soft: #f5a52424;
+  --bad: #f56565; --bad-soft: #f5656522;
+  --g1: #3ecf8e; --g2: #9fd356; --g3: #f5c524; --g4: #f59e42; --g5: #f56565;
+  --shadow: #00000099;
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+html { background: var(--bg); }
+body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+.app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 20px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
+.lbl { font-size: 12px; color: var(--muted); }
+.note { font-size: 12px; color: var(--muted); }
+code { font-family: var(--f-num); font-size: 11.5px; background: var(--soft); border-radius: 4px; padding: 1px 4px; color: var(--fg); }
+a { color: inherit; }
+.c1 { color: var(--g1); } .c2 { color: var(--g2); } .c3 { color: var(--g3); } .c4 { color: var(--g4); } .c5 { color: var(--g5); } .c0 { color: var(--muted); }
+
+/* toolbar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand-row { display: flex; align-items: center; gap: 12px; min-width: 0; color: inherit; text-decoration: none; border-radius: 10px; }
+.brand-row:focus-visible { outline: 2px solid var(--sel); outline-offset: 4px; }
+.brand-row .brand-name { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.015em; white-space: nowrap; }
+.logo { display: block; flex: none; box-sizing: content-box; height: 36px; width: 90px; padding: var(--logo-pad); border-radius: 8px; background: var(--logo-bg); }
+.logo img { display: block; width: 100%; height: 100%; }
+.logo .logo-dark { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo .logo-light { display: none; } :root:not([data-theme="light"]) .logo .logo-dark { display: block; } }
+:root[data-theme="dark"] .logo .logo-light { display: none; }
+:root[data-theme="dark"] .logo .logo-dark { display: block; }
+.tools { display: flex; align-items: center; gap: 8px; }
+.sel { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.sel select { border: 0; background: transparent; outline: none; max-width: 200px; cursor: pointer; }
+.sel option { background-color: var(--panel); color: var(--fg); }
+.sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+.icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; list-style: none; color: var(--fg); flex: none; }
+.icon-btn::-webkit-details-marker { display: none; }
+.icon-btn svg { width: 16px; height: 16px; }
+.icon-btn:hover, .btn:hover, .sel:hover { border-color: var(--muted); }
+.icon-btn.sm { width: 28px; height: 28px; border-radius: 7px; }
+.icon-btn.sm svg { width: 14px; height: 14px; }
+.menu { position: relative; }
+.menu > summary { list-style: none; }
+.menu:not([open]) > .pop { display: none; }
+.menu > summary::-webkit-details-marker { display: none; }
+.pop { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; width: 300px; max-width: calc(100vw - 32px); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: 0 12px 32px var(--shadow); padding: 4px 14px; display: flex; flex-direction: column; max-height: min(70vh, 560px); overflow: auto; }
+.pop.l { left: 0; right: auto; }
+.pg { padding: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.pg + .pg { border-top: 1px solid var(--line); }
+.pg-h { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+.pg-h button { border: 0; background: none; padding: 0; color: var(--sel); cursor: pointer; font-size: 11.5px; text-transform: none; letter-spacing: 0; font-weight: 500; }
+.list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.list-i { display: flex; align-items: center; gap: 10px; width: 100%; height: 36px; padding: 0 12px; border: 0; background: none; color: var(--fg); cursor: pointer; text-align: left; font-size: 13.5px; }
+.list-i + .list-i { border-top: 1px solid var(--line); }
+.list-i svg { width: 15px; height: 15px; flex: none; color: var(--muted); }
+.list-i:hover { background: var(--soft); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; padding: 2px; border-radius: 8px; background: var(--soft); }
+.seg button { height: 28px; border: 0; border-radius: 6px; background: transparent; cursor: pointer; color: var(--muted); font-size: 12.5px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 0; white-space: nowrap; overflow: hidden; padding: 0 8px; }
+.seg button svg { width: 14px; height: 14px; flex: none; }
+.seg button:disabled { opacity: .4; cursor: not-allowed; }
+/* flag next to a popover section heading: centered on the text, no uppercase on the country name */
+.pg-h .pg-flag { display: inline-flex; align-items: center; gap: 7px; text-transform: none; letter-spacing: 0; font-size: 12px; }
+.pg-h .pg-flag .flag { width: 18px; height: 13.5px; margin: 0; }
+.pl > summary b .flag { vertical-align: -2px; margin-left: 2px; }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px var(--shadow); }
+.danger-row { position: relative; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;
+  height: 32px; width: 100%; border: 0; border-radius: 8px; background: var(--bad); color: #fff; cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+.danger-row span { position: relative; }
+.danger-row .fill { position: absolute; inset: 0; background: #0000003d; transform: scaleX(0); transform-origin: left; }
+.danger-row.hold .fill { animation: hold-fill 1s linear forwards; }
+@keyframes hold-fill { to { transform: scaleX(1); } }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.btn { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; text-decoration: none; }
+.btn svg { width: 15px; height: 15px; flex: none; }
+.btn.ink { background: var(--ink); color: var(--ink-fg); border-color: var(--ink); font-weight: 600; }
+.btn.ink:hover { opacity: .88; }
+.btn.warn { background: var(--warn); color: #fff; border-color: var(--warn); font-weight: 600; }
+.btn.sm { height: 28px; padding: 0 10px; font-size: 12.5px; }
+.btn:disabled { opacity: .5; cursor: default; }
+.sw { position: relative; width: 34px; height: 20px; flex: none; display: inline-block; }
+.sw input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.sw span { position: absolute; inset: 0; border-radius: 20px; background: var(--line); transition: background .2s; }
+.sw span::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); transition: transform .2s; box-shadow: 0 1px 2px #0003; }
+.sw input:checked + span { background: var(--sel); }
+.sw input:checked + span::after { transform: translateX(14px); }
+input[type="range"] { width: 100%; accent-color: var(--sel); }
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 22px; font-size: 12px; font-weight: 500; width: fit-content; white-space: nowrap; }
+.pill.good { color: var(--pool); background: var(--pool-soft); }
+.pill.warn { color: var(--warn); background: var(--warn-soft); }
+.pill.idle { color: var(--muted); background: var(--soft); }
+.tg { font: 600 11px/20px var(--f-num); padding: 0 7px; border-radius: 6px; white-space: nowrap; background: color-mix(in srgb, currentColor 14%, transparent); }
+.vb { flex: none; font: 600 10px/18px var(--f-num); padding: 0 5px; border-radius: 4px; background: var(--soft); color: var(--muted); letter-spacing: .02em; text-align: center; }
+
+/* hero: one sentence, three short reasons, the network line, the controls and one big button */
+.hero { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+.hero h1 { margin: 0; font-size: 26px; line-height: 1.25; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+.whys { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); align-items: center; }
+.whys span { display: inline-flex; align-items: center; gap: 6px; }
+.whys svg { width: 14px; height: 14px; color: var(--sel); }
+.whys a { color: var(--sel); text-decoration: none; }
+.netbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 10px; background: var(--soft); font-size: 13px; }
+.netbar.warn { background: var(--warn-soft); }
+.nb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.netbar.good .nb-dot { background: var(--pool); box-shadow: 0 0 0 3px var(--pool-soft); }
+.netbar.warn .nb-dot { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-soft); }
+.netbar.chk .nb-dot { animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .3; } }
+.nb-st { font-weight: 600; white-space: nowrap; }
+.netbar.good .nb-st { color: var(--pool); } .netbar.warn .nb-st { color: var(--warn); }
+.nb-main { min-width: 0; flex: 1 1 200px; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nb-main .m { color: var(--muted); }
+.nb-acts { display: flex; gap: 6px; align-items: center; margin-left: auto; min-width: 0; max-width: 100%; }
+.nb-acts > * { flex: none; }
+.nb-acts > .btn { flex: 0 1 auto; min-width: 0; }
+.nb-acts > .btn > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.netdet { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 16px; padding: 4px 2px 0; }
+.kv { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.kv .v { font-family: var(--f-num); font-size: 13.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kv .v.blur { filter: blur(5px); user-select: none; }
+.kv .s { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reasons { grid-column: 1 / -1; margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--fg); }
+.reasons li + li { margin-top: 2px; }
+.eye { border: 0; background: none; padding: 0; color: var(--muted); cursor: pointer; display: inline-grid; place-items: center; vertical-align: middle; margin-left: 4px; }
+.eye svg { width: 14px; height: 14px; }
+.ctrl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pl > summary { height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; white-space: nowrap; }
+.pl > summary:hover, .pl[open] > summary { border-color: var(--sel); }
+.pl > summary svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+.pl > summary b { font-weight: 600; }
+.pl > summary .caret { width: 10px; height: 10px; }
+.pl { max-width: 100%; min-width: 0; }
+.pl > summary { max-width: 100%; }
+.pl > summary b { max-width: 240px; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.pl-k { color: var(--muted); }
+/* first step: nothing chosen yet, so the provider pill asks for attention */
+.pl.ask > summary { border-color: var(--sel); background: var(--sel-soft); color: var(--sel); font-weight: 600; animation: ask 2s ease-in-out infinite; }
+.pl.ask > summary svg { color: var(--sel); }
+@keyframes ask { 50% { box-shadow: 0 0 0 4px var(--sel-soft); } }
+.pl.off > summary { opacity: .45; cursor: not-allowed; }
+/* quick filter: leave out the visitor's own country */
+.qf { height: 36px; padding: 0 3px 0 12px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); display: inline-flex; align-items: center; gap: 4px; font-size: 13px; white-space: nowrap; }
+.qf .flag { margin-right: 3px; }
+.qf-l { color: var(--muted); margin-right: 4px; }
+.qf button { height: 28px; padding: 0 10px; border: 0; border-radius: 14px; background: none; cursor: pointer; color: var(--muted); font-size: 12.5px; }
+.qf button:hover { color: var(--fg); }
+.qf button:disabled { opacity: .4; cursor: not-allowed; }
+.qf.ip { font-family: var(--f-num); }
+.qf button[aria-pressed="true"] { background: var(--sel-soft); color: var(--fg); font-weight: 600; box-shadow: inset 0 0 0 1px var(--sel); }
+.flag { width: 18px; height: 13.5px; border-radius: 2px; box-shadow: 0 0 0 1px var(--line); flex: none; }
+.nb-flag { width: 20px; height: 15px; border-radius: 2px; box-shadow: 0 0 0 1px var(--line); vertical-align: -2px; margin-right: 7px; }
+.cchip { display: inline-flex; align-items: center; height: 30px; padding: 0 4px 0 10px; gap: 2px; border-radius: 15px; border: 1px solid var(--line); background: var(--panel); font-size: 13px; color: var(--muted); }
+.cchip.on { border-color: var(--sel); background: var(--sel-soft); color: var(--fg); }
+.cchip button { border: 0; background: none; padding: 0; cursor: pointer; color: inherit; font: inherit; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cchip .x { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
+.cchip .x:hover { color: var(--bad); background: var(--bad-soft); }
+.run { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.go { height: 52px; padding: 0 26px 0 20px; border-radius: 26px; border: 0; background: var(--ink); color: var(--ink-fg); cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 6px 18px color-mix(in srgb, var(--ink) 30%, transparent); }
+.go:hover { filter: brightness(1.05); }
+.go svg { width: 18px; height: 18px; }
+.go.stop { background: var(--bad); box-shadow: 0 6px 18px color-mix(in srgb, var(--bad) 30%, transparent); color: #fff; }
+.go:disabled { opacity: .5; cursor: default; box-shadow: none; }
+.run-tx { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 220px; font-size: 13px; color: var(--muted); }
+.run-tx b { color: var(--fg); font-weight: 600; }
+#runT { display: flex; flex-direction: column; gap: 2px; }
+.nowl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.nowl b { margin-right: 4px; }
+.nowi { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 11px; background: var(--sel-soft); color: var(--fg); font-size: 12px; white-space: nowrap; }
+.nowi::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--sel); animation: blink 1s infinite; }
+.bar { height: 6px; border-radius: 3px; background: var(--soft); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--sel); border-radius: 3px; transition: width .3s; }
+
+/* popover content */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { height: 30px; padding: 0 10px; border-radius: 15px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.chip .c { font: 11px var(--f-num); }
+.chip[aria-pressed="true"] { border-color: var(--sel); background: var(--sel-soft); color: var(--fg); }
+.chip[aria-pressed="true"] .c { color: var(--sel); }
+.opt { display: flex; gap: 10px; align-items: center; width: 100%; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; text-align: left; }
+.opt + .opt { margin-top: 6px; }
+.opt[aria-pressed="true"] { border-color: var(--sel); background: var(--sel-soft); }
+.opt .ic { font-size: 18px; width: 24px; text-align: center; flex: none; }
+.opt .tx { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.opt .tx b { font-size: 13.5px; font-weight: 600; }
+.opt .tx span { font-size: 11.5px; color: var(--muted); font-family: var(--f-num); }
+.need { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.nin { display: flex; align-items: baseline; gap: 3px; border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; background: var(--bg); }
+.nin:focus-within { border-color: var(--sel); }
+.nin input { width: 100%; min-width: 0; border: 0; background: transparent; outline: none; font: 500 14px var(--f-num); padding: 0; -moz-appearance: textfield; }
+.nin input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.nin span { font: 11px var(--f-num); color: var(--muted); }
+.need-l { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.inp { height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); outline: none; width: 100%; min-width: 0; }
+.inp:focus { border-color: var(--sel); }
+.cform { display: flex; flex-direction: column; gap: 6px; }
+.cform .row { gap: 6px; }
+.err { color: var(--bad); font-size: 12px; }
+.citem { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+.citem span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.citem button { border: 0; background: none; color: var(--muted); cursor: pointer; padding: 2px 4px; font-size: 14px; }
+.citem button:hover { color: var(--bad); }
+
+/* results */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; min-width: 0; }
+.card-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px 0; flex-wrap: wrap; }
+.card-h h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.pd { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; text-align: left; min-width: 0; overflow: hidden; }
+.pd:hover { border-color: var(--sel); }
+.pd .rk { position: absolute; top: 14px; right: 16px; font: 600 12px var(--f-num); color: var(--muted); }
+.pd .ms { font: 600 34px/1.1 var(--f-num); letter-spacing: -.03em; }
+.pd .ms small { font-size: 14px; font-weight: 500; margin-left: 2px; color: var(--muted); }
+.pd .nm { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pd .sb { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.pd::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: currentColor; opacity: .8; }
+.pd-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: -4px; }
+.pd-h b { font-size: 15px; }
+/* distribution: one lane per provider on a shared log axis, colored tier bands behind */
+.viz { padding: 14px 18px 18px; }
+.vz { position: relative; margin-left: 150px; }
+.band { position: absolute; top: 0; bottom: 0; }
+.band span { position: absolute; top: -1px; left: 4px; font: 600 10px var(--f-num); white-space: nowrap; opacity: .9; }
+.band.b1 { background: color-mix(in srgb, var(--g1) 9%, transparent); color: var(--g1); }
+.band.b2 { background: color-mix(in srgb, var(--g2) 9%, transparent); color: var(--g2); }
+.band.b3 { background: color-mix(in srgb, var(--g3) 9%, transparent); color: var(--g3); }
+.band.b4 { background: color-mix(in srgb, var(--g4) 9%, transparent); color: var(--g4); }
+.band.b5 { background: color-mix(in srgb, var(--g5) 8%, transparent); color: var(--g5); }
+.lanes { position: relative; padding-top: 16px; }
+.lane { position: relative; height: var(--lh, 46px); }
+.lane + .lane { border-top: 1px dashed color-mix(in srgb, var(--line) 70%, transparent); }
+.lane .ln { position: absolute; left: -150px; width: 140px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; text-align: right; line-height: 1.3; }
+.lane .ln b { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lane .ln .short { display: none; }
+.lane .ln .lb { font: 11px var(--f-num); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vd { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: currentColor; border: 2px solid var(--panel); cursor: pointer; z-index: 2;
+  box-shadow: 0 1px 3px var(--shadow); transition: left .45s ease, top .45s ease, transform .15s; }
+.vd.miss { background: var(--panel); border: 2.5px solid currentColor; }
+.vd.live { z-index: 3; }
+.vd.live::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid currentColor; animation: ripple 1.1s ease-out infinite; }
+@keyframes ripple { from { transform: scale(.5); opacity: .9; } to { transform: scale(1.3); opacity: 0; } }
+.vd.new { animation: pop .5s ease-out; }
+.vd:hover { transform: scale(1.4); z-index: 4; }
+.wk { position: absolute; height: 4px; margin-top: -2px; border-radius: 2px; background: currentColor; opacity: .3; z-index: 1; pointer-events: none; transition: left .45s ease, width .45s ease, top .45s ease; }
+@keyframes pop { from { transform: scale(2.6); opacity: .3; } }
+.needl { position: absolute; top: 14px; bottom: 0; border-left: 2px dashed var(--fg); opacity: .55; z-index: 2; pointer-events: none; }
+.needl span { position: absolute; bottom: 2px; left: 4px; font: 600 10px var(--f-num); white-space: nowrap; background: var(--panel); padding: 0 3px; border-radius: 3px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0 -150px; font-size: 11.5px; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.legend i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.legend i.o { background: none; border: 1.5px solid var(--muted); }
+.legend i.lv { background: none; border: 1.5px solid var(--sel); box-shadow: 0 0 0 2px var(--sel-soft); }
+.legend span:last-child { color: var(--muted); }
+.legend em { font-style: normal; color: var(--muted); font: 10.5px var(--f-num); }
+.axis { position: relative; height: 18px; }
+.axis span { position: absolute; top: 4px; transform: translateX(-50%); font: 10px var(--f-num); color: var(--muted); }
+.vz-empty { position: absolute; inset: 16px 0 0; display: grid; place-items: center; color: var(--muted); font-size: 13px; text-align: center; padding: 0 20px; z-index: 2; }
+.vz-empty span { background: var(--panel); padding: 6px 12px; border-radius: 8px; }
+/* tier groups */
+.ltools { display: flex; gap: 8px; align-items: center; }
+.search { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); width: 200px; }
+.search svg { width: 14px; height: 14px; color: var(--muted); flex: none; }
+.search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font-size: 13px; }
+.tgl { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.groups { padding: 8px 0 6px; }
+.grp-h { display: flex; align-items: center; gap: 10px; padding: 12px 18px 6px; }
+.grp-h .tg { font-size: 12px; line-height: 22px; }
+.grp-h .n { font: 12px var(--f-num); color: var(--muted); }
+.grp-h .rng { font: 11px var(--f-num); color: var(--muted); margin-left: auto; }
+.grp + .grp { border-top: 1px solid var(--line); }
+.rg { display: grid; grid-template-columns: 40px minmax(130px, 1fr) minmax(160px, 1.6fr) 18px 64px; align-items: center; gap: 0 12px; padding: 0 18px; }
+.ri .r { min-height: 42px; cursor: pointer; }
+.ri .r:hover, .ri.open .r { background: var(--soft); }
+.ri.fail .r { opacity: .5; }
+.r-nm { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.r-nm b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: none; max-width: 60%; }
+.r-nm span { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.r-f { font-size: 12px; color: var(--warn); text-align: center; }
+.r-v { text-align: right; font: 600 15px var(--f-num); white-space: nowrap; }
+.r-v small { font-weight: 400; font-size: 10.5px; color: var(--muted); margin-left: 1px; }
+/* strip: grid lines, interquartile box, median tick, one dot per sample, × for lost samples */
+.sp { position: relative; height: 22px; }
+.sp .gl { position: absolute; top: 5px; bottom: 5px; border-left: 1px solid var(--line); }
+.sp .bx { position: absolute; top: 5px; bottom: 5px; border-radius: 4px; background: color-mix(in srgb, currentColor 20%, transparent); }
+.sp .md { position: absolute; top: 2px; bottom: 2px; width: 2px; margin-left: -1px; background: currentColor; border-radius: 1px; }
+.sp .d { position: absolute; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: currentColor; opacity: .55; }
+.sp .x { position: absolute; right: -4px; top: 50%; transform: translateY(-50%); font: 700 10px var(--f-num); color: var(--bad); }
+.sp .runm { position: absolute; inset: 8px 0; border-radius: 4px; background: linear-gradient(90deg, transparent, var(--sel-soft), transparent); background-size: 40% 100%; background-repeat: no-repeat; animation: scan 1.2s linear infinite; }
+@keyframes scan { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+.det { padding: 8px 18px 16px 70px; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; background: var(--soft); }
+.det svg { width: 100%; height: 130px; display: block; background: var(--panel); border-radius: 8px; border: 1px solid var(--line); }
+.det svg text { font: 10px var(--f-num); fill: var(--muted); }
+.dstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; align-content: start; }
+.dmeta { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.dmeta .w { color: var(--warn); }
+.dmeta code { word-break: break-all; }
+.dbtns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.lhead { color: var(--muted); font-size: 10px; height: 22px; }
+.lhead .ax { position: relative; height: 100%; }
+.lhead .ax span { position: absolute; top: 50%; transform: translate(-50%, -50%); font: 10px var(--f-num); }
+.empty { padding: 28px 18px; text-align: center; color: var(--muted); font-size: 13px; }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow);
+  padding: 8px 10px; font-size: 12px; display: grid; grid-template-columns: auto auto; gap: 2px 12px; max-width: 280px; }
+.tip b { grid-column: 1 / -1; font-weight: 600; margin-bottom: 2px; }
+.tip span:nth-child(odd) { color: var(--muted); }
+.tip .num { text-align: right; }
+
+/* landing pages and provider links (static, written by the build) */
+.lp { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.lp h2 { margin: 0; font-size: 16px; }
+.lp p { margin: 0; color: var(--muted); font-size: 13.5px; max-width: 760px; }
+.lp-ct { display: flex; flex-direction: column; gap: 6px; }
+.lp-ct h3 { margin: 6px 0 0; font-size: 12px; color: var(--muted); font-weight: 600; }
+.lp-rs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.lp-rs li { font-size: 12.5px; padding: 3px 9px; border-radius: 6px; background: var(--soft); white-space: nowrap; }
+.lp-rs li code { background: none; padding: 0; color: var(--muted); font-size: 11px; margin-left: 4px; }
+.vlinks { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; font-size: 12.5px; }
+.vlinks b { color: var(--muted); font-weight: 500; }
+.vlinks a { color: var(--muted); text-decoration: none; }
+.vlinks a:hover, .vlinks a[aria-current] { color: var(--sel); }
+
+/* help: questions on the left, one answer at a time on the right */
+.dialog.help { width: 920px; height: min(640px, calc(100vh - 32px)); }
+.help-b { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 0; flex: 1; }
+.help-nav { border-right: 1px solid var(--line); padding: 8px; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
+.help-nav button { text-align: left; border: 0; background: none; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.help-nav button:hover { background: var(--soft); color: var(--fg); }
+.help-nav button[aria-selected="true"] { background: var(--sel-soft); color: var(--fg); font-weight: 600; }
+.help-c { padding: 18px 22px 24px; overflow: auto; }
+.help-c h2 { margin: 0 0 12px; font-size: 17px; line-height: 1.35; }
+.dbody { font-size: 13.5px; line-height: 1.65; display: flex; flex-direction: column; gap: 10px; }
+.dbody p, .dbody ul, .dbody ol { margin: 0; }
+.dbody ul, .dbody ol { padding-left: 20px; }
+.dbody li + li { margin-top: 5px; }
+@media (max-width: 720px) {
+  .dialog.help { height: calc(100vh - 32px); }
+  .help-b { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .help-nav { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .help-nav button { white-space: nowrap; flex: none; }
+}
+.cmp { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+.cmp th, .cmp td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.cmp th { background: var(--soft); font-weight: 600; }
+.cmp td.y { color: var(--pool); } .cmp td.n { color: var(--bad); } .cmp td.m { color: var(--warn); }
+.tblwrap { overflow-x: auto; }
+
+/* shared view banner + share dialog */
+.shared { display: flex; align-items: center; gap: 10px 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 12px; background: var(--sel-soft); border: 1px solid color-mix(in srgb, var(--sel) 35%, transparent); }
+.shared-ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--sel); color: var(--on-sel); flex: none; }
+.shared-ic svg { width: 15px; height: 15px; }
+.shared-t { flex: 1 1 260px; font-size: 13.5px; font-weight: 500; }
+.shared-a { display: flex; gap: 8px; flex-wrap: wrap; }
+.dialog.share { width: 860px; }
+.dlg-b.share-b { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; align-items: start; }
+.share-img { display: flex; justify-content: center; background: var(--soft); border-radius: 12px; padding: 12px; }
+.share-img img { display: block; max-width: 100%; max-height: min(66vh, 600px); aspect-ratio: 1080 / 1350; border-radius: 8px; box-shadow: 0 4px 16px var(--shadow); transition: opacity .2s; }
+.share-img img.busy { opacity: .35; }
+.share-side { display: flex; flex-direction: column; gap: 10px; }
+.share-side .btn { width: 100%; height: 36px; }
+@media (max-width: 720px) { .dlg-b.share-b { grid-template-columns: minmax(0, 1fr); } .share-img img { max-height: 52vh; } }
+
+/* dialogs */
+.scrim { position: fixed; inset: 0; z-index: 40; background: #0006; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.dialog { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); width: 640px; max-width: 100%; max-height: calc(100vh - 32px); display: flex; flex-direction: column; box-shadow: 0 24px 64px var(--shadow); }
+.dlg-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px; border-bottom: 1px solid var(--line); }
+.dlg-h h3 { margin: 0 0 2px; font-size: 16px; }
+.dlg-b { padding: 16px; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.tabs button { height: 28px; padding: 0 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-size: 12.5px; color: var(--muted); }
+.tabs button[aria-selected="true"] { border-color: var(--sel); background: var(--sel-soft); color: var(--fg); }
+.code { position: relative; }
+.code textarea { width: 100%; height: 220px; resize: vertical; font: 12px/1.6 var(--f-num); padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); outline: none; white-space: pre; }
+.code .btn { position: absolute; top: 8px; right: 8px; }
+/* work with AI */
+.tool-btn { height: 34px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; color: var(--fg); white-space: nowrap; font-weight: 500; }
+.tool-btn svg { width: 16px; height: 16px; color: var(--sel); flex: none; }
+.tool-btn:hover { border-color: var(--sel); }
+.ai-sec { display: flex; flex-direction: column; gap: 8px; }
+.ai-sec + .ai-sec { border-top: 1px solid var(--line); padding-top: 14px; }
+.ai-sec h4 { margin: 0; font-size: 14px; }
+.ai-sec p { margin: 0; font-size: 13px; color: var(--muted); }
+.ai-links { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.ai-links a { color: var(--sel); }
+@media (max-width: 720px) { .tool-btn span { display: none; } .tool-btn { padding: 0 9px; } }
+.rbody { display: flex; flex-direction: column; gap: 12px; }
+.rblk { display: flex; flex-direction: column; gap: 8px; }
+.rblk-h { display: flex; flex-direction: column; gap: 1px; }
+.rblk-h b { font-size: 13.5px; }
+details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--sel); }
+.code textarea { height: auto; }
+.steps { margin: 0; padding-left: 20px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+.log { max-height: 50vh; overflow: auto; font: 11.5px/1.7 var(--f-num); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--bg); }
+.log div { display: grid; grid-template-columns: 66px 44px minmax(0, 1fr) 64px; gap: 8px; white-space: nowrap; }
+.log div span:nth-child(3) { overflow: hidden; text-overflow: ellipsis; }
+.log div span:last-child { text-align: right; }
+.log .f { color: var(--bad); }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60; background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 13px; box-shadow: 0 8px 24px var(--shadow); }
+footer { text-align: center; color: var(--muted); font-size: 12px; text-wrap: balance; }
+footer a { color: var(--muted); }
+
+@media (max-width: 860px) {
+  .vz { margin-left: 44px; }
+  .lane .ln { left: -44px; width: 38px; }
+  .lane .ln .full, .lane .ln .lb { display: none; }
+  .lane .ln .short { display: block; font: 600 10px var(--f-num); color: var(--muted); }
+  .legend { margin-left: -44px; }
+  .hero { padding: 18px; border-radius: 14px; }
+  .hero h1 { font-size: 21px; }
+  .netdet { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .podium { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .pd { flex-direction: row; align-items: center; gap: 12px; padding: 12px 14px; }
+  .pd .ms { font-size: 24px; order: 2; margin-left: auto; }
+  .pd .rk { position: static; order: 0; }
+  .pd .inf { order: 1; min-width: 0; display: flex; flex-direction: column; }
+  .rg { grid-template-columns: 38px minmax(0, 1fr) 18px 58px; gap: 0 8px; padding: 0 14px; }
+  .rg > .c-sp { grid-column: 1 / -1; grid-row: 2; margin: -6px 0 6px; }
+  .lhead { display: none; }
+  .det { grid-template-columns: minmax(0, 1fr); padding-left: 14px; }
+  .search { width: 140px; }
+  .nb-acts { margin-left: 0; }
+}
+/* phones: the tools drop under the logo, as on ls.1ms.dog */
+@media (max-width: 520px) {
+  .top { flex-wrap: wrap; }
+  .pd-h { flex-wrap: wrap; }
+}
+#settings .pop { max-height: none; overflow: visible; }
+.pd-h b { white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .vd.new, .sp .runm, .bar i, .netbar.chk .nb-dot { animation: none; transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand-row" href="/zh-tw/">
+      <span class="logo" id="brandLogo"><img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms"><img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms"></span>
+      <span class="brand-name" data-i="name">Me2Cloud</span>
+    </a>
+    <div class="tools">
+      <label class="sel" id="langWrap">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>
+        <select id="lang" aria-label="Language"></select>
+      </label>
+      <button class="tool-btn" type="button" id="aiBtn" aria-haspopup="dialog"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M7 1.8l1.3 3.9 3.9 1.3-3.9 1.3L7 12.2 5.7 8.3 1.8 7l3.9-1.3z"/><path d="M12.5 10.2l.6 1.7 1.7.6-1.7.6-.6 1.7-.6-1.7-1.7-.6 1.7-.6z"/></svg><span data-i="ai_btn">接入 Agent</span></button>
+      <button class="icon-btn" type="button" data-help="0" id="helpBtn" aria-label="Help"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg></button>
+      <a class="icon-btn gh" href="https://github.com/yt1988/me2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
+      <details class="menu" id="settings">
+        <summary class="icon-btn" aria-label="Settings"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 4h7M12 4h2M2 12h2M7 12h7"/><circle cx="10.5" cy="4" r="1.6"/><circle cx="5.5" cy="12" r="1.6"/></svg></summary>
+        <div class="pop">
+          <section class="pg">
+            <div class="pg-h" data-i="theme">主題</div>
+            <div class="seg" id="themeSeg" role="group">
+              <button type="button" data-t="system"><span data-i="th_system">跟隨系統</span></button>
+              <button type="button" data-t="light"><span data-i="th_light">淺色</span></button>
+              <button type="button" data-t="dark"><span data-i="th_dark">深色</span></button>
+            </div>
+          </section>
+          <section class="pg">
+            <div class="pg-h" data-i="secTest">測試</div>
+            <div>
+              <div class="row"><span data-i="conc">同時測幾個節點</span><span class="num" id="concV"></span></div>
+              <input type="range" id="conc" min="1" max="8" step="1">
+              <div class="lbl" data-i="concHint">少一點更準，多一點更快。每家廠商最多同時測 2 個。</div>
+            </div>
+            <div class="row"><span data-i="timeout">單次請求超時</span>
+              <label class="sel" style="height:30px"><select id="timeout"><option value="3000">3 s</option><option value="4000">4 s</option><option value="6000">6 s</option><option value="8000">8 s</option></select></label></div>
+            <div class="row"><span data-i="rtcOpt">WebRTC 出口檢測（STUN）</span><span class="sw"><input type="checkbox" id="rtc"><span></span></span></div>
+          </section>
+          <section class="pg">
+            <div class="pg-h" data-i="secData">資料</div>
+            <label class="sel" style="width:100%" id="histWrap"><select id="hist" style="max-width:none;width:100%"></select></label>
+            <div class="list">
+              <button class="list-i" id="logBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg><span data-i="log_h">請求記錄</span></button>
+              <button class="list-i" id="copyLinkBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.5 2.5 0 0 1 3.5 3.5l-1 1M9 11.5l-1 1a2.5 2.5 0 0 1-3.5-3.5l1-1"/></svg><span data-i="copyLink">複製當前配置連結</span></button>
+              <button class="list-i" id="csvBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.5L8 10.7l3.2-3.2M3 13.5h10"/></svg><span data-i="expCsv">匯出結果（CSV）</span></button>
+              <button class="list-i" id="jsonBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.5L8 10.7l3.2-3.2M3 13.5h10"/></svg><span data-i="expJson">匯出結果（JSON）</span></button>
+              <label class="list-i" for="importFile"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.5v-8M4.8 5.5L8 2.3l3.2 3.2M3 13.5h10"/></svg><span data-i="imp">匯入結果（JSON）</span></label>
+            </div>
+            <input type="file" id="importFile" accept="application/json,.json" hidden>
+          </section>
+          <section class="pg">
+            <button class="danger-row" id="resetBtn" type="button"><i class="fill"></i><span data-i="reset">清空測試資料</span></button>
+            <div class="lbl" id="resetHint" data-i="resetHint" hidden>按住 1 秒。只刪除測試結果和歷史記錄，設定會保留。</div>
+          </section>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <div class="shared" id="sharedBar" hidden>
+    <span class="shared-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.5 2.5 0 0 1 3.5 3.5l-1 1M9 11.5l-1 1a2.5 2.5 0 0 1-3.5-3.5l1-1"/></svg></span>
+    <span class="shared-t" id="sharedT"></span>
+    <span class="shared-a"><button class="btn sm" type="button" id="sharedExit" data-i="share_exit">回到我的結果</button><button class="btn sm ink" type="button" id="sharedSame" data-i="share_mine">用我的網路測同樣的區域</button></span>
+  </div>
+
+  <section class="hero">
+    <h1>從你家出發，騰訊雲各區域到底有多快？</h1>
+    <div class="whys">
+      <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg><span data-i="whyS1">從你自己的網路出發</span></span>
+      <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg><span data-i="whyS2">算上你的運營商和晚高峰</span></span>
+      <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg><span data-i="whyS3">真實 HTTPS，和應用走同一條路</span></span>
+      <a href="#help" data-help="0" data-i="whyLink">為什麼不用測速網站？→</a>
+    </div>
+
+    <div>
+      <div class="netbar chk" id="netbar"></div>
+      <div class="netdet" id="netdet" hidden></div>
+    </div>
+
+    <div class="ctrl" id="ctrl">
+      <details class="menu pl" id="plV"><summary></summary><div class="pop l" id="popV"></div></details>
+      <details class="menu pl" id="plA"><summary></summary><div class="pop l" id="popA"></div></details>
+      <details class="menu pl" id="plN"><summary></summary><div class="pop l" id="popN"></div></details>
+      <details class="menu pl" id="plM"><summary></summary><div class="pop l" id="popM"></div></details>
+    </div>
+
+    <div class="run">
+      <button class="go" type="button" id="runBtn"></button>
+      <div class="run-tx"><span id="runT"></span><div class="bar" id="bar" hidden><i></i></div></div>
+    </div>
+  </section>
+
+  <section id="resWrap" hidden>
+    <div class="pd-h" style="margin:0 2px 10px"><b id="podiumT"></b><span class="note" id="podiumS"></span><button class="btn sm" type="button" id="shareBtn" style="margin-left:auto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.5M5 5.2L8 2.3l3 2.9M3.5 8.5v4.5h9V8.5"/></svg><span data-i="share_btn">分享結果</span></button></div>
+    <div class="podium" id="podium"></div>
+  </section>
+
+  <section class="card" id="vizCard">
+    <div class="card-h"><h3 data-i="viz_h">各區域落在哪一檔</h3><span class="note" id="vizSub"></span></div>
+    <div class="viz"><div class="vz" id="vz"></div></div>
+  </section>
+
+  <section class="card" id="listCard" hidden>
+    <div class="card-h"><h3 data-i="res_h">全部區域</h3>
+      <div class="ltools">
+        <label class="search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg><input id="q" type="search" data-ph="search" placeholder="搜區域、城市、廠商"></label>
+        <label class="tgl"><span class="sw"><input type="checkbox" id="onlyPass"><span></span></span><span data-i="onlyPass">只看符合的</span></label>
+      </div></div>
+    <div class="groups" id="groups"></div>
+  </section>
+
+
+  <section class="card lp" id="lpRegions"><h2>我們測試的 16 個騰訊雲區域</h2><p>騰訊雲透過它的 COS 端點測速。在上方選好區域點開始，每個請求都從你的瀏覽器直接發往騰訊雲。</p><div class="lp-ct"><h3>亞洲</h3><ul class="lp-rs"><li>北京 · 中國<code>ap-beijing</code></li><li>南京 · 中國<code>ap-nanjing</code></li><li>上海 · 中國<code>ap-shanghai</code></li><li>廣州 · 中國<code>ap-guangzhou</code></li><li>成都 · 中國<code>ap-chengdu</code></li><li>重慶 · 中國<code>ap-chongqing</code></li><li>香港 · 中國香港特別行政區<code>ap-hongkong</code></li><li>新加坡 · 新加坡<code>ap-singapore</code></li><li>雅加達 · 印尼<code>ap-jakarta</code></li><li>首爾 · 南韓<code>ap-seoul</code></li><li>曼谷 · 泰國<code>ap-bangkok</code></li><li>東京 · 日本<code>ap-tokyo</code></li></ul></div><div class="lp-ct"><h3>北美</h3><ul class="lp-rs"><li>矽谷 · 美國<code>na-siliconvalley</code></li><li>維吉尼亞 · 美國<code>na-ashburn</code></li></ul></div><div class="lp-ct"><h3>歐洲</h3><ul class="lp-rs"><li>法蘭克福 · 德國<code>eu-frankfurt</code></li></ul></div><div class="lp-ct"><h3>南美</h3><ul class="lp-rs"><li>聖保羅 · 巴西<code>sa-saopaulo</code></li></ul></div></section>
+  <nav class="vlinks" aria-label="按廠商測試"><b>按廠商測試</b><a href="/zh-tw/aws/">AWS</a><a href="/zh-tw/oracle/">甲骨文雲</a><a href="/zh-tw/vultr/">Vultr</a><a href="/zh-tw/azure/">微軟 Azure</a><a href="/zh-tw/gcp/">Google Cloud</a><a href="/zh-tw/aliyun/">阿里雲</a><a href="/zh-tw/tencent/" aria-current="page">騰訊雲</a><a href="/zh-tw/huawei/">華為雲</a><a href="/zh-tw/linode/">Akamai (Linode)</a><a href="/zh-tw/digitalocean/">DigitalOcean</a><a href="/zh-tw/ovh/">OVHcloud</a><a href="/zh-tw/hetzner/">Hetzner</a><a href="/zh-tw/ibm/">IBM Cloud</a><a href="/zh-tw/scaleway/">Scaleway</a><a href="/zh-tw/volcengine/">火山引擎</a><a href="/zh-tw/baidu/">百度智慧雲</a><a href="/zh-tw/naver/">Naver Cloud</a></nav>
+  <footer><span id="footTxt"></span> · <a href="#help" data-help="0" data-i="doc_h">原理與常見問題</a> · <a href="https://ls.1ms.dog/" target="_blank" rel="noopener">AWS Lightsail Cost Saver</a> · <a href="https://github.com/yt1988/me2cloud" target="_blank" rel="noopener noreferrer">GitHub</a></footer>
+</div>
+
+<div class="scrim" id="rules" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="rulesT">
+    <div class="dlg-h"><div><h3 id="rulesT" data-i="rules_h">直連規則：讓測試結果更乾淨</h3><div class="note" data-i="rules_sub">把測試用的域名設成直連，測出來的才是你自己的線路，而不是代理的。規則只匹配測試域名，不影響其他流量。</div></div>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-b">
+      <div class="tabs" id="ruleTabs" role="tablist"></div>
+      <div id="ruleBody" class="rbody"></div>
+      <ol class="steps" id="ruleSteps"></ol>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="help" hidden>
+  <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
+    <div class="dlg-h"><div><h3 id="helpT" data-i="doc_h">原理與常見問題</h3></div>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="help-b"><nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">為什麼從你自己的網路測，比測速網站和 Looking Glass 更靠譜</button><button type="button" role="tab" data-hq="1" aria-selected="false">每次取樣是怎麼測的</button><button type="button" role="tab" data-hq="2" aria-selected="false">為什麼 HTTPS 測速比 ICMP ping 更貼近真實體驗</button><button type="button" role="tab" data-hq="3" aria-selected="false">什麼時候測：專挑晚高峰</button><button type="button" role="tab" data-hq="4" aria-selected="false">適合用來幹什麼</button><button type="button" role="tab" data-hq="5" aria-selected="false">它做不到的事</button><button type="button" role="tab" data-hq="6" aria-selected="false">所有請求都從你的瀏覽器發出</button><button type="button" role="tab" data-hq="7" aria-selected="false">對廠商友好：不觸發限流，也不會被封</button><button type="button" role="tab" data-hq="8" aria-selected="false">開著代理或 VPN 怎麼辦？</button><button type="button" role="tab" data-hq="9" aria-selected="false">怎麼看圖</button></nav><div class="help-c" id="helpC"><article data-hqb="0"><h2>為什麼從你自己的網路測，比測速網站和 Looking Glass 更靠譜</h2><div class="dbody"><p>大部分“雲節點測速”網站，以及廠商自己的 Looking Glass，測試都是從<b>他們的</b>伺服器發起的。這些伺服器放在機房裡，接的是優質線路，測出來的只是“機房到機房”有多快。而你真正感受到的那一段，家裡寬頻或手機網路、運營商骨幹、國際出口，還有今晚堵不堵，它們統統測不到。</p>
+          <p>Me2Cloud 的每個請求都從<b>你的</b>瀏覽器發出，所以結果把這些全算進去了：Wi‑Fi、路由器、運營商、運營商選的路由，還有晚高峰。</p>
+          <div class="tblwrap"><table class="cmp"><tr><th></th><th>測速網站 / Looking Glass</th><th>電腦上的 ICMP ping</th><th>Me2Cloud</th></tr>
+          <tr><td>從哪裡發起</td><td class="n">他們的機房</td><td class="y">你的網路</td><td class="y">你的網路</td></tr>
+          <tr><td>算上你的運營商和晚高峰</td><td class="n">不算</td><td class="y">算</td><td class="y">算</td></tr>
+          <tr><td>跟網頁、應用同一種協議（TCP 443）</td><td class="m">不一定</td><td class="n">不是，ICMP</td><td class="y">是，HTTPS</td></tr>
+          <tr><td>會被網路限速或過濾</td><td class="m">有時</td><td class="n">經常</td><td class="y">很少</td></tr>
+          <tr><td>一鍵測幾百個區域</td><td class="m">部分支援</td><td class="n">不行</td><td class="y">可以</td></tr>
+          <tr><td>要不要裝軟體</td><td class="y">不用</td><td class="y">不用</td><td class="y">不用</td></tr></table></div></div></article><article data-hqb="1" hidden><h2>每次取樣是怎麼測的</h2><div class="dbody"><ol><li>先發一次<b>預熱</b>請求，把 DNS、TCP、TLS 都建好。這次的時間會顯示出來，但不計入結果。</li>
+          <li>然後在<b>同一條連線</b>上，對同一個主機再發 5、10 或 20 次請求。每次只花一個往返，再加上廠商伺服器的處理時間。</li>
+          <li>每家廠商都用我們實測過、能保持連線的請求方式：AWS、Azure、Google Cloud、華為雲、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里雲、騰訊雲、火山引擎、百度智慧雲、Naver Cloud、Linode、Vultr、OVHcloud 用 <code>HEAD</code>（它們的 GET 會斷開連線，測出來會翻 3 倍）；只有 Hetzner 用 <code>&lt;img&gt;</code>。</li>
+          <li>結果給出<b>中位數</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次裡有 9 次不超過它）、<b>抖動</b>（相鄰兩次的平均變化）和<b>丟包</b>（超時沒響應的次數）。</li>
+          <li><b>等級</b>按中位數劃分：T0 夯 ≤ 30 ms、T1 頂級 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推薦用的綜合分是“中位數 + 2 × 抖動 + 丟包懲罰”，所以穩定的 60 ms 會排在忽高忽低的 45 ms 前面。</li></ol></div></article><article data-hqb="2" hidden><h2>為什麼 HTTPS 測速比 ICMP ping 更貼近真實體驗</h2><div class="dbody"><ul><li><b>跟你的流量走同一條路。</b>網頁、API、走 443 的隧道、遊戲登入、下載，用的都是 TCP。不少運營商對 ICMP 單獨排隊、限速，甚至單獨選路，所以經常 ping 看著挺好、網頁卻卡得要死，反過來也有。</li>
+          <li><b>不會被限速吞掉。</b>路由器和雲廠商經常限制甚至直接丟棄 ICMP，而訪問公共 HTTPS 端點總會有響應。</li>
+          <li><b>算上你的真實環境。</b>DNS、IPv4/IPv6 的選擇、代理、加速器，對瀏覽器流量都會生效，測出來的就是你實際能拿到的效果。</li>
+          <li><b>代價是：</b>每次取樣還包含一點很穩定的伺服器處理時間。我們實測 AWS 是 0–5 ms，阿里雲約 8 ms，華為雲 OBS 約 20 ms。延遲上百毫秒的節點完全可以忽略；離你特別近的區域，數字會比 ping 略高一點。</li></ul></div></article><article data-hqb="3" hidden><h2>什麼時候測：專挑晚高峰</h2><div class="dbody"><ul><li>家庭寬頻在<b>晚上 20:00–23:00</b> 最堵，出國線路更明顯。中午還是 T1 頂級的區域，到了晚上可能直接掉到 NPC。</li>
+          <li>建議白天測一次、晚高峰再測一次。儲存的結果會打上“晚高峰”標籤，在測試結果裡可以來回切換對比。</li>
+          <li>測試時先暫停大檔案下載、影片和網盤同步。有線比 Wi‑Fi 準；只能用 Wi‑Fi 的話，儘量離路由器近一點。</li>
+          <li>用手機流量測，結果會跟著訊號走。最好在你真正要用的地方測。</li></ul></div></article><article data-hqb="4" hidden><h2>適合用來幹什麼</h2><div class="dbody"><ul><li>買伺服器、遊戲服、CDN 回源之前，先把候選區域篩一遍。</li>
+          <li>比較同一家廠商的不同區域，或者同一個城市不同廠商的表現。</li>
+          <li>看穩定性（抖動、丟包）夠不夠打遊戲、開視訊會議、遠端桌面和 SSH。</li>
+          <li>驗證你的代理、加速器或者新辦的寬頻到底行不行：開著測一次，關掉再測一次。</li>
+          <li>用自定義節點，把你自己的伺服器或 CDN 跟大廠放在一起比。</li></ul></div></article><article data-hqb="5" hidden><h2>它做不到的事</h2><div class="dbody"><ul><li><b>只代表一個位置。</b>測的是你的線路，不是你使用者的。可以讓幾個使用者也測一下，匯出來對比。</li>
+          <li><b>測的是端點，不是你以後的雲主機。</b>我們測的是廠商在該區域的公共 API 或儲存端點。同區域的伺服器一般共用網路，但精品線路（比如 CN2、BGP 和單線、Lightsail 和 EC2）可能不一樣。</li>
+          <li><b>不測頻寬、不測 UDP、不做路由追蹤。</b>只測往返時間，不測下載速度、UDP 遊戲流量，也看不到中間經過哪些節點。</li>
+          <li><b>瀏覽器本身的影響。</b>外掛、代理、VPN、很忙的標籤頁都會帶來噪聲。測試時關掉佔資源的標籤頁，讓本頁保持在前臺。</li>
+          <li><b>Hetzner</b> 在瀏覽器裡沒法保持連線，所以它的數字每次都包含握手時間。個別端點在某些國家和地區可能訪問不到。</li></ul></div></article><article data-hqb="6" hidden><h2>所有請求都從你的瀏覽器發出</h2><div class="dbody"><ul><li>本頁是放在 Cloudflare 上的純靜態檔案。沒有後端、不用註冊、沒有統計程式碼，結果也從不上傳。</li>
+          <li>所有測試請求都由你的瀏覽器直接發給廠商。開啟上面的<b>請求記錄</b>，或者瀏覽器開發者工具的 Network 面板，每一條都看得到。</li>
+          <li>網路資訊來自 Cloudflare（<code>speed.cloudflare.com/meta</code> 和 <code>/cdn-cgi/trace</code>）。可選的 WebRTC 檢測會向 <code>stun.cloudflare.com</code> 詢問你的 UDP 出口地址，不想用可以在設定裡關掉。</li>
+          <li>設定、自定義節點和最近幾次結果只存在這個瀏覽器的本地儲存裡，“清空全部資料”會把它們全刪掉。</li></ul></div></article><article data-hqb="7" hidden><h2>對廠商友好：不觸發限流，也不會被封</h2><div class="dbody"><p>對公共端點請求太猛，可能觸發廠商的限流或 WAF，結果也就不準了。所以測試節奏刻意壓得很低：</p>
+          <ul><li>每個主機同一時間只有一個請求，兩次取樣之間停 250–370 ms（每個主機每秒最多 2–3 個請求）。</li>
+          <li>每家廠商最多同時測 2 個主機，總共最多 8 個（預設 4 個）。</li>
+          <li>每次測試每個主機最多 21 個請求（預熱 + 20 次），沒有持續轟炸的模式。</li>
+          <li>連續失敗 3 次就放棄這個主機，不會反覆重試。</li>
+          <li>全部是匿名、不帶 Cookie、不帶 Referer 的“簡單請求”：沒有預檢，響應只有幾百位元組，能用 HEAD 就用 HEAD，不會下載大檔案。</li></ul>
+          <p>整個過程的流量比開啟一個普通網頁還少。每個端點都驗證過能正常響應匿名請求（返回 200、403、404 都不影響計時）。</p></div></article><article data-hqb="8" hidden><h2>開著代理或 VPN 怎麼辦？</h2><div class="dbody"><p>流量走代理的話，瀏覽器測到的是“你到代理”加上“代理到廠商”，而不是你自己的線路。網路面板會檢查幾個常見跡象：出口網路屬於機房、時區和出口國家對不上、開了 WARP、WebRTC 出口和 HTTPS 出口不一致。</p>
+          <p>點<b>獲取直連規則</b>，只把測試域名設成直連（支援 Clash / Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray、SwitchyOmega 和純域名列表），然後重新檢測。如果你想測的正是代理本身，那就開著測，得到的就是代理的真實表現。</p></div></article><article data-hqb="9" hidden><h2>怎麼看圖</h2><div class="dbody"><ul><li>每一行的條形圖都用同一把尺子（對數刻度，2 ms 到 3 s）。圓點是每次取樣，陰影框是中間一半取樣所在的範圍，豎線是中位數。</li>
+          <li>框越窄越穩；框很寬或者點很散，就是抖得厲害。紅色 × 是丟包的次數。</li>
+          <li>點開一行，能看到每次取樣的先後變化、全部統計資料和用到的端點。✓ 表示符合你的需求。</li></ul></div></article></div></div>
+  </div>
+</div>
+
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><div><h3 id="shareT" data-i="share_h">分享測試結果</h3><div class="note" data-i="share_sub">圖片和連結都在你的瀏覽器裡生成，不會上傳到任何地方。</div></div>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-b share-b">
+      <div class="share-img"><img id="shareImg" alt=""></div>
+      <div class="share-side">
+        <label class="tgl"><span class="sw"><input type="checkbox" id="shareLoc"><span></span></span><span data-i="share_loc">顯示城市和運營商</span></label>
+        <button class="btn ink" type="button" id="shareNative" hidden data-i="share_native">分享到…</button>
+        <button class="btn" type="button" id="shareDl" data-i="share_dl">下載圖片</button>
+        <button class="btn" type="button" id="shareCopyImg" hidden data-i="share_copyImg">複製圖片</button>
+        <div class="field"><span class="lbl" data-i="share_link">分享連結</span><input class="inp" id="shareLink" readonly></div>
+        <button class="btn" type="button" id="shareCopyLink" data-i="share_copyLink">複製連結</button>
+        <div class="note" id="shareLen"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="aiDlg" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="aiT">
+    <div class="dlg-h"><div><h3 id="aiT" data-i="ai_h">在 AI Agent 裡使用</h3><div class="note" data-i="ai_sub">AI 沒法替你測線路，但能幫你看懂結果、準備測試。</div></div>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-b" id="aiBody"></div>
+  </div>
+</div>
+
+<div class="scrim" id="logDlg" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="logT">
+    <div class="dlg-h"><div><h3 id="logT" data-i="log_h">請求記錄</h3><div class="note" data-i="log_note">下面每一條請求，都是由這個瀏覽器直接發往對應的主機。本頁沒有後端，也不會把你的結果傳到任何地方。不放心的話，可以開啟瀏覽器開發者工具的 Network 面板自己核對。</div></div>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-b"><div class="log" id="log"></div></div>
+  </div>
+</div>
+
+<div class="tip" id="tip" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="application/json" id="me2-data">{"lang":"zh-TW","paths":{"en":"/tencent/","zh-CN":"/zh-cn/tencent/","zh-TW":"/zh-tw/tencent/","ja":"/ja/tencent/","ko":"/ko/tencent/","es":"/es/tencent/","fr":"/fr/tencent/","de":"/de/tencent/","pt":"/pt/tencent/","ru":"/ru/tencent/"},"page":{"vendor":"tencent"},"i18n":{"zh-TW":{"name":"Me2Cloud","seo_title":"Me2Cloud｜雲伺服器延遲測試：從你家網路實測 AWS、阿里雲、騰訊雲等 360+ 區域","seo_desc":"免費的雲伺服器延遲測試：直接在你的瀏覽器裡實測 AWS、Azure、Google Cloud、甲骨文雲、IBM Cloud、阿里雲、騰訊雲、華為雲、火山引擎、百度智慧雲、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVH、Hetzner 共 360+ 個區域的延遲、抖動和丟包，算上你的運營商、Wi‑Fi 和晚高峰。資料不出瀏覽器。","seo_kw":"雲伺服器延遲測試, 雲伺服器 ping, 機房測速, AWS 延遲, 阿里雲 ping, 騰訊雲 延遲, 華為雲 ping, Vultr 測速, 哪個區域最快","og_sub":"360+ 個雲區域 · 17 家廠商 · 瀏覽器本地實測","unlisted":"未公開區域","share_btn":"分享結果","viewingShared":"正在看別人分享的結果，點開始測試你自己的線路","share_h":"分享測試結果","share_sub":"圖片和連結都在你的瀏覽器裡生成，不會上傳到任何地方。","share_loc":"顯示城市和運營商","share_link":"分享連結","share_len":"{k} 個區域的結果直接寫在連結裡（{n} 個字元），不含 IP 和自定義節點。","share_copyLink":"複製連結","share_copyImg":"複製圖片","share_dl":"下載圖片","share_native":"分享到…","share_banner":"這是一份分享的結果：{who} · {d}","share_anon":"未公開位置","share_viaProxy":"測試時走了代理","share_mine":"用我的網路測同樣的區域","share_exit":"回到我的結果","share_bad":"這個分享連結無法解析","share_none":"先測一次再分享","share_failed":"瀏覽器不允許這個操作","copiedImg":"圖片已複製","sharedNoRaw":"分享的結果只包含統計值，沒有逐次取樣資料。","card_title":"從我家出發，各大雲到底有多快","card_cta":"測測你家到各大雲有多快","card_local":"瀏覽器本地實測","card_regions":"{n} 個區域 × {k} 次","card_more":"另有 {n} 家","sep":"、","allVendors":"全部廠商","allAreas":"全部地區","noArea":"未選","pickVendor":"先選擇廠商","pickFirst":"先選擇要測的廠商","lgLive":"閃動 = 正在測","reset":"清空測試資料","resetHint":"按住 1 秒。只刪除測試結果和歷史記錄，設定會保留。","resetDone":"測試資料已清空","cust_tip":"任何 HTTPS 地址都行，用很小的靜態檔案或 /ping 路徑響應最快。GET 還是 HEAD 會自動選擇。","doc_h":"原理與常見問題","rules_sub":"把測試用的域名設成直連，測出來的才是你自己的線路，而不是代理的。規則只匹配測試域名，不影響其他流量。","rules_remote_h":"推薦：遠端規則集","rules_remote_s":"規則由工具從我們這裡拉取，以後新增節點會自動同步。只需要加一次。","rules_inline_h":"或者直接貼上全部規則（{n} 條，帶註釋）","rules_inline_only":"這個工具不支援遠端規則集，直接貼上規則即可（{n} 條，帶註釋）","rules_custom":"自定義節點不在遠端規則集裡，需要另外加上：","rc_detect":"網路檢測（Cloudflare）","rc_site":"本頁面","rc_top":"放在其他規則前面","rules_json_note":"JSON 不支援註釋，按匹配方式分組列出。","rules_steps":["複製規則，放在你其他規則的\u003cb>最前面\u003c/b>，保證先匹配到。","重新載入配置。TUN 或 fake-ip 模式下，真實 IP 那部分也要加上（上面已經包含）。","瀏覽器裡的代理外掛，對本頁關閉，或者把列表加進它的直連名單。","點網路狀態旁邊的重新整理按鈕，看到運營商變成你真實的寬頻後，再開始測試。"],"heroT":"從你家出發，各大雲到底有多快？","lgMiss":"空心 = 不符合需求","whyS1":"從你自己的網路出發","whyS2":"算上你的運營商和晚高峰","whyS3":"真實 HTTPS，和應用走同一條路","whyLink":"為什麼不用測速網站？→","pxShort":"檢測到代理","okShort":"直連","unkShort":"網路未知","netDetails":"詳情","pl_vendors":"廠商","pl_areas":"地區","off":"已停用","noLoss":"不能丟包","m_quickD":"先快速看個大概","m_stdD":"推薦","m_preciseD":"最終幾個候選再細比","startSub":"{n} 個區域 · 約 {t}","lastRun":"上次 {d}：測了 {n} 個區域","viz_h":"各區域落在哪一檔","vizSub":"已測 {n} 個 · {p} 個符合需求","viz_empty":"點“開始測試”，每個區域測完就會實時蹦到這裡。","needLine":"你的上限","picks_sub2":"{n} 個區域符合需求（{need}），這三個綜合最好。","grp_other":"排隊中 / 連不上","jitWarn":"不太穩：抖動 ±{j} ms","lossWarn":"丟包 {p}%","res_h":"全部區域","rules_note_loon":"Loon 這裡不用萬用字元，統一按域名字尾匹配。粘到 [Rule] 的最前面。","concHint":"少一點更準，多一點更快。每家廠商最多同時測 2 個。","secTest":"測試","conc":"同時測幾個節點","timeout":"單次請求超時","rtcOpt":"WebRTC 出口檢測（STUN）","theme":"主題","th_system":"跟隨系統","th_light":"淺色","th_dark":"深色","secData":"資料","copyLink":"複製當前配置連結","expCsv":"匯出結果（CSV）","expJson":"匯出結果（JSON）","imp":"匯入結果（JSON）","recheck":"重新檢測","rulesBtn":"獲取直連規則","ip":"公網 IP","hide":"隱藏 IP","show":"顯示 IP","isp":"網路（運營商）","na":"未知","edge":"到最近的 Cloudflare","checking":"檢測中…","peakNow":"晚高峰","offPeak":"非高峰","peakTip":"現在 {now}，正趕上晚高峰（20:00–23:00）。這時候測出來的就是你這條線最堵的樣子，最有參考價值。","offPeakTip":"現在 {now}，線路一般比較空閒。建議晚上 20:00–23:00 再測一次，看看高峰期能扛住多少。","px_okNote":"出口 IP、運營商和時區都對得上。不過路由器上的代理或公司網路也可能藏得很深，確認上面顯示的是你真實的運營商就行。","px_unknownNote":"訪問 Cloudflare 被攔了。測試照樣能跑，只是判斷不了有沒有開代理。","r_dc":"你的出口網路是 {org}，這是機房網路。家用寬頻不會這樣，基本可以確定是 VPN、代理或者雲伺服器。","r_warp":"Cloudflare WARP 開著。","r_tz":"你電腦的時區在{a}，但出口 IP 在{b}。","r_rtc":"WebRTC（UDP）從 {a} 出去，HTTPS 卻從 {b} 出去，說明流量被分流了。","all":"全選","none":"清空","custom":"自定義","ct_as":"亞洲","ct_na":"北美","ct_eu":"歐洲","ct_oc":"大洋洲","ct_sa":"南美","ct_me":"中東","ct_af":"非洲","ct_xx":"自定義","mode":"每個節點測幾次","m_quick":"快速","m_std":"標準","m_precise":"精確","secs":"{n} 秒","mins":"{n} 分鐘","noLimit":"不限","maxLat":"延遲上限","maxJit":"抖動上限","maxLoss":"丟包上限","p_game":"打遊戲","p_call":"視訊會議","p_ssh":"SSH / 遠端桌面","p_web":"建站 / API","p_any":"沒要求，都看看","p_custom":"自定義","start":"開始測試","stop":"停止","again":"再測一次","running":"正在測 {d} / {n}","eta":"大約還要 {t}","viewing":"正在看 {d} 的歷史記錄","tagPeak":"晚高峰","histCurrent":"最近一次","picks_h":"給你挑的","picks_closest":"最接近的幾個","picks_none":"暫時沒有完全符合需求的。這幾個最接近，可以放寬一點條件，或者換幾家廠商試試。","anyLat":"延遲不限","search":"搜區域、城市、廠商","onlyPass":"只看符合的","g1":"T0 · 夯","g2":"T1 · 頂級","g3":"T2 · 人上人","g4":"T3 · NPC","g5":"T4 · 拉完了","queued":"排隊中","chartAria":"每次取樣的延遲","noSamples":"還沒有采樣資料","d_med":"中位數","d_avg":"平均","d_p90":"P90","d_min":"最低","d_max":"最高","d_jit":"抖動","d_loss":"丟包","d_method":"請求方式","d_warm":"預熱（不計入）","d_cold":"這個端點沒法保持連線，所以每次取樣都包含一次重新握手（大約是真實往返的 3 倍）。只適合跟它自己比。","d_verified":"確認真的連到了廠商（CORS 校驗透過）","d_notverified":"CORS 校驗沒透過：可能是中間有裝置替廠商回了包。","d_review":"注意：這可能是專屬區域，普通使用者不一定買得到。","retest":"單獨精測 20 次","copyUrl":"複製地址","cust_h":"自定義節點","cust_name_ph":"我的 VPS（東京）","add":"新增","del":"刪除","cust_err_url":"這不是有效的網址。","cust_err_https":"請用 https:// 開頭的地址。https 頁面裡瀏覽器會攔掉 http 請求。","cust_err_dup":"已經在列表裡了。","cust_added":"加好了，下次測試會帶上它。","log_h":"請求記錄","log_note":"下面每一條請求，都是由這個瀏覽器直接發往對應的主機。本頁沒有後端，也不會把你的結果傳到任何地方。不放心的話，可以開啟瀏覽器開發者工具的 Network 面板自己核對。","log_empty":"還沒有發出任何請求。","failed":"失敗","rules_h":"直連規則：讓測試結果更乾淨","copy":"複製","copied":"已複製","rules_fakeip":"fake-ip 模式：讓這些域名解析到真實 IP","rules_plain":"純域名列表","rules_note_clash":"把規則粘到 rules: 的最前面；用 fake-ip 的話，把域名也加進 dns.fake-ip-filter。","rules_note_surge":"規則放在 [Rule] 的最前面。always-real-ip 能讓這些域名拿到真實的 DNS 結果。","rules_note_shadowrocket":"把規則放到配置檔案 [Rule] 的最前面，或者在“配置 → 規則”裡逐條新增。","rules_note_quanx":"粘到 [filter_local] 裡，放在其他規則前面。","rules_note_singbox":"合併進 route.rules 和 dns.rules；出站 \"direct\" 和 DNS 伺服器 \"local\" 要跟你配置裡的 tag 對上。","rules_note_xray":"合併進 routing.rules；outboundTag \"direct\" 要對應你配置裡的 freedom 出站。","rules_note_omega":"粘到 SwitchyOmega 情景模式的“不代理的地址列表”裡。","rules_note_plain":"一行一個域名，給其他工具用。","imported":"結果已匯入","importErr":"這不是 Me2Cloud 的結果檔案","foot":"所有測試都在你的瀏覽器裡完成 · 節點驗證於 {d} · 與任何雲廠商無關","docs":[["為什麼從你自己的網路測，比測速網站和 Looking Glass 更靠譜","\u003cp>大部分“雲節點測速”網站，以及廠商自己的 Looking Glass，測試都是從\u003cb>他們的\u003c/b>伺服器發起的。這些伺服器放在機房裡，接的是優質線路，測出來的只是“機房到機房”有多快。而你真正感受到的那一段，家裡寬頻或手機網路、運營商骨幹、國際出口，還有今晚堵不堵，它們統統測不到。\u003c/p>\n          \u003cp>Me2Cloud 的每個請求都從\u003cb>你的\u003c/b>瀏覽器發出，所以結果把這些全算進去了：Wi‑Fi、路由器、運營商、運營商選的路由，還有晚高峰。\u003c/p>\n          \u003cdiv class=\"tblwrap\">\u003ctable class=\"cmp\">\u003ctr>\u003cth>\u003c/th>\u003cth>測速網站 / Looking Glass\u003c/th>\u003cth>電腦上的 ICMP ping\u003c/th>\u003cth>Me2Cloud\u003c/th>\u003c/tr>\n          \u003ctr>\u003ctd>從哪裡發起\u003c/td>\u003ctd class=\"n\">他們的機房\u003c/td>\u003ctd class=\"y\">你的網路\u003c/td>\u003ctd class=\"y\">你的網路\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>算上你的運營商和晚高峰\u003c/td>\u003ctd class=\"n\">不算\u003c/td>\u003ctd class=\"y\">算\u003c/td>\u003ctd class=\"y\">算\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>跟網頁、應用同一種協議（TCP 443）\u003c/td>\u003ctd class=\"m\">不一定\u003c/td>\u003ctd class=\"n\">不是，ICMP\u003c/td>\u003ctd class=\"y\">是，HTTPS\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>會被網路限速或過濾\u003c/td>\u003ctd class=\"m\">有時\u003c/td>\u003ctd class=\"n\">經常\u003c/td>\u003ctd class=\"y\">很少\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>一鍵測幾百個區域\u003c/td>\u003ctd class=\"m\">部分支援\u003c/td>\u003ctd class=\"n\">不行\u003c/td>\u003ctd class=\"y\">可以\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>要不要裝軟體\u003c/td>\u003ctd class=\"y\">不用\u003c/td>\u003ctd class=\"y\">不用\u003c/td>\u003ctd class=\"y\">不用\u003c/td>\u003c/tr>\u003c/table>\u003c/div>"],["每次取樣是怎麼測的","\u003col>\u003cli>先發一次\u003cb>預熱\u003c/b>請求，把 DNS、TCP、TLS 都建好。這次的時間會顯示出來，但不計入結果。\u003c/li>\n          \u003cli>然後在\u003cb>同一條連線\u003c/b>上，對同一個主機再發 5、10 或 20 次請求。每次只花一個往返，再加上廠商伺服器的處理時間。\u003c/li>\n          \u003cli>每家廠商都用我們實測過、能保持連線的請求方式：AWS、Azure、Google Cloud、華為雲、DigitalOcean、Scaleway 用 \u003ccode>GET\u003c/code>；Oracle、IBM Cloud、阿里雲、騰訊雲、火山引擎、百度智慧雲、Naver Cloud、Linode、Vultr、OVHcloud 用 \u003ccode>HEAD\u003c/code>（它們的 GET 會斷開連線，測出來會翻 3 倍）；只有 Hetzner 用 \u003ccode>&lt;img&gt;\u003c/code>。\u003c/li>\n          \u003cli>結果給出\u003cb>中位數\u003c/b>（最典型的值）、\u003cb>平均值\u003c/b>、\u003cb>P90\u003c/b>（10 次裡有 9 次不超過它）、\u003cb>抖動\u003c/b>（相鄰兩次的平均變化）和\u003cb>丟包\u003c/b>（超時沒響應的次數）。\u003c/li>\n          \u003cli>\u003cb>等級\u003c/b>按中位數劃分：T0 夯 ≤ 30 ms、T1 頂級 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推薦用的綜合分是“中位數 + 2 × 抖動 + 丟包懲罰”，所以穩定的 60 ms 會排在忽高忽低的 45 ms 前面。\u003c/li>\u003c/ol>"],["為什麼 HTTPS 測速比 ICMP ping 更貼近真實體驗","\u003cul>\u003cli>\u003cb>跟你的流量走同一條路。\u003c/b>網頁、API、走 443 的隧道、遊戲登入、下載，用的都是 TCP。不少運營商對 ICMP 單獨排隊、限速，甚至單獨選路，所以經常 ping 看著挺好、網頁卻卡得要死，反過來也有。\u003c/li>\n          \u003cli>\u003cb>不會被限速吞掉。\u003c/b>路由器和雲廠商經常限制甚至直接丟棄 ICMP，而訪問公共 HTTPS 端點總會有響應。\u003c/li>\n          \u003cli>\u003cb>算上你的真實環境。\u003c/b>DNS、IPv4/IPv6 的選擇、代理、加速器，對瀏覽器流量都會生效，測出來的就是你實際能拿到的效果。\u003c/li>\n          \u003cli>\u003cb>代價是：\u003c/b>每次取樣還包含一點很穩定的伺服器處理時間。我們實測 AWS 是 0–5 ms，阿里雲約 8 ms，華為雲 OBS 約 20 ms。延遲上百毫秒的節點完全可以忽略；離你特別近的區域，數字會比 ping 略高一點。\u003c/li>\u003c/ul>"],["什麼時候測：專挑晚高峰","\u003cul>\u003cli>家庭寬頻在\u003cb>晚上 20:00–23:00\u003c/b> 最堵，出國線路更明顯。中午還是 T1 頂級的區域，到了晚上可能直接掉到 NPC。\u003c/li>\n          \u003cli>建議白天測一次、晚高峰再測一次。儲存的結果會打上“晚高峰”標籤，在測試結果裡可以來回切換對比。\u003c/li>\n          \u003cli>測試時先暫停大檔案下載、影片和網盤同步。有線比 Wi‑Fi 準；只能用 Wi‑Fi 的話，儘量離路由器近一點。\u003c/li>\n          \u003cli>用手機流量測，結果會跟著訊號走。最好在你真正要用的地方測。\u003c/li>\u003c/ul>"],["適合用來幹什麼","\u003cul>\u003cli>買伺服器、遊戲服、CDN 回源之前，先把候選區域篩一遍。\u003c/li>\n          \u003cli>比較同一家廠商的不同區域，或者同一個城市不同廠商的表現。\u003c/li>\n          \u003cli>看穩定性（抖動、丟包）夠不夠打遊戲、開視訊會議、遠端桌面和 SSH。\u003c/li>\n          \u003cli>驗證你的代理、加速器或者新辦的寬頻到底行不行：開著測一次，關掉再測一次。\u003c/li>\n          \u003cli>用自定義節點，把你自己的伺服器或 CDN 跟大廠放在一起比。\u003c/li>\u003c/ul>"],["它做不到的事","\u003cul>\u003cli>\u003cb>只代表一個位置。\u003c/b>測的是你的線路，不是你使用者的。可以讓幾個使用者也測一下，匯出來對比。\u003c/li>\n          \u003cli>\u003cb>測的是端點，不是你以後的雲主機。\u003c/b>我們測的是廠商在該區域的公共 API 或儲存端點。同區域的伺服器一般共用網路，但精品線路（比如 CN2、BGP 和單線、Lightsail 和 EC2）可能不一樣。\u003c/li>\n          \u003cli>\u003cb>不測頻寬、不測 UDP、不做路由追蹤。\u003c/b>只測往返時間，不測下載速度、UDP 遊戲流量，也看不到中間經過哪些節點。\u003c/li>\n          \u003cli>\u003cb>瀏覽器本身的影響。\u003c/b>外掛、代理、VPN、很忙的標籤頁都會帶來噪聲。測試時關掉佔資源的標籤頁，讓本頁保持在前臺。\u003c/li>\n          \u003cli>\u003cb>Hetzner\u003c/b> 在瀏覽器裡沒法保持連線，所以它的數字每次都包含握手時間。個別端點在某些國家和地區可能訪問不到。\u003c/li>\u003c/ul>"],["所有請求都從你的瀏覽器發出","\u003cul>\u003cli>本頁是放在 Cloudflare 上的純靜態檔案。沒有後端、不用註冊、沒有統計程式碼，結果也從不上傳。\u003c/li>\n          \u003cli>所有測試請求都由你的瀏覽器直接發給廠商。開啟上面的\u003cb>請求記錄\u003c/b>，或者瀏覽器開發者工具的 Network 面板，每一條都看得到。\u003c/li>\n          \u003cli>網路資訊來自 Cloudflare（\u003ccode>speed.cloudflare.com/meta\u003c/code> 和 \u003ccode>/cdn-cgi/trace\u003c/code>）。可選的 WebRTC 檢測會向 \u003ccode>stun.cloudflare.com\u003c/code> 詢問你的 UDP 出口地址，不想用可以在設定裡關掉。\u003c/li>\n          \u003cli>設定、自定義節點和最近幾次結果只存在這個瀏覽器的本地儲存裡，“清空全部資料”會把它們全刪掉。\u003c/li>\u003c/ul>"],["對廠商友好：不觸發限流，也不會被封","\u003cp>對公共端點請求太猛，可能觸發廠商的限流或 WAF，結果也就不準了。所以測試節奏刻意壓得很低：\u003c/p>\n          \u003cul>\u003cli>每個主機同一時間只有一個請求，兩次取樣之間停 250–370 ms（每個主機每秒最多 2–3 個請求）。\u003c/li>\n          \u003cli>每家廠商最多同時測 2 個主機，總共最多 8 個（預設 4 個）。\u003c/li>\n          \u003cli>每次測試每個主機最多 21 個請求（預熱 + 20 次），沒有持續轟炸的模式。\u003c/li>\n          \u003cli>連續失敗 3 次就放棄這個主機，不會反覆重試。\u003c/li>\n          \u003cli>全部是匿名、不帶 Cookie、不帶 Referer 的“簡單請求”：沒有預檢，響應只有幾百位元組，能用 HEAD 就用 HEAD，不會下載大檔案。\u003c/li>\u003c/ul>\n          \u003cp>整個過程的流量比開啟一個普通網頁還少。每個端點都驗證過能正常響應匿名請求（返回 200、403、404 都不影響計時）。\u003c/p>"],["開著代理或 VPN 怎麼辦？","\u003cp>流量走代理的話，瀏覽器測到的是“你到代理”加上“代理到廠商”，而不是你自己的線路。網路面板會檢查幾個常見跡象：出口網路屬於機房、時區和出口國家對不上、開了 WARP、WebRTC 出口和 HTTPS 出口不一致。\u003c/p>\n          \u003cp>點\u003cb>獲取直連規則\u003c/b>，只把測試域名設成直連（支援 Clash / Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray、SwitchyOmega 和純域名列表），然後重新檢測。如果你想測的正是代理本身，那就開著測，得到的就是代理的真實表現。\u003c/p>"],["怎麼看圖","\u003cul>\u003cli>每一行的條形圖都用同一把尺子（對數刻度，2 ms 到 3 s）。圓點是每次取樣，陰影框是中間一半取樣所在的範圍，豎線是中位數。\u003c/li>\n          \u003cli>框越窄越穩；框很寬或者點很散，就是抖得厲害。紅色 × 是丟包的次數。\u003c/li>\n          \u003cli>點開一行，能看到每次取樣的先後變化、全部統計資料和用到的端點。✓ 表示符合你的需求。\u003c/li>\u003c/ul>"]],"homeL":"目前區域節點（{c}）","home_all":"包含","home_excl":"排除","home_only":"只看","homeTip":"包含{c}的區域、排除它們，或者只測{c}的區域。","lp_title":"{v}延遲測試：從你家網路實測 {n} 個區域｜Me2Cloud","lp_desc":"在你自己的瀏覽器裡實測{v}全部 {n} 個區域的延遲、抖動和丟包，算上你的運營商和晚高峰。免費，無需安裝。","lp_h1":"從你家出發，{v}各區域到底有多快？","lp_h2":"我們測試的 {n} 個{v}區域","lp_intro":"{v}透過它的 {k} 端點測速。在上方選好區域點開始，每個請求都從你的瀏覽器直接發往{v}。","nav_h":"按廠商測試","vendors":{"aliyun":{"name":"阿里雲","kind":"OSS","note":"GET 返回 403 後會斷開連線，HEAD 會複用連線。"},"tencent":{"name":"騰訊雲","kind":"COS","note":"GET 返回 403 後會斷開連線，HEAD 會複用連線。"},"huawei":{"name":"華為雲","kind":"OBS","note":"GET 和 HEAD 都能保持連線。"},"azure":{"name":"微軟 Azure","kind":"認知服務","note":"CNAME 最終指向 \u003c區域>.cloudapp.azure.com，取樣非常穩定。"},"oracle":{"name":"甲骨文雲","kind":"物件儲存","note":"GET 在每次 404 後都會斷開連線（每次取樣約 3–4 個往返），HEAD 會複用連線。"},"volcengine":{"name":"火山引擎","kind":"TOS","note":"GET 返回 403 後會斷開連線，HEAD 會複用連線。"},"baidu":{"name":"百度智慧雲","kind":"BOS","note":"GET 返回 403 後會斷開連線，HEAD 會複用連線。"},"aws":{"kind":"DynamoDB /ping","note":"返回內容裡帶區域名，頁面能確認請求真的到了這個區域。"},"vultr":{"kind":"Looking Glass","note":"GET 會返回約 12 KB 的頁面、多出 50–70 ms，HEAD 不帶正文。"},"gcp":{"kind":"Storage 區域端點（rep）","note":"HEAD 會固定多出約 1 秒，只能用 GET。按區域分配 IP（34.1.x），不是全球 Anycast 前端。"},"linode":{"kind":"物件儲存","note":"舊的 speedtest.\u003c機房>.linode.com 已經不響應，只覆蓋有物件儲存叢集的區域。"},"digitalocean":{"kind":"Spaces","note":"speedtest-\u003c機房>.digitalocean.com 已下線；NYC1/NYC2 沒有 Spaces（紐約用 nyc3）。"},"ovh":{"kind":"測速伺服器（proof）","note":"proof.ovh.net 的主機會跳轉到 \u003c站點>.speedtest.network.ovh.net，登錄檔直接用跳轉後的地址。"},"hetzner":{"kind":"測速伺服器","note":"瀏覽器裡 fetch() 會失敗（原因不明，curl 正常）；\u003cimg> 可以測，但每次都新建連線，取樣約等於 3 個往返。"},"ibm":{"kind":"Cloud Object Storage","note":"GET 返回 403 後會斷開連線，HEAD 會複用連線。"},"scaleway":{"kind":"物件儲存","note":"GET 和 HEAD 都能保持連線，域名是雙棧。"},"naver":{"kind":"物件儲存","note":"GET 返回 403 後會斷開連線，HEAD 會複用連線。"}},"ipTip":"用哪個 IP 協議測試。IPv4 使用各廠商只有 IPv4 的域名；IPv6 使用帶 IPv6 地址的域名，沒有 IPv6 的區域會在報告裡標為不支援。","ip_no6":"你的網路沒有可用的 IPv6，只能測 IPv4","ip_no6short":"無 IPv6","nov6":"不支援 IPv6","grp_nov6":"不支援 IPv6","d_nov6":"這個區域沒有可測試的 IPv6 端點，IPv6 模式下跳過。","d_v6":"透過 IPv6 測試（使用帶 IPv6 地址的域名）。","d_dual":"這個端點是雙棧域名：如果你的網路有 IPv6，即使在 IPv4 模式下瀏覽器也可能走 IPv6。","ai_btn":"接入 Agent","ai_h":"在 AI Agent 裡使用","ai_sub":"AI 沒法替你測線路，但能幫你看懂結果、準備測試。","ai_res_h":"讓 AI 幫你分析結果","ai_res_p":"把這段摘要貼上給 ChatGPT、Claude 或任意 AI 助手。裡面有你的網路、你的需求和最好的區域，結尾附了一個問題。","ai_res_none":"先測一次，這裡會出現你的結果摘要。","ai_q":"問題：根據這些結果，我的使用場景應該選哪些廠商和區域？有什麼需要注意的？","ai_link_h":"讓 AI 幫你準備測試","ai_link_p":"把這段提示詞連同你的需求發給 AI，它會生成一個選好廠商、地區和上限的 Me2Cloud 連結。","ai_linkPrompt":"請閱讀 {u}，然後給我一個 Me2Cloud 連結，測試我應該考慮的區域。我的情況是：（在這裡寫你的使用者在哪、用途和預算）","ai_dev_h":"開發者和 Agent","ai_dev_p":"機器可讀的檔案：端點登錄檔、代理規則集，以及寫明連結引數和分享連結格式的 llms.txt。","ip_h":"IP 協議","cities":{"Abilene":"阿比林","Abu Dhabi":"阿布達比","Alabama":"阿拉巴馬","Amsterdam":"阿姆斯特丹","Arizona":"亞利桑那","Ashburn":"阿什本","Atlanta":"亞特蘭大","Auckland":"奧克蘭","Bangalore":"班加羅爾","Bangkok":"曼谷","Batam":"巴淡島","Beauharnois":"博阿努瓦","Beijing":"北京","Belgium":"比利時","Berlin":"柏林","Boardman":"博德曼","Bogota":"波哥大","Cairo":"開羅","Calgary":"卡加利","California":"加州","Cape Town":"開普敦","Cardiff":"卡地夫","Casablanca":"卡薩布蘭卡","Chengdu":"成都","Chennai":"清奈","Chicago":"芝加哥","Chongqing":"重慶","Chuncheon":"春川","Columbus":"哥倫布","Dallas":"達拉斯","Dammam":"達曼","Delhi":"德里","Delhi NCR":"德里","Des Moines":"得梅因","Doha":"杜哈","Dubai":"杜拜","Dublin":"都柏林","Falkenstein":"法爾肯施泰因","Finland":"芬蘭","Frankfurt":"法蘭克福","Fuzhou":"福州","Geneva":"日內瓦","Gravelines":"格拉沃利訥","Guangzhou":"廣州","Guangzhou-Friendly":"廣州友好","Guiyang":"貴陽","Gävle":"耶夫勒","Hangzhou":"杭州","Helsinki":"赫爾辛基","Heyuan":"河源","Hillsboro":"希爾斯伯勒","Hohhot":"呼和浩特","Hong Kong":"香港","Honolulu":"檀香山","Hyderabad":"海德拉巴","Illinois":"伊利諾","Iowa":"愛荷華","Istanbul":"伊斯坦堡","Jakarta":"雅加達","Jamnagar":"賈姆訥格爾","Jeddah":"吉達","Jerusalem":"耶路撒冷","Johannesburg":"約翰尼斯堡","Kuala Lumpur":"吉隆坡","Kulai":"古來","Las Vegas":"拉斯維加斯","Lenexa":"萊內克薩","London":"倫敦","Los Angeles":"洛杉磯","Madrid":"馬德里","Manchester":"曼徹斯特","Manila":"馬尼拉","Marseille":"馬賽","Melbourne":"墨爾本","Mexico City":"墨西哥城","Miami":"邁阿密","Milan":"米蘭","Monterrey":"蒙特雷","Montreal":"蒙特婁","Montréal":"蒙特婁","Mumbai":"孟買","N. California":"北加州","N. Virginia":"北維吉尼亞","Nagpur":"那格浦爾","Nanjing":"南京","Netherlands":"荷蘭","New Jersey":"紐澤西","New York":"紐約","Newark":"紐華克","Ningxia":"寧夏","Nuremberg":"紐倫堡","Ohio":"俄亥俄","Oklahoma":"奧克拉荷馬","Oregon":"奧勒岡","Osaka":"大阪","Oslo":"奧斯陸","Paris":"巴黎","Phoenix":"鳳凰城","Pune":"浦那","Qingdao":"青島","Quebec City":"魁北克市","Querétaro":"克雷塔羅","Quincy":"昆西","Richmond":"里奇蒙","Rio de Janeiro":"里約熱內盧","Riyadh":"利雅德","Roubaix":"魯貝","Salt Lake City":"鹽湖城","San Antonio":"聖安東尼奧","San Francisco":"舊金山","San Jose":"聖荷西","Santiago":"聖地牙哥","Seattle":"西雅圖","Seoul":"首爾","Shanghai":"上海","Shawnee":"肖尼","Shenzhen":"深圳","Silicon Valley":"矽谷","Singapore":"新加坡","South Carolina":"南卡羅來納","Stockholm":"斯德哥爾摩","Strasbourg":"史特拉斯堡","Sydney":"雪梨","São Paulo":"聖保羅","Taipei":"台北","Taiwan":"台灣","Tel Aviv":"特拉維夫","Texas":"德州","Tokyo":"東京","Toronto":"多倫多","Turin":"杜林","UAE":"阿聯","Ulanqab":"烏蘭察布","Valparaiso":"瓦爾帕萊索","Vinhedo":"維涅杜","Vint Hill":"文特希爾","Virginia":"維吉尼亞","Warsaw":"華沙","Washington":"華盛頓","Wuhan":"武漢","Wyoming":"懷俄明","Zhangjiakou":"張家口","Zurich":"蘇黎世","Baoding":"保定","Suzhou":"蘇州","Johor":"柔佛"}},"en":{"name":"Me2Cloud","seo_title":"Me2Cloud: cloud latency test from your own network · AWS, Azure, Google Cloud and 360+ regions","seo_desc":"Free latency test from your own browser to 360+ cloud regions of AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud and Hetzner. Median, jitter and loss over your real ISP, Wi-Fi and peak hours. Nothing leaves your browser.","seo_kw":"cloud ping, cloud latency test, region latency, AWS ping, Azure latency, Google Cloud ping, Alibaba Cloud ping, Vultr ping, which cloud region is closest","og_sub":"360+ regions · 17 providers · measured in your own browser","unlisted":"unlisted region","share_btn":"Share","viewingShared":"Viewing a shared result; press Start to test your own line","share_h":"Share your results","share_sub":"The image and the link are made right here in your browser. Nothing is uploaded.","share_loc":"Show city and ISP","share_link":"Share link","share_len":"{k} regions are packed into the link itself ({n} characters). No IP, no custom endpoints.","share_copyLink":"Copy link","share_copyImg":"Copy image","share_dl":"Download image","share_native":"Share…","share_banner":"Shared result · {who} · {d}","share_anon":"location hidden","share_viaProxy":"measured through a proxy","share_mine":"Test the same regions on my network","share_exit":"Back to my results","share_bad":"This share link could not be read","share_none":"Run a test first","share_failed":"Your browser blocked it","copiedImg":"Image copied","sharedNoRaw":"Shared results carry the statistics only, not every sample.","card_title":"How fast are the clouds from my place","card_cta":"How fast are the clouds from your place?","card_local":"measured in the browser","card_regions":"{n} regions × {k}","card_more":"+{n} more","sep":", ","allVendors":"All providers","allAreas":"All areas","noArea":"none","pickVendor":"Choose providers","pickFirst":"Choose the providers to test first","lgLive":"pulsing = still measuring","reset":"Clear test data","resetHint":"Hold for 1 second. Test results and history are deleted; settings stay.","resetDone":"Test data cleared","cust_tip":"Any HTTPS URL works; a tiny static file or a /ping path answers fastest. GET or HEAD is picked automatically.","doc_h":"How it works & FAQ","rules_sub":"Send the test hosts direct, so the results show your own line instead of the proxy's. The rules only match the test hosts, nothing else.","rules_remote_h":"Recommended: remote rule set","rules_remote_s":"Your tool fetches the list from us and keeps it up to date when we add regions. Add these lines once.","rules_inline_h":"Or paste every rule yourself ({n}, with notes)","rules_inline_only":"This tool has no remote rule sets, so paste the rules ({n}, with notes)","rules_custom":"Your custom endpoints are not in the remote set; add these too:","rc_detect":"Network check (Cloudflare)","rc_site":"This page","rc_top":"keep this above your other rules","rules_json_note":"JSON has no comments, so hosts are grouped by match type.","rules_steps":["Copy the lines and put them \u003cb>above\u003c/b> your other rules, so they match first.","Reload the config. In TUN or fake-ip mode keep the real-IP part too (included above).","Turn off browser proxy extensions for this page, or add the list to their bypass list.","Press the refresh button next to your network. When it shows your real ISP, start the test."],"heroT":"How fast are the clouds from your place?","lgMiss":"hollow = does not fit your needs","whyS1":"Measured from your own line","whyS2":"Your ISP and peak hour included","whyS3":"Real HTTPS, same road as your apps","whyLink":"Why not a ping site? →","pxShort":"Proxy detected","okShort":"Direct connection","unkShort":"Network unknown","netDetails":"Details","pl_vendors":"Providers","pl_areas":"Areas","off":"Off","noLoss":"no loss","m_quickD":"A fast first look","m_stdD":"Recommended","m_preciseD":"For the final shortlist","startSub":"{n} regions · about {t}","lastRun":"Last run {d}: {n} regions","viz_h":"Where each region lands","vizSub":"{n} measured · {p} fit your needs","viz_empty":"Press Start. Every region pops up here the moment it is measured.","needLine":"your limit","picks_sub2":"{n} regions fit ({need}); these three are the best all-round.","grp_other":"Waiting / unreachable","jitWarn":"Jumpy: jitter ±{j} ms","lossWarn":"{p}% of samples lost","res_h":"All regions","rules_note_loon":"Loon has no wildcard rule here, so these are domain suffixes. Paste at the top of [Rule].","concHint":"Fewer is more precise, more is faster. Each provider gets at most 2 at a time.","secTest":"Test","conc":"Endpoints in parallel","timeout":"Timeout per request","rtcOpt":"WebRTC exit check (STUN)","theme":"Theme","th_system":"System","th_light":"Light","th_dark":"Dark","secData":"Data","copyLink":"Copy setup link","expCsv":"Export results (CSV)","expJson":"Export results (JSON)","imp":"Import results (JSON)","recheck":"Check again","rulesBtn":"Get bypass rules","ip":"Public IP","hide":"Hide IP","show":"Show IP","isp":"Network","na":"unknown","edge":"To nearest Cloudflare","checking":"Checking…","peakNow":"Peak hour","offPeak":"Off-peak","peakTip":"It is {now}, evening rush (20:00–23:00). Results now show your line at its worst, which is what you want to know.","offPeakTip":"It is {now}. Lines are usually quieter now; run it again between 20:00 and 23:00 to see the evening rush.","px_okNote":"Exit IP, network and time zone line up. A router-level proxy or a corporate network can still hide itself, so make sure the network above is your real ISP.","px_unknownNote":"The Cloudflare lookups were blocked. Tests still work, but nobody can tell whether a proxy is on.","r_dc":"Your exit network is {org}, a data center. That is almost always a VPN, proxy or cloud server, not a home line.","r_warp":"Cloudflare WARP is on.","r_tz":"Your clock says {a}, but your exit IP is in {b}.","r_rtc":"WebRTC (UDP) goes out from {a}, HTTPS from {b}: traffic is being split.","all":"All","none":"None","custom":"Custom","ct_as":"Asia","ct_na":"North America","ct_eu":"Europe","ct_oc":"Oceania","ct_sa":"South America","ct_me":"Middle East","ct_af":"Africa","ct_xx":"Custom","mode":"Samples per endpoint","m_quick":"Quick","m_std":"Standard","m_precise":"Precise","secs":"{n} s","mins":"{n} min","noLimit":"any","maxLat":"Max median","maxJit":"Max jitter","maxLoss":"Max loss","p_game":"Gaming","p_call":"Video calls","p_ssh":"SSH / remote desktop","p_web":"Website / API","p_any":"No requirements","p_custom":"Custom","start":"Start test","stop":"Stop","again":"Test again","running":"Testing {d} / {n}","eta":"about {t} left","viewing":"Viewing a saved run from {d}","tagPeak":"peak hour","histCurrent":"Latest run","picks_h":"Our picks for you","picks_closest":"Closest matches","picks_none":"Nothing fits your needs yet. These come closest; loosen a limit or try other providers.","anyLat":"any latency","search":"Search region, city, provider","onlyPass":"Only what fits","g1":"T0 · GOATed","g2":"T1 · Top tier","g3":"T2 · Solid","g4":"T3 · NPC","g5":"T4 · Cooked","queued":"In line","chartAria":"Latency of each sample","noSamples":"No samples yet","d_med":"Median","d_avg":"Average","d_p90":"P90","d_min":"Min","d_max":"Max","d_jit":"Jitter","d_loss":"Loss","d_method":"Method","d_warm":"warm-up (not counted)","d_cold":"This endpoint cannot keep the connection open, so every sample includes a fresh handshake (≈ 3 × the real round trip). Compare it only with itself.","d_verified":"Reached the provider for real (CORS check passed)","d_notverified":"CORS check failed: something between you and the provider may have answered instead.","d_review":"Heads-up: this may be a dedicated region that regular customers cannot buy.","retest":"Re-test × 20","copyUrl":"Copy URL","cust_h":"Custom endpoints","cust_name_ph":"My VPS (Tokyo)","add":"Add","del":"Remove","cust_err_url":"That is not a valid URL.","cust_err_https":"Use an https:// URL. Browsers block plain http requests from an https page.","cust_err_dup":"Already in the list.","cust_added":"Added. It joins the next test.","log_h":"Request log","log_note":"Every request below went from this browser straight to the host shown. This page has no backend and sends your results nowhere. Check it yourself in the developer tools (Network tab).","log_empty":"Nothing sent yet.","failed":"failed","rules_h":"Bypass rules for a clean test","copy":"Copy","copied":"Copied","rules_fakeip":"fake-ip mode: let these hosts resolve to their real IPs","rules_plain":"Plain list","rules_note_clash":"Paste the rules at the very top of rules:, and the hosts into dns.fake-ip-filter if you use fake-ip.","rules_note_surge":"Put the rules at the top of [Rule]. always-real-ip keeps the real DNS answer for these hosts.","rules_note_shadowrocket":"Put the rules at the top of [Rule] in your config, or add them one by one under Config → Rules.","rules_note_quanx":"Paste into [filter_local], above your other rules.","rules_note_singbox":"Merge into route.rules and dns.rules; outbound \"direct\" and DNS server \"local\" must match tags in your config.","rules_note_xray":"Merge into routing.rules; outboundTag \"direct\" must match a freedom outbound in your config.","rules_note_omega":"Paste into the bypass list (“No proxy for”) of your SwitchyOmega profile.","rules_note_plain":"One host per line, for any other tool.","imported":"Results imported","importErr":"Not a Me2Cloud results file","foot":"Everything runs in your browser · Endpoints verified {d} · Not affiliated with any provider","docs":[["Why testing from your own network beats ping sites and looking glasses","\u003cp>Most \"cloud ping\" sites and every provider looking glass send the test from \u003cb>their\u003c/b> servers, sitting in data centers on premium transit. That tells you how one data center reaches another. It says nothing about the part you actually feel: your home or mobile line, your ISP's backbone, its border links and how crowded they are tonight.\u003c/p>\n          \u003cp>Me2Cloud sends every request from \u003cb>your\u003c/b> browser, so the result includes all of it: Wi-Fi, router, ISP, the route your ISP picks, and the evening rush.\u003c/p>\n          \u003cdiv class=\"tblwrap\">\u003ctable class=\"cmp\">\u003ctr>\u003cth>\u003c/th>\u003cth>Ping sites / looking glass\u003c/th>\u003cth>ICMP ping on your PC\u003c/th>\u003cth>Me2Cloud\u003c/th>\u003c/tr>\n          \u003ctr>\u003ctd>Starts from\u003c/td>\u003ctd class=\"n\">their data center\u003c/td>\u003ctd class=\"y\">your network\u003c/td>\u003ctd class=\"y\">your network\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>Covers your ISP and peak hour\u003c/td>\u003ctd class=\"n\">no\u003c/td>\u003ctd class=\"y\">yes\u003c/td>\u003ctd class=\"y\">yes\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>Same protocol as websites and apps (TCP 443)\u003c/td>\u003ctd class=\"m\">varies\u003c/td>\u003ctd class=\"n\">no, ICMP\u003c/td>\u003ctd class=\"y\">yes, HTTPS\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>Throttled or filtered by networks\u003c/td>\u003ctd class=\"m\">sometimes\u003c/td>\u003ctd class=\"n\">often\u003c/td>\u003ctd class=\"y\">rarely\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>Hundreds of regions in one click\u003c/td>\u003ctd class=\"m\">some\u003c/td>\u003ctd class=\"n\">no\u003c/td>\u003ctd class=\"y\">yes\u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd>Needs an install\u003c/td>\u003ctd class=\"y\">no\u003c/td>\u003ctd class=\"y\">no\u003c/td>\u003ctd class=\"y\">no\u003c/td>\u003c/tr>\u003c/table>\u003c/div>"],["How each sample is measured","\u003col>\u003cli>A \u003cb>warm-up\u003c/b> request opens DNS, TCP and TLS. Its time is shown but never counted.\u003c/li>\n          \u003cli>Then the browser sends 5, 10 or 20 more requests to the same host over the \u003cb>same connection\u003c/b>. Each one costs a single round trip plus the provider's processing time.\u003c/li>\n          \u003cli>Each provider uses the request type we verified keeps the connection open: \u003ccode>GET\u003c/code> for AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean and Scaleway; \u003ccode>HEAD\u003c/code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr and OVHcloud (their GET closes the connection, which would triple every sample); \u003ccode>&lt;img&gt;\u003c/code> only for Hetzner.\u003c/li>\n          \u003cli>We report \u003cb>median\u003c/b> (the typical value), \u003cb>average\u003c/b>, \u003cb>P90\u003c/b> (9 out of 10 samples are at or below it), \u003cb>jitter\u003c/b> (average change between consecutive samples) and \u003cb>loss\u003c/b> (samples with no answer within the timeout).\u003c/li>\n          \u003cli>The \u003cb>tier\u003c/b> comes from the median: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 above that. The overall score used for picks is median + 2 × jitter + loss penalty, so a steady 60 ms beats a jumpy 45 ms.\u003c/li>\u003c/ol>"],["Why HTTPS timing is closer to real life than ICMP ping","\u003cul>\u003cli>\u003cb>Same road as your traffic.\u003c/b> Websites, APIs, SSH tunnels over 443, game logins and downloads all ride TCP. Many ISPs queue, shape or route ICMP separately, so ping can look fine while pages crawl, or the other way round.\u003c/li>\n          \u003cli>\u003cb>Not throttled away.\u003c/b> Routers and clouds often rate-limit or drop ICMP. HTTPS to a public endpoint always gets an answer.\u003c/li>\n          \u003cli>\u003cb>Includes your real setup.\u003c/b> DNS, IPv4 vs IPv6 choice, proxies and accelerators all apply to browser traffic, so you test what you would actually get.\u003c/li>\n          \u003cli>\u003cb>The catch:\u003c/b> each sample also includes a small, steady server processing time. We measured 0–5 ms for AWS, about 8 ms for Alibaba Cloud and about 20 ms for Huawei Cloud OBS. For anything over 100 ms it does not matter; for very nearby regions the number reads a bit higher than ping.\u003c/li>\u003c/ul>"],["When to test: hit the evening rush","\u003cul>\u003cli>Residential networks are most crowded from about \u003cb>20:00 to 23:00\u003c/b>, and cross-border links even more. A region that is T1 at noon can drop to NPC at night.\u003c/li>\n          \u003cli>Run once during the day and once at peak. Saved runs are tagged “peak hour”, and you can switch between them in Results.\u003c/li>\n          \u003cli>Pause big downloads, streaming and cloud sync while testing. Wired beats Wi-Fi; if you must use Wi-Fi, stay near the router.\u003c/li>\n          \u003cli>On mobile data, results move with signal strength. Test where you will actually use the service.\u003c/li>\u003c/ul>"],["Good for","\u003cul>\u003cli>Shortlisting regions before you buy a server, a game host or a CDN origin.\u003c/li>\n          \u003cli>Comparing regions of one provider, or the same city across providers.\u003c/li>\n          \u003cli>Checking stability (jitter, loss) for gaming, video calls, remote desktop and SSH.\u003c/li>\n          \u003cli>Seeing how your proxy, accelerator or new ISP plan really performs, by testing with and without it.\u003c/li>\n          \u003cli>Testing your own server or CDN next to the big names with a custom endpoint.\u003c/li>\u003c/ul>"],["What it cannot tell you","\u003cul>\u003cli>\u003cb>One location only.\u003c/b> It is your line, not your users'. Ask a few users to run it, or export and compare.\u003c/li>\n          \u003cli>\u003cb>Endpoints, not your future VM.\u003c/b> We test each provider's public API or storage endpoint in the region. Servers in the same region usually share the network, but premium routes (for example CN2, BGP vs single-carrier lines, Lightsail vs EC2) can differ.\u003c/li>\n          \u003cli>\u003cb>No bandwidth, no UDP, no route trace.\u003c/b> It measures round trips, not download speed, UDP game traffic or the hops in between.\u003c/li>\n          \u003cli>\u003cb>Browser effects.\u003c/b> Extensions, proxies, VPNs and a busy tab add noise. Close heavy tabs and keep the page in front.\u003c/li>\n          \u003cli>\u003cb>Hetzner\u003c/b> cannot keep a connection open from a browser, so its numbers include a handshake every time. Some endpoints can also be unreachable from a few countries.\u003c/li>\u003c/ul>"],["Every request comes from your browser","\u003cul>\u003cli>The page is static files on Cloudflare. There is no backend, no account, no analytics, and results are never uploaded.\u003c/li>\n          \u003cli>All test requests go directly from your browser to the provider. Open the \u003cb>Request log\u003c/b> above or your browser's developer tools (Network tab) to see each one.\u003c/li>\n          \u003cli>Network info comes from Cloudflare (\u003ccode>speed.cloudflare.com/meta\u003c/code> and \u003ccode>/cdn-cgi/trace\u003c/code>), and the optional WebRTC check asks \u003ccode>stun.cloudflare.com\u003c/code> for your UDP exit address. Turn it off in Settings if you prefer.\u003c/li>\n          \u003cli>Settings, custom endpoints and the last runs stay in this browser's local storage. “Reset all data” wipes them.\u003c/li>\u003c/ul>"],["Gentle on providers: no rate limits, no bans","\u003cp>Hitting public endpoints too hard could trip a provider's rate limiting or WAF and spoil the result. The test is built to stay far below that:\u003c/p>\n          \u003cul>\u003cli>One request at a time per host, with a 250–370 ms pause between samples (about 2–3 requests per second per host at most).\u003c/li>\n          \u003cli>At most 2 hosts per provider at once, and at most 8 hosts overall (4 by default).\u003c/li>\n          \u003cli>At most 21 requests per host per run (warm-up + 20). No continuous mode.\u003c/li>\n          \u003cli>A host is dropped after 3 failures in a row instead of being retried.\u003c/li>\n          \u003cli>Anonymous, cookie-less, referrer-less \"simple\" requests: no preflight, tiny responses (a few hundred bytes), HEAD where possible, and nothing is downloaded in bulk.\u003c/li>\u003c/ul>\n          \u003cp>That is less traffic than opening one ordinary web page. Every endpoint was checked to answer anonymous requests normally (status 200, 403 or 404 is all fine for timing).\u003c/p>"],["Behind a proxy or VPN?","\u003cp>If your traffic goes through a proxy, the browser measures your route to the proxy plus the proxy's route to the provider, not your own line. The network panel looks for the usual signs: an exit network that belongs to a data center, a time zone that does not match the exit country, WARP, or a WebRTC exit that differs from the HTTPS one.\u003c/p>\n          \u003cp>Use \u003cb>Get bypass rules\u003c/b> to send just the test hosts direct (Clash / Mihomo, Surge, Shadowrocket, Quantumult X, Loon, sing-box, Xray, SwitchyOmega or a plain list), then check again. If you want to measure the proxy itself, leave it on: the numbers are then the proxy's real performance.\u003c/p>"],["Reading the chart","\u003cul>\u003cli>Each row's strip uses one shared scale (log, 2 ms to 3 s). Dots are samples, the shaded box covers the middle half of the samples, and the bar is the median.\u003c/li>\n          \u003cli>A narrow box means steady; a wide box or scattered dots means jitter. A red × counts lost samples.\u003c/li>\n          \u003cli>Click a row to see each sample in order, plus all stats and the endpoint used. ✓ marks a row that fits your needs.\u003c/li>\u003c/ul>"]],"homeL":"Regions in your country ({c})","home_all":"Include","home_excl":"Exclude","home_only":"Only","homeTip":"Include the regions in {c}, leave them out, or test only those.","lp_title":"{v} latency test: {n} regions from your own network | Me2Cloud","lp_desc":"Test the latency, jitter and loss of all {n} {v} regions from your own browser, over your real ISP and at peak hours. Free, nothing to install.","lp_h1":"How fast is {v} from your place?","lp_h2":"The {n} {v} regions we test","lp_intro":"{v} is measured through its {k} endpoints. Pick the regions above and press Start; every request goes from your browser straight to {v}.","nav_h":"Test one provider","ipTip":"Which IP version to test over. IPv4 uses each provider’s IPv4-only host; IPv6 uses a host with an IPv6 address, and regions without one are listed as not supporting IPv6.","ip_no6":"Your network has no working IPv6, so only IPv4 can be tested","ip_no6short":"no IPv6","nov6":"no IPv6","grp_nov6":"No IPv6 endpoint","d_nov6":"This region has no IPv6 endpoint we can test, so it was skipped in IPv6 mode.","d_v6":"Tested over IPv6 (a host with an IPv6 address).","d_dual":"This endpoint’s host is dual-stack: if your network has IPv6, the browser may have used IPv6 even in IPv4 mode.","ai_btn":"Use with AI","ai_h":"Use it with an AI agent","ai_sub":"An assistant cannot measure your line, but it can help you read the results and set up tests.","ai_res_h":"Ask an AI about your results","ai_res_p":"Copy this summary into ChatGPT, Claude or any assistant. It lists your network, your requirements and the best regions, with a question at the end.","ai_res_none":"Run a test first; the summary of your results will appear here.","ai_q":"Question: based on these results, which regions and providers should I pick for my use case, and what should I watch out for?","ai_link_h":"Let an AI prepare a test","ai_link_p":"Give an assistant this prompt plus what you need; it builds a Me2Cloud link with the right providers, areas and limits.","ai_linkPrompt":"Read {u} and give me a Me2Cloud link that tests the regions I should consider for: (describe your users, use case and budget here).","ai_dev_h":"For developers and agents","ai_dev_p":"Machine-readable files: the endpoint registry, the proxy rule sets, and llms.txt with link parameters and the share link format.","vendors":{"aws":{"kind":"DynamoDB /ping","note":"Body is 'healthy: dynamodb.\u003cregion>…', so the page can confirm the region."},"oracle":{"kind":"Object Storage","note":"GET closes the connection after every 404 (each sample ≈ 3–4 RTT); HEAD reuses it."},"vultr":{"kind":"Looking glass","note":"GET returns a ~12 KB page and adds 50–70 ms; HEAD avoids the body."},"azure":{"kind":"Cognitive Services","note":"CNAME chain ends at \u003cregion>.cloudapp.azure.com. Very stable samples."},"gcp":{"kind":"Storage regional endpoint (rep)","note":"HEAD adds a fixed ~1 s, never use it. Per-region IPs (34.1.x), not the global anycast front end."},"aliyun":{"kind":"OSS","note":"GET 403 closes the connection; HEAD reuses it."},"tencent":{"kind":"COS","note":"GET 403 closes the connection; HEAD reuses it."},"huawei":{"kind":"OBS","note":"GET and HEAD both keep the connection alive."},"linode":{"kind":"Object Storage","note":"Legacy speedtest.\u003cdc>.linode.com hosts no longer answer; only regions with an Object Storage cluster are covered."},"digitalocean":{"kind":"Spaces","note":"speedtest-\u003cdc>.digitalocean.com is gone; NYC1/NYC2 have no Spaces (use nyc3 for New York)."},"ovh":{"kind":"Speed test (proof)","note":"proof.ovh.net hosts redirect to \u003csite>.speedtest.network.ovh.net; the registry uses the targets."},"hetzner":{"kind":"Speed test","note":"fetch() fails in the browser (cause unclear; curl works); \u003cimg> works but opens a new connection each time, so samples ≈ 3 RTT."},"ibm":{"kind":"Cloud Object Storage","note":"GET 403 closes the connection; HEAD reuses it."},"scaleway":{"kind":"Object Storage","note":"GET and HEAD both keep the connection alive. Dual-stack hosts."},"volcengine":{"kind":"TOS","note":"GET 403 closes the connection; HEAD reuses it."},"baidu":{"kind":"BOS","note":"GET 403 closes the connection; HEAD reuses it."},"naver":{"kind":"Object Storage","note":"GET 403 closes the connection; HEAD reuses it."}},"ip_h":"IP version"}}}</script>
+<script src="/app.6702557aac.js"></script>
+</body>
+</html>

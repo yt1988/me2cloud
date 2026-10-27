@@ -1,0 +1,17 @@
+{
+  "name": "me2cloud",
+  "private": true,
+  "type": "module",
+  "description": "Static page that measures latency from the visitor's own browser to 360+ cloud and IDC regions",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs --check",
+    "dev": "node scripts/dev.mjs",
+    "endpoints": "node scripts/endpoints/verify.mjs && node scripts/endpoints/build-registry.mjs && node scripts/build.mjs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "opencc-js": "^1.0.5"
+  }
+}

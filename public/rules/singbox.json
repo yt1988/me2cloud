@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "rules": [
+    {
+      "domain": [
+        "proof.ovh.net",
+        "speed.cloudflare.com",
+        "www.cloudflare.com",
+        "stun.cloudflare.com",
+        "m2c.1ms.dog"
+      ],
+      "domain_suffix": [
+        "api.cognitive.microsoft.com",
+        "rep.googleapis.com",
+        "linodeobjects.com",
+        "digitaloceanspaces.com",
+        "speedtest.network.ovh.net"
+      ],
+      "domain_regex": [
+        "^dynamodb\\.[^.]+\\.amazonaws\\.com$",
+        "^dynamodb\\.[^.]+\\.amazonaws\\.com\\.cn$",
+        "^objectstorage\\.[^.]+\\.oraclecloud\\.com$",
+        "^[^.]+-ping\\.vultr\\.com$",
+        "^oss-[^.]+\\.aliyuncs\\.com$",
+        "^cos\\.[^.]+\\.myqcloud\\.com$",
+        "^obs\\.[^.]+\\.myhuaweicloud\\.com$",
+        "^[^.]+-speed\\.hetzner\\.com$",
+        "^dynamodb\\.[^.]+\\.api\\.aws$",
+        "^[^.]+\\.oss\\.aliyuncs\\.com$",
+        "^s3\\.[^.]+\\.cloud-object-storage\\.appdomain\\.cloud$",
+        "^s3\\.[^.]+\\.scw\\.cloud$",
+        "^tos-[^.]+\\.volces\\.com$",
+        "^[^.]+\\.bcebos\\.com$",
+        "^[^.]+\\.object\\.ncloudstorage\\.com$"
+      ]
+    }
+  ]
+}

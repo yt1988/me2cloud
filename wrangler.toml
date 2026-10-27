@@ -1,0 +1,10 @@
+# Cloudflare Workers with static assets: `npx wrangler deploy` uploads ./public.
+# There is no Worker script, so every request is a static asset request (free and not metered).
+name = "me2cloud"
+compatibility_date = "2025-01-01"
+
+[assets]
+directory = "./public"
+
+# Bind m2c.1ms.dog (zone 1ms.dog in the same Cloudflare account) on deploy
+routes = [{ pattern = "m2c.1ms.dog", custom_domain = true }]

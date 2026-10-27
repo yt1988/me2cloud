@@ -1,0 +1,339 @@
+[
+ {
+  "id": "aws:me-south-1",
+  "city": "Bahrain",
+  "tried": [
+   "https://dynamodb.me-south-1.amazonaws.com/ping",
+   "https://ec2.me-south-1.amazonaws.com/ping"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "aws:us-south-1",
+  "city": "?",
+  "tried": [
+   "https://dynamodb.us-south-1.amazonaws.com/ping",
+   "https://ec2.us-south-1.amazonaws.com/ping"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "oracle:sa-santiago-1",
+  "city": "Santiago",
+  "tried": [
+   "https://objectstorage.sa-santiago-1.oraclecloud.com/"
+  ],
+  "reason": "no response (EAI_AGAIN)"
+ },
+ {
+  "id": "oracle:eu-jovanovac-1",
+  "city": "Jovanovac",
+  "tried": [
+   "https://objectstorage.eu-jovanovac-1.oraclecloud.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "aliyun:ap-south-1",
+  "city": "Mumbai",
+  "tried": [
+   "https://oss-ap-south-1.aliyuncs.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "tencent:ap-mumbai",
+  "city": "Mumbai",
+  "tried": [
+   "https://cos.ap-mumbai.myqcloud.com/"
+  ],
+  "reason": "no response (ECONNRESET)"
+ },
+ {
+  "id": "tencent:na-toronto",
+  "city": "Toronto",
+  "tried": [
+   "https://cos.na-toronto.myqcloud.com/"
+  ],
+  "reason": "no response (ECONNRESET)"
+ },
+ {
+  "id": "tencent:eu-moscow",
+  "city": "Moscow",
+  "tried": [
+   "https://cos.eu-moscow.myqcloud.com/"
+  ],
+  "reason": "no response (ECONNRESET)"
+ },
+ {
+  "id": "huawei:eu-west-101",
+  "city": "Dublin",
+  "tried": [
+   "https://obs.eu-west-101.myhuaweicloud.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "huawei:eu-west-0",
+  "city": "Paris",
+  "tried": [
+   "https://obs.eu-west-0.myhuaweicloud.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "huawei:ru-moscow-1",
+  "city": "Moscow",
+  "tried": [
+   "https://obs.ru-moscow-1.myhuaweicloud.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:mexicocentral",
+  "city": "Querétaro",
+  "tried": [
+   "https://mexicocentral.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:brazilsoutheast",
+  "city": "Rio de Janeiro",
+  "tried": [
+   "https://brazilsoutheast.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:chilecentral",
+  "city": "Santiago",
+  "tried": [
+   "https://chilecentral.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:francesouth",
+  "city": "Marseille",
+  "tried": [
+   "https://francesouth.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:germanynorth",
+  "city": "Berlin",
+  "tried": [
+   "https://germanynorth.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:norwaywest",
+  "city": "Stavanger",
+  "tried": [
+   "https://norwaywest.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:austriaeast",
+  "city": "Vienna",
+  "tried": [
+   "https://austriaeast.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:belgiumcentral",
+  "city": "Brussels",
+  "tried": [
+   "https://belgiumcentral.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:denmarkeast",
+  "city": "Copenhagen",
+  "tried": [
+   "https://denmarkeast.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:koreasouth",
+  "city": "Busan",
+  "tried": [
+   "https://koreasouth.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:australiasoutheast",
+  "city": "Melbourne",
+  "tried": [
+   "https://australiasoutheast.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:australiacentral",
+  "city": "Canberra",
+  "tried": [
+   "https://australiacentral.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:australiacentral2",
+  "city": "Canberra",
+  "tried": [
+   "https://australiacentral2.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:westindia",
+  "city": "Mumbai",
+  "tried": [
+   "https://westindia.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:uaecentral",
+  "city": "Abu Dhabi",
+  "tried": [
+   "https://uaecentral.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:israelcentral",
+  "city": "Israel",
+  "tried": [
+   "https://israelcentral.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "azure:southafricawest",
+  "city": "Cape Town",
+  "tried": [
+   "https://southafricawest.api.cognitive.microsoft.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "linode:us-central",
+  "city": "Dallas",
+  "tried": [
+   "https://us-central-1.linodeobjects.com/",
+   "https://speedtest.dallas.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:us-west",
+  "city": "Fremont",
+  "tried": [
+   "https://us-west-1.linodeobjects.com/",
+   "https://speedtest.fremont.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:eu-west",
+  "city": "London",
+  "tried": [
+   "https://eu-west-1.linodeobjects.com/",
+   "https://speedtest.london.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:ap-northeast",
+  "city": "Tokyo 2",
+  "tried": [
+   "https://ap-northeast-1.linodeobjects.com/",
+   "https://speedtest.tokyo2.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:ap-southeast",
+  "city": "Sydney",
+  "tried": [
+   "https://ap-southeast-1.linodeobjects.com/",
+   "https://speedtest.syd1.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:ca-central",
+  "city": "Toronto",
+  "tried": [
+   "https://ca-central-1.linodeobjects.com/",
+   "https://speedtest.toronto1.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:ap-west",
+  "city": "Mumbai",
+  "tried": [
+   "https://ap-west-1.linodeobjects.com/",
+   "https://speedtest.mumbai1.linode.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ },
+ {
+  "id": "linode:fr-par-2",
+  "city": "Paris 2",
+  "tried": [],
+  "reason": "no public endpoint"
+ },
+ {
+  "id": "digitalocean:nyc1",
+  "city": "New York",
+  "tried": [
+   "https://nyc1.digitaloceanspaces.com/",
+   "https://speedtest-nyc1.digitalocean.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "digitalocean:nyc2",
+  "city": "New York",
+  "tried": [
+   "https://nyc2.digitaloceanspaces.com/",
+   "https://speedtest-nyc2.digitalocean.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "gcp:europe-west15",
+  "city": "?",
+  "tried": [
+   "https://storage.europe-west15.rep.googleapis.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "gcp:asia-southeast3",
+  "city": "Bangkok",
+  "tried": [
+   "https://storage.asia-southeast3.rep.googleapis.com/"
+  ],
+  "reason": "no such host"
+ },
+ {
+  "id": "baidu:sin",
+  "city": "Singapore",
+  "tried": [
+   "https://sin.bcebos.com/"
+  ],
+  "reason": "no response (TimeoutError)"
+ }
+]
