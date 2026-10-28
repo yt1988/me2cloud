@@ -706,29 +706,9 @@ footer a { color: var(--muted); }
   // Bypass rules: w = wildcard on the test hosts only, s = domain suffix (used where a tool has no wildcard rule),
   // d = one host. Tools with wildcards get the narrow form, so unrelated traffic of a provider is never sent direct.
   // scripts/build.mjs turns this list into the remote rule sets under /rules/.
+  // direct rules: the hosts the network check calls; the test hosts themselves come from ENDPOINTS
   /* RULES:BEGIN */
   const RULE_SPEC = [
-    {"v":"aws","w":"dynamodb.*.amazonaws.com","s":"amazonaws.com"},
-    {"v":"aws","w":"dynamodb.*.amazonaws.com.cn","s":"amazonaws.com.cn","n":"China"},
-    {"v":"oracle","w":"objectstorage.*.oraclecloud.com","s":"oraclecloud.com"},
-    {"v":"vultr","w":"*-ping.vultr.com","s":"vultr.com"},
-    {"v":"azure","s":"api.cognitive.microsoft.com"},
-    {"v":"gcp","s":"rep.googleapis.com"},
-    {"v":"aliyun","w":"oss-*.aliyuncs.com","s":"aliyuncs.com"},
-    {"v":"tencent","w":"cos.*.myqcloud.com","s":"myqcloud.com"},
-    {"v":"huawei","w":"obs.*.myhuaweicloud.com","s":"myhuaweicloud.com"},
-    {"v":"linode","s":"linodeobjects.com"},
-    {"v":"digitalocean","s":"digitaloceanspaces.com"},
-    {"v":"ovh","s":"speedtest.network.ovh.net"},
-    {"v":"ovh","d":"proof.ovh.net","n":"Gravelines"},
-    {"v":"hetzner","w":"*-speed.hetzner.com","s":"hetzner.com"},
-    {"v":"aws","w":"dynamodb.*.api.aws","s":"api.aws","n":"IPv6"},
-    {"v":"aliyun","w":"*.oss.aliyuncs.com","s":"aliyuncs.com","n":"IPv6"},
-    {"v":"ibm","w":"s3.*.cloud-object-storage.appdomain.cloud","s":"cloud-object-storage.appdomain.cloud"},
-    {"v":"scaleway","w":"s3.*.scw.cloud","s":"scw.cloud"},
-    {"v":"volcengine","w":"tos-*.volces.com","s":"volces.com"},
-    {"v":"baidu","w":"*.bcebos.com","s":"bcebos.com"},
-    {"v":"naver","w":"*.object.ncloudstorage.com","s":"ncloudstorage.com"},
     {"v":"_detect","d":"speed.cloudflare.com"},
     {"v":"_detect","d":"www.cloudflare.com"},
     {"v":"_detect","d":"stun.cloudflare.com"},
@@ -1066,16 +1046,22 @@ footer a { color: var(--muted); }
       ip: (meta && meta.clientIp) || tr.ip || "", cc: (meta && meta.country) || tr.loc || "", city: meta ? meta.city || "" : "",
       asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
       http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
-    const ipOf = async u => { try { const x = await (await fetch(u, { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text(); logReq(u, "GET", 0); return (/^ip=(.*)$/m.exec(x) || [])[1] || ""; } catch (e) { logReq(u, "GET", null); return ""; } };
-    // single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct
-    [N.ip4, N.ip6] = await Promise.all([ipOf("https://ipv4-check-perf.radar.cloudflare.com/cdn-cgi/trace"), ipOf("https://ipv6-check-perf.radar.cloudflare.com/cdn-cgi/trace")]);
-    N.has6 = !!N.ip6;
-    if (trace) {
-      // latency to the nearest Cloudflare edge: warm connection, median of 5
-      const u = trace.url, xs = [];
-      for (let i = 0; i < 6; i++) { const t0 = performance.now(); try { await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i) xs.push(performance.now() - t0); } catch (e) {} }
-      xs.sort((a, b) => a - b); N.edge = xs.length ? xs[xs.length >> 1] : null;
-    }
+    // single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct;
+    // their root path answers JSON, which filter lists that block /cdn-cgi/trace let through
+    const ipOf = async host => {
+      for (const [p, rx] of [["/", /"ip_address":\s*"([^"]+)"/], ["/cdn-cgi/trace", /^ip=(.*)$/m]]) {
+        const u = "https://" + host + p;
+        try { const x = await (await fetch(u, { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text(); logReq(u, "GET", 0); const m = rx.exec(x); if (m) return m[1]; } catch (e) { logReq(u, "GET", null); }
+      }
+      return "";
+    };
+    [N.ip4, N.ip6] = await Promise.all([ipOf("ipv4-check-perf.radar.cloudflare.com"), ipOf("ipv6-check-perf.radar.cloudflare.com")]);
+    N.has6 = N.ip6 ? true : N.ip4 ? false : null;          // both failed: blocked, so unknown rather than "no IPv6"
+    // latency to the nearest Cloudflare edge: an empty download on a warm connection, median of 5
+    const edgeU = "https://speed.cloudflare.com/__down?bytes=0", xs = [];
+    for (let i = 0; i < 6; i++) { const t0 = performance.now(); try { await fetch(bust(edgeU), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i) xs.push(performance.now() - t0); } catch (e) {} }
+    xs.sort((a, b) => a - b); N.edge = xs.length ? xs[xs.length >> 1] : null;
+    if (xs.length) logReq(edgeU, "GET", 0);
     const reasons = [];
     if (N.org && DC_RE.test(N.org)) reasons.push(t("r_dc", { org: esc(N.org) + (N.asn ? " (AS" + N.asn + ")" : "") }));
     if (N.warp && N.warp !== "off") reasons.push(t("r_warp"));
@@ -1123,7 +1109,7 @@ footer a { color: var(--muted); }
       <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v${blur}">${esc(N.ip || "–")}</span><span class="s">${N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : ""}</span></div>
       <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || "–")}</span><span class="s">${N.asn ? "AS" + N.asn : ""}</span></div>
       <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${esc(N.colo || "")}${N.http ? " · " + esc(N.http) : ""}</span></div>
-      <div class="kv"><span class="lbl">IPv4 / IPv6</span><span class="v${blur}">${esc(N.ip4 || "–")}</span><span class="s${blur}">${esc(N.ip6 || t("ip_no6short"))}</span></div>
+      <div class="kv"><span class="lbl">IPv4 / IPv6</span><span class="v${blur}">${esc(N.ip4 || (N.has6 === null ? t("chkFail") : "–"))}</span><span class="s${blur}">${esc(N.ip6 || (N.has6 === null ? t("chkBlocked") : t("ip_no6short")))}</span></div>
       <div class="kv"><span class="lbl">WebRTC</span><span class="v${blur}">${esc(N.rtc && N.rtc.length ? N.rtc.join(", ") : "–")}</span><span class="s">${esc(N.tz || "")}</span></div>
       ${N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}</ul>` : `<div class="note" style="grid-column:1/-1">${t(N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`}`;
   }
@@ -1396,44 +1382,42 @@ footer a { color: var(--muted); }
   }
 
   /* ---------- bypass rules ---------- */
-  const globRe = w => "^" + w.split("*").map(p => p.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join("[^.]+") + "$";
   // where the remote rule sets live: this site, or the public one when running locally
   const SITE = /^(localhost|127\.|\[)/.test(location.hostname) ? "https://m2c.1ms.dog" : location.origin;
   const ruleNote = r => r.v === "_detect" ? t("rc_detect") : r.v === "custom" ? "★ " + r.n
-    : [vnm(r.v), vtext(r.v, "kind"), r.n].filter(Boolean).join(" · ");
-  // every supported rule, not just the current selection, so one paste covers any later test
+    : [vnm(r.v), vtext(r.v, "kind")].filter(Boolean).join(" · ");
+  // exact hosts only (every endpoint, IPv6 hosts included, then the network check), so nothing else goes direct;
+  // all regions, not just the current selection, so one paste covers any later test
   function ruleItems(withCustom) {
-    const items = RULE_SPEC.map(r => Object.assign({}, r));
-    if (withCustom) S.custom.forEach(c => { const d = hostOf(c.url); if (!items.some(r => r.d === d)) items.push({ v: "custom", d, n: c.name }); });
+    const items = [], seen = new Set(), add = r => { if (!seen.has(r.d)) { seen.add(r.d); items.push(r); } };
+    for (const e of ENDPOINTS.endpoints) for (const u of [e.url, e.url6]) if (u) add({ v: e.vendor, d: hostOf(u) });
+    RULE_SPEC.forEach(r => add(Object.assign({}, r)));
+    if (withCustom) S.custom.forEach(c => add({ v: "custom", d: hostOf(c.url), n: c.name }));
     return items.map(r => Object.assign(r, { c: ruleNote(r) }));
   }
-  function ruleLine(f, { w, s, d }) {
+  function ruleLine(f, { d }) {
     switch (f) {
-      case "clash": return d ? `DOMAIN,${d},DIRECT` : w ? `DOMAIN-WILDCARD,${w},DIRECT` : `DOMAIN-SUFFIX,${s},DIRECT`;
-      case "surge": case "shadowrocket": return d ? `DOMAIN,${d},DIRECT` : w ? `DOMAIN-WILDCARD,${w},DIRECT` : `DOMAIN-SUFFIX,${s},DIRECT`;
-      case "loon": return d ? `DOMAIN,${d},DIRECT` : `DOMAIN-SUFFIX,${s},DIRECT`;
-      case "quanx": return d ? `host, ${d}, direct` : w ? `host-wildcard, ${w}, direct` : `host-suffix, ${s}, direct`;
-      default: return d || w || "*." + s;
+      case "clash": case "surge": case "shadowrocket": case "loon": return `DOMAIN,${d},DIRECT`;
+      case "quanx": return `host, ${d}, direct`;
+      default: return d;
     }
   }
   // the DNS side of fake-ip setups: these hosts must resolve to real addresses
-  const realIp = (f, items) => f === "clash" ? `dns:\n  fake-ip-filter:\n` + [...new Set(items.map(i => i.d ? `    - ${i.d}` : `    - "+.${i.s}"`))].join("\n")
-    : `[General]\nalways-real-ip = ` + [...new Set(items.map(i => i.d || i.w || "*." + i.s))].join(", ");
+  const realIp = (f, items) => f === "clash" ? `dns:\n  fake-ip-filter:\n` + items.map(i => `    - ${i.d}`).join("\n")
+    : `[General]\nalways-real-ip = ` + items.map(i => i.d).join(", ");
   function ruleInline(f, items) {
-    if (f === "singbox" || f === "xray") {
-      const suf = items.filter(i => i.s && !i.w).map(i => i.s), rx = items.filter(i => i.w).map(i => globRe(i.w)), ex = items.filter(i => i.d).map(i => i.d);
-      if (f === "singbox") { const m = { domain: ex, domain_suffix: suf, domain_regex: rx };
-        return JSON.stringify({ route: { rules: [Object.assign({}, m, { outbound: "direct" })] }, dns: { rules: [Object.assign({}, m, { server: "local" })] } }, null, 2); }
-      return JSON.stringify({ routing: { rules: [{ type: "field", domain: [...suf.map(s => "domain:" + s), ...rx.map(r => "regexp:" + r), ...ex.map(d => "full:" + d)], outboundTag: "direct" }] } }, null, 2);
-    }
-    if (f === "omega") return items.map(i => ruleLine(f, i)).join("\n");
+    const hosts = items.map(i => i.d);
+    if (f === "singbox") return JSON.stringify({ route: { rules: [{ domain: hosts, outbound: "direct" }] }, dns: { rules: [{ domain: hosts, server: "local" }] } }, null, 2);
+    if (f === "xray") return JSON.stringify({ routing: { rules: [{ type: "field", domain: hosts.map(d => "full:" + d), outboundTag: "direct" }] } }, null, 2);
+    if (f === "omega") return hosts.join("\n");
+    // one comment per provider rather than per host
     const ind = f === "clash" ? "  - " : "", cind = f === "clash" ? "  " : "";
-    const body = items.map(i => `${cind}# ${i.c}\n${ind}${ruleLine(f, i)}`).join("\n");
+    const body = items.map((i, k) => (k && items[k - 1].c === i.c ? "" : `${cind}# ${i.c}\n`) + ind + ruleLine(f, i)).join("\n");
     const head = { clash: "rules:", surge: "[Rule]", shadowrocket: "[Rule]", loon: "[Rule]", quanx: "[filter_local]" }[f];
     const dns = f === "clash" || f === "surge" || f === "shadowrocket" ? `\n\n# ${t("rules_fakeip")}\n` + realIp(f, items) : "";
     return (head ? head + "\n" : "") + body + dns;
   }
-  // remote rule sets: generated by scripts/build.mjs from RULE_SPEC, so they update when regions are added
+  // remote rule sets: generated by scripts/build.mjs from the same hosts, so they update when regions are added
   function ruleRemote(f) {
     const u = SITE + "/rules/";
     switch (f) {

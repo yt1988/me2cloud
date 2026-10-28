@@ -26,21 +26,22 @@ const block = (text, name, decl) => {
   if (a < 0 || b < 0) throw new Error(`${name} markers not found in src/page.html`);
   return JSON.parse(text.slice(a + B.length, b).trim().replace(new RegExp(`^const ${decl} =\\s*`), "").replace(/;$/, ""));
 };
-const globRe = w => "^" + w.split("*").map(p => p.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join("[^.]+") + "$";
 
-// Rule sets carry no policy; the user's config attaches DIRECT. Comments name the provider of every rule.
-function ruleSets(spec, vendors, verified) {
-  const note = r => r.v === "_detect" ? "Me2Cloud network check (Cloudflare)" : [vendors[r.v].name, vendors[r.v].kind, r.n].filter(Boolean).join(" · ");
-  const head = c => `${c} Me2Cloud: hosts used by the latency test, to be sent DIRECT. ${spec.length} rules, generated ${verified}.\n${c} ${SITE}/ · https://github.com/yt1988/me2cloud\n`;
-  const classic = (r, wild) => r.d ? `DOMAIN,${r.d}` : r.w && wild ? `DOMAIN-WILDCARD,${r.w}` : `DOMAIN-SUFFIX,${r.s}`;
+// Rule sets carry no policy; the user's config attaches DIRECT. They list exact hosts only: every endpoint
+// (IPv6 hosts included) and the network check, with one comment per provider, so nothing else goes direct.
+function ruleSets(E, detect) {
+  const items = [], seen = new Set(), add = r => { if (!seen.has(r.d)) { seen.add(r.d); items.push(r); } };
+  for (const e of E.endpoints) for (const u of [e.url, e.url6]) if (u) add({ v: e.vendor, d: new URL(u).hostname });
+  detect.forEach(add);
+  const note = r => r.v === "_detect" ? "Me2Cloud network check (Cloudflare)" : [E.vendors[r.v].name, E.vendors[r.v].kind].join(" · ");
+  const head = c => `${c} Me2Cloud: hosts used by the latency test, to be sent DIRECT. ${items.length} exact hosts, generated ${E.verified}.\n${c} ${SITE}/ · https://github.com/yt1988/me2cloud\n`;
+  const list = (c, line) => items.map((r, k) => (k && note(items[k - 1]) === note(r) ? "" : `${c}# ${note(r)}\n`) + line(r.d)).join("\n") + "\n";
   return {
-    "clash.yaml": head("#") + "payload:\n" + spec.map(r => `  # ${note(r)}\n  - ${classic(r, true)}`).join("\n") + "\n",
-    "surge.list": head("#") + spec.map(r => `# ${note(r)}\n${classic(r, true)}`).join("\n") + "\n",
-    "loon.list": head("#") + spec.map(r => `# ${note(r)}\n${classic(r, false)}`).join("\n") + "\n",
-    "quanx.list": head("#") + spec.map(r => `# ${note(r)}\n${r.d ? `host, ${r.d}` : r.w ? `host-wildcard, ${r.w}` : `host-suffix, ${r.s}`}, direct`).join("\n") + "\n",
-    "singbox.json": JSON.stringify({ version: 2, rules: [{
-      domain: spec.filter(r => r.d).map(r => r.d), domain_suffix: spec.filter(r => r.s && !r.w).map(r => r.s), domain_regex: spec.filter(r => r.w).map(r => globRe(r.w))
-    }] }, null, 2) + "\n"
+    "clash.yaml": head("#") + "payload:\n" + list("  ", d => `  - DOMAIN,${d}`),
+    "surge.list": head("#") + list("", d => `DOMAIN,${d}`),
+    "loon.list": head("#") + list("", d => `DOMAIN,${d}`),
+    "quanx.list": head("#") + list("", d => `host, ${d}, direct`),
+    "singbox.json": JSON.stringify({ version: 2, rules: [{ domain: items.map(r => r.d) }] }, null, 2) + "\n"
   };
 }
 
@@ -176,7 +177,7 @@ export async function build({ check = false } = {}) {
       vendors: E.vendors, endpoints: E.endpoints }, null, 1) + "\n",
     "sitemap.xml": sitemap, "robots.txt": robots, "_headers": headers
   };
-  for (const [name, text] of Object.entries(ruleSets(spec, E.vendors, E.verified))) files["rules/" + name] = text;
+  for (const [name, text] of Object.entries(ruleSets(E, spec))) files["rules/" + name] = text;
   for (const p of pages) files[p.file] = p.html;
 
   const stale = [];
