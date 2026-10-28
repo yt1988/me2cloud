@@ -177,12 +177,7 @@ input[type="range"] { width: 100%; accent-color: var(--sel); }
 .nb-acts > * { flex: none; }
 .nb-acts > .btn { flex: 0 1 auto; min-width: 0; }
 .nb-acts > .btn > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.netdet { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 16px; padding: 4px 2px 0; transition: opacity .2s; }
-.netdet.stale { opacity: .5; }
-.nb-ipf { margin-left: 8px; white-space: nowrap; }
-.nb-ipf b { display: inline-block; font: 600 11px/1 var(--f-num); padding: 3px 5px; margin-right: 4px; border-radius: 4px; border: 1px solid var(--line); vertical-align: 1px; }
-.nb-ipf b.on { color: var(--pool); border-color: color-mix(in srgb, var(--pool) 45%, transparent); }
-.nb-ipf b.off { color: var(--muted); text-decoration: line-through; opacity: .7; }
+.netdet { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 16px; padding: 4px 2px 0; }
 .kv { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .kv .v { font-family: var(--f-num); font-size: 13.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kv .v.blur { filter: blur(5px); user-select: none; }
@@ -1042,8 +1037,8 @@ footer a { color: var(--muted); }
     const run = ++netRun;
     // the check takes a few seconds on lossy routes, so the bar names the current step
     const step = (k, v) => { if (run === netRun && NET.state === "checking") { NET.step = t(k, v); renderNet(); } };
-    // the bar starts over, but on a recheck it keeps its rules button (and open details keep the last result,
-    // dimmed) so the layout doesn't collapse and re-expand
+    // the bar and open details start over, but on a recheck the bar keeps its rules button and the details keep
+    // their fields, so the layout doesn't collapse and re-expand
     NET = { ok: false, state: "checking", recheck: NET.state === "done" };
     step("chk_net");
     const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })();
@@ -1143,10 +1138,11 @@ footer a { color: var(--muted); }
     const peak = isPeak(new Date());
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
     const st = ck ? t("checking") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
-    // IP families: which ones answered, once this check knows
-    const ipf = N.has6 === undefined ? "" : `<span class="nb-ipf" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><b class="${N.ip4 ? "on" : "off"}">IPv4</b><b class="${N.ip6 ? "on" : "off"}">IPv6</b></span>`;
+    // IP families that answered, as a plain trailing segment once the check is done (so it doesn't push the rest)
+    const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
+    const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}">· ${fams}</span>`;
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
-      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${ipf}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
+      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${ck && !N.partial && !N.recheck ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
@@ -1154,19 +1150,30 @@ footer a { color: var(--muted); }
         <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
     const det = $("#netdet");
-    // while a recheck runs, open details keep the last result, dimmed, instead of collapsing
-    if (ck) { det.hidden = !netOpen || det.hidden; det.classList.toggle("stale", !det.hidden); return; }
-    det.classList.remove("stale");
+    if (ck) {
+      // a recheck keeps open details open, with the same fields emptied and the current step as the note
+      det.hidden = !netOpen || det.hidden;
+      if (!det.hidden) det.innerHTML = netDetails({}, N.step || t("checking"));
+      return;
+    }
     det.hidden = !netOpen;
     if (det.hidden) return;
-    const blur = S.hideIp ? " blur" : "";
-    det.innerHTML = `
-      <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v${blur}">${esc(N.ip || "–")}</span><span class="s">${N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : ""}</span></div>
-      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || "–")}</span><span class="s">${N.asn ? "AS" + N.asn : ""}</span></div>
-      <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${esc(N.colo || "")}${N.http ? " · " + esc(N.http) : ""}</span></div>
-      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v${blur}">${esc(N.ip4 || (N.has6 === null ? t("chkFail") : "–"))}</span><span class="s${blur}">${esc(N.ip6 || (N.has6 === null ? t("chkBlocked") : t("ip_no6short")))}</span></div>
-      <div class="kv"><span class="lbl">WebRTC</span><span class="v${blur}">${esc(N.rtc && N.rtc.length ? N.rtc.join(", ") : "–")}</span><span class="s">${esc(N.tz || "")}</span></div>
-      ${N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}</ul>` : `<div class="note" style="grid-column:1/-1">${t(N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`}`;
+    det.innerHTML = netDetails(N);
+  }
+  // the details grid; with `pending` every value is a dash and the note shows that text, so the layout stays put
+  function netDetails(N, pending) {
+    const blur = S.hideIp ? " blur" : "", s = x => x || "&nbsp;";
+    const v4 = N.ip4 || (N.has6 === null ? t("chkFail") : "–"), v6 = N.ip6 || (pending ? "" : N.has6 === null ? t("chkBlocked") : t("ip_no6short"));
+    const note = pending != null ? `<div class="note" style="grid-column:1/-1">${esc(pending)}</div>`
+      : N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}</ul>`
+      : `<div class="note" style="grid-column:1/-1">${t(N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`;
+    return `
+      <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v${blur}">${esc(N.ip || "–")}</span><span class="s">${s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || "–")}</span><span class="s">${s(N.asn ? "AS" + N.asn : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${s(esc(N.colo || "") + (N.http ? " · " + esc(N.http) : ""))}</span></div>
+      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v${blur}">${esc(v4)}</span><span class="s${blur}">${s(esc(v6))}</span></div>
+      <div class="kv"><span class="lbl">WebRTC</span><span class="v${blur}">${esc(N.rtc && N.rtc.length ? N.rtc.join(", ") : "–")}</span><span class="s">${s(esc(N.tz || ""))}</span></div>
+      ${note}`;
   }
 
   /* ---------- controls ---------- */
