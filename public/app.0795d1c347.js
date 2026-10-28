@@ -43,7 +43,6 @@
   /* RULES:BEGIN */
   const RULE_SPEC = [
     {"v":"_detect","d":"speed.cloudflare.com"},
-    {"v":"_detect","d":"www.cloudflare.com"},
     {"v":"_detect","d":"stun.cloudflare.com"},
     {"v":"_detect","d":"ipv4-check-perf.radar.cloudflare.com"},
     {"v":"_detect","d":"ipv6-check-perf.radar.cloudflare.com"}
@@ -330,17 +329,15 @@
   /* ---------- network check ---------- */
   let NET = { ok: false, state: "idle" }, netOpen = false;
   const isPeak = d => d.getHours() >= PEAK[0] && d.getHours() < PEAK[1];
-  // only hosts in the direct rules, so the edge latency and WARP flag describe the same path as the tests
+  // a host in the direct rules, so the WARP flag describes the same path as the tests
   async function getTrace() {
-    for (const u of ["https://speed.cloudflare.com/cdn-cgi/trace", "https://www.cloudflare.com/cdn-cgi/trace"]) {
-      try {
-        const r = await fetch(u, { cache: "no-store", signal: AbortSignal.timeout(6000) });
-        const tx = await r.text();
-        logReq(u, "GET", 0);
-        if (!/^ip=/m.test(tx)) continue;
-        return { url: u, data: Object.fromEntries(tx.trim().split("\n").map(l => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)])) };
-      } catch (e) {}
-    }
+    const u = "https://speed.cloudflare.com/cdn-cgi/trace";
+    try {
+      const r = await fetch(u, { cache: "no-store", signal: AbortSignal.timeout(6000) });
+      const tx = await r.text();
+      logReq(u, "GET", 0);
+      if (/^ip=/m.test(tx)) return { url: u, data: Object.fromEntries(tx.trim().split("\n").map(l => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)])) };
+    } catch (e) { logReq(u, "GET", null); }
     return null;
   }
   async function stunIPs() {
@@ -380,11 +377,15 @@
       asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
       http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
     // single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct;
-    // their root path answers JSON, which filter lists that block /cdn-cgi/trace let through
+    // their root path answers JSON, which filter lists that block /cdn-cgi/trace let through. Both paths race, and a
+    // second round follows if both fail, since lossy routes to Cloudflare drop a request now and then
+    const ipOne = async (u, rx) => {
+      try { const x = await (await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text(); logReq(u, "GET", 0); const m = rx.exec(x); if (m) return m[1]; } catch (e) { logReq(u, "GET", null); }
+      throw new Error("no ip");
+    };
     const ipOf = async host => {
-      for (const [p, rx] of [["/", /"ip_address":\s*"([^"]+)"/], ["/cdn-cgi/trace", /^ip=(.*)$/m]]) {
-        const u = "https://" + host + p;
-        try { const x = await (await fetch(u, { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text(); logReq(u, "GET", 0); const m = rx.exec(x); if (m) return m[1]; } catch (e) { logReq(u, "GET", null); }
+      for (let round = 0; round < 2; round++) {
+        try { return await Promise.any([ipOne(`https://${host}/`, /"ip_address":\s*"([^"]+)"/), ipOne(`https://${host}/cdn-cgi/trace`, /^ip=(.*)$/m)]); } catch (e) {}
       }
       return "";
     };
