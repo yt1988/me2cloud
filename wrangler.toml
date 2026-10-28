@@ -2,6 +2,9 @@
 # There is no Worker script, so every request is a static asset request (free and not metered).
 name = "me2cloud"
 compatibility_date = "2025-01-01"
+# Serve only on the bound custom domain: no *.workers.dev address and no per-version preview URLs
+workers_dev = false
+preview_urls = false
 
 # No routes here: bind your own domain in the dashboard (Workers → Domains & Routes),
 # or add `routes = [{ pattern = "example.com", custom_domain = true }]` locally.
