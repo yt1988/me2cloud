@@ -400,28 +400,41 @@
       }
       return { ip: "", src: "" };
     };
+    // Everything starts at once. The bar shows who and where as soon as /meta answers; the IP checks, WebRTC and the
+    // edge timing fill in the verdict afterwards.
     const fams = Promise.all([ipOf(4), ipOf(6)]);
-    const [meta, trace, rtc] = await Promise.all([
-      // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
-      fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
-        .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null),
-      getTrace(),
-      S.rtc ? stunIPs() : Promise.resolve(null)
-    ]);
+    const rtcP = S.rtc ? stunIPs() : Promise.resolve(null);
+    // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
+    const metaP = fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
+      .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null);
+    // latency to the nearest Cloudflare edge: an empty download, median of 3. It starts once /meta has opened the
+    // connection to the same host, so no warm-up is needed; if /meta failed, one uncounted request opens it first
+    const edgeU = "https://speed.cloudflare.com/__down?bytes=0";
+    const edgeP = metaP.then(async m => {
+      const xs = [], warm = m ? 0 : 1;
+      for (let i = 0; i < 3 + warm; i++) {
+        if (i >= warm) step("chk_edge", { i: i - warm + 1, n: 3 });
+        const t0 = performance.now();
+        try { await fetch(bust(edgeU), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i >= warm) xs.push(performance.now() - t0); } catch (e) {}
+      }
+      if (xs.length) logReq(edgeU, "GET", 0);
+      xs.sort((a, b) => a - b);
+      return xs.length ? xs[xs.length >> 1] : null;
+    });
+    const [meta, trace] = await Promise.all([metaP, getTrace()]);
     const tr = trace ? trace.data : {};
-    const N = { ok: !!(meta || trace), state: "done", tz,
+    const N = { ok: !!(meta || trace), state: "checking", partial: true, step: NET.step, tz,
       ip: (meta && meta.clientIp) || tr.ip || "", cc: (meta && meta.country) || tr.loc || "", city: meta ? meta.city || "" : "",
       asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
-      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
-    step("chk_ip");
-    const [r4, r6] = await fams;
+      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off" };
+    if (run !== netRun) return;
+    if (N.ok) { NET = N; renderNet(); }                      // first paint, while the rest finishes
+    edgeP.then(() => step("chk_ip"));
+    const [edge, [r4, r6], rtc] = await Promise.all([edgeP, fams, rtcP]);
+    if (run !== netRun) return;
+    N.edge = edge; N.rtc = rtc;
     N.ip4 = r4.ip; N.ip6 = r6.ip; N.src4 = r4.src; N.src6 = r6.src;
     N.has6 = N.ip6 ? true : N.ip4 ? false : null;          // both failed: blocked, so unknown rather than "no IPv6"
-    // latency to the nearest Cloudflare edge: an empty download on a warm connection, median of 5
-    const edgeU = "https://speed.cloudflare.com/__down?bytes=0", xs = [];
-    for (let i = 0; i < 6; i++) { step("chk_edge", { i: Math.max(1, i), n: 5 }); const t0 = performance.now(); try { await fetch(bust(edgeU), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i) xs.push(performance.now() - t0); } catch (e) {} }
-    xs.sort((a, b) => a - b); N.edge = xs.length ? xs[xs.length >> 1] : null;
-    if (xs.length) logReq(edgeU, "GET", 0);
     const reasons = [];
     if (N.org && DC_RE.test(N.org)) reasons.push(t("r_dc", { org: esc(N.org) + (N.asn ? " (AS" + N.asn + ")" : "") }));
     if (N.warp && N.warp !== "off") reasons.push(t("r_warp"));
@@ -442,6 +455,7 @@
     }
     N.reasons = reasons;
     N.verdict = !N.ok ? "unknown" : reasons.length ? "warn" : "good";
+    N.state = "done"; N.partial = false;
     NET = N; renderNet(); renderCtrl();
   }
   const ICON_EYE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
@@ -454,7 +468,7 @@
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
     const st = ck ? t("checking") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
-      <span class="nb-main">${ck ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}`}</span>
+      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${ck ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
