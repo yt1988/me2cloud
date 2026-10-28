@@ -123,6 +123,7 @@ export default {
   r_rtc: "WebRTC (UDP) sort par {a}, HTTPS par {b} : le trafic est aiguillé.",
   r_fam: "La vérification {f} sort par {a}, mais votre sortie principale est {b} : une partie du trafic passe par un proxy. Mettez à jour les règles directes et revérifiez.",
   chkFail: "Échec de la vérification", chkBlocked: "peut-être bloquée par une extension ou le réseau",
+  chk_net: "Lecture du réseau", chk_ip: "Vérification IPv4 / IPv6", chk_edge: "Mesure jusqu’au Cloudflare le plus proche {i}/{n}",
   all: "Tout",
   none: "Aucun",
   custom: "Personnalisé",

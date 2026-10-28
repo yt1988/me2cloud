@@ -118,6 +118,7 @@ export default {
   r_rtc: "WebRTC（UDP）は {a} から、HTTPS は {b} から出ています。通信が振り分けられています。",
   r_fam: "{f} チェックは {a} から出ていますが、メインの出口は {b} です。一部の通信がプロキシを経由しています。直結ルールを更新して再チェックしてください。",
   chkFail: "チェック失敗", chkBlocked: "拡張機能かネットワークでブロックされた可能性",
+  chk_net: "ネットワーク情報を取得中", chk_ip: "IPv4 / IPv6 を確認中", chk_edge: "最寄りの Cloudflare までを計測中 {i}/{n}",
   all: "すべて",
   none: "クリア",
   custom: "カスタム",

@@ -327,7 +327,7 @@
   }
 
   /* ---------- network check ---------- */
-  let NET = { ok: false, state: "idle" }, netOpen = false;
+  let NET = { ok: false, state: "idle" }, netOpen = false, netRun = 0;
   const isPeak = d => d.getHours() >= PEAK[0] && d.getHours() < PEAK[1];
   // a host in the direct rules, so the WARP flag describes the same path as the tests
   async function getTrace() {
@@ -362,20 +362,11 @@
     } catch (e) { return null; } finally { try { pc && pc.close(); } catch (e) {} }
   }
   async function checkNetwork() {
-    NET = { ok: false, state: "checking" }; renderNet();
+    const run = ++netRun;
+    // the check takes a few seconds on lossy routes, so the bar names the current step
+    const step = (k, v) => { if (run === netRun && NET.state === "checking") { NET.step = t(k, v); renderNet(); } };
+    NET = { ok: false, state: "checking" }; step("chk_net");
     const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })();
-    const [meta, trace, rtc] = await Promise.all([
-      // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
-      fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
-        .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null),
-      getTrace(),
-      S.rtc ? stunIPs() : Promise.resolve(null)
-    ]);
-    const tr = trace ? trace.data : {};
-    const N = { ok: !!(meta || trace), state: "done", tz,
-      ip: (meta && meta.clientIp) || tr.ip || "", cc: (meta && meta.country) || tr.loc || "", city: meta ? meta.city || "" : "",
-      asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
-      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
     // single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct;
     // their root path answers JSON, which filter lists that block /cdn-cgi/trace let through. Both paths race, and a
     // second round follows if both fail, since lossy routes to Cloudflare drop a request now and then
@@ -389,11 +380,25 @@
       }
       return "";
     };
-    [N.ip4, N.ip6] = await Promise.all([ipOf("ipv4-check-perf.radar.cloudflare.com"), ipOf("ipv6-check-perf.radar.cloudflare.com")]);
+    const fams = Promise.all([ipOf("ipv4-check-perf.radar.cloudflare.com"), ipOf("ipv6-check-perf.radar.cloudflare.com")]);
+    const [meta, trace, rtc] = await Promise.all([
+      // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
+      fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
+        .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null),
+      getTrace(),
+      S.rtc ? stunIPs() : Promise.resolve(null)
+    ]);
+    const tr = trace ? trace.data : {};
+    const N = { ok: !!(meta || trace), state: "done", tz,
+      ip: (meta && meta.clientIp) || tr.ip || "", cc: (meta && meta.country) || tr.loc || "", city: meta ? meta.city || "" : "",
+      asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
+      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
+    step("chk_ip");
+    [N.ip4, N.ip6] = await fams;
     N.has6 = N.ip6 ? true : N.ip4 ? false : null;          // both failed: blocked, so unknown rather than "no IPv6"
     // latency to the nearest Cloudflare edge: an empty download on a warm connection, median of 5
     const edgeU = "https://speed.cloudflare.com/__down?bytes=0", xs = [];
-    for (let i = 0; i < 6; i++) { const t0 = performance.now(); try { await fetch(bust(edgeU), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i) xs.push(performance.now() - t0); } catch (e) {} }
+    for (let i = 0; i < 6; i++) { step("chk_edge", { i: Math.max(1, i), n: 5 }); const t0 = performance.now(); try { await fetch(bust(edgeU), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i) xs.push(performance.now() - t0); } catch (e) {} }
     xs.sort((a, b) => a - b); N.edge = xs.length ? xs[xs.length >> 1] : null;
     if (xs.length) logReq(edgeU, "GET", 0);
     const reasons = [];
@@ -428,7 +433,7 @@
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
     const st = ck ? t("checking") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
-      <span class="nb-main">${ck ? "" : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}`}</span>
+      <span class="nb-main">${ck ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${ck ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}

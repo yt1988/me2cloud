@@ -118,6 +118,7 @@ export default {
   r_rtc: "WebRTC（UDP）從 {a} 出去，HTTPS 卻從 {b} 出去，說明流量被分流了。",
   r_fam: "{f} 檢測從 {a} 出去，主出口卻是 {b}，說明有一部分請求走了代理。更新直連規則後再檢測一次。",
   chkFail: "檢測失敗", chkBlocked: "可能被瀏覽器擴充功能或網路攔截",
+  chk_net: "讀取網路資訊", chk_ip: "檢測 IPv4 / IPv6", chk_edge: "測到最近 Cloudflare 的延遲 {i}/{n}",
   all: "全選",
   none: "清空",
   custom: "自定義",

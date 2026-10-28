@@ -55,6 +55,7 @@ export default {
   r_rtc: "WebRTC (UDP) geht über {a} raus, HTTPS über {b}: Der Verkehr wird aufgeteilt.",
   r_fam: "Der {f}-Check geht über {a} raus, dein Hauptausgang ist aber {b}: Ein Teil des Verkehrs läuft über einen Proxy. Aktualisiere die Direktregeln und prüfe erneut.",
   chkFail: "Prüfung fehlgeschlagen", chkBlocked: "evtl. von einer Erweiterung oder dem Netz blockiert",
+  chk_net: "Netzinfos werden gelesen", chk_ip: "IPv4 / IPv6 wird geprüft", chk_edge: "Messung zum nächsten Cloudflare {i}/{n}",
   all: "Alle", none: "Keine", custom: "Eigene",
   ct_as: "Asien", ct_na: "Nordamerika", ct_eu: "Europa", ct_oc: "Ozeanien", ct_sa: "Südamerika", ct_me: "Naher Osten", ct_af: "Afrika", ct_xx: "Eigene",
   mode: "Messungen pro Ziel", m_quick: "Schnell", m_std: "Standard", m_precise: "Genau",

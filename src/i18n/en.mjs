@@ -123,6 +123,7 @@ export default {
   r_rtc: "WebRTC (UDP) goes out from {a}, HTTPS from {b}: traffic is being split.",
   r_fam: "The {f} check goes out from {a}, but your main exit is {b}: some requests are going through a proxy. Update the direct rules and check again.",
   chkFail: "Check failed", chkBlocked: "maybe blocked by an extension or the network",
+  chk_net: "Reading network info", chk_ip: "Checking IPv4 / IPv6", chk_edge: "Timing the nearest Cloudflare {i}/{n}",
   all: "All",
   none: "None",
   custom: "Custom",

@@ -118,6 +118,7 @@ export default {
   r_rtc: "WebRTC(UDP)는 {a}에서, HTTPS는 {b}에서 나갑니다. 트래픽이 나뉘어 있습니다.",
   r_fam: "{f} 확인은 {a}에서 나가는데, 주 출구는 {b}입니다. 일부 요청이 프록시를 거치고 있습니다. 직결 규칙을 업데이트한 뒤 다시 확인하세요.",
   chkFail: "확인 실패", chkBlocked: "확장 프로그램이나 네트워크가 차단했을 수 있음",
+  chk_net: "네트워크 정보 확인 중", chk_ip: "IPv4 / IPv6 확인 중", chk_edge: "가장 가까운 Cloudflare까지 측정 중 {i}/{n}",
   all: "전체",
   none: "비우기",
   custom: "사용자 지정",

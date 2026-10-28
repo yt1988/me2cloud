@@ -55,6 +55,7 @@ export default {
   r_rtc: "O WebRTC (UDP) sai por {a} e o HTTPS por {b}: o tráfego está sendo dividido.",
   r_fam: "A verificação {f} sai por {a}, mas a sua saída principal é {b}: parte do tráfego passa por um proxy. Atualize as regras diretas e verifique de novo.",
   chkFail: "Falha na verificação", chkBlocked: "talvez bloqueada por uma extensão ou pela rede",
+  chk_net: "Lendo a rede", chk_ip: "Verificando IPv4 / IPv6", chk_edge: "Medindo até o Cloudflare mais próximo {i}/{n}",
   all: "Todos", none: "Nenhum", custom: "Personalizado",
   ct_as: "Ásia", ct_na: "América do Norte", ct_eu: "Europa", ct_oc: "Oceania", ct_sa: "América do Sul", ct_me: "Oriente Médio", ct_af: "África", ct_xx: "Personalizado",
   mode: "Amostras por destino", m_quick: "Rápido", m_std: "Padrão", m_precise: "Preciso",

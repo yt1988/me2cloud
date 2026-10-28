@@ -123,6 +123,7 @@ export default {
   r_rtc: "WebRTC (UDP) sale por {a} y HTTPS por {b}: el tráfico se está repartiendo.",
   r_fam: "La comprobación {f} sale por {a}, pero tu salida principal es {b}: parte del tráfico pasa por un proxy. Actualiza las reglas directas y vuelve a comprobar.",
   chkFail: "Falló la comprobación", chkBlocked: "quizá bloqueada por una extensión o la red",
+  chk_net: "Leyendo la red", chk_ip: "Comprobando IPv4 / IPv6", chk_edge: "Midiendo hasta el Cloudflare más cercano {i}/{n}",
   all: "Todos",
   none: "Ninguno",
   custom: "Personalizado",
