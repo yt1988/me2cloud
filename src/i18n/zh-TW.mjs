@@ -50,7 +50,7 @@ export default {
   rules_inline_h: "或者直接貼上全部規則（{n} 條，帶註釋）",
   rules_inline_only: "這個工具不支援遠端規則集，直接貼上規則即可（{n} 條，帶註釋）",
   rules_custom: "自定義節點不在遠端規則集裡，需要另外加上：",
-  rc_detect: "網路檢測（Cloudflare）",
+  rc_detect: "網路檢測（Cloudflare、ipify、ident.me）",
   rc_top: "放在其他規則前面",
   rules_json_note: "JSON 不支援註釋，網域按廠商順序排列。",
   rules_steps: ["複製規則，放在你其他規則的<b>最前面</b>，保證先匹配到。", "重新載入配置。TUN 或 fake-ip 模式下，真實 IP 那部分也要加上（上面已經包含）。", "瀏覽器裡的代理外掛，對本頁關閉，或者把列表加進它的直連名單。", "點網路狀態旁邊的重新整理按鈕，看到運營商變成你真實的寬頻後，再開始測試。"],
@@ -267,6 +267,7 @@ export default {
       `<ul><li>本頁是放在 Cloudflare 上的純靜態檔案。沒有後端、不用註冊、沒有統計程式碼，結果也從不上傳。</li>
           <li>所有測試請求都由你的瀏覽器直接發給廠商。開啟上面的<b>請求記錄</b>，或者瀏覽器開發者工具的 Network 面板，每一條都看得到。</li>
           <li>網路資訊來自 Cloudflare（<code>speed.cloudflare.com/meta</code> 和 <code>/cdn-cgi/trace</code>）。可選的 WebRTC 檢測會向 <code>stun.cloudflare.com</code> 詢問你的 UDP 出口地址，不想用可以在設定裡關掉。</li>
+      <li>IPv4/IPv6 檢測會同時詢問 Cloudflare 以外的 <code>ipify.org</code> 和 <code>ident.me</code>，某一家被網路阻斷時，不會被誤判成沒有 IPv6。</li>
           <li>設定、自定義節點和最近幾次結果只存在這個瀏覽器的本地儲存裡，“清空全部資料”會把它們全刪掉。</li></ul>`
     ],
     [

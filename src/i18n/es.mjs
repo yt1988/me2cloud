@@ -50,7 +50,7 @@ export default {
   rules_inline_h: "O pega todas las reglas tú mismo ({n}, con notas)",
   rules_inline_only: "Esta herramienta no admite reglas remotas; pega las reglas ({n}, con notas)",
   rules_custom: "Tus destinos personalizados no están en el conjunto remoto; añade también estos:",
-  rc_detect: "Comprobación de red (Cloudflare)",
+  rc_detect: "Comprobación de red (Cloudflare, ipify, ident.me)",
   rc_top: "déjala encima de tus otras reglas",
   rules_json_note: "JSON no admite comentarios; los hosts van ordenados por proveedor.",
   rules_steps: [
@@ -374,6 +374,7 @@ export default {
       `<ul><li>La página son archivos estáticos en Cloudflare. No hay servidor propio, ni cuentas, ni analítica, y los resultados nunca se suben.</li>
       <li>Todas las peticiones de prueba van directamente de tu navegador al proveedor. Abre el <b>Registro de peticiones</b> o las herramientas de desarrollo (pestaña Network) para verlas una a una.</li>
       <li>La información de red viene de Cloudflare (<code>speed.cloudflare.com/meta</code> y <code>/cdn-cgi/trace</code>), y la comprobación WebRTC opcional pregunta a <code>stun.cloudflare.com</code> tu dirección de salida UDP. Puedes desactivarla en Ajustes.</li>
+      <li>La detección de IPv4/IPv6 también consulta <code>ipify.org</code> e <code>ident.me</code>, dos proveedores ajenos a Cloudflare, para que una red que bloquee a uno de ellos no se dé por red sin IPv6.</li>
       <li>Los ajustes, los destinos personalizados y las últimas pruebas se quedan en el almacenamiento local de este navegador. “Borrar datos de prueba” elimina los resultados.</li></ul>`
     ],
     [

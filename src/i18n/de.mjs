@@ -26,7 +26,7 @@ export default {
   rules_remote_h: "Empfohlen: Remote-Regelsatz", rules_remote_s: "Dein Tool holt die Liste bei uns und bleibt aktuell, wenn wir Regionen ergänzen. Einmal eintragen, fertig.",
   rules_inline_h: "Oder alle Regeln selbst einfügen ({n}, mit Kommentaren)", rules_inline_only: "Dieses Tool kann keine Remote-Regelsätze; füg die Regeln direkt ein ({n}, mit Kommentaren)",
   rules_custom: "Deine eigenen Ziele sind nicht im Remote-Satz; trag diese zusätzlich ein:",
-  rc_detect: "Netzwerkcheck (Cloudflare)", rc_top: "über deinen anderen Regeln lassen",
+  rc_detect: "Netzwerkcheck (Cloudflare, ipify, ident.me)", rc_top: "über deinen anderen Regeln lassen",
   rules_json_note: "JSON kennt keine Kommentare; die Hosts stehen nach Anbieter sortiert.",
   rules_steps: ["Kopier die Zeilen und setz sie <b>über</b> deine anderen Regeln, damit sie zuerst greifen.", "Konfiguration neu laden. Im TUN- oder fake-ip-Modus auch den Teil für echte IPs übernehmen (oben enthalten).", "Proxy-Erweiterungen im Browser für diese Seite ausschalten oder die Liste in ihre Ausnahmen eintragen.", "Auf den Aktualisieren-Knopf neben deinem Netz drücken. Wenn dein echter Anbieter erscheint, Test starten."],
   heroT: "Wie schnell ist die Cloud von dir zu Hause?", lgMiss: "hohl = passt nicht zu deinen Vorgaben",
@@ -170,6 +170,7 @@ export default {
       `<ul><li>Die Seite besteht nur aus statischen Dateien bei Cloudflare. Kein Backend, kein Konto, keine Statistik, und Ergebnisse werden nie hochgeladen.</li>
       <li>Alle Testanfragen gehen direkt von deinem Browser zum Anbieter. Öffne das <b>Anfrageprotokoll</b> oder die Entwicklertools (Tab Netzwerk), um jede einzelne zu sehen.</li>
       <li>Die Netzinfos kommen von Cloudflare (<code>speed.cloudflare.com/meta</code> und <code>/cdn-cgi/trace</code>); der optionale WebRTC-Check fragt <code>stun.cloudflare.com</code> nach deiner UDP-Ausgangsadresse. Lässt sich in den Einstellungen abschalten.</li>
+      <li>Die IPv4/IPv6-Erkennung fragt zusätzlich <code>ipify.org</code> und <code>ident.me</code>, zwei Anbieter außerhalb von Cloudflare. Blockiert ein Netz einen davon, gilt es deshalb nicht fälschlich als IPv6-los.</li>
       <li>Einstellungen, eigene Ziele und die letzten Tests bleiben im lokalen Speicher dieses Browsers; „Testdaten löschen“ entfernt die Ergebnisse.</li></ul>`],
     ["Rücksichtsvoll gegenüber Anbietern: keine Drosselung, keine Sperre",
       `<p>Wer öffentliche Endpunkte zu hart anfragt, kann die Drosselung oder WAF eines Anbieters auslösen und verdirbt das Ergebnis. Der Test bleibt bewusst weit darunter:</p>

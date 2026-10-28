@@ -34,7 +34,7 @@ function ruleSets(E, detect) {
   const items = [], seen = new Set(), add = r => { if (!seen.has(r.d)) { seen.add(r.d); items.push(r); } };
   for (const e of E.endpoints) for (const u of [e.url, e.url6]) if (u) add({ v: e.vendor, d: new URL(u).hostname });
   detect.forEach(add);
-  const note = r => r.v === "_detect" ? "Me2Cloud network check (Cloudflare)" : [E.vendors[r.v].name, E.vendors[r.v].kind].join(" · ");
+  const note = r => r.v === "_detect" ? "Me2Cloud network check (Cloudflare, ipify, ident.me)" : [E.vendors[r.v].name, E.vendors[r.v].kind].join(" · ");
   const head = c => `${c} Me2Cloud: hosts used by the latency test, to be sent DIRECT. ${items.length} exact hosts, generated ${E.verified}.\n${c} ${SITE}/ · https://github.com/yt1988/me2cloud\n`;
   const list = (c, line) => items.map((r, k) => (k && note(items[k - 1]) === note(r) ? "" : `${c}# ${note(r)}\n`) + line(r.d)).join("\n") + "\n";
   return {

@@ -713,7 +713,11 @@ footer a { color: var(--muted); }
     {"v":"_detect","d":"speed.cloudflare.com"},
     {"v":"_detect","d":"stun.cloudflare.com"},
     {"v":"_detect","d":"ipv4-check-perf.radar.cloudflare.com"},
-    {"v":"_detect","d":"ipv6-check-perf.radar.cloudflare.com"}
+    {"v":"_detect","d":"ipv6-check-perf.radar.cloudflare.com"},
+    {"v":"_detect","d":"api4.ipify.org"},
+    {"v":"_detect","d":"api6.ipify.org"},
+    {"v":"_detect","d":"v4.ident.me"},
+    {"v":"_detect","d":"v6.ident.me"}
   ];
   /* RULES:END */
   const RULE_FORMATS = ["clash", "surge", "shadowrocket", "quanx", "loon", "singbox", "xray", "omega", "plain"];
@@ -1035,20 +1039,36 @@ footer a { color: var(--muted); }
     const step = (k, v) => { if (run === netRun && NET.state === "checking") { NET.step = t(k, v); renderNet(); } };
     NET = { ok: false, state: "checking" }; step("chk_net");
     const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })();
-    // single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct;
-    // their root path answers JSON, which filter lists that block /cdn-cgi/trace let through. Both paths race, and a
-    // second round follows if both fail, since lossy routes to Cloudflare drop a request now and then
-    const ipOne = async (u, rx) => {
-      try { const x = await (await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text(); logReq(u, "GET", 0); const m = rx.exec(x); if (m) return m[1]; } catch (e) { logReq(u, "GET", null); }
+    // Each family is asked of three providers on separate networks at once (Cloudflare, ipify on Hostwinds, ident.me
+    // on Hetzner), so a network that blocks or degrades one of them isn't reported as lacking that family. All hosts
+    // are single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct.
+    // Cloudflare's root path answers JSON, which filter lists that block /cdn-cgi/trace let through. A second round
+    // follows if every provider fails, since lossy routes drop a request now and then. The request log keeps each
+    // provider's result, which shows which one a network blocks.
+    const RX_IP = /"ip"\s*:\s*"([^"]+)"/, RX_RADAR = /"ip_address"\s*:\s*"([^"]+)"/, RX_TRACE = /^ip=(.*)$/m;
+    const IP_SRC = {
+      4: [["https://ipv4-check-perf.radar.cloudflare.com/", RX_RADAR], ["https://ipv4-check-perf.radar.cloudflare.com/cdn-cgi/trace", RX_TRACE],
+          ["https://api4.ipify.org/?format=json", RX_IP], ["https://v4.ident.me/json", RX_IP]],
+      6: [["https://ipv6-check-perf.radar.cloudflare.com/", RX_RADAR], ["https://ipv6-check-perf.radar.cloudflare.com/cdn-cgi/trace", RX_TRACE],
+          ["https://api6.ipify.org/?format=json", RX_IP], ["https://v6.ident.me/json", RX_IP]]
+    };
+    const ipOne = async (f, u, rx) => {
+      try {
+        const x = await (await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text();
+        const m = rx.exec(x), ip = m ? m[1].trim() : "";
+        // a dual-stack answer from the wrong family doesn't count
+        if (ip && (f === 6) === ip.includes(":")) { logReq(u, "GET", 0); return { ip, src: new URL(u).hostname }; }
+      } catch (e) {}
+      logReq(u, "GET", null);
       throw new Error("no ip");
     };
-    const ipOf = async host => {
+    const ipOf = async f => {
       for (let round = 0; round < 2; round++) {
-        try { return await Promise.any([ipOne(`https://${host}/`, /"ip_address":\s*"([^"]+)"/), ipOne(`https://${host}/cdn-cgi/trace`, /^ip=(.*)$/m)]); } catch (e) {}
+        try { return await Promise.any(IP_SRC[f].map(([u, rx]) => ipOne(f, u, rx))); } catch (e) {}
       }
-      return "";
+      return { ip: "", src: "" };
     };
-    const fams = Promise.all([ipOf("ipv4-check-perf.radar.cloudflare.com"), ipOf("ipv6-check-perf.radar.cloudflare.com")]);
+    const fams = Promise.all([ipOf(4), ipOf(6)]);
     const [meta, trace, rtc] = await Promise.all([
       // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
       fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
@@ -1062,7 +1082,8 @@ footer a { color: var(--muted); }
       asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
       http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
     step("chk_ip");
-    [N.ip4, N.ip6] = await fams;
+    const [r4, r6] = await fams;
+    N.ip4 = r4.ip; N.ip6 = r6.ip; N.src4 = r4.src; N.src6 = r6.src;
     N.has6 = N.ip6 ? true : N.ip4 ? false : null;          // both failed: blocked, so unknown rather than "no IPv6"
     // latency to the nearest Cloudflare edge: an empty download on a warm connection, median of 5
     const edgeU = "https://speed.cloudflare.com/__down?bytes=0", xs = [];
@@ -1116,7 +1137,7 @@ footer a { color: var(--muted); }
       <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v${blur}">${esc(N.ip || "–")}</span><span class="s">${N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : ""}</span></div>
       <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || "–")}</span><span class="s">${N.asn ? "AS" + N.asn : ""}</span></div>
       <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${esc(N.colo || "")}${N.http ? " · " + esc(N.http) : ""}</span></div>
-      <div class="kv"><span class="lbl">IPv4 / IPv6</span><span class="v${blur}">${esc(N.ip4 || (N.has6 === null ? t("chkFail") : "–"))}</span><span class="s${blur}">${esc(N.ip6 || (N.has6 === null ? t("chkBlocked") : t("ip_no6short")))}</span></div>
+      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v${blur}">${esc(N.ip4 || (N.has6 === null ? t("chkFail") : "–"))}</span><span class="s${blur}">${esc(N.ip6 || (N.has6 === null ? t("chkBlocked") : t("ip_no6short")))}</span></div>
       <div class="kv"><span class="lbl">WebRTC</span><span class="v${blur}">${esc(N.rtc && N.rtc.length ? N.rtc.join(", ") : "–")}</span><span class="s">${esc(N.tz || "")}</span></div>
       ${N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}</ul>` : `<div class="note" style="grid-column:1/-1">${t(N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`}`;
   }

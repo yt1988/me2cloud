@@ -50,7 +50,7 @@ export default {
   rules_inline_h: "Ou collez toutes les règles vous-même ({n}, avec notes)",
   rules_inline_only: "Cet outil ne gère pas les jeux de règles distants ; collez les règles ({n}, avec notes)",
   rules_custom: "Vos cibles personnalisées ne sont pas dans le jeu distant ; ajoutez aussi celles-ci :",
-  rc_detect: "Vérification réseau (Cloudflare)",
+  rc_detect: "Vérification réseau (Cloudflare, ipify, ident.me)",
   rc_top: "à placer au-dessus de vos autres règles",
   rules_json_note: "Le JSON n’accepte pas de commentaires : les hôtes sont classés par fournisseur.",
   rules_steps: [
@@ -374,6 +374,7 @@ export default {
       `<ul><li>La page n’est faite que de fichiers statiques sur Cloudflare. Pas de serveur, pas de compte, pas d’analytique, et les résultats ne sont jamais envoyés.</li>
       <li>Toutes les requêtes de test vont directement de votre navigateur au fournisseur. Ouvrez le <b>Journal des requêtes</b> ou les outils de développement (onglet Réseau) pour les voir une à une.</li>
       <li>Les infos réseau viennent de Cloudflare (<code>speed.cloudflare.com/meta</code> et <code>/cdn-cgi/trace</code>), et la vérification WebRTC facultative demande à <code>stun.cloudflare.com</code> votre adresse de sortie UDP. Désactivable dans les Réglages.</li>
+      <li>La détection IPv4/IPv6 interroge aussi <code>ipify.org</code> et <code>ident.me</code>, deux fournisseurs hors Cloudflare, pour qu’un réseau qui bloque l’un d’eux ne soit pas considéré comme sans IPv6.</li>
       <li>Réglages, cibles personnalisées et derniers tests restent dans le stockage local de ce navigateur ; « Effacer les données de test » supprime les résultats.</li></ul>`
     ],
     [

@@ -50,7 +50,7 @@ export default {
   rules_inline_h: "또는 규칙을 직접 붙여넣기({n}개, 설명 포함)",
   rules_inline_only: "이 도구는 원격 규칙 세트를 지원하지 않으니 규칙을 직접 붙여넣으세요({n}개, 설명 포함)",
   rules_custom: "사용자 지정 대상은 원격 세트에 없으니 이것도 추가하세요:",
-  rc_detect: "네트워크 확인(Cloudflare)",
+  rc_detect: "네트워크 확인(Cloudflare, ipify, ident.me)",
   rc_top: "다른 규칙보다 위에 두기",
   rules_json_note: "JSON에는 설명을 넣을 수 없어서 사업자 순서로 나열했습니다.",
   rules_steps: ["규칙을 복사해서 다른 규칙보다 <b>위</b>에 넣어 먼저 매칭되게 하세요.", "설정을 다시 불러옵니다. TUN이나 fake-ip 모드라면 실제 IP 부분도 넣으세요(위에 포함되어 있습니다).", "브라우저의 프록시 확장 기능은 이 페이지에서 끄거나 예외 목록에 추가하세요.", "네트워크 표시 옆의 새로고침 버튼을 눌러, 실제 통신사가 보이면 테스트를 시작하세요."],
@@ -369,6 +369,7 @@ export default {
       `<ul><li>이 페이지는 Cloudflare에 올린 정적 파일뿐입니다. 백엔드도 가입도 분석 도구도 없고, 결과를 업로드하지 않습니다.</li>
       <li>테스트 요청은 모두 브라우저에서 업체로 바로 갑니다. 위의 <b>요청 기록</b>이나 개발자 도구 Network 탭에서 하나씩 볼 수 있습니다.</li>
       <li>네트워크 정보는 Cloudflare(<code>speed.cloudflare.com/meta</code>, <code>/cdn-cgi/trace</code>)에서 받고, 선택 사항인 WebRTC 확인은 <code>stun.cloudflare.com</code>에 UDP 출구 주소를 묻습니다. 설정에서 끌 수 있습니다.</li>
+      <li>IPv4/IPv6 확인은 Cloudflare 외에 <code>ipify.org</code>와 <code>ident.me</code>에도 함께 물어보므로, 그중 하나가 막혀 있어도 IPv6가 없다고 잘못 판단하지 않습니다.</li>
       <li>설정, 사용자 지정 대상, 최근 결과는 이 브라우저의 로컬 저장소에만 있고 '테스트 데이터 지우기'로 결과를 지울 수 있습니다.</li></ul>`
     ],
     [

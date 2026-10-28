@@ -50,7 +50,7 @@ export default {
   rules_inline_h: "またはルールを直接貼り付け（{n} 件、注釈付き）",
   rules_inline_only: "このツールはリモートルールセット非対応なので、ルールを直接貼り付けてください（{n} 件、注釈付き）",
   rules_custom: "カスタム接続先はリモートセットに入っていないので、これも追加してください：",
-  rc_detect: "ネットワーク確認（Cloudflare）",
+  rc_detect: "ネットワーク確認（Cloudflare、ipify、ident.me）",
   rc_top: "ほかのルールより上に置く",
   rules_json_note: "JSON には注釈が書けないので、事業者順に並べています。",
   rules_steps: ["ルールをコピーして、ほかのルールより<b>上</b>に置き、先にマッチさせます。", "設定を再読み込み。TUN や fake-ip モードなら実 IP の部分も入れてください（上に含まれています）。", "ブラウザのプロキシ拡張機能はこのページでオフにするか、直結リストに追加します。", "ネットワーク表示の横の更新ボタンを押し、本来のプロバイダが表示されたらテストを始めます。"],
@@ -369,6 +369,7 @@ export default {
       `<ul><li>このページは Cloudflare 上の静的ファイルだけです。バックエンドも登録も解析ツールもなく、結果をアップロードすることはありません。</li>
       <li>テストのリクエストはすべてブラウザからクラウド事業者へ直接送られます。上の<b>リクエストログ</b>か、開発者ツールの Network タブで 1 件ずつ確認できます。</li>
       <li>ネットワーク情報は Cloudflare（<code>speed.cloudflare.com/meta</code> と <code>/cdn-cgi/trace</code>）から取得し、オプションの WebRTC チェックは <code>stun.cloudflare.com</code> に UDP の出口アドレスを問い合わせます。設定でオフにできます。</li>
+      <li>IPv4/IPv6 の判定では Cloudflare 以外の <code>ipify.org</code> と <code>ident.me</code> にも同時に問い合わせるので、どれか一つが遮断されていても IPv6 なしと誤判定しません。</li>
       <li>設定、カスタム接続先、最近の結果はこのブラウザのローカルストレージにだけ保存され、「テストデータを消去」で結果を削除できます。</li></ul>`
     ],
     [

@@ -415,7 +415,11 @@
         "speed.cloudflare.com",
         "stun.cloudflare.com",
         "ipv4-check-perf.radar.cloudflare.com",
-        "ipv6-check-perf.radar.cloudflare.com"
+        "ipv6-check-perf.radar.cloudflare.com",
+        "api4.ipify.org",
+        "api6.ipify.org",
+        "v4.ident.me",
+        "v6.ident.me"
       ]
     }
   ]

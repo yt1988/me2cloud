@@ -198,7 +198,7 @@ export default {
   rules_inline_h: "或者直接粘贴全部规则（{n} 条，带注释）",
   rules_inline_only: "这个工具不支持远程规则集，直接粘贴规则即可（{n} 条，带注释）",
   rules_custom: "自定义节点不在远程规则集里，需要另外加上：",
-  rc_detect: "网络检测（Cloudflare）",
+  rc_detect: "网络检测（Cloudflare、ipify、ident.me）",
   rc_top: "放在其他规则前面",
   rules_json_note: "JSON 不支持注释，域名按厂商顺序排列。",
   rules_steps: ["复制规则，放在你其他规则的<b>最前面</b>，保证先匹配到。", "重新加载配置。TUN 或 fake-ip 模式下，真实 IP 那部分也要加上（上面已经包含）。", "浏览器里的代理插件，对本页关闭，或者把列表加进它的直连名单。", "点网络状态旁边的刷新按钮，看到运营商变成你真实的宽带后，再开始测试。"],
@@ -415,6 +415,7 @@ export default {
       `<ul><li>本页是放在 Cloudflare 上的纯静态文件。没有后端、不用注册、没有统计代码，结果也从不上传。</li>
           <li>所有测试请求都由你的浏览器直接发给厂商。打开上面的<b>请求记录</b>，或者浏览器开发者工具的 Network 面板，每一条都看得到。</li>
           <li>网络信息来自 Cloudflare（<code>speed.cloudflare.com/meta</code> 和 <code>/cdn-cgi/trace</code>）。可选的 WebRTC 检测会向 <code>stun.cloudflare.com</code> 询问你的 UDP 出口地址，不想用可以在设置里关掉。</li>
+      <li>IPv4/IPv6 检测会同时询问 Cloudflare 以外的 <code>ipify.org</code> 和 <code>ident.me</code>，某一家被网络阻断时，不会被误判成没有 IPv6。</li>
           <li>设置、自定义节点和最近几次结果只存在这个浏览器的本地存储里，“清空全部数据”会把它们全删掉。</li></ul>`
     ],
     [
