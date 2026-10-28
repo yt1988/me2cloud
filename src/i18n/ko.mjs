@@ -116,6 +116,7 @@ export default {
   r_warp: "Cloudflare WARP가 켜져 있습니다.",
   r_tz: "컴퓨터 시간대는 {a}인데 출구 IP는 {b}에 있습니다.",
   r_rtc: "WebRTC(UDP)는 {a}에서, HTTPS는 {b}에서 나갑니다. 트래픽이 나뉘어 있습니다.",
+  r_fam: "{f} 확인은 {a}에서 나가는데, 주 출구는 {b}입니다. 일부 요청이 프록시를 거치고 있습니다. 직결 규칙을 업데이트한 뒤 다시 확인하세요.",
   all: "전체",
   none: "비우기",
   custom: "사용자 지정",

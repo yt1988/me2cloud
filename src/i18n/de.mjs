@@ -53,6 +53,7 @@ export default {
   r_dc: "Dein Ausgangsnetz ist {org}, ein Rechenzentrum. Das ist fast immer ein VPN, Proxy oder Cloud-Server, keine Heimleitung.",
   r_warp: "Cloudflare WARP ist an.", r_tz: "Deine Uhr sagt {a}, aber deine Ausgangs-IP liegt in {b}.",
   r_rtc: "WebRTC (UDP) geht über {a} raus, HTTPS über {b}: Der Verkehr wird aufgeteilt.",
+  r_fam: "Der {f}-Check geht über {a} raus, dein Hauptausgang ist aber {b}: Ein Teil des Verkehrs läuft über einen Proxy. Aktualisiere die Direktregeln und prüfe erneut.",
   all: "Alle", none: "Keine", custom: "Eigene",
   ct_as: "Asien", ct_na: "Nordamerika", ct_eu: "Europa", ct_oc: "Ozeanien", ct_sa: "Südamerika", ct_me: "Naher Osten", ct_af: "Afrika", ct_xx: "Eigene",
   mode: "Messungen pro Ziel", m_quick: "Schnell", m_std: "Standard", m_precise: "Genau",

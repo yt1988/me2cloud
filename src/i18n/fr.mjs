@@ -121,6 +121,7 @@ export default {
   r_warp: "Cloudflare WARP est activé.",
   r_tz: "Votre horloge indique {a}, mais votre IP de sortie est en/au {b}.",
   r_rtc: "WebRTC (UDP) sort par {a}, HTTPS par {b} : le trafic est aiguillé.",
+  r_fam: "La vérification {f} sort par {a}, mais votre sortie principale est {b} : une partie du trafic passe par un proxy. Mettez à jour les règles directes et revérifiez.",
   all: "Tout",
   none: "Aucun",
   custom: "Personnalisé",

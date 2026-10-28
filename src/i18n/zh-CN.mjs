@@ -264,6 +264,7 @@ export default {
   r_warp: "Cloudflare WARP 开着。",
   r_tz: "你电脑的时区在{a}，但出口 IP 在{b}。",
   r_rtc: "WebRTC（UDP）从 {a} 出去，HTTPS 却从 {b} 出去，说明流量被分流了。",
+  r_fam: "{f} 检测从 {a} 出去，主出口却是 {b}，说明有一部分请求走了代理。更新直连规则后再检测一次。",
   all: "全选",
   none: "清空",
   custom: "自定义",

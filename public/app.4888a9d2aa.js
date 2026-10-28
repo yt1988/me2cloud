@@ -414,9 +414,18 @@
     if (N.warp && N.warp !== "off") reasons.push(t("r_warp"));
     const tzc = TZ_CC[tz];
     if (tzc && N.cc && tzc !== N.cc && !(tzc === "CN" && ["HK", "MO"].includes(N.cc))) reasons.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(N.cc)) }));
+    const fam = x => x.includes(":") ? 6 : 4;
     if (rtc && rtc.length && N.ip) {
-      const fam = x => x.includes(":") ? 6 : 4, same = rtc.filter(x => fam(x) === fam(N.ip));
+      const same = rtc.filter(x => fam(x) === fam(N.ip));
       if (same.length && !same.includes(N.ip)) reasons.push(t("r_rtc", { a: esc(same[0]), b: esc(N.ip) }));
+    }
+    // the single-stack checks should leave from the same network as the main exit (or, for the other family, the
+    // WebRTC exit); compare /16 for IPv4 and /64 for IPv6, since CGNAT pools and temporary IPv6 addresses vary inside that
+    const v6g = a => { const [h, tl = ""] = a.toLowerCase().split("::"), H = h ? h.split(":") : [], T = tl ? tl.split(":") : []; return [...H, ...Array(Math.max(0, 8 - H.length - T.length)).fill("0"), ...T].map(g => g.padStart(4, "0")); };
+    const netOf = x => fam(x) === 6 ? v6g(x).slice(0, 4).join(":") : x.split(".").slice(0, 2).join(".");
+    for (const [f, got] of [[4, N.ip4], [6, N.ip6]]) {
+      const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find(x => fam(x) === f);
+      if (got && ref && netOf(got) !== netOf(ref)) reasons.push(t("r_fam", { f: "IPv" + f, a: esc(got), b: esc(ref) }));
     }
     N.reasons = reasons;
     N.verdict = !N.ok ? "unknown" : reasons.length ? "warn" : "good";

@@ -121,6 +121,7 @@ export default {
   r_warp: "Cloudflare WARP is on.",
   r_tz: "Your clock says {a}, but your exit IP is in {b}.",
   r_rtc: "WebRTC (UDP) goes out from {a}, HTTPS from {b}: traffic is being split.",
+  r_fam: "The {f} check goes out from {a}, but your main exit is {b}: some requests are going through a proxy. Update the direct rules and check again.",
   all: "All",
   none: "None",
   custom: "Custom",
