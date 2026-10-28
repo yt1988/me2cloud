@@ -3,8 +3,8 @@
 name = "me2cloud"
 compatibility_date = "2025-01-01"
 
-# Bind m2c.1ms.dog (zone 1ms.dog in the same Cloudflare account) on deploy
-routes = [{ pattern = "m2c.1ms.dog", custom_domain = true }]
+# No routes here: bind your own domain in the dashboard (Workers → Domains & Routes),
+# or add `routes = [{ pattern = "example.com", custom_domain = true }]` locally.
 
 [assets]
 directory = "./public"

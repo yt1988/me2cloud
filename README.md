@@ -57,7 +57,7 @@ node scripts/build.mjs                     # 重新生成 public/
 npx wrangler deploy
 ```
 
-没有 Worker 脚本，所有请求都是静态资源请求，免费且不计量。
+没有 Worker 脚本，所有请求都是静态资源请求，免费且不计量。部署后默认只有 `*.workers.dev` 地址，自定义域名在 Cloudflare 控制台的 Workers → 域和路由 里绑定。
 
 ## 许可证
 
