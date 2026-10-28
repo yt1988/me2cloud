@@ -369,9 +369,9 @@
     const run = ++netRun;
     // the check takes a few seconds on lossy routes, so the bar names the current step
     const step = (k, v) => { if (run === netRun && NET.state === "checking") { NET.step = t(k, v); renderNet(); } };
-    // a recheck keeps showing the last result until the new one arrives, so the bar and open details don't jump
-    const prev = NET.state === "done" && NET.ok ? NET : null;
-    NET = prev ? Object.assign({}, prev, { state: "checking", partial: true }) : { ok: false, state: "checking" };
+    // the bar starts over, but on a recheck it keeps its rules button (and open details keep the last result,
+    // dimmed) so the layout doesn't collapse and re-expand
+    NET = { ok: false, state: "checking", recheck: NET.state === "done" };
     step("chk_net");
     const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })();
     // Each family is asked of three providers on separate networks at once (Cloudflare, ipify on Hostwinds, ident.me
@@ -429,10 +429,7 @@
     const N = { ok: !!(meta || trace), state: "checking", partial: true, step: NET.step, tz,
       ip: (meta && meta.clientIp) || tr.ip || "", cc: (meta && meta.country) || tr.loc || "", city: meta ? meta.city || "" : "",
       asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
-      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off",
-      // the previous latency and IP families stay on screen until the new ones are in
-      edge: prev ? prev.edge : null, ip4: prev ? prev.ip4 : "", ip6: prev ? prev.ip6 : "", src4: prev ? prev.src4 : "", src6: prev ? prev.src6 : "",
-      has6: prev ? prev.has6 : undefined };
+      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", recheck: NET.recheck };
     if (run !== netRun) return;
     if (N.ok) { NET = N; renderNet(); }                      // first paint, while the rest finishes
     edgeP.then(() => step("chk_ip"));
@@ -473,13 +470,13 @@
     const peak = isPeak(new Date());
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
     const st = ck ? t("checking") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
-    // IP families: which ones answered, once known (or kept from the last check during a recheck)
+    // IP families: which ones answered, once this check knows
     const ipf = N.has6 === undefined ? "" : `<span class="nb-ipf" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><b class="${N.ip4 ? "on" : "off"}">IPv4</b><b class="${N.ip6 ? "on" : "off"}">IPv6</b></span>`;
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
       <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${ipf}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
-        ${ck && !N.partial ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
+        ${ck && !N.partial && !N.recheck ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
         <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
         <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
