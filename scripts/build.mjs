@@ -11,7 +11,8 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-const SITE = "https://m2c.1ms.dog";
+// canonical address for SEO tags, sitemap and rule-set headers; self-hosters set SITE_URL=https://your.domain
+const SITE = (process.env.SITE_URL || "https://m2c.1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
 // language, URL folder, og:locale; the first is the root
 const LANGS = [["en", "", "en_US"], ["zh-CN", "zh-cn", "zh_CN"], ["zh-TW", "zh-tw", "zh_TW"], ["ja", "ja", "ja_JP"], ["ko", "ko", "ko_KR"],

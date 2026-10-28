@@ -9,6 +9,8 @@ import { Resvg } from "@resvg/resvg-js";
 import { loadAll } from "./i18n-tool.mjs";
 
 const pub = new URL("../public/", import.meta.url);
+// the address printed on the preview images: SITE_URL, as in build.mjs
+const HOST = new URL(process.env.SITE_URL || "https://m2c.1ms.dog").host;
 const render = (svg, width) => new Resvg(svg, { fitTo: { mode: "width", value: width }, font: { loadSystemFonts: true, defaultFontFamily: "Segoe UI" } }).render().asPng();
 
 // icons
@@ -50,7 +52,7 @@ for (const [lang, d] of Object.entries(all)) {
   ${lines.map((l, i) => `<text x="80" y="${265 + i * 78}" font-size="64" font-weight="700" fill="#ffffff" font-family="${ff}">${esc(l)}</text>`).join("")}
   <text x="80" y="${265 + lines.length * 78 + 4}" font-size="30" fill="#a0a0a0" font-family="${ff}">${esc(T("og_sub"))}</text>
   ${dots}
-  <text x="1120" y="560" text-anchor="end" font-size="30" font-weight="600" fill="#3ecf8e" font-family="Consolas, monospace">m2c.1ms.dog</text>
+  <text x="1120" y="560" text-anchor="end" font-size="30" font-weight="600" fill="#3ecf8e" font-family="Consolas, monospace">${HOST}</text>
 </svg>`;
   await writeFile(new URL(`og/${lang.toLowerCase()}.png`, pub), render(svg, 1200));
   console.log("wrote og/" + lang.toLowerCase() + ".png");

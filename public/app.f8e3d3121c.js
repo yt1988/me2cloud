@@ -721,7 +721,7 @@
   }
 
   /* ---------- bypass rules ---------- */
-  // where the remote rule sets live: this site, or the public one when running locally
+  // this site's address, for the remote rule sets and the share card; the public one when running locally
   const SITE = /^(localhost|127\.|\[)/.test(location.hostname) ? "https://m2c.1ms.dog" : location.origin;
   const ruleNote = r => r.v === "_detect" ? t("rc_detect") : r.v === "custom" ? "★ " + r.n
     : [vnm(r.v), vtext(r.v, "kind")].filter(Boolean).join(" · ");
@@ -898,7 +898,9 @@
     const logo = await logoImage();
     if (logo) g.drawImage(logo, P, P - 8, 200, 80);
     font(500, 28, true); g.textBaseline = "middle"; text(fmtTs(VIEW.ts || Date.now()), W - P, P + 32, C.mu, "right"); g.textBaseline = "alphabetic";
-    font(700, 54); text(fit(t("card_title"), W - 2 * P), P, 236, C.fg);
+    // long titles shrink before they get cut
+    let ts = 54; font(700, ts); while (ts > 40 && g.measureText(t("card_title")).width > W - 2 * P) font(700, ts -= 2);
+    text(fit(t("card_title"), W - 2 * P), P, 236, C.fg);
     const L = shareLoc(), list = rankList().filter(x => x.st.ok && x.e.vendor !== "custom");
     // two meta lines: whose line it is, then how it was measured
     const where = withLoc ? [L.city, L.org].filter(Boolean).join(" · ") : "";
@@ -927,7 +929,6 @@
     const X = v => lx + (rx - lx) * pos(v) / 100, bands = [AX_MIN].concat(GRADES, AX_MAX);
     for (let k = 1; k <= 5; k++) {
       g.globalAlpha = .1; g.fillStyle = C.t[k]; g.fillRect(X(bands[k - 1]), y0, X(bands[k]) - X(bands[k - 1]), ph); g.globalAlpha = 1;
-      font(700, 20, true); text(tierCode(k), X(bands[k - 1]) + 8, y0 + 24, C.t[k]);
     }
     lanes.forEach(({ v }, i) => {
       const y = y0 + i * lh + lh / 2;
@@ -939,6 +940,13 @@
         g.fillStyle = x.pass ? col : C.bg; g.fill(); g.lineWidth = x.pass ? 3 : 4; g.strokeStyle = x.pass ? C.bg : col; g.stroke();
       }
     });
+    // tier labels last, on a chip, so the dots of the first lane don't cover them
+    font(700, 20, true);
+    for (let k = 1; k <= 5; k++) {
+      const tx = X(bands[k - 1]) + 6, tw = g.measureText(tierCode(k)).width;
+      g.fillStyle = C.bg; g.globalAlpha = .85; rr(tx - 4, y0 + 6, tw + 8, 24, 5); g.fill(); g.globalAlpha = 1;
+      text(tierCode(k), tx, y0 + 24, C.t[k]);
+    }
     font(500, 22, true);
     for (const v of [5, 20, 100, 500, 2000]) text(v >= 1000 ? v / 1000 + "s" : String(v), X(v), y0 + ph + 32, C.mu, "center");
     if (more > 0) { font(500, 22); text(t("card_more", { n: more }), lx - 18, y0 + ph + 32, C.mu, "right"); }
@@ -964,9 +972,9 @@
     const fy = H - P - 150;
     g.strokeStyle = C.line; g.lineWidth = 2; g.beginPath(); g.moveTo(P, fy); g.lineTo(W - P, fy); g.stroke();
     font(700, 36); text(fit(t("card_cta"), W - 2 * P - 200), P, fy + 74, C.fg);
-    font(500, 26); text("m2c.1ms.dog  ·  " + t("card_local"), P, fy + 120, C.mu);
+    font(500, 26); text(new URL(SITE).host + "  ·  " + t("card_local"), P, fy + 120, C.mu);
     try {
-      const q = (await loadQR())(0, "M"); q.addData("https://m2c.1ms.dog/"); q.make();
+      const q = (await loadQR())(0, "M"); q.addData(SITE + "/"); q.make();
       const n = q.getModuleCount(), size = 130, m = size / n, qx = W - P - size, qy = fy + 20;
       g.fillStyle = "#ffffff"; rr(qx - 10, qy - 10, size + 20, size + 20, 12); g.fill(); g.fillStyle = "#000000";
       for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) g.fillRect(qx + c * m, qy + r * m, m + .5, m + .5);
