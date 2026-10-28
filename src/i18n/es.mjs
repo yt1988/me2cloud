@@ -51,7 +51,6 @@ export default {
   rules_inline_only: "Esta herramienta no admite reglas remotas; pega las reglas ({n}, con notas)",
   rules_custom: "Tus destinos personalizados no están en el conjunto remoto; añade también estos:",
   rc_detect: "Comprobación de red (Cloudflare)",
-  rc_site: "Esta página",
   rc_top: "déjala encima de tus otras reglas",
   rules_json_note: "JSON no admite comentarios, así que los hosts van agrupados por tipo de coincidencia.",
   rules_steps: [

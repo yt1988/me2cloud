@@ -26,7 +26,7 @@ export default {
   rules_remote_h: "Recomendado: conjunto de regras remoto", rules_remote_s: "Sua ferramenta baixa a lista da gente e se atualiza quando adicionamos regiões. Adicione uma vez só.",
   rules_inline_h: "Ou cole todas as regras você mesmo ({n}, com notas)", rules_inline_only: "Esta ferramenta não aceita regras remotas; cole as regras ({n}, com notas)",
   rules_custom: "Seus destinos personalizados não estão no conjunto remoto; adicione também estes:",
-  rc_detect: "Verificação de rede (Cloudflare)", rc_site: "Esta página", rc_top: "mantenha acima das outras regras",
+  rc_detect: "Verificação de rede (Cloudflare)", rc_top: "mantenha acima das outras regras",
   rules_json_note: "JSON não aceita comentários, então os hosts estão agrupados por tipo de correspondência.",
   rules_steps: ["Copie as linhas e coloque-as <b>acima</b> das outras regras, para que valham primeiro.", "Recarregue a configuração. Em modo TUN ou fake-ip, mantenha também a parte de IP real (incluída acima).", "Desative extensões de proxy do navegador para esta página ou adicione a lista às exceções delas.", "Aperte o botão de atualizar ao lado da sua rede. Quando aparecer a sua operadora de verdade, comece o teste."],
   heroT: "Quão rápida é a nuvem da sua casa?", lgMiss: "vazado = não atende às suas exigências",

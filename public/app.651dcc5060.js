@@ -65,7 +65,8 @@
     {"v":"_detect","d":"speed.cloudflare.com"},
     {"v":"_detect","d":"www.cloudflare.com"},
     {"v":"_detect","d":"stun.cloudflare.com"},
-    {"v":"_site","d":"m2c.1ms.dog"}
+    {"v":"_detect","d":"ipv4-check-perf.radar.cloudflare.com"},
+    {"v":"_detect","d":"ipv6-check-perf.radar.cloudflare.com"}
   ];
   /* RULES:END */
   const RULE_FORMATS = ["clash", "surge", "shadowrocket", "quanx", "loon", "singbox", "xray", "omega", "plain"];
@@ -349,12 +350,13 @@
   /* ---------- network check ---------- */
   let NET = { ok: false, state: "idle" }, netOpen = false;
   const isPeak = d => d.getHours() >= PEAK[0] && d.getHours() < PEAK[1];
+  // only hosts in the direct rules, so the edge latency and WARP flag describe the same path as the tests
   async function getTrace() {
-    for (const u of ["/cdn-cgi/trace", "https://www.cloudflare.com/cdn-cgi/trace"]) {
+    for (const u of ["https://speed.cloudflare.com/cdn-cgi/trace", "https://www.cloudflare.com/cdn-cgi/trace"]) {
       try {
         const r = await fetch(u, { cache: "no-store", signal: AbortSignal.timeout(6000) });
         const tx = await r.text();
-        logReq(new URL(u, location.href).href, "GET", 0);
+        logReq(u, "GET", 0);
         if (!/^ip=/m.test(tx)) continue;
         return { url: u, data: Object.fromEntries(tx.trim().split("\n").map(l => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)])) };
       } catch (e) {}
@@ -398,11 +400,12 @@
       asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
       http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", rtc };
     const ipOf = async u => { try { const x = await (await fetch(u, { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text(); logReq(u, "GET", 0); return (/^ip=(.*)$/m.exec(x) || [])[1] || ""; } catch (e) { logReq(u, "GET", null); return ""; } };
-    [N.ip4, N.ip6] = await Promise.all([ipOf("https://1.1.1.1/cdn-cgi/trace"), ipOf("https://[2606:4700:4700::1111]/cdn-cgi/trace")]);
+    // single-stack names (A only / AAAA only) rather than IP literals, so domain rules can send them direct
+    [N.ip4, N.ip6] = await Promise.all([ipOf("https://ipv4-check-perf.radar.cloudflare.com/cdn-cgi/trace"), ipOf("https://ipv6-check-perf.radar.cloudflare.com/cdn-cgi/trace")]);
     N.has6 = !!N.ip6;
     if (trace) {
       // latency to the nearest Cloudflare edge: warm connection, median of 5
-      const u = new URL(trace.url, location.href).href, xs = [];
+      const u = trace.url, xs = [];
       for (let i = 0; i < 6; i++) { const t0 = performance.now(); try { await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) }); if (i) xs.push(performance.now() - t0); } catch (e) {} }
       xs.sort((a, b) => a - b); N.edge = xs.length ? xs[xs.length >> 1] : null;
     }
@@ -720,12 +723,11 @@
   const globRe = w => "^" + w.split("*").map(p => p.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join("[^.]+") + "$";
   // where the remote rule sets live: this site, or the public one when running locally
   const SITE = /^(localhost|127\.|\[)/.test(location.hostname) ? "https://m2c.1ms.dog" : location.origin;
-  const ruleNote = r => r.v === "_detect" ? t("rc_detect") : r.v === "_site" ? t("rc_site") : r.v === "custom" ? "★ " + r.n
+  const ruleNote = r => r.v === "_detect" ? t("rc_detect") : r.v === "custom" ? "★ " + r.n
     : [vnm(r.v), vtext(r.v, "kind"), r.n].filter(Boolean).join(" · ");
   // every supported rule, not just the current selection, so one paste covers any later test
   function ruleItems(withCustom) {
     const items = RULE_SPEC.map(r => Object.assign({}, r));
-    if (location.hostname && !/^(localhost|127\.|\[)/.test(location.hostname) && !items.some(r => r.d === location.hostname)) items.push({ v: "_site", d: location.hostname });
     if (withCustom) S.custom.forEach(c => { const d = hostOf(c.url); if (!items.some(r => r.d === d)) items.push({ v: "custom", d, n: c.name }); });
     return items.map(r => Object.assign(r, { c: ruleNote(r) }));
   }

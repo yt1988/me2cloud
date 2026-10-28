@@ -51,7 +51,6 @@ export default {
   rules_inline_only: "This tool has no remote rule sets, so paste the rules ({n}, with notes)",
   rules_custom: "Your custom endpoints are not in the remote set; add these too:",
   rc_detect: "Network check (Cloudflare)",
-  rc_site: "This page",
   rc_top: "keep this above your other rules",
   rules_json_note: "JSON has no comments, so hosts are grouped by match type.",
   rules_steps: [

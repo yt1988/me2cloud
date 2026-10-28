@@ -30,7 +30,7 @@ const globRe = w => "^" + w.split("*").map(p => p.replace(/[.+?^${}()|[\]\\]/g, 
 
 // Rule sets carry no policy; the user's config attaches DIRECT. Comments name the provider of every rule.
 function ruleSets(spec, vendors, verified) {
-  const note = r => r.v === "_detect" ? "Me2Cloud network check (Cloudflare)" : r.v === "_site" ? "Me2Cloud page" : [vendors[r.v].name, vendors[r.v].kind, r.n].filter(Boolean).join(" · ");
+  const note = r => r.v === "_detect" ? "Me2Cloud network check (Cloudflare)" : [vendors[r.v].name, vendors[r.v].kind, r.n].filter(Boolean).join(" · ");
   const head = c => `${c} Me2Cloud: hosts used by the latency test, to be sent DIRECT. ${spec.length} rules, generated ${verified}.\n${c} ${SITE}/ · https://github.com/yt1988/me2cloud\n`;
   const classic = (r, wild) => r.d ? `DOMAIN,${r.d}` : r.w && wild ? `DOMAIN-WILDCARD,${r.w}` : `DOMAIN-SUFFIX,${r.s}`;
   return {

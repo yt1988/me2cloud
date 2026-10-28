@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // Local preview of ./public with the same headers as production (public/_headers, including the CSP).
-// /cdn-cgi/trace only exists behind Cloudflare, so the page falls back to www.cloudflare.com.
 // Usage: node scripts/dev.mjs [port]
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";

@@ -1,4 +1,4 @@
-# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 25 rules, generated 2026-10-27.
+# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 26 rules, generated 2026-10-27.
 # https://m2c.1ms.dog/ · https://github.com/yt1988/me2cloud
 # AWS · DynamoDB /ping
 DOMAIN-WILDCARD,dynamodb.*.amazonaws.com
@@ -48,5 +48,7 @@ DOMAIN,speed.cloudflare.com
 DOMAIN,www.cloudflare.com
 # Me2Cloud network check (Cloudflare)
 DOMAIN,stun.cloudflare.com
-# Me2Cloud page
-DOMAIN,m2c.1ms.dog
+# Me2Cloud network check (Cloudflare)
+DOMAIN,ipv4-check-perf.radar.cloudflare.com
+# Me2Cloud network check (Cloudflare)
+DOMAIN,ipv6-check-perf.radar.cloudflare.com

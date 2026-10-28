@@ -7,7 +7,8 @@
         "speed.cloudflare.com",
         "www.cloudflare.com",
         "stun.cloudflare.com",
-        "m2c.1ms.dog"
+        "ipv4-check-perf.radar.cloudflare.com",
+        "ipv6-check-perf.radar.cloudflare.com"
       ],
       "domain_suffix": [
         "api.cognitive.microsoft.com",

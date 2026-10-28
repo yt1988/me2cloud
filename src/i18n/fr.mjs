@@ -51,7 +51,6 @@ export default {
   rules_inline_only: "Cet outil ne gère pas les jeux de règles distants ; collez les règles ({n}, avec notes)",
   rules_custom: "Vos cibles personnalisées ne sont pas dans le jeu distant ; ajoutez aussi celles-ci :",
   rc_detect: "Vérification réseau (Cloudflare)",
-  rc_site: "Cette page",
   rc_top: "à placer au-dessus de vos autres règles",
   rules_json_note: "Le JSON n’accepte pas de commentaires : les hôtes sont regroupés par type de correspondance.",
   rules_steps: [

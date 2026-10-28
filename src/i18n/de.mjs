@@ -26,7 +26,7 @@ export default {
   rules_remote_h: "Empfohlen: Remote-Regelsatz", rules_remote_s: "Dein Tool holt die Liste bei uns und bleibt aktuell, wenn wir Regionen ergänzen. Einmal eintragen, fertig.",
   rules_inline_h: "Oder alle Regeln selbst einfügen ({n}, mit Kommentaren)", rules_inline_only: "Dieses Tool kann keine Remote-Regelsätze; füg die Regeln direkt ein ({n}, mit Kommentaren)",
   rules_custom: "Deine eigenen Ziele sind nicht im Remote-Satz; trag diese zusätzlich ein:",
-  rc_detect: "Netzwerkcheck (Cloudflare)", rc_site: "Diese Seite", rc_top: "über deinen anderen Regeln lassen",
+  rc_detect: "Netzwerkcheck (Cloudflare)", rc_top: "über deinen anderen Regeln lassen",
   rules_json_note: "JSON kennt keine Kommentare, daher sind die Hosts nach Art des Abgleichs gruppiert.",
   rules_steps: ["Kopier die Zeilen und setz sie <b>über</b> deine anderen Regeln, damit sie zuerst greifen.", "Konfiguration neu laden. Im TUN- oder fake-ip-Modus auch den Teil für echte IPs übernehmen (oben enthalten).", "Proxy-Erweiterungen im Browser für diese Seite ausschalten oder die Liste in ihre Ausnahmen eintragen.", "Auf den Aktualisieren-Knopf neben deinem Netz drücken. Wenn dein echter Anbieter erscheint, Test starten."],
   heroT: "Wie schnell ist die Cloud von dir zu Hause?", lgMiss: "hohl = passt nicht zu deinen Vorgaben",
