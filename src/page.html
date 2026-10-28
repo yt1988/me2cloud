@@ -156,7 +156,9 @@ input[type="range"] { width: 100%; accent-color: var(--sel); }
 .vb { flex: none; font: 600 10px/18px var(--f-num); padding: 0 5px; border-radius: 4px; background: var(--soft); color: var(--muted); letter-spacing: .02em; text-align: center; }
 
 /* hero: one sentence, three short reasons, the network line, the controls and one big button */
-.hero { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+/* the hero stacks above the result cards below it, so its popovers stay on top even where a browser composites a
+   rounded, overflow-hidden card into its own layer (WebKit can then paint that card over higher z-index content) */
+.hero { position: relative; z-index: 2; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
 .hero h1 { margin: 0; font-size: 26px; line-height: 1.25; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
 .whys { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); align-items: center; }
 .whys span { display: inline-flex; align-items: center; gap: 6px; }
