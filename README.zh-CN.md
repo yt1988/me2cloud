@@ -29,11 +29,11 @@
 
 | 单个区域的每一次采样 | 代理工具的直连规则 |
 |---|---|
-| ![单个区域详情：采样、中位数、抖动、丢包和使用的端点](docs/screenshots/results-en.png) | ![直连规则对话框，显示 Clash 远程规则集](docs/screenshots/rules-en.png) |
+| ![单个区域详情：采样、中位数、抖动、丢包和使用的端点](docs/screenshots/results-zh.png) | ![直连规则对话框，显示 Clash 远程规则集](docs/screenshots/rules-zh.png) |
 
 | 分享图 | 手机上 | English |
 |---|---|---|
-| ![浏览器里生成的分享图](docs/screenshots/share-en.png) | ![手机上的 Me2Cloud](docs/screenshots/mobile-en.png) | ![英文界面](docs/screenshots/hero-en.png) |
+| ![浏览器里生成的分享图](docs/screenshots/share-zh.png) | ![手机上的 Me2Cloud](docs/screenshots/mobile-zh.png) | ![英文界面](docs/screenshots/hero-en.png) |
 
 ## 自己部署
 
