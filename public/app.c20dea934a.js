@@ -565,6 +565,9 @@
       <div class="seg" role="group">${["v4", "v6"].map(k => `<button type="button" data-ip="${k}" aria-pressed="${S.ip === k}"${k === "v6" && no6 ? " disabled" : ""}>${k === "v4" ? "IPv4" : "IPv6"}</button>`).join("")}</div>
       <div class="lbl">${esc(t(no6 ? "ip_no6" : "ipTip"))}</div></section>`;
   }
+  // regions of a provider within the chosen areas (all areas before any is chosen), minus the own-country filter, so
+  // the provider and area counts always agree with what a run would measure
+  const vCount = v => ALL.filter(e => e.vendor === v && (!S.cts.length || S.cts.includes(e.continent)) && !excluded(e)).length;
   function renderCtrl() {
     if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
     const N = S.need, cov = coveredCts();
@@ -581,14 +584,14 @@
     $("#plN > summary").innerHTML = `<span>${PRESET_IC[N.preset] || "🎯"}</span><span>${esc(t("p_" + N.preset))}</span><b class="num">${N.lat ? "≤" + N.lat + "ms" : ""}</b>${caret}`;
     $("#plM > summary").innerHTML = `${SVG_M}<span>${esc(t("m_" + S.mode))}</span><b class="num">×${MODES[S.mode]} · ${S.ip === "v6" ? "IPv6" : "IPv4"}</b>${caret}`;
     $("#popV").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_vendors")}</span>${allNone("vendors")}</div>
-      <div class="chips">${VIDS.map(v => `<button type="button" class="chip" data-v="${v}" aria-pressed="${S.vendors.includes(v)}">${esc(vnm(v))}<span class="c">${ENDPOINTS.vendors[v].regions}</span></button>`).join("")}</div></section>
+      <div class="chips">${VIDS.map(v => `<button type="button" class="chip${vCount(v) ? "" : " zero"}" data-v="${v}" aria-pressed="${S.vendors.includes(v)}">${esc(vnm(v))}<span class="c">${vCount(v)}</span></button>`).join("")}</div></section>
       <section class="pg"><div class="pg-h"><span>${t("cust_h")}</span>${S.custom.length > 1 ? allNone("custom") : ""}</div>
       ${S.custom.length ? `<div class="chips">${S.custom.map(c => `<span class="cchip${S.customSel.includes(String(c.k)) ? " on" : ""}" title="${esc(c.url)}"><button type="button" data-ck="${c.k}" aria-pressed="${S.customSel.includes(String(c.k))}">★ ${esc(c.name)}</button><button type="button" class="x" data-del="${c.k}" aria-label="${esc(t("del"))}">×</button></span>`).join("")}</div>` : ""}
       <form class="cform" id="cform" autocomplete="off"><div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>
       <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="${esc(t("cust_name_ph"))}"><button class="btn ink sm" style="height:32px" type="submit">${t("add")}</button></div>
       <div class="err" id="cErr" hidden></div><div class="note">${t("cust_tip")}</div></form></section>`;
     $("#popA").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_areas")}</span>${allNone("cts")}</div>
-      <div class="chips">${cov.map(c => `<button type="button" class="chip" data-c="${c}" aria-pressed="${S.cts.includes(c)}">${esc(t("ct_" + c))}<span class="c">${ALL.filter(e => e.continent === c && S.vendors.includes(e.vendor)).length}</span></button>`).join("")}</div></section>` + homeSection();
+      <div class="chips">${cov.map(c => `<button type="button" class="chip" data-c="${c}" aria-pressed="${S.cts.includes(c)}">${esc(t("ct_" + c))}<span class="c">${ALL.filter(e => e.continent === c && S.vendors.includes(e.vendor) && !excluded(e)).length}</span></button>`).join("")}</div></section>` + homeSection();
     $("#popN").innerHTML = `<section class="pg">${Object.keys(PRESETS).map(k => { const [l, j, s] = PRESETS[k];
       return `<button type="button" class="opt" data-p="${k}" aria-pressed="${N.preset === k}"><span class="ic">${PRESET_IC[k]}</span><span class="tx"><b>${esc(t("p_" + k))}</b><span>${l ? "≤" + l + " ms · ±" + j + " · " + (s ? "≤" + s + "%" : t("noLoss")) : t("anyLat")}</span></span></button>`; }).join("")}</section>
       <section class="pg"><div class="pg-h">${PRESET_IC.custom} ${t("p_custom")}</div><div class="need">
