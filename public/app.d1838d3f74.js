@@ -1119,14 +1119,14 @@
     try { localStorage.setItem(LANG_KEY, l); } catch (x) {}
     location.href = LANG_PATHS[l] + location.search + location.hash;
   });
-  // one popover at a time; clicks outside close it
+  // one popover at a time; taps outside close it (pointerdown, since iOS WebKit fires no click on non-interactive areas)
   document.addEventListener("toggle", e => {
     if (!(e.target.matches && e.target.matches("details.menu") && e.target.open)) return;
     // areas come second: without a provider, send the visitor to the provider picker instead
     if (e.target.id === "plA" && !S.vendors.length) { e.target.open = false; $("#plV").open = true; return; }
     $$("details.menu[open]").forEach(d => { if (d !== e.target) d.open = false; });
   }, true);
-  document.addEventListener("click", e => { if (!e.target.closest("details.menu")) $$("details.menu[open]").forEach(d => { d.open = false; }); });
+  document.addEventListener("pointerdown", e => { if (!e.target.closest("details.menu")) $$("details.menu[open]").forEach(d => { d.open = false; }); });
   document.addEventListener("click", e => {
     const el = e.target.closest("button, [data-go], .r, [data-help]");
     if (!el) return;

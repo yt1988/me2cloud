@@ -156,8 +156,7 @@ input[type="range"] { width: 100%; accent-color: var(--sel); }
 .vb { flex: none; font: 600 10px/18px var(--f-num); padding: 0 5px; border-radius: 4px; background: var(--soft); color: var(--muted); letter-spacing: .02em; text-align: center; }
 
 /* hero: one sentence, three short reasons, the network line, the controls and one big button */
-/* the hero stacks above the result cards below it, so its popovers stay on top even where a browser composites a
-   rounded, overflow-hidden card into its own layer (WebKit can then paint that card over higher z-index content) */
+/* the hero stacks above the result cards below it (each isolated), so its popovers stay on top where they reach the chart on phones */
 .hero { position: relative; z-index: 2; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
 .hero h1 { margin: 0; font-size: 26px; line-height: 1.25; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
 .whys { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); align-items: center; }
@@ -268,7 +267,8 @@ input[type="range"] { width: 100%; accent-color: var(--sel); }
 .citem button:hover { color: var(--bad); }
 
 /* results */
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; min-width: 0; }
+/* isolate: the chart's own z-indexes (empty hint, limit line, dots) stay inside the card instead of competing with the hero's popovers */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; min-width: 0; isolation: isolate; }
 .card-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px 0; flex-wrap: wrap; }
 .card-h h3 { margin: 0; font-size: 15px; font-weight: 600; }
 .podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -1791,14 +1791,14 @@ footer a { color: var(--muted); }
     try { localStorage.setItem(LANG_KEY, l); } catch (x) {}
     location.href = LANG_PATHS[l] + location.search + location.hash;
   });
-  // one popover at a time; clicks outside close it
+  // one popover at a time; taps outside close it (pointerdown, since iOS WebKit fires no click on non-interactive areas)
   document.addEventListener("toggle", e => {
     if (!(e.target.matches && e.target.matches("details.menu") && e.target.open)) return;
     // areas come second: without a provider, send the visitor to the provider picker instead
     if (e.target.id === "plA" && !S.vendors.length) { e.target.open = false; $("#plV").open = true; return; }
     $$("details.menu[open]").forEach(d => { if (d !== e.target) d.open = false; });
   }, true);
-  document.addEventListener("click", e => { if (!e.target.closest("details.menu")) $$("details.menu[open]").forEach(d => { d.open = false; }); });
+  document.addEventListener("pointerdown", e => { if (!e.target.closest("details.menu")) $$("details.menu[open]").forEach(d => { d.open = false; }); });
   document.addEventListener("click", e => {
     const el = e.target.closest("button, [data-go], .r, [data-help]");
     if (!el) return;
