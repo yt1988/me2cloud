@@ -1,0 +1,56 @@
+name: Deploy
+
+# Every push to main uploads ./public to Cloudflare once the build check passes, then purges
+# m2c.1ms.dog from the edge cache, since a zone cache rule on 1ms.dog also caches HTML.
+# Needs the repository secrets CLOUDFLARE_API_TOKEN (Workers edit + Zone Cache Purge) and CLOUDFLARE_ACCOUNT_ID.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.repository == 'yt1988/me2cloud'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HOST: m2c.1ms.dog
+      ZONE: 1ms.dog
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.155.0"
+          command: deploy
+      - name: Purge the edge cache
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          api() { curl -sS -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" "$@"; }
+          zone=$(api "https://api.cloudflare.com/client/v4/zones?name=$ZONE" | jq -r '.result[0].id // empty')
+          [ -n "$zone" ] || { echo "::error::The token cannot read zone $ZONE"; exit 1; }
+          res=$(api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/purge_cache" --data "{\"hosts\":[\"$HOST\"]}")
+          echo "$res" | jq -c '{success, errors}'
+          [ "$(echo "$res" | jq -r .success)" = true ]
+      - name: Check the live page
+        run: |
+          want=$(grep -o 'app\.[0-9a-f]*\.js' public/index.html | head -1)
+          for i in 1 2 3 4 5 6; do
+            got=$(curl -fsS "https://$HOST/" | grep -o 'app\.[0-9a-f]*\.js' | head -1 || true)
+            [ "$got" = "$want" ] && { echo "live: $got"; exit 0; }
+            sleep 10
+          done
+          echo "::error::https://$HOST/ serves ${got:-nothing}, expected $want"; exit 1
