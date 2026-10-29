@@ -12,6 +12,7 @@ export default {
   share_sub: "이미지와 링크 모두 이 브라우저 안에서 만들어집니다. 어디에도 업로드하지 않습니다.",
   share_loc: "도시와 통신사 표시",
   share_link: "공유 링크",
+  share_short: "짧은 링크", share_shortNote: "짧은 링크를 만들기 위해 결과를 {host}에 저장합니다. 링크는 {d}까지 유효합니다.", share_shortFail: "짧은 링크를 만들지 못했습니다. 전체 링크는 그대로 쓸 수 있습니다.",
   share_len: "{k}개 리전의 결과가 링크 안에 그대로 들어 있습니다({n}자). IP와 사용자 지정 대상은 포함하지 않습니다.",
   share_copyLink: "링크 복사",
   share_copyImg: "이미지 복사",

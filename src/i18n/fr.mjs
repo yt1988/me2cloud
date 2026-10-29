@@ -12,6 +12,7 @@ export default {
   share_sub: "L’image et le lien sont créés ici même, dans votre navigateur. Rien n’est envoyé.",
   share_loc: "Afficher la ville et le FAI",
   share_link: "Lien de partage",
+  share_short: "Lien court", share_shortNote: "Pour créer le lien court, les résultats sont enregistrés sur {host}. Le lien fonctionne jusqu’au {d}.", share_shortFail: "Impossible de créer le lien court. Le lien complet fonctionne toujours.",
   share_len: "Les résultats de {k} régions sont dans le lien lui-même ({n} caractères). Ni IP, ni cibles personnalisées.",
   share_copyLink: "Copier le lien",
   share_copyImg: "Copier l’image",

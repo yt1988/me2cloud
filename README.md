@@ -22,7 +22,7 @@ Latency maps and provider looking glasses measure from datacenters with premium 
 - **IPv4 or IPv6.** IPv6 mode switches to each provider's AAAA hosts and lists regions without one separately.
 - **Proxy detection and direct rules.** It flags datacenter exits, timezone mismatches, WARP, and WebRTC or IPv4/IPv6 exits that differ from the HTTPS exit. It then generates direct rules for Clash/Mihomo, Surge, Shadowrocket, Quantumult X, Loon, sing-box, Xray and SwitchyOmega, as remote rule sets or inline. The rules list only the 413 exact hostnames the test uses.
 - **Custom endpoints.** Add any HTTPS URL, such as your own VPS, and compare it with the providers.
-- **Share without a server.** The share link carries compressed results in the URL hash, and the share image is drawn in the browser.
+- **Share without a server.** The share link carries compressed results in the URL hash, and the share image is drawn in the browser. A host can also offer an opt-in short link (see [Short links](#short-links)).
 - **Use with AI.** Copy a summary of your results into any assistant, or point an agent at [`llms.txt`](https://m2c.1ms.dog/llms.txt) to build test links.
 - **10 languages,** pre-rendered, plus a landing page per provider (`/aws/`, `/zh-cn/aws/` …).
 - **Polite to providers.** One request at a time per host, at least 250 ms apart, at most 21 per host per run; a host is skipped after 3 failures in a row.
@@ -70,6 +70,16 @@ npx wrangler deploy
 ```
 
 `public/llms.txt` is a hand-written file. Edit the addresses in it if you use it.
+
+### Short links
+
+The share dialog offers a "Short link" switch only when the page has a shortener tag:
+
+```html
+<meta name="shortener" content="https://short.example.com/api/shorten">
+```
+
+The endpoint gets `POST {"url": "<full share link>"}` and answers `{"url": "<short link>", "expires": <ms since epoch>}`. Turning the switch on sends the results to that server, and the dialog says so. The switch is off by default. The public site gets this tag from its hosting setup; the code here has none, so a self-hosted copy has no short links unless you add the tag.
 
 ### Other static hosts
 

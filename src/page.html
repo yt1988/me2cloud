@@ -651,6 +651,7 @@ footer a { color: var(--muted); }
       <div class="share-img"><img id="shareImg" alt=""></div>
       <div class="share-side">
         <label class="tgl"><span class="sw"><input type="checkbox" id="shareLoc"><span></span></span><span data-i="share_loc">Show city and ISP</span></label>
+        <label class="tgl" id="shareShortRow" hidden><span class="sw"><input type="checkbox" id="shareShort"><span></span></span><span data-i="share_short">Short link</span></label>
         <button class="btn ink" type="button" id="shareNative" hidden data-i="share_native">Share…</button>
         <button class="btn" type="button" id="shareDl" data-i="share_dl">Download image</button>
         <button class="btn" type="button" id="shareCopyImg" hidden data-i="share_copyImg">Copy image</button>
@@ -1756,14 +1757,39 @@ footer a { color: var(--muted); }
     } catch (e) {}
     return cv;
   }
+  // Optional short links. A host can announce a shortener with <meta name="shortener" content="https://…">: it takes
+  // POST {"url"} and answers {"url", "expires"}. Without the tag the dialog has no short link option.
+  const shortener = () => (document.querySelector('meta[name="shortener"]') || {}).content || "";
+  const shortCache = new Map();
+  async function shorten(url) {
+    if (!shortCache.has(url)) {
+      shortCache.set(url, fetch(shortener(), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url }) })
+        .then(r => r.ok ? r.json() : null).then(s => s && s.url ? s : null).catch(() => null));
+    }
+    const s = await shortCache.get(url);
+    if (!s) shortCache.delete(url);
+    return s;
+  }
   let shareCache = null;
   async function refreshShare() {
-    const withLoc = $("#shareLoc").checked;
-    S.shareLoc = withLoc; save();
+    const withLoc = $("#shareLoc").checked, wantShort = !!shortener() && $("#shareShort").checked;
+    S.shareLoc = withLoc; S.shareShort = wantShort; save();
     $("#shareImg").classList.add("busy");
-    const link = await shareLink(withLoc), n = Object.values(sharePayload(withLoc).r).reduce((a, b) => a + b.length, 0);
+    let link = await shareLink(withLoc);
+    const n = Object.values(sharePayload(withLoc).r).reduce((a, b) => a + b.length, 0);
+    let note = t("share_len", { k: n, n: link.length });
+    if (wantShort) {
+      const s = await shorten(link);
+      if (s) {
+        link = s.url;
+        note = t("share_shortNote", { host: new URL(s.url).host, d: new Intl.DateTimeFormat(LANG, { dateStyle: "medium" }).format(s.expires) });
+      } else {
+        $("#shareShort").checked = false; S.shareShort = false; save();
+        toast(t("share_shortFail"));
+      }
+    }
     $("#shareLink").value = link;
-    $("#shareLen").textContent = t("share_len", { k: n, n: link.length });
+    $("#shareLen").textContent = note;
     const cv = await drawCard(withLoc), blob = await new Promise(r => cv.toBlob(r, "image/png"));
     if (shareCache) URL.revokeObjectURL(shareCache.url);
     shareCache = { blob, url: URL.createObjectURL(blob), link, file: new File([blob], `me2cloud-${stamp()}.png`, { type: "image/png" }) };
@@ -1774,6 +1800,8 @@ footer a { color: var(--muted); }
   async function openShare() {
     if (!rankList().some(x => x.st.ok && x.e.vendor !== "custom")) { toast(t("share_none")); return; }
     $("#shareLoc").checked = S.shareLoc !== false;
+    $("#shareShortRow").hidden = !shortener();
+    $("#shareShort").checked = !!S.shareShort;
     openDlg("shareDlg");
     await refreshShare();
   }
@@ -1916,6 +1944,7 @@ footer a { color: var(--muted); }
   $$(".scrim").forEach(s => s.addEventListener("click", e => { if (e.target === s) closeDlg(); }));
 
   $("#shareLoc").addEventListener("change", refreshShare);
+  $("#shareShort").addEventListener("change", refreshShare);
   addEventListener("hashchange", async () => { if (await loadShared()) { renderShared(); renderAll(); } });
   $("#runBtn").addEventListener("click", () => {
     if (RUN) { RUN.ctl.abort(); return; }

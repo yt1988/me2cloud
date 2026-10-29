@@ -12,6 +12,7 @@ export default {
   share_sub: "The image and the link are made right here in your browser. Nothing is uploaded.",
   share_loc: "Show city and ISP",
   share_link: "Share link",
+  share_short: "Short link", share_shortNote: "To make the short link, the results are stored on {host}. The link works until {d}.", share_shortFail: "Couldn't make a short link. The full link still works.",
   share_len: "{k} regions are packed into the link itself ({n} characters). No IP, no custom endpoints.",
   share_copyLink: "Copy link",
   share_copyImg: "Copy image",

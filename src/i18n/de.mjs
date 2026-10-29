@@ -9,6 +9,7 @@ export default {
   share_btn: "Teilen", viewingShared: "Du siehst ein geteiltes Ergebnis; drück Start, um deine eigene Leitung zu testen",
   share_h: "Ergebnisse teilen", share_sub: "Bild und Link entstehen direkt hier in deinem Browser. Es wird nichts hochgeladen.",
   share_loc: "Stadt und Anbieter zeigen", share_link: "Link zum Teilen",
+  share_short: "Kurzlink", share_shortNote: "Für den Kurzlink werden die Ergebnisse auf {host} gespeichert. Der Link gilt bis {d}.", share_shortFail: "Kurzlink konnte nicht erstellt werden. Der vollständige Link funktioniert weiterhin.",
   share_len: "Die Ergebnisse von {k} Regionen stecken im Link selbst ({n} Zeichen). Keine IP, keine eigenen Ziele.",
   share_copyLink: "Link kopieren", share_copyImg: "Bild kopieren", share_dl: "Bild herunterladen", share_native: "Teilen…",
   share_banner: "Geteiltes Ergebnis · {who} · {d}", share_anon: "Ort verborgen", share_viaProxy: "über einen Proxy gemessen",
