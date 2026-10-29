@@ -1139,12 +1139,24 @@ footer a { color: var(--muted); }
       const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find(x => fam(x) === f);
       if (got && ref && netOf(got) !== netOf(ref)) reasons.push(t("r_fam", { f: "IPv" + f, a: esc(got), b: esc(ref) }));
     }
-    // iCloud Private Relay: Safari's HTTPS leaves through Apple's relay partners (Cloudflare, Akamai, Fastly) while
-    // WebRTC keeps the real address. Direct rules can't route around it, so it gets its own label and advice
+    // Apple's relay (Cloudflare, Akamai, Fastly egress) as the main exit comes in two forms. With iCloud Private Relay
+    // every Safari request goes through it, the tests included: a warning of its own, since direct rules can't route
+    // around it. With only "Limit IP Address Tracking" on, Safari relays just the domains on its tracker list, which
+    // can include this check's hosts but hardly the cloud endpoints. One IPv4/IPv6 check (HTTPS too) arriving from
+    // outside the relay ranges tells that form apart: the connection is direct and only the check's location is the relay's
     const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
-    N.relay = N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
+    const RELAY_IP = /^(104\.28\.|146\.75\.|172\.2(2[4-9]|3[01])\.|2a09:bac[0-7]:|2a02:26f7:|2a04:4e41:)/i;
+    const viaRelay = N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
+    const outside = [N.ip4, N.ip6].some(x => x && !RELAY_IP.test(x));
+    N.relay = viaRelay && !outside;
+    if (viaRelay && outside) {
+      // the relay's city and network say nothing about this connection: show the device's country instead
+      N.hidden = true; N.via = (N.org || "") + (N.asn ? " · AS" + N.asn : "");
+      N.cc = tzc || ""; N.city = ""; N.org = ""; N.asn = null;
+      reasons.length = 0;
+    }
     N.reasons = N.relay ? [t("r_relay", { org: esc(N.org || "") + (N.asn ? " (AS" + N.asn + ")" : "") })] : reasons;
-    N.verdict = !N.ok ? "unknown" : reasons.length ? "warn" : "good";
+    N.verdict = !N.ok ? "unknown" : N.reasons.length ? "warn" : "good";
     N.state = "done"; N.partial = false;
     NET = N; renderNet(); renderCtrl();
   }
@@ -1161,7 +1173,7 @@ footer a { color: var(--muted); }
     const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
     const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}">· ${fams}</span>`;
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
-      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
+      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">· ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${ck && !N.partial && !N.recheck || N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
@@ -1191,10 +1203,10 @@ footer a { color: var(--muted); }
     const rtc = N.rtc && N.rtc.length ? N.rtc.join(", ") : "";
     const note = pending != null ? `<div class="note" style="grid-column:1/-1">${esc(pending)}</div>`
       : N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}</ul>`
-      : `<div class="note" style="grid-column:1/-1">${t(N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`;
+      : `<div class="note" style="grid-column:1/-1">${t(N.hidden ? "px_hiddenNote" : N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`;
     return `
       <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v ip${blur}"${tip(N.ip)}>${N.ip ? ipx(N.ip) : "–"}</span><span class="s">${s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : "")}</span></div>
-      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || "–")}</span><span class="s">${s(N.asn ? "AS" + N.asn : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || N.via || "–")}</span><span class="s">${s(N.asn ? "AS" + N.asn : N.hidden ? esc(t("ipHidden")) : "")}</span></div>
       <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${s(esc(N.colo || "") + (N.http ? " · " + esc(N.http) : ""))}</span></div>
       <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v ip${blur}"${tip(N.ip4)}>${ipx(v4)}</span><span class="s ip${blur}"${tip(N.ip6)}>${s(ipx(v6))}</span></div>
       <div class="kv"><span class="lbl">WebRTC</span><span class="v ip${blur}"${tip(rtc)}>${rtc ? N.rtc.map(ipx).join("<br>") : "–"}</span><span class="s">${s(esc(N.tz || ""))}</span></div>
