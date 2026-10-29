@@ -9,7 +9,7 @@ export default {
   share_btn: "Compartilhar", viewingShared: "Você está vendo um resultado compartilhado; aperte Iniciar para testar a sua própria conexão",
   share_h: "Compartilhe seus resultados", share_sub: "A imagem e o link são criados aqui mesmo, no seu navegador. Nada é enviado.",
   share_loc: "Mostrar cidade e operadora", share_link: "Link para compartilhar",
-  share_short: "Link curto", share_shortNote: "Para criar o link curto, os resultados ficam salvos em {host}. O link vale até {d}.", share_shortFail: "Não foi possível criar o link curto. O link completo continua funcionando.",
+  share_shortNote: "Os resultados de {k} regiões ficam salvos em {host} para criar este link curto. Sem IP e sem destinos personalizados.", share_shortFail: "Não foi possível criar o link curto. Este é o link completo.",
   share_len: "Os resultados de {k} regiões vão dentro do próprio link ({n} caracteres). Sem IP e sem destinos personalizados.",
   share_copyLink: "Copiar link", share_copyImg: "Copiar imagem", share_dl: "Baixar imagem", share_native: "Compartilhar…",
   share_banner: "Resultado compartilhado · {who} · {d}", share_anon: "local oculto", share_viaProxy: "medido por um proxy",

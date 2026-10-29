@@ -12,7 +12,7 @@ export default {
   share_sub: "圖片和連結都在你的瀏覽器裡生成，不會上傳到任何地方。",
   share_loc: "顯示城市和運營商",
   share_link: "分享連結",
-  share_short: "短連結", share_shortNote: "為產生短連結，結果會儲存在 {host} 上，連結有效期到 {d}。", share_shortFail: "短連結產生失敗，可以繼續使用完整連結。",
+  share_shortNote: "{k} 個區域的結果儲存在 {host} 上，用來產生這個短連結。不含 IP 和自定義節點。", share_shortFail: "短連結產生失敗，這裡是完整連結。",
   share_len: "{k} 個區域的結果直接寫在連結裡（{n} 個字元），不含 IP 和自定義節點。",
   share_copyLink: "複製連結",
   share_copyImg: "複製圖片",

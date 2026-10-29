@@ -1074,7 +1074,7 @@
     return cv;
   }
   // Optional short links. A host can announce a shortener with <meta name="shortener" content="https://…">: it takes
-  // POST {"url"} and answers {"url", "expires"}. Without the tag the dialog has no short link option.
+  // POST {"url"} and answers {"url"}. With the tag the dialog gives the short link instead of the full one.
   const shortener = () => (document.querySelector('meta[name="shortener"]') || {}).content || "";
   const shortCache = new Map();
   async function shorten(url) {
@@ -1088,21 +1088,17 @@
   }
   let shareCache = null;
   async function refreshShare() {
-    const withLoc = $("#shareLoc").checked, wantShort = !!shortener() && $("#shareShort").checked;
-    S.shareLoc = withLoc; S.shareShort = wantShort; save();
+    const withLoc = $("#shareLoc").checked;
+    S.shareLoc = withLoc; save();
     $("#shareImg").classList.add("busy");
     let link = await shareLink(withLoc);
     const n = Object.values(sharePayload(withLoc).r).reduce((a, b) => a + b.length, 0);
     let note = t("share_len", { k: n, n: link.length });
-    if (wantShort) {
+    if (shortener()) {
+      $("#shareLink").value = "…";
       const s = await shorten(link);
-      if (s) {
-        link = s.url;
-        note = t("share_shortNote", { host: new URL(s.url).host, d: new Intl.DateTimeFormat(LANG, { dateStyle: "medium" }).format(s.expires) });
-      } else {
-        $("#shareShort").checked = false; S.shareShort = false; save();
-        toast(t("share_shortFail"));
-      }
+      if (s) { link = s.url; note = t("share_shortNote", { k: n, host: new URL(s.url).host }); }
+      else toast(t("share_shortFail"));
     }
     $("#shareLink").value = link;
     $("#shareLen").textContent = note;
@@ -1115,10 +1111,7 @@
   }
   async function openShare() {
     if (!rankList().some(x => x.st.ok && x.e.vendor !== "custom")) { toast(t("share_none")); return; }
-    $("#shareLoc").checked = S.shareLoc !== false;
-    $("#shareShortRow").hidden = !shortener();
-    $("#shareShort").checked = !!S.shareShort;
-    openDlg("shareDlg");
+    $("#shareLoc").checked = S.shareLoc !== false;    openDlg("shareDlg");
     await refreshShare();
   }
 
@@ -1259,9 +1252,7 @@
   });
   $$(".scrim").forEach(s => s.addEventListener("click", e => { if (e.target === s) closeDlg(); }));
 
-  $("#shareLoc").addEventListener("change", refreshShare);
-  $("#shareShort").addEventListener("change", refreshShare);
-  addEventListener("hashchange", async () => { if (await loadShared()) { renderShared(); renderAll(); } });
+  $("#shareLoc").addEventListener("change", refreshShare);  addEventListener("hashchange", async () => { if (await loadShared()) { renderShared(); renderAll(); } });
   $("#runBtn").addEventListener("click", () => {
     if (RUN) { RUN.ctl.abort(); return; }
     openId = null; runTests(selected(), MODES[S.mode], S.conc);

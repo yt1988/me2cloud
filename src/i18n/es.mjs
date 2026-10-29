@@ -12,7 +12,7 @@ export default {
   share_sub: "La imagen y el enlace se crean aquí mismo, en tu navegador. No se sube nada.",
   share_loc: "Mostrar ciudad y operador",
   share_link: "Enlace para compartir",
-  share_short: "Enlace corto", share_shortNote: "Para crear el enlace corto, los resultados se guardan en {host}. El enlace funciona hasta el {d}.", share_shortFail: "No se pudo crear el enlace corto. El enlace completo sigue funcionando.",
+  share_shortNote: "Los resultados de {k} regiones se guardan en {host} para crear este enlace corto. Sin IP ni destinos personalizados.", share_shortFail: "No se pudo crear el enlace corto. Este es el enlace completo.",
   share_len: "Los resultados de {k} regiones van dentro del propio enlace ({n} caracteres). Sin IP ni destinos personalizados.",
   share_copyLink: "Copiar enlace",
   share_copyImg: "Copiar imagen",
