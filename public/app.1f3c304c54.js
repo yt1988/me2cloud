@@ -387,12 +387,15 @@
       6: [["https://ipv6-check-perf.radar.cloudflare.com/", RX_RADAR], ["https://ipv6-check-perf.radar.cloudflare.com/cdn-cgi/trace", RX_TRACE],
           ["https://api6.ipify.org/?format=json", RX_IP], ["https://v6.ident.me/json", RX_IP]]
     };
-    const ipOne = async (f, u, rx) => {
+    // every answer, not only the first per family, for telling Safari's tracker relay apart from iCloud Private Relay
+    const ipSeen = [], ipAll = [];
+    const ipOne = (f, u, rx) => { const p = ipOne1(f, u, rx); ipAll.push(p); return p; };
+    const ipOne1 = async (f, u, rx) => {
       try {
         const x = await (await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5000) })).text();
         const m = rx.exec(x), ip = m ? m[1].trim() : "";
         // a dual-stack answer from the wrong family doesn't count
-        if (ip && (f === 6) === ip.includes(":")) { logReq(u, "GET", 0); return { ip, src: new URL(u).hostname }; }
+        if (ip && (f === 6) === ip.includes(":")) { logReq(u, "GET", 0); ipSeen.push(ip); return { ip, src: new URL(u).hostname }; }
       } catch (e) {}
       logReq(u, "GET", null);
       throw new Error("no ip");
@@ -407,6 +410,10 @@
     // edge timing fill in the verdict afterwards.
     const fams = Promise.all([ipOf(4), ipOf(6)]);
     const rtcP = S.rtc ? stunIPs() : Promise.resolve(null);
+    // this site's own Cloudflare trace: a first-party request, which Safari relays only under iCloud Private Relay,
+    // never for "Limit IP Address Tracking" (self-hosts off Cloudflare just get nothing here)
+    const selfP = fetch("/cdn-cgi/trace", { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : "")
+      .then(x => (RX_TRACE.exec(x) || [])[1] || "").catch(() => "");
     // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
     const metaP = fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
       .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null);
@@ -433,7 +440,7 @@
     if (run !== netRun) return;
     if (N.ok) { NET = N; renderNet(); }                      // first paint, while the rest finishes
     edgeP.then(() => step("chk_ip"));
-    const [edge, [r4, r6], rtc] = await Promise.all([edgeP, fams, rtcP]);
+    const [edge, [r4, r6], rtc, selfIp] = await Promise.all([edgeP, fams, rtcP, selfP]);
     if (run !== netRun) return;
     N.edge = edge; N.rtc = rtc;
     N.ip4 = r4.ip; N.ip6 = r6.ip; N.src4 = r4.src; N.src6 = r6.src;
@@ -464,11 +471,16 @@
     const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
     const RELAY_IP = /^(104\.28\.|146\.75\.|172\.2(2[4-9]|3[01])\.|2a09:bac[0-7]:|2a02:26f7:|2a04:4e41:)/i;
     const viaRelay = N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
-    const outside = [N.ip4, N.ip6].some(x => x && !RELAY_IP.test(x));
+    const direct = () => [...ipSeen, selfIp].filter(x => x && !RELAY_IP.test(x));
+    // the first IP answer per family may well be a relayed one: before calling it Private Relay, wait for the rest
+    if (viaRelay && !direct().length) { await Promise.allSettled(ipAll); if (run !== netRun) return; }
+    const outside = direct().length > 0;
     N.relay = viaRelay && !outside;
     if (viaRelay && outside) {
       // the relay's city and network say nothing about this connection: show the device's country instead
       N.hidden = true; N.via = (N.org || "") + (N.asn ? " · AS" + N.asn : "");
+      const real = f => direct().find(x => x.includes(":") === (f === 6));
+      N.ip4 = real(4) || N.ip4; N.ip6 = real(6) || N.ip6;
       N.cc = tzc || ""; N.city = ""; N.org = ""; N.asn = null;
       reasons.length = 0;
     }
