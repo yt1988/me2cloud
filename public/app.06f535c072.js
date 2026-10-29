@@ -456,7 +456,11 @@
       const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find(x => fam(x) === f);
       if (got && ref && netOf(got) !== netOf(ref)) reasons.push(t("r_fam", { f: "IPv" + f, a: esc(got), b: esc(ref) }));
     }
-    N.reasons = reasons;
+    // iCloud Private Relay: Safari's HTTPS leaves through Apple's relay partners (Cloudflare, Akamai, Fastly) while
+    // WebRTC keeps the real address. Direct rules can't route around it, so it gets its own label and advice
+    const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
+    N.relay = N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
+    N.reasons = N.relay ? [t("r_relay", { org: esc(N.org || "") + (N.asn ? " (AS" + N.asn + ")" : "") })] : reasons;
     N.verdict = !N.ok ? "unknown" : reasons.length ? "warn" : "good";
     N.state = "done"; N.partial = false;
     NET = N; renderNet(); renderCtrl();
@@ -469,7 +473,7 @@
     bar.className = "netbar " + (ck ? "chk" : warn ? "warn" : N.verdict === "good" ? "good" : "");
     const peak = isPeak(new Date());
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
-    const st = ck ? t("checking") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
+    const st = ck ? t("checking") : N.relay ? t("pxRelay") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
     // IP families that answered, as a plain trailing segment once the check is done (so it doesn't push the rest)
     const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
     const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}">· ${fams}</span>`;
@@ -477,7 +481,7 @@
       <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
-        ${ck && !N.partial && !N.recheck ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
+        ${ck && !N.partial && !N.recheck || N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
         <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
         <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
@@ -857,6 +861,9 @@
   function renderDocs() {
     $$("#helpNav [data-hq]").forEach(b => b.setAttribute("aria-selected", +b.dataset.hq === helpIdx));
     $$("#helpC [data-hqb]").forEach(a => { a.hidden = +a.dataset.hqb !== helpIdx; });
+    const sel = $("#helpSel");
+    sel.value = helpIdx;
+    $$("[data-hstep]").forEach(b => { b.disabled = helpIdx + +b.dataset.hstep < 0 || helpIdx + +b.dataset.hstep >= sel.options.length; });
     $("#helpC").scrollTop = 0;
   }
   function openHelp(i) { helpIdx = clamp(i, 0, $$("#helpNav [data-hq]").length - 1); renderDocs(); openDlg("help"); const b = $(`#helpNav [data-hq="${i}"]`); b && b.scrollIntoView({ block: "nearest", inline: "nearest" }); }
@@ -1114,6 +1121,7 @@
   function changed() { save(); renderCtrl(); renderAll(); }
 
   /* ---------- events ---------- */
+  $("#helpSel").addEventListener("change", e => { helpIdx = +e.target.value; renderDocs(); });
   $("#lang").addEventListener("change", e => {
     const l = e.target.value;
     try { localStorage.setItem(LANG_KEY, l); } catch (x) {}
@@ -1171,6 +1179,7 @@
     if (el.id === "sharedExit") { exitShared(); return; }
     if (el.id === "sharedSame") { testSame(); return; }
     if (el.matches("[data-hq]")) { helpIdx = +el.dataset.hq; renderDocs(); return; }
+    if (el.matches("[data-hstep]")) { helpIdx = clamp(helpIdx + +el.dataset.hstep, 0, $("#helpSel").options.length - 1); renderDocs(); return; }
     if (el.classList.contains("r")) { const id = el.parentElement.dataset.id; const prev = openId; openId = openId === id ? null : id; markDirty(id); if (prev) markDirty(prev); return; }
   });
   document.addEventListener("submit", e => {

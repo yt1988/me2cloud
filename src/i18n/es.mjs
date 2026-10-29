@@ -118,7 +118,7 @@ export default {
   px_okNote: "La IP de salida, la red y la zona horaria encajan. Un proxy en el router o una red de empresa pueden pasar desapercibidos; comprueba que la red de arriba es tu operador real.",
   px_unknownNote: "Se bloquearon las consultas a Cloudflare. Las pruebas funcionan, pero no se puede saber si hay un proxy.",
   r_dc: "Tu red de salida es {org}, un centro de datos. Eso casi siempre es una VPN, un proxy o un servidor en la nube, no una línea doméstica.",
-  r_warp: "Cloudflare WARP está activado.",
+  r_warp: "Cloudflare WARP está activado.", pxRelay: "Relay privado de iCloud", r_relay: "Tu salida es Relay privado de iCloud ({org}), no tu propia línea. Safari envía todas las peticiones a través de él, así que medirías la latencia del relay, y las reglas directas no pueden cambiarlo. Para medir tu línea, desactívalo solo en esta red: Ajustes → Datos móviles → Opciones (o la ⓘ junto a tu Wi-Fi) → desactiva Limitar rastreo de dirección IP. O haz la prueba en Chrome o Firefox, que Relay privado no cubre.",
   r_tz: "Tu reloj dice {a}, pero tu IP de salida está en {b}.",
   r_rtc: "WebRTC (UDP) sale por {a} y HTTPS por {b}: el tráfico se está repartiendo.",
   r_fam: "La comprobación {f} sale por {a}, pero tu salida principal es {b}: parte del tráfico pasa por un proxy. Actualiza las reglas directas y vuelve a comprobar.",

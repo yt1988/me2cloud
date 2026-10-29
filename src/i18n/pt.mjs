@@ -51,7 +51,7 @@ export default {
   px_okNote: "IP de saída, rede e fuso horário batem. Um proxy no roteador ou uma rede corporativa ainda podem passar batido; confira se a rede acima é a sua operadora de verdade.",
   px_unknownNote: "As consultas ao Cloudflare foram bloqueadas. Os testes funcionam, mas não dá para saber se há proxy.",
   r_dc: "Sua rede de saída é {org}, um data center. Isso quase sempre é VPN, proxy ou servidor na nuvem, não internet residencial.",
-  r_warp: "O Cloudflare WARP está ligado.", r_tz: "Seu relógio diz {a}, mas o seu IP de saída está em {b}.",
+  r_warp: "O Cloudflare WARP está ligado.", pxRelay: "Retransmissão Privada do iCloud", r_relay: "Sua saída é a Retransmissão Privada do iCloud ({org}), não a sua própria linha. O Safari envia todas as requisições por ela, então você mediria a latência da retransmissão, e regras diretas não mudam isso. Para medir a sua linha, desative-a só nesta rede: Ajustes → Celular → Opções de Dados Celulares (ou o ⓘ ao lado do seu Wi-Fi) → desative Limitar Rastreamento do Endereço IP. Ou faça o teste no Chrome ou no Firefox, que a Retransmissão Privada não cobre.", r_tz: "Seu relógio diz {a}, mas o seu IP de saída está em {b}.",
   r_rtc: "O WebRTC (UDP) sai por {a} e o HTTPS por {b}: o tráfego está sendo dividido.",
   r_fam: "A verificação {f} sai por {a}, mas a sua saída principal é {b}: parte do tráfego passa por um proxy. Atualize as regras diretas e verifique de novo.",
   chkFail: "Falha na verificação", chkBlocked: "talvez bloqueada por uma extensão ou pela rede",

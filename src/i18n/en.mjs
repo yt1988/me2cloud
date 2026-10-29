@@ -118,7 +118,7 @@ export default {
   px_okNote: "Exit IP, network and time zone line up. A router-level proxy or a corporate network can still hide itself, so make sure the network above is your real ISP.",
   px_unknownNote: "The Cloudflare lookups were blocked. Tests still work, but nobody can tell whether a proxy is on.",
   r_dc: "Your exit network is {org}, a data center. That is almost always a VPN, proxy or cloud server, not a home line.",
-  r_warp: "Cloudflare WARP is on.",
+  r_warp: "Cloudflare WARP is on.", pxRelay: "iCloud Private Relay", r_relay: "Your exit is iCloud Private Relay ({org}), not your own line. Safari sends every request through it, so the results would be the relay's latency, and direct rules can't change that. To test your own line, turn it off for this network: Settings → Cellular → Cellular Data Options (or the ⓘ next to your Wi-Fi) → turn off Limit IP Address Tracking. Or run the test in Chrome or Firefox, which Private Relay doesn't cover.",
   r_tz: "Your clock says {a}, but your exit IP is in {b}.",
   r_rtc: "WebRTC (UDP) goes out from {a}, HTTPS from {b}: traffic is being split.",
   r_fam: "The {f} check goes out from {a}, but your main exit is {b}: some requests are going through a proxy. Update the direct rules and check again.",

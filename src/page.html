@@ -108,6 +108,12 @@ a { color: inherit; }
 .pop { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; width: 300px; max-width: calc(100vw - 32px); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
   box-shadow: 0 12px 32px var(--shadow); padding: 4px 14px; display: flex; flex-direction: column; max-height: min(70vh, 560px); overflow: auto; }
 .pop.l { left: 0; right: auto; }
+/* iOS WebKit: after a scroll it could paint a scrollable popover only inside the controls row, with the later pills and
+   the hero over it. The open menu stacks above its sibling pills, the popover gets a layer of its own, and the pulsing
+   "pick a provider" hint (repainted every frame) stops while its menu is open */
+.menu[open] { z-index: 31; }
+.pop { -webkit-transform: translateZ(0); transform: translateZ(0); }
+.pl.ask[open] > summary { animation: none; }
 .pg { padding: 12px 0; display: flex; flex-direction: column; gap: 10px; }
 .pg + .pg { border-top: 1px solid var(--line); }
 .pg-h { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
@@ -402,9 +408,13 @@ input[type="range"] { width: 100%; accent-color: var(--sel); }
 @media (max-width: 720px) {
   .dialog.help { height: calc(100vh - 32px); }
   .help-b { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
-  .help-nav { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
-  .help-nav button { white-space: nowrap; flex: none; }
+  /* ten long questions don't fit a tab row: a picker that shows the whole title and where you are, plus prev / next */
+  .help-nav { display: none; }
+  .help-b .help-pick { display: flex; }
 }
+.help-pick { display: none; gap: 8px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.help-pick select { flex: 1; min-width: 0; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); font: 600 16px var(--f-ui); text-overflow: ellipsis; } /* 16px: iOS zooms into smaller fields */
+.help-pick .icon-btn:disabled { opacity: .35; cursor: default; }
 .cmp { border-collapse: collapse; width: 100%; font-size: 12.5px; }
 .cmp th, .cmp td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
 .cmp th { background: var(--soft); font-weight: 600; }
@@ -628,7 +638,8 @@ footer a { color: var(--muted); }
   <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
     <div class="dlg-h"><div><h3 id="helpT" data-i="doc_h">How it works</h3></div>
       <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="help-b"><nav class="help-nav" id="helpNav" role="tablist">{{helpNav}}</nav><div class="help-c" id="helpC">{{helpC}}</div></div>
+    <div class="help-b"><nav class="help-nav" id="helpNav" role="tablist">{{helpNav}}</nav>
+      <div class="help-pick"><button class="icon-btn sm" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4L6 8l4 4"/></svg></button><select id="helpSel" aria-labelledby="helpT">{{helpSel}}</select><button class="icon-btn sm" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></button></div><div class="help-c" id="helpC">{{helpC}}</div></div>
   </div>
 </div>
 
@@ -1128,7 +1139,11 @@ footer a { color: var(--muted); }
       const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find(x => fam(x) === f);
       if (got && ref && netOf(got) !== netOf(ref)) reasons.push(t("r_fam", { f: "IPv" + f, a: esc(got), b: esc(ref) }));
     }
-    N.reasons = reasons;
+    // iCloud Private Relay: Safari's HTTPS leaves through Apple's relay partners (Cloudflare, Akamai, Fastly) while
+    // WebRTC keeps the real address. Direct rules can't route around it, so it gets its own label and advice
+    const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
+    N.relay = N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
+    N.reasons = N.relay ? [t("r_relay", { org: esc(N.org || "") + (N.asn ? " (AS" + N.asn + ")" : "") })] : reasons;
     N.verdict = !N.ok ? "unknown" : reasons.length ? "warn" : "good";
     N.state = "done"; N.partial = false;
     NET = N; renderNet(); renderCtrl();
@@ -1141,7 +1156,7 @@ footer a { color: var(--muted); }
     bar.className = "netbar " + (ck ? "chk" : warn ? "warn" : N.verdict === "good" ? "good" : "");
     const peak = isPeak(new Date());
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
-    const st = ck ? t("checking") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
+    const st = ck ? t("checking") : N.relay ? t("pxRelay") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
     // IP families that answered, as a plain trailing segment once the check is done (so it doesn't push the rest)
     const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
     const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}">· ${fams}</span>`;
@@ -1149,7 +1164,7 @@ footer a { color: var(--muted); }
       <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.edge != null ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
-        ${ck && !N.partial && !N.recheck ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
+        ${ck && !N.partial && !N.recheck || N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
         <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
         <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
@@ -1529,6 +1544,9 @@ footer a { color: var(--muted); }
   function renderDocs() {
     $$("#helpNav [data-hq]").forEach(b => b.setAttribute("aria-selected", +b.dataset.hq === helpIdx));
     $$("#helpC [data-hqb]").forEach(a => { a.hidden = +a.dataset.hqb !== helpIdx; });
+    const sel = $("#helpSel");
+    sel.value = helpIdx;
+    $$("[data-hstep]").forEach(b => { b.disabled = helpIdx + +b.dataset.hstep < 0 || helpIdx + +b.dataset.hstep >= sel.options.length; });
     $("#helpC").scrollTop = 0;
   }
   function openHelp(i) { helpIdx = clamp(i, 0, $$("#helpNav [data-hq]").length - 1); renderDocs(); openDlg("help"); const b = $(`#helpNav [data-hq="${i}"]`); b && b.scrollIntoView({ block: "nearest", inline: "nearest" }); }
@@ -1786,6 +1804,7 @@ footer a { color: var(--muted); }
   function changed() { save(); renderCtrl(); renderAll(); }
 
   /* ---------- events ---------- */
+  $("#helpSel").addEventListener("change", e => { helpIdx = +e.target.value; renderDocs(); });
   $("#lang").addEventListener("change", e => {
     const l = e.target.value;
     try { localStorage.setItem(LANG_KEY, l); } catch (x) {}
@@ -1843,6 +1862,7 @@ footer a { color: var(--muted); }
     if (el.id === "sharedExit") { exitShared(); return; }
     if (el.id === "sharedSame") { testSame(); return; }
     if (el.matches("[data-hq]")) { helpIdx = +el.dataset.hq; renderDocs(); return; }
+    if (el.matches("[data-hstep]")) { helpIdx = clamp(helpIdx + +el.dataset.hstep, 0, $("#helpSel").options.length - 1); renderDocs(); return; }
     if (el.classList.contains("r")) { const id = el.parentElement.dataset.id; const prev = openId; openId = openId === id ? null : id; markDirty(id); if (prev) markDirty(prev); return; }
   });
   document.addEventListener("submit", e => {

@@ -112,6 +112,7 @@ export async function build({ check = false } = {}) {
         .replace(/(<[^>]*\sdata-ph="(\w+)"[^>]*>)/g, (m, el, k) => el.replace(/placeholder="[^"]*"/, `placeholder="${esc(T(k))}"`));
       if (v) body = body.replace(/<h1 data-i="heroT">[^<]*<\/h1>/, `<h1>${esc(fill(T("lp_h1"), { v: vn(v) }))}</h1>`);
       const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
+      const helpSel = docs.map(([q], i) => `<option value="${i}">${i + 1} / ${docs.length} · ${esc(q)}</option>`).join("");
       const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h2>${esc(q)}</h2><div class="dbody">${a}</div></article>`).join("");
       // landing content: the provider's regions, readable without JS
       let landing = "";
@@ -126,7 +127,7 @@ export async function build({ check = false } = {}) {
       const data = { lang, paths, page: v ? { vendor: v } : {}, i18n: lang === "en" ? { en } : { [lang]: d, en } };
       const html = body
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
-        .replace("{{head}}", head).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
+        .replace("{{head}}", head).replace("{{helpNav}}", helpNav).replace("{{helpSel}}", helpSel).replace("{{helpC}}", helpC)
         .replace("{{homeHref}}", path(slug, "")).replace("{{homeCur}}", sub ? "" : ' aria-current="page"')
         .replace("{{landing}}", landing).replace("{{vendorNav}}", vendorNav)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
