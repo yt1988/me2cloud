@@ -160,6 +160,7 @@ export default {
   share_sub: "图片和链接都在你的浏览器里生成，不会上传到任何地方。",
   share_loc: "显示城市和运营商",
   share_link: "分享链接",
+  share_short: "短链接", share_shortNote: "为生成短链接，结果会保存在 {host} 上，链接有效期到 {d}。", share_shortFail: "短链接生成失败，可以继续使用完整链接。",
   share_len: "{k} 个区域的结果直接写在链接里（{n} 个字符），不含 IP 和自定义节点。",
   share_copyLink: "复制链接",
   share_copyImg: "复制图片",

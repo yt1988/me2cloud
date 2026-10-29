@@ -12,6 +12,7 @@ export default {
   share_sub: "画像もリンクもこのブラウザの中で作ります。どこにもアップロードしません。",
   share_loc: "都市とプロバイダを表示",
   share_link: "共有リンク",
+  share_short: "短縮リンク", share_shortNote: "短縮リンクを作るため、結果を {host} に保存します。リンクは {d} まで有効です。", share_shortFail: "短縮リンクを作れませんでした。通常のリンクはそのまま使えます。",
   share_len: "{k} リージョンの結果をリンクそのものに格納（{n} 文字）。IP とカスタム接続先は含みません。",
   share_copyLink: "リンクをコピー",
   share_copyImg: "画像をコピー",
