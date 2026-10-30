@@ -346,6 +346,7 @@ export default {
   cust_geo_fail: "未识别",
   cust_cc: "国家/地区",
   cust_auto: "自动",
+  cust_rules: "需单独添加直连规则",
   ccNames: {CN: "中国大陆", HK: "中国香港", MO: "中国澳门", TW: "中国台湾"},
   share_customOnly: "分享只包含云厂商的结果，自定义节点不会被分享。测试里加上云厂商才能分享。",
   cust_empty: "还没有自定义节点。点「＋ 添加」加入你自己的服务器或网站，同一分组就像一个厂商。",

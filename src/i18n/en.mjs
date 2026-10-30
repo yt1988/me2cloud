@@ -203,6 +203,7 @@ export default {
   cust_geo_fail: "Not found",
   cust_cc: "Country / region",
   cust_auto: "Auto",
+  cust_rules: "Needs its own direct rules",
   ccNames: {CN: "Mainland China", HK: "Hong Kong, China", MO: "Macao, China", TW: "Taiwan, China"},
   share_customOnly: "Only cloud providers’ results are shared; custom nodes stay private. Include some providers in the test to share.",
   cust_empty: "No custom nodes yet. Add your own servers or sites with “＋ Add”; a group of them works like a provider.",

@@ -875,7 +875,7 @@
     // one list, one "all · none": custom groups sit next to the providers and behave the same
     $("#popV").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_vendors")}</span>${allNone("vendors")}</div>
       <div class="chips">${allVids().map(v => `<button type="button" class="chip${vCount(v) ? "" : " zero"}" data-v="${esc(v)}" aria-pressed="${S.vendors.includes(v)}">${isCustom(v) ? gIcon(v) : ""}${esc(vnm(v))}<span class="c">${vCount(v)}</span></button>`).join("")}</div></section>
-      <section class="pg cust${CADD ? " adding" : ""}"><div class="pg-h"><span>${t("cust_h")}</span><button type="button" data-cadd aria-expanded="${CADD}">＋ ${t("add")}</button></div>
+      <section class="pg cust${CADD ? " adding" : ""}"><div class="pg-h"><span class="pg-hl"><span>${t("cust_h")}</span>${S.custom.length ? `<button type="button" class="cust-rules" data-rules>⚠ ${esc(t("cust_rules"))} →</button>` : ""}</span><button type="button" data-cadd aria-expanded="${CADD}">＋ ${t("add")}</button></div>
       ${CADD ? `<form class="cform cadd" id="cform" autocomplete="off"><button type="button" class="x cadd-x" data-cadd aria-label="${esc(t("cust_cancel"))}">×</button>
         <div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>
         <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="${esc(t("cust_name_ph"))}"><button class="btn ink sm" style="height:32px" type="submit">${t("add")}</button></div>

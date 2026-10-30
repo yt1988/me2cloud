@@ -198,6 +198,7 @@ export default {
   cust_geo_fail: "未辨識",
   cust_cc: "國家/地區",
   cust_auto: "自動",
+  cust_rules: "需另外加入直連規則",
   ccNames: {CN: "中國大陸", HK: "中國香港", MO: "中國澳門", TW: "中國台灣"},
   share_customOnly: "分享只包含雲端廠商的結果，自訂節點不會被分享。測試裡加上雲端廠商才能分享。",
   cust_empty: "還沒有自訂節點。點「＋ 新增」加入你自己的伺服器或網站，同一分組就像一個廠商。",

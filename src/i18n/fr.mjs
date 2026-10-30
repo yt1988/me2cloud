@@ -203,6 +203,7 @@ export default {
   cust_geo_fail: "Introuvable",
   cust_cc: "Pays / région",
   cust_auto: "Auto",
+  cust_rules: "Règles directes à ajouter à part",
   ccNames: {CN: "Chine continentale", HK: "Hong Kong (Chine)", MO: "Macao (Chine)", TW: "Taïwan (Chine)"},
   share_customOnly: "Seuls les résultats des fournisseurs sont partagés ; les nœuds perso restent privés. Incluez des fournisseurs dans le test pour partager.",
   cust_empty: "Pas encore de nœuds perso. Ajoutez vos serveurs ou sites avec « ＋ Ajouter » ; chaque groupe se comporte comme un fournisseur.",

@@ -82,6 +82,7 @@ export default {
   cust_geo_fail: "Não encontrado",
   cust_cc: "País / região",
   cust_auto: "Auto",
+  cust_rules: "Precisa de regras diretas à parte",
   ccNames: {CN: "China continental", HK: "Hong Kong (China)", MO: "Macau (China)", TW: "Taiwan (China)"},
   share_customOnly: "Só os resultados dos provedores são compartilhados; nós próprios ficam privados. Inclua provedores no teste para compartilhar.",
   cust_empty: "Ainda não há nós próprios. Adicione seus servidores ou sites com “＋ Adicionar”; cada grupo funciona como um provedor.",

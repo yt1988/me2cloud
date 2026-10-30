@@ -82,6 +82,7 @@ export default {
   cust_geo_fail: "Nicht gefunden",
   cust_cc: "Land / Region",
   cust_auto: "Auto",
+  cust_rules: "Braucht eigene Direkt-Regeln",
   ccNames: {CN: "Festlandchina", HK: "Hongkong (China)", MO: "Macau (China)", TW: "Taiwan (China)"},
   share_customOnly: "Geteilt werden nur Ergebnisse der Cloud-Anbieter, eigene Knoten bleiben privat. Nimm Anbieter in den Test auf, um zu teilen.",
   cust_empty: "Noch keine eigenen Knoten. Füge mit „＋ Hinzufügen“ eigene Server oder Websites hinzu; eine Gruppe verhält sich wie ein Anbieter.",
