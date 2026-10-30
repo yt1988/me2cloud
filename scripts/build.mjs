@@ -74,8 +74,9 @@ export async function build({ check = false } = {}) {
     const d = I[lang], en = I.en, T = k => d[k] ?? en[k] ?? k;
     const vn = v => ((d.vendors || {})[v] || {}).name || ((en.vendors || {})[v] || {}).name || E.vendors[v].name;
     const vk = v => ((d.vendors || {})[v] || {}).kind || ((en.vendors || {})[v] || {}).kind || E.vendors[v].kind;
-    const city = c => { const m = /^(.*?)( \d)?$/.exec(c), C = d.cities || {}; return (C[m[1]] || m[1]) + (m[2] || ""); };
-    const country = cc => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
+    // Mainland China, Hong Kong, Macao and Taiwan: the language file's names (ccNames), as on the page
+    const country = cc => (d.ccNames || en.ccNames || {})[cc] || (() => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } })();
+    const city = c => { const m = /^(.*?)( \d)?$/.exec(c), C = d.cities || {}; return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || ""); };
     for (const sub of ["", ...vids]) {
       const v = sub || null, n = v ? E.endpoints.filter(e => e.vendor === v).length : E.endpoints.length;
       const url = SITE + path(slug, sub);

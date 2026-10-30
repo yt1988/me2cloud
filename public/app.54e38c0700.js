@@ -70,7 +70,8 @@
     return s;
   };
   let regionNames = null;
-  const country = cc => { if (!cc || cc === "--") return ""; try { return regionNames.of(cc); } catch (e) { return cc; } };
+  // Mainland China, Hong Kong, Macao and Taiwan are named by the language file (ccNames), never by the browser's region names
+  const country = cc => { if (!cc || cc === "--") return ""; const own = ((I18N[LANG] || {}).ccNames || I18N.en.ccNames || {})[cc]; if (own) return own; try { return regionNames.of(cc); } catch (e) { return cc; } };
   const tierName = g => t("g" + g).split(" · ")[1] || t("g" + g);
   const tierCode = g => "T" + (g - 1);
   function applyLang() {
@@ -85,16 +86,24 @@
   /* ---------- state ---------- */
   // nothing is selected at first: the page leads the visitor to pick providers; areas follow the providers
   function defaults() {
-    return { v: 2, vendors: [], cts: [], customSel: [], mode: "std", conc: 4, timeout: 4000,
+    return { v: 2, vendors: [], cts: [], mode: "std", conc: 4, timeout: 4000,
       need: { preset: "web", lat: 250, jit: 50, loss: 2 }, home: "all", ip: "v4", custom: [], onlyPass: false, hideIp: false, rtc: true, ruleFmt: "clash" };
   }
   function sanitize(s) {
     const d = defaults();
     if (!s || typeof s !== "object") return d;
     const o = Object.assign(d, s);
-    o.vendors = Array.isArray(o.vendors) ? o.vendors.filter(v => ENDPOINTS.vendors[v]) : d.vendors;
+    // custom nodes: g = group (a provider of its own, "c:<g>" in vendors; "" is the default group), cc = country
+    const https = u => typeof u === "string" && /^https:\/\//i.test(u);
+    o.custom = Array.isArray(o.custom) ? o.custom.filter(c => c && https(c.url)).slice(0, 200).map(c => Object.assign({ k: String(c.k), name: String(c.name || c.url.split("/")[2]).slice(0, 40),
+      url: c.url, method: c.method || "AUTO", g: String(c.g || "").slice(0, 24) }, /^[A-Z]{2}$/.test(c.cc) ? { cc: c.cc } : {}, /^[A-Z]{2}$/.test(c.cc) && c.ccSet ? { ccSet: true } : {}, c.geo === 3 ? { geo: 3 } : {},
+      https(c.url6) ? { url6: c.url6 } : {})) : [];
+    const groups = new Set(o.custom.map(c => "c:" + c.g));
+    o.vendors = Array.isArray(o.vendors) ? o.vendors.filter(v => ENDPOINTS.vendors[v] || groups.has(v)) : d.vendors;
+    // before groups, custom nodes were picked one by one (customSel): a picked node now picks its group
+    if (Array.isArray(o.customSel)) o.custom.filter(c => o.customSel.map(String).includes(c.k)).forEach(c => { if (!o.vendors.includes("c:" + c.g)) o.vendors.push("c:" + c.g); });
+    delete o.customSel;
     o.cts = Array.isArray(o.cts) ? o.cts.filter(c => CT_ORDER.includes(c)) : d.cts;
-    o.customSel = Array.isArray(o.customSel) ? o.customSel.map(String) : [];
     if (o.exclHome === true) o.home = "excl";
     delete o.exclHome;
     if (!["all", "excl", "only"].includes(o.home)) o.home = "all";
@@ -103,7 +112,6 @@
     o.conc = clamp(+o.conc || 4, 1, 8);
     o.timeout = [3000, 4000, 6000, 8000].includes(+o.timeout) ? +o.timeout : 4000;
     o.need = Object.assign(d.need, o.need || {});
-    o.custom = Array.isArray(o.custom) ? o.custom.filter(c => c && typeof c.url === "string" && /^https:\/\//i.test(c.url)).slice(0, 50) : [];
     if (!RULE_FORMATS.includes(o.ruleFmt)) o.ruleFmt = "clash";
     return o;
   }
@@ -130,30 +138,299 @@
 
   const hostOf = u => { try { return new URL(u).hostname; } catch (e) { return u; } };
   // a city in the page language: "Beijing 4" -> "北京 4"; unknown or unlisted names fall back to English or the region code
-  const cityName = (c, code) => { if (!c || c === "?") return code; const m = /^(.*?)( \d)?$/.exec(c), C = (I18N[LANG] || {}).cities || {}; return (C[m[1]] || m[1]) + (m[2] || ""); };
-  const vnm = v => vtext(v, "name");
+  const cityName = (c, code) => { if (!c || c === "?") return code; const m = /^(.*?)( \d)?$/.exec(c), C = (I18N[LANG] || {}).cities || {}; return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || ""); };
+  // a custom group is a provider whose id is "c:" + its name; the unnamed group shows as "Custom"
+  const isCustom = v => String(v).startsWith("c:");
+  const vnm = v => isCustom(v) ? v.slice(2) || t("custom") : vtext(v, "name");
+  const vsh = v => isCustom(v) ? (v.slice(2) || "★").slice(0, 4) : vshort[v] || "";
   const vtext = (v, k) => (((I18N[LANG] || {}).vendors || {})[v] || {})[k] || (I18N.en.vendors || {})[v]?.[k] || ENDPOINTS.vendors[v]?.[k] || "";
   const vshort = { aws: "AWS", oracle: "OCI", vultr: "VLT", azure: "AZ", gcp: "GCP", aliyun: "ALI", tencent: "TC", huawei: "HWC", linode: "LIN", digitalocean: "DO", ovh: "OVH", hetzner: "HTZ", ibm: "IBM", scaleway: "SCW", volcengine: "VOLC", baidu: "BAI", naver: "NAV", custom: "★" };
+  // country -> area: the regions we ship, plus the countries custom nodes often sit in
+  const CC_CT = {};
+  ENDPOINTS.endpoints.forEach(e => { if (e.country) CC_CT[e.country] = e.continent; });
+  Object.entries({ na: "US CA MX PA CR GT", sa: "BR CL AR CO PE EC UY VE BO PY", oc: "AU NZ FJ", af: "ZA NG KE EG MA TN DZ GH TZ UG MU",
+    me: "AE IL SA QA BH TR OM KW JO LB IQ IR", as: "HK TW KR JP SG MY TH VN PH ID IN PK KZ BD KH MO MN CN GE AM AZ UZ KG NP LK",
+    eu: "NL LU LT LV EE PL RO BG FI SE NO DK ES IT CH AT CZ SK HU GR PT IS MD RS AL UA RU CY IE BE HR SI DE FR GB BY BA MK ME LI MT" })
+    .forEach(([ct, l]) => l.split(" ").forEach(cc => { CC_CT[cc] = CC_CT[cc] || ct; }));
   let ALL = [];
   function buildAll() {
-    const vend = ENDPOINTS.vendors;
     ALL = ENDPOINTS.endpoints.map(e => Object.assign({}, e, { vname: vnm(e.vendor), cityEn: e.city, city: cityName(e.city, e.region) }))
-      .concat(S.custom.map(c => ({ id: "custom:" + c.k, k: String(c.k), vendor: "custom", vname: t("custom"), region: hostOf(c.url), city: c.name, country: "", continent: "xx",
-        url: c.url, method: c.method || "AUTO", tier: "?" })));
+      .concat(S.custom.map(c => ({ id: "custom:" + c.k, k: c.k, vendor: "c:" + c.g, vname: vnm("c:" + c.g), region: hostOf(c.url), city: c.name, cityEn: c.name,
+        country: c.cc || "", continent: CC_CT[c.cc] || "xx", url: c.url, url6: c.url6, method: c.method || "AUTO", tier: "?" })));
   }
+  // custom groups in the order they were first used
+  const GIDS = () => [...new Set(S.custom.map(c => "c:" + c.g))];
+  const allVids = () => VIDS.concat(GIDS());
+
+  /* ---------- the running shiba ---------- */
+  // A strip of 20 frames (public/assets/shiba-run.png, made by scripts/shiba-sprite.mjs) stepped through with a transform
+  // animation: the browser runs that off the main thread, so the dog keeps its stride while a test is busy re-rendering the
+  // page. Its speed follows the latest samples: 150 ms over the median of the last 8, 0.2× to 3×, eased in every 100 ms.
+  // Reduced motion leaves it standing.
+  const RUNNER = { host: null, anim: null, rate: 1, target: 1, recent: [], timer: 0, still: matchMedia("(prefers-reduced-motion: reduce)").matches };
+  function runner() {
+    if (RUNNER.host) return RUNNER.host;
+    const host = RUNNER.host = document.createElement("span");
+    host.className = "runner"; host.setAttribute("aria-hidden", "true");
+    const strip = document.createElement("i");
+    host.appendChild(strip);
+    RUNNER.anim = strip.animate([{ transform: "translateX(0)" }, { transform: "translateX(-1000px)" }], { duration: 760, iterations: Infinity, easing: "steps(20, end)" });
+    RUNNER.anim.pause();
+    return host;
+  }
+  function runnerStart() {
+    runner();
+    RUNNER.recent = []; RUNNER.target = 1;
+    if (RUNNER.still) return;
+    RUNNER.anim.play();
+    clearInterval(RUNNER.timer);
+    RUNNER.timer = setInterval(() => {
+      if (!RUN) { clearInterval(RUNNER.timer); RUNNER.anim.pause(); return; }
+      const next = RUNNER.rate + (RUNNER.target - RUNNER.rate) * .35;
+      if (Math.abs(next - RUNNER.rate) > .01) { RUNNER.rate = next; RUNNER.anim.updatePlaybackRate(next); }
+    }, 100);
+  }
+  // every counted sample: the dog's pace follows the newest ones
+  function runnerSample(v) {
+    if (v == null) return;
+    const a = RUNNER.recent; a.push(v); if (a.length > 8) a.shift();
+    const m = a.slice().sort((x, y) => x - y)[a.length >> 1];
+    RUNNER.target = clamp(150 / Math.max(1, m), .2, 3);
+  }
+
+  /* ---------- custom nodes ---------- */
+  // icon: the node's own /favicon.ico, then its site's (lg.x.com -> x.com, which usually redirects to www), then the site's
+  // first letter; outcomes are remembered for re-renders
+  const FAV = new Map();
+  function favOf(url) {
+    let u; try { u = new URL(url); } catch (e) { return ""; }
+    const root = u.hostname.split(".").slice(-2).join("."), letter = esc((root[0] || "?").toUpperCase()), known = FAV.get(u.origin);
+    if (known === "") return `<span class="fav l" aria-hidden="true">${letter}</span>`;
+    const alt = known || root === u.hostname ? "" : "https://" + root + "/favicon.ico";
+    return `<img class="fav" src="${esc(known || u.origin + "/favicon.ico")}" data-o="${esc(u.origin)}" data-alt="${esc(alt)}" data-l="${letter}" alt="" referrerpolicy="no-referrer">`;
+  }
+  document.addEventListener("load", e => { const im = e.target; if (im.classList && im.classList.contains("fav") && im.dataset.o) FAV.set(im.dataset.o, im.src); }, true);
+  document.addEventListener("error", e => {
+    const im = e.target;
+    if (!im.classList || !im.classList.contains("fav") || !im.dataset.o) return;
+    if (im.dataset.alt) { const a = im.dataset.alt; im.dataset.alt = ""; im.src = a; return; }
+    FAV.set(im.dataset.o, "");
+    const s = document.createElement("span"); s.className = "fav l"; s.setAttribute("aria-hidden", "true"); s.textContent = im.dataset.l; im.replaceWith(s);
+  }, true);
+  // a group wears the icon of the site most of its nodes belong to
+  const gIcon = v => {
+    const cs = S.custom.filter(x => "c:" + x.g === v), n = {};
+    cs.forEach(c => { const r = hostOf(c.url).split(".").slice(-2).join("."); n[r] = (n[r] || 0) + 1; });
+    const top = cs.slice().sort((a, b) => n[hostOf(b.url).split(".").slice(-2).join(".")] - n[hostOf(a.url).split(".").slice(-2).join(".")])[0];
+    return top ? favOf(top.url) : "";
+  };
+
+  // country lookup: the host's IPv4 from Cloudflare's DNS-over-HTTPS, then the bundled DB-IP table (public/ipdb), all in the browser
+  const LOC = {};
+  let IPDB = null;
+  function ipdb() {
+    return IPDB || (IPDB = (async () => {
+      let b = new Uint8Array(await (await fetch("/ipdb/v4.bin.gz")).arrayBuffer());
+      // served as-is; a server that already gzip-decoded it hands over the raw table
+      if (b[0] === 0x1f && b[1] === 0x8b) b = new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
+      const dv = new DataView(b.buffer), n = dv.getUint32(4, true), nc = b[8], codes = [""];
+      for (let i = 0; i < nc; i++) codes.push(String.fromCharCode(b[9 + i * 2], b[10 + i * 2]));
+      const head = 9 + nc * 2, starts = new Uint32Array(n);
+      for (let i = 0, s = 0; i < n; i++) { s = (s + dv.getUint32(head + i * 4, true)) >>> 0; starts[i] = s; }
+      return { starts, idx: b.subarray(head + n * 4, head + n * 5), codes };
+    })().catch(e => { IPDB = null; throw e; }));
+  }
+  async function ipCountry(ip) {
+    const { starts, idx, codes } = await ipdb(), x = ip.split(".").reduce((a, p) => a * 256 + +p, 0);
+    let lo = 0, hi = starts.length - 1;
+    while (lo < hi) { const m = (lo + hi + 1) >> 1; if (starts[m] <= x) lo = m; else hi = m - 1; }
+    return codes[idx[lo]];
+  }
+  // CDN-backed hosts answer with the edge nearest whoever asks, so the lookup goes to Google Public DNS with the visitor's
+  // own /24 as EDNS client subnet: the direct IPv4 from the network check, or WebRTC's when a proxy hides it. Cloudflare's
+  // resolver drops the subnet by design, so it only answers when Google can't be reached.
+  function myEcs() {
+    const pub = x => /^\d+\.\d+\.\d+\.\d+$/.test(x || "") && !/^(10|127|169\.254|192\.168|172\.(1[6-9]|2\d|3[01])|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7]))\./.test(x);
+    const ip = NET.verdict !== "warn" && pub(NET.ip4) ? NET.ip4 : (NET.rtc || []).find(pub);
+    return ip ? ip.split(".").slice(0, 3).join(".") + ".0/24" : "";
+  }
+  // -> { ip } (null when the name has no IPv4) or { nx: true } when the name doesn't exist; throws when no resolver answered
+  async function dnsLookup(host) {
+    if (/^\d+(\.\d+){3}$/.test(host)) return { ip: host };
+    for (let i = 0; i < 40 && NET.state !== "done"; i++) await new Promise(r => setTimeout(r, 250));
+    const ecs = myEcs(), q = encodeURIComponent(host);
+    for (const url of ["https://dns.google/resolve?type=A&name=" + q + (ecs ? "&edns_client_subnet=" + ecs : ""),
+      "https://cloudflare-dns.com/dns-query?ct=application/dns-json&type=A&name=" + q]) {
+      try {
+        const j = await (await fetch(url, { headers: { accept: "application/dns-json" }, credentials: "omit", signal: AbortSignal.timeout(5000) })).json();
+        if (j.Status === 3) return { nx: true };
+        if (j.Status !== 0) continue;
+        const a = (j.Answer || []).filter(x => x.type === 1);
+        return { ip: a.length ? a[a.length - 1].data : null };
+      } catch (e) {}
+    }
+    throw new Error("dns");
+  }
+  // an airport or metro code in the host name ("hkg-t1.lg.…", "lg-ams.…") beats the IP table: small hosts often announce
+  // their own address space, which the table files under the company's home country
+  const HOST_CC = {};
+  ("US:lax,sjc,sea,dfw,dal,ord,chi,nyc,jfk,ewr,iad,ash,atl,mia,phx,den,slc,pdx,buf,las;CA:yyz,yvr,tor;HK:hkg;JP:tyo,nrt,hnd,osa,kix;SG:sin;TW:tpe;KR:icn,sel;"
+    + "NL:ams;DE:fra,fsn,nbg,dus,ber,muc;GB:lon,lhr;FR:par,cdg,sxb;IE:dub;LU:lux;SE:sto,arn;FI:hel;PL:waw;ES:mad;IT:mil,mxp;CH:zrh;AT:vie;AU:syd,mel;IN:bom,del;BR:gru,sao;ZA:jnb;AE:dxb")
+    .split(";").forEach(p => { const [cc, l] = p.split(":"); l.split(",").forEach(x => { HOST_CC[x] = cc; }); });
+  const hostCC = h => { for (const x of h.toLowerCase().split(/[.-]/).slice(0, -2)) { const k = x.replace(/\d+$/, ""); if (HOST_CC[k]) return HOST_CC[k]; } return ""; };
+  async function locateCustom(c) {
+    if (c.ccSet) return;
+    LOC[c.k] = "ing"; renderCtrl();
+    let cc = hostCC(hostOf(c.url));
+    if (!cc) try { const { ip } = await dnsLookup(hostOf(c.url)); cc = ip ? await ipCountry(ip) : ""; } catch (e) {}
+    const x = S.custom.find(y => y.k === c.k);
+    if (!x) return;
+    if (cc && !x.ccSet) {
+      delete LOC[c.k]; x.cc = cc; x.geo = 3;
+      // a picked group's new area joins the picked areas
+      const ct = CC_CT[cc];
+      if (ct && S.vendors.includes("c:" + x.g) && !S.cts.includes(ct)) S.cts = CT_ORDER.filter(k => k === ct || S.cts.includes(k));
+    } else if (!cc) LOC[c.k] = "fail";
+    buildAll(); changed();
+  }
+  function dropCustom(pred) {
+    S.custom = S.custom.filter(c => !pred(c));
+    const gs = new Set(GIDS());
+    S.vendors = S.vendors.filter(v => !isCustom(v) || gs.has(v));
+    buildAll(); S.cts = coveredCts(); changed(); $("#plV").open = true;
+  }
+  // editing in place: a node (CEDIT = its key) or a group name (GEDIT = its id); CADD = the add panel is open
+  // COPEN = the node whose details are showing (address, country, edit, delete)
+  let CEDIT = null, GEDIT = null, CADD = false, COPEN = null;
+  const PEN = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>`;
+  // the country mark on a chip: the flag, or "…" while looking it up, or "?" when it wasn't found
+  const ccMark = c => c.cc && !LOC[c.k] ? flag(c.cc) : `<span class="cnq${LOC[c.k] === "ing" ? "" : " bad"}">${LOC[c.k] === "ing" ? "…" : "?"}</span>`;
+  // per group: a heading (icon, name, count, rename, delete) and one small chip per node (flag + name), many to a line;
+  // a node's details open under its group on click, since looking at addresses and editing are the rare case
+  function customList() {
+    return GIDS().map(v => {
+      // a group picked for the next test shows it here too, in the providers' green
+      const cs = S.custom.filter(c => "c:" + c.g === v), open = cs.find(c => c.k === CEDIT || c.k === COPEN), on = S.vendors.includes(v);
+      return `<div class="cn-g${on ? " on" : ""}">${gIcon(v)}${GEDIT === v
+          ? `<input class="inp cg-in" id="cgIn" data-gin="${esc(v)}" maxlength="24" value="${esc(v.slice(2))}" placeholder="${esc(t("custom"))}" aria-label="${esc(t("cust_edit"))}">`
+          : `<span class="cn-gn">${esc(vnm(v))}</span><span class="c">${cs.length}</span><button type="button" class="x" data-gedit="${esc(v)}" aria-label="${esc(t("cust_edit"))}" title="${esc(t("cust_edit"))}">${PEN}</button>`}`
+        + `<button type="button" class="x" data-delg="${esc(v)}" aria-label="${esc(t("del"))}" title="${esc(t("del"))}">×</button></div>`
+        + `<div class="cn-chips">${cs.map(c => `<button type="button" class="cnc${on ? " sel" : ""}" data-cn="${esc(c.k)}" aria-expanded="${open === c}" title="${esc(c.name + " · " + hostOf(c.url))}">${ccMark(c)}<span>${esc(c.name)}</span></button>`).join("")}</div>`
+        + (!open ? "" : CEDIT === open.k ? editRow(open) : nodeRow(open));
+    }).join("");
+  }
+  // a node's details: icon, address, the flag as country picker (an invisible select over it; a picked one has a dot), edit, delete
+  function nodeRow(c) {
+    return `<div class="cn">${favOf(c.url)}<span class="cn-h" title="${esc(c.url)}">${esc(c.url.replace(/^https:\/\//, "").replace(/\/$/, ""))}</span>`
+      + `<label class="cn-cc${c.ccSet ? " set" : ""}" title="${esc((c.ccSet ? "" : t("cust_auto") + " · ") + (country(c.cc) || t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail")))}">`
+      + (c.cc && !LOC[c.k] ? flag(c.cc) + `<span class="st">${esc(country(c.cc))}</span>` : `<span class="st${LOC[c.k] === "ing" ? "" : " bad"}">${esc(t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail"))}</span>`)
+      + `<select data-cc="${esc(c.k)}" aria-label="${esc(t("cust_cc"))}"><option value="">${esc(t("cust_auto") + (c.cc && !c.ccSet ? " · " + country(c.cc) : ""))}</option>${c.ccSet ? `<option value="${c.cc}" selected>${esc(country(c.cc))}</option>` : ""}</select></label>`
+      + `<button type="button" class="x" data-edit="${esc(c.k)}" aria-label="${esc(t("cust_edit"))}" title="${esc(t("cust_edit"))}">${PEN}</button>`
+      + `<button type="button" class="x" data-del="${esc(c.k)}" aria-label="${esc(t("del"))}" title="${esc(t("del"))}">×</button></div>`;
+  }
+  // a node being edited: name, address and group in its own row; the check saves, the cross cancels (Enter / Esc too)
+  const CHECK = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
+  function editRow(c) {
+    const groups = [...new Set([""].concat(GIDS().map(v => v.slice(2))))];
+    return `<div class="cn on">${favOf(c.url)}<input class="inp cn-in" id="ceName" maxlength="40" value="${esc(c.name)}" placeholder="${esc(t("cust_name_ph"))}" aria-label="${esc(t("cust_name_ph"))}">`
+      + `<input class="inp cn-in u" id="ceUrl" maxlength="500" value="${esc(c.url)}" aria-label="URL">`
+      + `<select class="inp" id="ceGroup" aria-label="${esc(t("cust_group"))}">${groups.map(g => `<option value="${esc(g)}"${g === c.g ? " selected" : ""}>${esc(g || t("cust_nogroup"))}</option>`).join("")}</select>`
+      + `<button type="button" class="x ok" data-esave="${esc(c.k)}" aria-label="${esc(t("cust_save"))}" title="${esc(t("cust_save"))}">${CHECK}</button>`
+      + `<button type="button" class="x" data-ecancel aria-label="${esc(t("cust_cancel"))}" title="${esc(t("cust_cancel"))}">×</button></div>`;
+  }
+  // adds (k = null) or updates a node; returns an error message, or "" once saved
+  async function saveNode(k, name, raw, g) {
+    raw = String(raw).trim(); name = String(name).trim().slice(0, 40); g = String(g).trim().slice(0, 24);
+    let u; try { u = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : "https://" + raw); } catch (x) { return t("cust_err_url"); }
+    if (u.protocol !== "https:") return t("cust_err_https");
+    if (!u.hostname.includes(".")) return t("cust_err_url");
+    if (S.custom.some(x => x.url === u.href && x.k !== k)) return t("cust_err_dup");
+    let c = k ? S.custom.find(x => x.k === k) : null;
+    const moved = !c || hostOf(c.url) !== u.hostname;
+    // a name that doesn't exist is almost always a typo, or the name and the address swapped; with no resolver reachable it passes
+    if (moved) try { if ((await dnsLookup(u.hostname)).nx) return t("cust_err_nx", { h: u.hostname }); } catch (e) {}
+    if (c) {
+      // an edited node keeps its key (and its results); a new host gets its country looked up again
+      if (moved && !c.ccSet) { delete c.cc; delete c.geo; }
+      Object.assign(c, { name: name || u.hostname, url: u.href, g });
+    } else {
+      c = { k: Date.now().toString(36), name: name || u.hostname, url: u.href, method: "AUTO", g };
+      S.custom.push(c);
+    }
+    // the node's group is picked, like choosing a provider; a group left empty is gone
+    if (!S.vendors.includes("c:" + g)) S.vendors.push("c:" + g);
+    const gs = new Set(GIDS()); S.vendors = S.vendors.filter(v => !isCustom(v) || gs.has(v));
+    buildAll(); S.cts = coveredCts(); changed(); $("#plV").open = true;
+    if (moved) locateCustom(c);
+    return "";
+  }
+  async function saveEdit(k) {
+    const msg = await saveNode(k, $("#ceName").value, $("#ceUrl").value, $("#ceGroup").value);
+    if (msg) { toast(msg); return; }
+    CEDIT = null; renderCtrl(); $("#plV").open = true; toast(t("cust_saved"));
+  }
+  // the add form's group: "no group", each named group, or a new one typed in place (FG = picked name, FNEW = typing one)
+  let FG = "", FNEW = false;
+  function groupPick() {
+    const named = GIDS().filter(v => v.length > 2).map(v => v.slice(2));
+    if (FG && !named.includes(FG)) FG = "";
+    return `<div class="gpick"><span class="lbl">${esc(t("cust_group"))}</span>`
+      + `<button type="button" class="gp" data-gp="" aria-pressed="${!FNEW && !FG}">${esc(t("cust_nogroup"))}</button>`
+      + named.map(g => `<button type="button" class="gp" data-gp="${esc(g)}" aria-pressed="${!FNEW && FG === g}">${gIcon("c:" + g)}${esc(g)}</button>`).join("")
+      + (FNEW ? `<input class="inp gp-in" id="cGroup" maxlength="24" placeholder="${esc(t("cust_group_ph"))}" aria-label="${esc(t("cust_group_ph"))}">`
+        : `<button type="button" class="gp add" data-gp-new>＋ ${esc(t("cust_newgroup"))}</button>`) + `</div>`;
+  }
+  // renaming a group renames it everywhere, picked state included; a name already in use merges the two
+  function renameGroup(v, name) {
+    GEDIT = null;
+    const g = name.trim().slice(0, 24), nv = "c:" + g;
+    if (nv !== v) {
+      if (FG === v.slice(2)) FG = g;
+      S.custom.forEach(c => { if ("c:" + c.g === v) c.g = g; });
+      S.vendors = [...new Set(S.vendors.map(x => x === v ? nv : x))];
+      buildAll();
+    }
+    changed(); $("#plV").open = true;
+  }
+  document.addEventListener("keydown", e => {
+    if (CADD && e.key === "Escape" && e.target.closest && e.target.closest("#cform")) { e.stopPropagation(); CADD = false; renderCtrl(); $("#plV").open = true; return; }
+    if ((e.target.id === "ceName" || e.target.id === "ceUrl") && CEDIT) {
+      if (e.key === "Enter") { e.preventDefault(); saveEdit(CEDIT); } else if (e.key === "Escape") { e.stopPropagation(); CEDIT = null; renderCtrl(); }
+      return;
+    }
+    if (e.target.id === "cgIn") { if (e.key === "Enter") { e.preventDefault(); renameGroup(e.target.dataset.gin, e.target.value); } else if (e.key === "Escape") { e.stopPropagation(); GEDIT = null; renderCtrl(); } }
+  });
+  document.addEventListener("focusout", e => { if (e.target.id === "cgIn" && GEDIT) renameGroup(e.target.dataset.gin, e.target.value); });
+  // the country list is filled when a select is first opened, so a long node list stays light
+  document.addEventListener("focusin", e => {
+    const s = e.target;
+    if (s.dataset == null || s.dataset.cc == null || s.dataset.full) return;
+    s.dataset.full = "1";
+    const cur = s.value;
+    Object.keys(CC_CT).sort((a, b) => country(a).localeCompare(country(b))).forEach(cc => { if (cc !== cur) s.add(new Option(country(cc), cc)); });
+    s.value = cur;
+  });
   // self-hosted flag-icons SVG (MIT): one small file per country, no third-party request
-  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${cc.toLowerCase()}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
+  // Taiwan is shown with China's flag
+  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${cc === "TW" ? "cn" : cc.toLowerCase()}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
   // the visitor's own country: the exit IP's, or the time zone's when a proxy hides it
   const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_CC[NET.tz] ? TZ_CC[NET.tz] : NET.cc || "";
   // own-country filter: "excl" leaves those regions out, "only" keeps just them
-  const excluded = e => { if (S.home === "all" || e.vendor === "custom" || !homeCC()) return false; const mine = e.country === homeCC(); return S.home === "excl" ? mine : !mine; };
-  const selected = () => ALL.filter(e => e.vendor === "custom" ? S.customSel.includes(e.k) : S.vendors.includes(e.vendor) && S.cts.includes(e.continent) && !excluded(e));
+  // custom nodes follow the own-country filter like providers' regions; one with no known country is never filtered out
+  const excluded = e => { if (S.home === "all" || !e.country || !homeCC()) return false; const mine = e.country === homeCC(); return S.home === "excl" ? mine : !mine; };
+  const selected = () => ALL.filter(e => S.vendors.includes(e.vendor) && (e.continent === "xx" || S.cts.includes(e.continent)) && !excluded(e));
   const VIDS = Object.keys(ENDPOINTS.vendors);
-  // areas covered by the chosen providers; the area picker only offers these
-  const coveredCts = () => CT_ORDER.filter(c => ENDPOINTS.endpoints.some(e => S.vendors.includes(e.vendor) && e.continent === c));
+  // areas covered by the chosen providers and groups; the area picker only offers these
+  // (providers are read from ENDPOINTS, since this also runs before the first buildAll)
+  const coveredCts = () => CT_ORDER.filter(c => ENDPOINTS.endpoints.some(e => S.vendors.includes(e.vendor) && e.continent === c)
+    || S.custom.some(x => S.vendors.includes("c:" + x.g) && CC_CT[x.cc] === c));
   // picking from "everything selected" narrows to the one clicked; after that, clicks add or remove
   if (PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] && !/[?&]vendors=/.test(location.search)) { S.vendors = [PAGE.vendor]; S.cts = coveredCts(); }
-  const pickToggle = (list, all, x) => list.length === all.length && all.length > 1 ? [x] : list.includes(x) ? list.filter(y => y !== x) : list.concat(x);
+  // from "all", a tap picks just that one; tapping the only pick goes back to all (emptying is the Clear link's job)
+  const pickToggle = (list, all, x) => all.length < 2 ? (list.includes(x) ? [] : [x])
+    : list.length === all.length ? [x]
+    : list.length === 1 && list[0] === x ? all.slice()
+    : list.includes(x) ? list.filter(y => y !== x) : list.concat(x);
 
   /* ---------- results ---------- */
   // R: id -> { s: samples (ms or null), w: warm-up ms, m: method used, st: queued|running|done|fail|stopped, vf: CORS check }
@@ -176,9 +453,11 @@
     return { n, ok: ok.length, loss, min: a[0], max: a[a.length - 1], avg, med, p25: q(.25), p75: q(.75), p90: q(.9), sd, jit, score: med + 2 * jit + loss * 1000 };
   }
   const grade = v => v == null ? 0 : (GRADES.findIndex(g => v <= g) + 1) || 5;
+  // results are judged by the requirement they were tested under (VIEW.need); the picker only sets up the next test
+  const NEED = () => VIEW.need || S.need;
   const meets = st => {
     if (!st || !st.ok) return false;
-    const N = S.need;
+    const N = NEED();
     return (!N.lat || st.med <= N.lat) && (!N.jit || st.jit <= N.jit) && (!N.loss ? st.loss === 0 : st.loss * 100 <= N.loss);
   };
   const shaky = st => st.ok > 1 && (st.jit > Math.max(10, st.med * .2) || st.loss > 0);
@@ -231,7 +510,7 @@
     } catch (e) { logReq(ep.url, "CORS", null); return false; }
   }
 
-  const urlFor = (e, ip) => ip !== "v6" ? e.url : e.url6 || (e.vendor === "custom" || (e.fam || "").includes("6") ? e.url : null);
+  const urlFor = (e, ip) => ip !== "v6" ? e.url : e.url6 || (isCustom(e.vendor) || (e.fam || "").includes("6") ? e.url : null);
   async function runEndpoint(ep, n, signal) {
     const ip = VIEW.ip || "v4", url = urlFor(ep, ip);
     if (!url) { R.set(ep.id, { s: [], w: null, m: ep.method, st: "nov6", ip }); markDirty(ep.id, true); return; }
@@ -255,6 +534,7 @@
       const md = a => { const b = a.filter(v => v != null).sort((x, y) => x - y); return b.length ? b[b.length >> 1] : Infinity; };
       m = md(h) < md(g) * 0.85 ? "HEAD" : "GET"; r.m = m;
       r.s.push(...(m === "HEAD" ? h : g).map(v => v == null ? null : Math.round(v * 10) / 10));
+      (m === "HEAD" ? h : g).forEach(runnerSample);
       markDirty(ep.id, true);
     }
     while (r.s.length < n && !signal.aborted && fails < FAIL_STOP) {
@@ -263,6 +543,7 @@
       const v = await probe(ep, m, signal);
       if (signal.aborted) break;
       r.s.push(v == null ? null : Math.round(v * 10) / 10);
+      runnerSample(v);
       fails = v == null ? fails + 1 : 0;
       markDirty(ep.id, true);
     }
@@ -282,8 +563,9 @@
     if (RUN || !list.length) return;
     const ctl = new AbortController();
     RUN = { ctl, total: list.length, done: 0, t0: performance.now(), n, list };
+    runnerStart();
     if (VIEW.shared) { clearHash(); $("#sharedBar").hidden = true; }
-    if (!keep || !VIEW.live) { R = new Map(); VIEW = { ts: Date.now(), live: true, peak: isPeak(new Date()), mode: n, ip: S.ip }; }
+    if (!keep || !VIEW.live) { R = new Map(); VIEW = { ts: Date.now(), live: true, peak: isPeak(new Date()), mode: n, ip: S.ip, need: Object.assign({}, S.need) }; }
     for (const e of list) R.set(e.id, { s: [], w: null, m: e.method, st: "queued" });
     renderAll();
     const queue = interleave(list), active = new Map();
@@ -307,7 +589,7 @@
   function snapshot() {
     const res = {};
     for (const [id, r] of R) if (r.st !== "queued") res[id] = { s: r.s, w: r.w, m: r.m, st: r.st, vf: r.vf, ip: r.ip };
-    return { v: 1, ts: VIEW.ts || Date.now(), peak: !!VIEW.peak, mode: VIEW.mode, ip: VIEW.ip || "v4", net: NET.ok ? { asn: NET.asn, org: NET.org, cc: NET.cc, city: NET.city, colo: NET.colo, proxy: NET.verdict === "warn" } : null, res };
+    return { v: 1, ts: VIEW.ts || Date.now(), peak: !!VIEW.peak, mode: VIEW.mode, ip: VIEW.ip || "v4", need: VIEW.need, net: NET.ok ? { asn: NET.asn, org: NET.org, cc: NET.cc, city: NET.city, colo: NET.colo, proxy: NET.verdict === "warn" } : null, res };
   }
   function saveResults() {
     const snap = snapshot();
@@ -327,7 +609,7 @@
   function applySnapshot(snap, live) {
     R = new Map();
     for (const [id, r] of Object.entries(snap.res || {})) if (r && Array.isArray(r.s)) R.set(id, { s: r.s.map(v => v == null ? null : +v), w: r.w, m: r.m, st: r.st === "running" ? "stopped" : r.st || "done", vf: r.vf, ip: r.ip });
-    VIEW = { ts: snap.ts, live, peak: !!snap.peak, mode: snap.mode, ip: snap.ip || "v4" };
+    VIEW = { ts: snap.ts, live, peak: !!snap.peak, mode: snap.mode, ip: snap.ip || "v4", need: snap.need && typeof snap.need === "object" ? snap.need : undefined };
   }
 
   /* ---------- network check ---------- */
@@ -567,14 +849,18 @@
   }
   // regions of a provider within the chosen areas (all areas before any is chosen), minus the own-country filter, so
   // the provider and area counts always agree with what a run would measure
-  const vCount = v => ALL.filter(e => e.vendor === v && (!S.cts.length || S.cts.includes(e.continent)) && !excluded(e)).length;
+  // a count only follows the areas when the visitor narrowed them: "all areas" is reset whenever the picks change, and the
+  // counts of providers that aren't picked must not move with it
+  const vCount = v => {
+    const narrowed = coveredCts().some(c => !S.cts.includes(c));
+    return ALL.filter(e => e.vendor === v && (e.continent === "xx" || !narrowed || S.cts.includes(e.continent)) && !excluded(e)).length;
+  };
   function renderCtrl() {
     if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
     const N = S.need, cov = coveredCts();
-    const cSel = S.custom.filter(c => S.customSel.includes(String(c.k)));
-    const noV = !S.vendors.length && !cSel.length;
-    // providers and custom endpoints share one list; a star marks the custom ones
-    const vLabel = sumList(S.vendors.map(v => vnm(v)).concat(cSel.map(c => "★ " + c.name)), VIDS.length + S.custom.length, t("allVendors"));
+    const noV = !S.vendors.length;
+    // providers and custom groups share one list; a star marks the groups
+    const vLabel = sumList(S.vendors.map(v => (isCustom(v) ? "★ " : "") + vnm(v)), allVids().length, t("allVendors"));
     $("#plV").classList.toggle("ask", noV);
     $("#plV > summary").innerHTML = `${SVG_V}${noV ? `<span>${t("pickVendor")}</span>` : `<span class="pl-k">${t("pl_vendors")}</span><b>${esc(vLabel)}</b>`}${caret}`;
     // areas are the second step: they only open once a provider is chosen, and only list the areas it covers
@@ -583,22 +869,31 @@
     $("#plA > summary").innerHTML = `${SVG_A}<span class="pl-k">${t("pl_areas")}</span><b>${aOff ? "–" : S.cts.length ? esc(sumList(S.cts.map(c => t("ct_" + c)), cov.length, t("allAreas"))) : t("noArea")}${!aOff && S.home !== "all" && homeCC() ? ` · ${esc(t("home_" + S.home))} ${flag(homeCC())}` : ""}</b>${caret}`;
     $("#plN > summary").innerHTML = `<span>${PRESET_IC[N.preset] || "🎯"}</span><span>${esc(t("p_" + N.preset))}</span><b class="num">${N.lat ? "≤" + N.lat + "ms" : ""}</b>${caret}`;
     $("#plM > summary").innerHTML = `${SVG_M}<span>${esc(t("m_" + S.mode))}</span><b class="num">×${MODES[S.mode]} · ${S.ip === "v6" ? "IPv6" : "IPv4"}</b>${caret}`;
+    // what is being typed into the add form survives a re-render (a country lookup finishing, say)
+    const popTop = $("#popV").scrollTop;
+    const keep = ["cUrl", "cName", "cGroup", "cgIn", "ceName", "ceUrl", "ceGroup"].map(id => { const el = $("#" + id); return el ? [id, el.value, document.activeElement === el] : null; }).filter(Boolean);
+    // one list, one "all · none": custom groups sit next to the providers and behave the same
     $("#popV").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_vendors")}</span>${allNone("vendors")}</div>
-      <div class="chips">${VIDS.map(v => `<button type="button" class="chip${vCount(v) ? "" : " zero"}" data-v="${v}" aria-pressed="${S.vendors.includes(v)}">${esc(vnm(v))}<span class="c">${vCount(v)}</span></button>`).join("")}</div></section>
-      <section class="pg"><div class="pg-h"><span>${t("cust_h")}</span>${S.custom.length > 1 ? allNone("custom") : ""}</div>
-      ${S.custom.length ? `<div class="chips">${S.custom.map(c => `<span class="cchip${S.customSel.includes(String(c.k)) ? " on" : ""}" title="${esc(c.url)}"><button type="button" data-ck="${c.k}" aria-pressed="${S.customSel.includes(String(c.k))}">★ ${esc(c.name)}</button><button type="button" class="x" data-del="${c.k}" aria-label="${esc(t("del"))}">×</button></span>`).join("")}</div>` : ""}
-      <form class="cform" id="cform" autocomplete="off"><div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>
-      <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="${esc(t("cust_name_ph"))}"><button class="btn ink sm" style="height:32px" type="submit">${t("add")}</button></div>
-      <div class="err" id="cErr" hidden></div><div class="note">${t("cust_tip")}</div></form></section>`;
+      <div class="chips">${allVids().map(v => `<button type="button" class="chip${vCount(v) ? "" : " zero"}" data-v="${esc(v)}" aria-pressed="${S.vendors.includes(v)}">${isCustom(v) ? gIcon(v) : ""}${esc(vnm(v))}<span class="c">${vCount(v)}</span></button>`).join("")}</div></section>
+      <section class="pg cust${CADD ? " adding" : ""}"><div class="pg-h"><span>${t("cust_h")}</span><button type="button" data-cadd aria-expanded="${CADD}">＋ ${t("add")}</button></div>
+      ${CADD ? `<form class="cform cadd" id="cform" autocomplete="off"><button type="button" class="x cadd-x" data-cadd aria-label="${esc(t("cust_cancel"))}">×</button>
+        <div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>
+        <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="${esc(t("cust_name_ph"))}"><button class="btn ink sm" style="height:32px" type="submit">${t("add")}</button></div>
+        ${groupPick()}
+        <div class="err" id="cErr" hidden></div><div class="note">${t("cust_tip")}</div><div class="dbip">${esc(t("cust_geo"))} <a href="https://db-ip.com" target="_blank" rel="noopener noreferrer">IP Geolocation by DB-IP</a></div></form>` : ""}
+      ${S.custom.length ? customList() : `<div class="note">${esc(t("cust_empty"))}</div>`}</section>`;
+    keep.forEach(([id, v, f]) => { const el = $("#" + id); if (!el) return; el.value = v; if (f) el.focus({ preventScroll: true }); });
+    // the list stays where it was: a re-render (a pick, a country lookup) must not scroll the popover
+    $("#popV").scrollTop = popTop;
     $("#popA").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_areas")}</span>${allNone("cts")}</div>
       <div class="chips">${cov.map(c => `<button type="button" class="chip" data-c="${c}" aria-pressed="${S.cts.includes(c)}">${esc(t("ct_" + c))}<span class="c">${ALL.filter(e => e.continent === c && S.vendors.includes(e.vendor) && !excluded(e)).length}</span></button>`).join("")}</div></section>` + homeSection();
-    $("#popN").innerHTML = `<section class="pg">${Object.keys(PRESETS).map(k => { const [l, j, s] = PRESETS[k];
+    $("#popN").innerHTML = `<section class="pg opts">${Object.keys(PRESETS).map(k => { const [l, j, s] = PRESETS[k];
       return `<button type="button" class="opt" data-p="${k}" aria-pressed="${N.preset === k}"><span class="ic">${PRESET_IC[k]}</span><span class="tx"><b>${esc(t("p_" + k))}</b><span>${l ? "≤" + l + " ms · ±" + j + " · " + (s ? "≤" + s + "%" : t("noLoss")) : t("anyLat")}</span></span></button>`; }).join("")}</section>
       <section class="pg"><div class="pg-h">${PRESET_IC.custom} ${t("p_custom")}</div><div class="need">
         <div><div class="need-l">${t("maxLat")}</div><label class="nin"><input id="nLat" type="number" min="0" inputmode="numeric" value="${N.lat || ""}" placeholder="${esc(t("noLimit"))}"><span>ms</span></label></div>
         <div><div class="need-l">${t("maxJit")}</div><label class="nin"><input id="nJit" type="number" min="0" inputmode="numeric" value="${N.jit || ""}" placeholder="${esc(t("noLimit"))}"><span>ms</span></label></div>
         <div><div class="need-l">${t("maxLoss")}</div><label class="nin"><input id="nLoss" type="number" min="0" max="100" inputmode="numeric" value="${N.loss || ""}" placeholder="0"><span>%</span></label></div></div></section>`;
-    $("#popM").innerHTML = `<section class="pg">${Object.keys(MODES).map(k => `<button type="button" class="opt" data-m="${k}" aria-pressed="${S.mode === k}"><span class="ic num" style="font-size:14px;font-weight:600">×${MODES[k]}</span><span class="tx"><b>${esc(t("m_" + k))}</b><span style="font-family:var(--f-ui)">${esc(t("m_" + k + "D"))}</span></span></button>`).join("")}</section>` + ipSection();
+    $("#popM").innerHTML = `<section class="pg opts">${Object.keys(MODES).map(k => `<button type="button" class="opt" data-m="${k}" aria-pressed="${S.mode === k}"><span class="ic num" style="font-size:12.5px;font-weight:600">×${MODES[k]}</span><span class="tx"><b>${esc(t("m_" + k))}</b><span style="font-family:var(--f-ui)">${esc(t("m_" + k + "D"))}</span></span></button>`).join("")}</section>` + ipSection();
     renderRun();
   }
   const dur = s => s < 60 ? t("secs", { n: Math.max(1, s) }) : t("mins", { n: Math.round(s / 60) });
@@ -614,22 +909,31 @@
       $("#bar").hidden = false; $("#bar i").style.width = (p * 100).toFixed(1) + "%";
       // which endpoints are on the wire right now, next to the counter
       const now = RUN.list.filter(e => { const r = R.get(e.id); return r && r.st === "running"; })
-        .map(e => `<span class="nowi">${e.vendor === "custom" ? "★" : esc(vshort[e.vendor])} ${esc(e.city)}</span>`);
-      $("#runT").innerHTML = `<span class="nowl"><b>${t("running", { d: RUN.done, n: RUN.total })}</b>${now.join("")}</span>${left != null ? `<span>${esc(t("eta", { t: dur(Math.round(left)) }))}</span>` : ""}`;
+        .map(e => `<span class="nowi">${isCustom(e.vendor) ? favOf(e.url) : esc(vshort[e.vendor])} ${esc(e.city)}</span>`);
+      // a running shiba leads "Testing 3 / 9"; the parts around it are updated in place so its animation never restarts
+      const rt = $("#runT");
+      if (!rt.querySelector(".runner")) {
+        rt.innerHTML = `<span class="nowl"><b class="run-n"></b><span class="run-now"></span></span>`;
+        rt.firstChild.prepend(runner());
+      }
+      const rn = rt.querySelector(".run-n");
+      rn.textContent = t("running", { d: RUN.done, n: RUN.total });
+      rt.querySelector(".run-now").innerHTML = now.join("");
+      $("#runEta").textContent = left != null ? t("eta", { t: dur(Math.round(left)) }) : "";
     } else {
       btn.className = "go"; btn.disabled = !sel;
       btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>${t(R.size && VIEW.live ? "again" : "start")}`;
-      $("#bar").hidden = true;
-      const done = [...R.values()].filter(r => r.st === "done").length;
-      const last = R.size ? (VIEW.live ? t("lastRun", { n: done, d: fmtTs(VIEW.ts) }) : t(VIEW.shared ? "viewingShared" : "viewing", { d: fmtTs(VIEW.ts) })) + (VIEW.peak ? " · " + t("tagPeak") : "") : "";
-      $("#runT").innerHTML = sel ? `<b>${t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) })}</b>${last ? `<span>${esc(last)}</span>` : ""}` : `<b>${esc(t("pickFirst"))}</b>`;
+      $("#bar").hidden = true; $("#runEta").textContent = "";
+      // this area sets up the next test; when the shown results were taken is said with the results (vizSub)
+      $("#runT").innerHTML = sel ? `<b>${t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) })}</b>` : `<b>${esc(t("pickFirst"))}</b>`;
     }
   }
   const fmtTs = ts => new Intl.DateTimeFormat(LANG, { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(ts);
 
   /* ---------- results: podium, distribution, tier groups ---------- */
   const pos = v => clamp((Math.log(v) - Math.log(AX_MIN)) / (Math.log(AX_MAX) - Math.log(AX_MIN)), 0, 1) * 100;
-  const rankList = () => (VIEW.shared ? ALL.filter(e => R.has(e.id)) : selected()).map(e => { const r = R.get(e.id), st = stats(r); return { e, r, st, pass: meets(st) }; });
+  // results are what the last test measured, whatever the pickers say now; before any test, the picks preview what will run
+  const rankList = () => (VIEW.shared || R.size ? ALL.filter(e => R.has(e.id)) : selected()).map(e => { const r = R.get(e.id), st = stats(r); return { e, r, st, pass: meets(st) }; });
   const byScore = (a, b) => a.st.score - b.st.score;
   const dirty = new Set(), fresh = new Set(); let openId = null, dirtyAll = true, lastSort = 0;
   function markDirty(id, isNew) { dirty.add(id); if (isNew) fresh.add(id); schedule(); }
@@ -656,7 +960,7 @@
       return `<button type="button" class="pd c${g}" data-go="${esc(x.e.id)}"><span class="rk">#${i + 1}</span><span class="ms">${fmt(x.st.med)}<small>ms</small></span>
         <span class="inf"><span class="nm">${esc(x.e.city)}</span><span class="sb"><span class="tg">${tierCode(g)} ${esc(tierName(g))}</span><span>${esc(x.e.vname)}</span><span class="num">±${fmt(x.st.jit)}</span></span></span></button>`; }).join("");
   }
-  const needText = () => { const N = S.need; return (N.lat ? "≤" + N.lat + " ms" : t("anyLat")) + (N.jit ? " · ±" + N.jit : ""); };
+  const needText = () => { const N = NEED(); return (N.lat ? "≤" + N.lat + " ms" : t("anyLat")) + (N.jit ? " · ±" + N.jit : ""); };
   // Distribution chart: one lane per provider on the shared log axis, tier bands behind. Each region is a dot at its
   // median with a whisker over the middle half of its samples. Elements are kept between frames, so a dot slides as its
   // median settles, and regions still being measured pulse.
@@ -670,17 +974,19 @@
     // nothing chosen yet: no empty chart, the hero leads to the provider picker
     $("#vizCard").hidden = !lanes.length;
     if (!lanes.length) return;
-    $("#vizSub").textContent = got.length ? t("vizSub", { n: got.length, p: got.filter(x => x.pass).length }) : "";
+    // when these results were taken leads the line (a shared view says it is someone else's)
+    const when = VIEW.ts ? (VIEW.shared ? t("viewingShared", { d: fmtTs(VIEW.ts) }) : fmtTs(VIEW.ts)) + (VIEW.peak ? " · " + t("tagPeak") : "") + " · " : "";
+    $("#vizSub").textContent = got.length ? when + t("vizSub", { n: got.length, p: got.filter(x => x.pass).length }) : "";
     const lh = lanes.length <= 2 ? 84 : lanes.length <= 5 ? 60 : 46;
-    const key = [lanes.join(), S.need.lat, LANG, lh].join("|");
+    const key = [lanes.join(), NEED().lat, LANG, lh].join("|");
     if (key !== vizKey || !vz.firstChild) {
       vizKey = key; vizEls.clear();
       const bands = [AX_MIN].concat(GRADES, AX_MAX);
       let h = `<div class="lanes" style="--lh:${lh}px">`;
       // narrow bands only carry the code; the legend under the axis names every tier
       for (let g = 1; g <= 5; g++) h += `<div class="band b${g}" style="left:${pos(bands[g - 1])}%;width:${pos(bands[g]) - pos(bands[g - 1])}%"><span>${tierCode(g)}</span></div>`;
-      if (S.need.lat) h += `<div class="needl" style="left:${pos(S.need.lat)}%"><span>${esc(t("needLine"))} ${S.need.lat}</span></div>`;
-      h += lanes.map(v => `<div class="lane" data-v="${v}"><div class="ln"><b class="full">${esc(v === "custom" ? t("custom") : vnm(v))}</b><b class="short">${vshort[v]}</b><span class="lb"></span></div></div>`).join("");
+      if (NEED().lat) h += `<div class="needl" style="left:${pos(NEED().lat)}%"><span>${esc(t("needLine"))} ${NEED().lat}</span></div>`;
+      h += lanes.map(v => `<div class="lane" data-v="${v}"><div class="ln"><b class="full">${esc(vnm(v))}</b><b class="short">${esc(vsh(v))}</b><span class="lb"></span></div></div>`).join("");
       h += `<div class="vz-empty" hidden><span></span></div></div>`;
       h += `<div class="axis">${TICKS.map(v => `<span style="left:${pos(v)}%">${v >= 1000 ? v / 1000 + "s" : v}</span>`).join("")}</div>`;
       h += `<div class="legend">${[1, 2, 3, 4, 5].map(g => `<span class="c${g}"><i></i>${tierCode(g)} ${esc(tierName(g))} <em>${g < 5 ? "≤" + GRADES[g - 1] : ">" + GRADES[3]} ms</em></span>`).join("")}<span><i class="o"></i>${esc(t("lgMiss"))}</span><span><i class="lv"></i>${esc(t("lgLive"))}</span></div>`;
@@ -725,8 +1031,8 @@
     if (st.n && st.ok < st.n) sp += `<span class="x">×${st.n - st.ok}</span>`;
     const flag = st.ok && shaky(st) ? `<span class="r-f" title="${esc(st.loss ? t("lossWarn", { p: Math.round(st.loss * 100) }) : t("jitWarn", { j: fmt(st.jit) }))}">⚠</span>` : `<span></span>`;
     return `<div class="r rg" role="button" tabindex="0" aria-expanded="${openId === e.id}">
-      <span class="vb">${vshort[e.vendor] || ""}</span>
-      <span class="r-nm"><b>${esc(e.city)}</b><span>${esc(e.region)}${e.country ? " · " + esc(country(e.country)) : ""}</span></span>
+      <span class="vb">${isCustom(e.vendor) ? favOf(e.url) : vshort[e.vendor] || ""}</span>
+      <span class="r-nm"><b>${esc(e.city)}</b><span>${isCustom(e.vendor) ? esc(vnm(e.vendor)) + " · " : ""}${esc(e.region)}${e.country ? " · " + esc(country(e.country)) : ""}</span></span>
       <span class="sp c-sp c${g}" data-tipid="${esc(e.id)}">${sp}</span>
       ${flag}
       <span class="r-v c${st.ok ? g : 0}">${st.ok ? fmt(st.med) + "<small>ms</small>" : r && r.st === "fail" ? "✕" : r && r.st === "nov6" ? `<small>${esc(t("nov6"))}</small>` : "…"}</span></div>`;
@@ -796,7 +1102,7 @@
     if (r && r.vf === true) lines.push(`<span style="color:var(--pool)">✓ ${t("d_verified")}</span>`);
     if (r && r.vf === false) lines.push(`<span class="w">${t("d_notverified")}</span>`);
     if (e.review) lines.push(`<span class="w">${t("d_review")}</span>`);
-    if (e.vendor !== "custom") lines.push(`<span>${esc(vtext(e.vendor, "kind"))} · ${esc(vtext(e.vendor, "note"))}</span>`);
+    if (!isCustom(e.vendor)) lines.push(`<span>${esc(vtext(e.vendor, "kind"))} · ${esc(vtext(e.vendor, "note"))}</span>`);
     return `<div class="det">
       <div>${r && r.s.length ? chartSVG(r, st) : `<div class="empty">${t(r && r.sum ? "sharedNoRaw" : "noSamples")}</div>`}</div>
       <div class="dstats">${kv("d_med", ms(st.med))}${kv("d_jit", st.ok > 1 ? "±" + ms(st.jit) : "–")}${kv("d_loss", st.n ? Math.round(st.loss * 100) + "%" : "–")}${kv("d_min", ms(st.min))}${kv("d_avg", ms(st.avg))}${kv("d_p90", ms(st.p90))}</div>
@@ -823,7 +1129,7 @@
     const items = [], seen = new Set(), add = r => { if (!seen.has(r.d)) { seen.add(r.d); items.push(r); } };
     for (const e of ENDPOINTS.endpoints) for (const u of [e.url, e.url6]) if (u) add({ v: e.vendor, d: hostOf(u) });
     RULE_SPEC.forEach(r => add(Object.assign({}, r)));
-    if (withCustom) S.custom.forEach(c => add({ v: "custom", d: hostOf(c.url), n: c.name }));
+    if (withCustom) S.custom.forEach(c => { const n = (c.g ? c.g + " · " : "") + c.name; add({ v: "custom", d: hostOf(c.url), n }); if (c.url6) add({ v: "custom", d: hostOf(c.url6), n }); });
     return items.map(r => Object.assign(r, { c: ruleNote(r) }));
   }
   function ruleLine(f, { d }) {
@@ -927,7 +1233,7 @@
   function sharePayload(withLoc) {
     const r = {}, k = v => Math.round(v * 10), L = shareLoc();
     for (const x of rankList()) {
-      if (x.e.vendor === "custom" || !x.st.ok) continue;
+      if (isCustom(x.e.vendor) || !x.st.ok) continue;
       (r[x.e.vendor] = r[x.e.vendor] || []).push([x.e.region, k(x.st.med), k(x.st.p25), k(x.st.p75), k(x.st.p90), k(x.st.jit), Math.round(x.st.loss * 100), x.st.n]);
     }
     return { v: 1, t: Math.round((VIEW.ts || Date.now()) / 60000), p: VIEW.peak ? 1 : 0, k: VIEW.mode || MODES[S.mode], f: VIEW.ip === "v6" ? 6 : 4, x: L.proxy ? 1 : 0, l: withLoc && (L.city || L.org) ? [L.city, L.cc, L.org] : 0, r };
@@ -996,7 +1302,7 @@
     // long titles shrink before they get cut
     let ts = 54; font(700, ts); while (ts > 40 && g.measureText(t("card_title")).width > W - 2 * P) font(700, ts -= 2);
     text(fit(t("card_title"), W - 2 * P), P, 236, C.fg);
-    const L = shareLoc(), list = rankList().filter(x => x.st.ok && x.e.vendor !== "custom");
+    const L = shareLoc(), list = rankList().filter(x => x.st.ok && !isCustom(x.e.vendor));
     // two meta lines: whose line it is, then how it was measured
     const where = withLoc ? [L.city, L.org].filter(Boolean).join(" · ") : "";
     const how = [L.proxy ? t("pxShort") : t("okShort"), VIEW.ip === "v6" ? "IPv6" : "IPv4", VIEW.peak ? t("tagPeak") : "", t("card_regions", { n: list.length, k: VIEW.mode || MODES[S.mode] })].filter(Boolean).join("  ·  ");
@@ -1113,7 +1419,8 @@
     $("#shareCopyImg").hidden = !(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
   }
   async function openShare() {
-    if (!rankList().some(x => x.st.ok && x.e.vendor !== "custom")) { toast(t("share_none")); return; }
+    // only providers' results are shared (custom nodes are the visitor's own addresses); say so when those are all there is
+    if (!rankList().some(x => x.st.ok && !isCustom(x.e.vendor))) { toast(t(rankList().some(x => x.st.ok) ? "share_customOnly" : "share_none")); return; }
     $("#shareLoc").checked = S.shareLoc !== false;    openDlg("shareDlg");
     await refreshShare();
   }
@@ -1121,7 +1428,7 @@
   /* ---------- work with AI: hand the results to an assistant, or let one build a test link ---------- */
   // plain-text summary of the current results, structured so any AI assistant can reason about it
   function aiSummary() {
-    const list = rankList().filter(x => x.st.ok), L = shareLoc(), N = S.need;
+    const list = rankList().filter(x => x.st.ok), L = shareLoc(), N = NEED();
     const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${x.e.country ? ", " + x.e.country : ""}): median ${fmt(x.st.med)} ms, jitter ±${fmt(x.st.jit)} ms, loss ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
     const best = [...new Set(list.map(x => x.e.vendor))].map(v => list.filter(x => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
     return [
@@ -1148,7 +1455,7 @@
 
   /* ---------- misc UI ---------- */
   let toastT = 0;
-  function toast(msg) { const el = $("#toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2200); }
+  function toast(msg) { const el = $("#toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, Math.max(2200, msg.length * 110)); }
   async function copyText(s) {
     try { await navigator.clipboard.writeText(s); }
     catch (e) { const ta = document.createElement("textarea"); ta.value = s; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (x) {} ta.remove(); }
@@ -1185,17 +1492,28 @@
   document.addEventListener("click", e => {
     const el = e.target.closest("button, [data-go], .r, [data-help]");
     if (!el) return;
-    // a provider change resets the areas to everything those providers cover
-    if (el.matches("[data-v]")) { S.vendors = pickToggle(S.vendors, VIDS, el.dataset.v); S.cts = coveredCts(); changed(); return; }
+    // a provider or group change resets the areas to everything they cover
+    if (el.matches("[data-v]")) { S.vendors = pickToggle(S.vendors, allVids(), el.dataset.v); S.cts = coveredCts(); changed(); return; }
     if (el.matches("[data-c]")) { S.cts = pickToggle(S.cts, coveredCts(), el.dataset.c); changed(); return; }
-    if (el.matches("[data-ck]")) { S.customSel = pickToggle(S.customSel, S.custom.map(c => String(c.k)), el.dataset.ck); changed(); return; }
     if (el.dataset.all || el.dataset.none) {
       const k = el.dataset.all || el.dataset.none, on = !!el.dataset.all;
-      if (k === "vendors") { S.vendors = on ? VIDS.slice() : []; S.cts = coveredCts(); }
+      if (k === "vendors") { S.vendors = on ? allVids() : []; S.cts = coveredCts(); }
       else if (k === "cts") S.cts = on ? coveredCts() : [];
-      else S.customSel = on ? S.custom.map(c => String(c.k)) : [];
       changed(); return;
     }
+    if (el.matches("[data-delg]")) { dropCustom(c => "c:" + c.g === el.dataset.delg); return; }
+    if (el.matches("[data-cn]")) { const k = el.dataset.cn; COPEN = COPEN === k && !CEDIT ? null : k; CEDIT = null; renderCtrl(); $("#plV").open = true; return; }
+    if (el.matches("[data-cadd]")) {
+      CADD = !CADD; renderCtrl(); $("#plV").open = true;
+      if (CADD) { $("#cform").scrollIntoView({ block: "nearest" }); $("#cUrl").focus({ preventScroll: true }); }
+      return;
+    }
+    if (el.matches("[data-gp]")) { FG = el.dataset.gp; FNEW = false; renderCtrl(); $("#plV").open = true; return; }
+    if (el.matches("[data-gp-new]")) { FNEW = true; renderCtrl(); $("#plV").open = true; $("#cGroup").focus(); return; }
+    if (el.matches("[data-gedit]")) { GEDIT = el.dataset.gedit; renderCtrl(); $("#plV").open = true; const i = $("#cgIn"); i.focus(); i.select(); return; }
+    if (el.matches("[data-edit]")) { CEDIT = el.dataset.edit; renderCtrl(); $("#plV").open = true; const i = $("#ceName"); if (i) { i.focus({ preventScroll: true }); i.select(); } return; }
+    if (el.matches("[data-esave]")) { saveEdit(el.dataset.esave); return; }
+    if (el.matches("[data-ecancel]")) { CEDIT = null; renderCtrl(); $("#plV").open = true; return; }
     if (el.matches("[data-p]")) { const p = el.dataset.p; S.need.preset = p; [S.need.lat, S.need.jit, S.need.loss] = PRESETS[p]; changed(); return; }
     if (el.matches("[data-m]")) { S.mode = el.dataset.m; changed(); return; }
     if (el.matches("[data-rules]")) { renderRules(); openDlg("rules"); return; }
@@ -1210,7 +1528,7 @@
     if (el.matches("[data-copyai]")) { copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value); return; }
     if (el.matches("[data-retest]")) { const ep = ALL.find(x => x.id === el.dataset.retest); if (ep) runTests([ep], MODES.precise, 1, true); return; }
     if (el.matches("[data-copy]")) { copyText(el.dataset.copy); return; }
-    if (el.matches("[data-del]")) { const k = el.dataset.del; S.custom = S.custom.filter(c => String(c.k) !== k); S.customSel = S.customSel.filter(x => x !== k); buildAll(); changed(); $("#plV").open = true; return; }
+    if (el.matches("[data-del]")) { dropCustom(c => c.k === el.dataset.del); return; }
     if (el.matches("[data-go]")) {
       openId = el.dataset.go; S.onlyPass = false; $("#onlyPass").checked = false; $("#q").value = "";
       renderAll(); setTimeout(() => { const r = rowEls.get(openId); r && r.scrollIntoView({ block: "center", behavior: "smooth" }); }, 300); return;
@@ -1229,17 +1547,26 @@
     if (el.matches("[data-hstep]")) { helpIdx = clamp(helpIdx + +el.dataset.hstep, 0, $("#helpSel").options.length - 1); renderDocs(); return; }
     if (el.classList.contains("r")) { const id = el.parentElement.dataset.id; const prev = openId; openId = openId === id ? null : id; markDirty(id); if (prev) markDirty(prev); return; }
   });
-  document.addEventListener("submit", e => {
+  document.addEventListener("submit", async e => {
     if (e.target.id !== "cform") return;
     e.preventDefault();
-    const name = $("#cName").value.trim(), raw = $("#cUrl").value.trim(), err = $("#cErr");
-    let u; try { u = new URL(raw); } catch (x) { err.textContent = t("cust_err_url"); err.hidden = false; return; }
-    if (u.protocol !== "https:") { err.textContent = t("cust_err_https"); err.hidden = false; return; }
-    if (S.custom.some(c => c.url === u.href)) { err.textContent = t("cust_err_dup"); err.hidden = false; return; }
-    const k = Date.now().toString(36);
-    S.custom.push({ k, name: name || u.hostname, url: u.href, method: "AUTO" });
-    S.customSel.push(k);
-    buildAll(); changed(); $("#plV").open = true; toast(t("cust_added"));
+    const g = (FNEW ? ($("#cGroup") || {}).value || "" : FG).trim().slice(0, 24), btn = e.target.querySelector("[type=submit]");
+    $("#cErr").hidden = true; btn.disabled = true;
+    const msg = await saveNode(null, $("#cName").value, $("#cUrl").value, g);
+    btn.disabled = false;
+    if (msg) { $("#cErr").textContent = msg; $("#cErr").hidden = false; return; }
+    // done: the panel closes, and the next one opens on the group just used
+    FG = g; FNEW = false; CADD = false;
+    renderCtrl(); $("#plV").open = true; toast(t("cust_added"));
+  });
+  // the country select of a custom node: an empty value goes back to the automatic one
+  document.addEventListener("change", e => {
+    const k = e.target.dataset.cc;
+    if (k == null) return;
+    const c = S.custom.find(x => x.k === k);
+    if (!c) return;
+    if (e.target.value) { c.cc = e.target.value; c.ccSet = true; buildAll(); S.cts = coveredCts(); changed(); }
+    else { delete c.ccSet; locateCustom(c); }
   });
   document.addEventListener("input", e => {
     const k = { nLat: "lat", nJit: "jit", nLoss: "loss" }[e.target.id];
@@ -1319,5 +1646,9 @@
   try { const last = JSON.parse(localStorage.getItem(RES_KEY)); if (last && last.res) applySnapshot(last, true); } catch (e) {}
   full();
   checkNetwork();
+  // the shiba's frames are fetched while the page is idle, so they are there when a test starts rather than downloading alongside it
+  (window.requestIdleCallback || (f => setTimeout(f, 1500)))(() => { new Image().src = "/assets/shiba-run.png"; }, { timeout: 3000 });
+  // custom nodes with no automatic country yet, or one from an earlier way of looking it up (before geo 3), get looked up now
+  S.custom.filter(c => !c.ccSet && c.geo !== 3).forEach(locateCustom);
   loadShared().then(ok => { if (ok) { renderShared(); renderAll(); } });
 })();
