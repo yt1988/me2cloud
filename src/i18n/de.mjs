@@ -189,7 +189,7 @@ export default {
   rules_steps: ["Kopier die Zeilen und setz sie <b>über</b> deine anderen Regeln, damit sie zuerst greifen.", "Konfiguration neu laden. Im TUN- oder fake-ip-Modus auch den Teil für echte IPs übernehmen (oben enthalten).", "Proxy-Erweiterungen im Browser für diese Seite ausschalten oder die Liste in ihre Ausnahmen eintragen.", "Auf den Aktualisieren-Knopf neben deinem Netz drücken. Wenn dein echter Anbieter erscheint, Test starten."],
   heroT: "Wie schnell ist die Cloud von dir zu Hause?", lgMiss: "hohl = passt nicht zu deinen Vorgaben",
   pxShort: "Proxy erkannt", okShort: "Direkte Verbindung", unkShort: "Netz unbekannt", netDetails: "Details",
-  egressLink: "IP je Website",
+  egressLink: "Exit-IP prüfen",
   pl_vendors: "Anbieter", pl_areas: "Gebiete", off: "Aus", noLoss: "kein Verlust",
   m_quickD: "Ein schneller erster Blick", m_stdD: "Empfohlen", m_preciseD: "Für die engere Wahl",
   startSub: "{n} Regionen · etwa {t}", lastRun: "Letzter Test {d}: {n} Regionen",

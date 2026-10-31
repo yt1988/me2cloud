@@ -223,7 +223,7 @@ export default {
   okShort: "Connexion directe",
   unkShort: "Réseau inconnu",
   netDetails: "Détails",
-  egressLink: "IP par site",
+  egressLink: "Vérifier l’IP de sortie",
   pl_vendors: "Fournisseurs",
   pl_areas: "Zones",
   off: "Non",

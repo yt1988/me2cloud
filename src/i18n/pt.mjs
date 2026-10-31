@@ -189,7 +189,7 @@ export default {
   rules_steps: ["Copie as linhas e coloque-as <b>acima</b> das outras regras, para que valham primeiro.", "Recarregue a configuração. Em modo TUN ou fake-ip, mantenha também a parte de IP real (incluída acima).", "Desative extensões de proxy do navegador para esta página ou adicione a lista às exceções delas.", "Aperte o botão de atualizar ao lado da sua rede. Quando aparecer a sua operadora de verdade, comece o teste."],
   heroT: "Quão rápida é a nuvem da sua casa?", lgMiss: "vazado = não atende às suas exigências",
   pxShort: "Proxy detectado", okShort: "Conexão direta", unkShort: "Rede desconhecida", netDetails: "Detalhes",
-  egressLink: "IP por site",
+  egressLink: "Verificar IP de saída",
   pl_vendors: "Provedores", pl_areas: "Áreas", off: "Não", noLoss: "sem perda",
   m_quickD: "Uma primeira olhada rápida", m_stdD: "Recomendado", m_preciseD: "Para a lista final",
   startSub: "{n} regiões · cerca de {t}", lastRun: "Último teste {d}: {n} regiões",
