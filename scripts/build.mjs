@@ -181,7 +181,7 @@ export async function build({ check = false } = {}) {
   const files = {
     [appName]: app,
     "endpoints.json": JSON.stringify({ schema: 1, verified: E.verified, source: "https://github.com/yt1988/me2cloud",
-      howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body.",
+      howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }); bust: false means the host rejects any query string, so fetch the bare url. Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body.",
       vendors: E.vendors, endpoints: E.endpoints }, null, 1) + "\n",
     "sitemap.xml": sitemap, "robots.txt": robots, "_headers": headers
   };

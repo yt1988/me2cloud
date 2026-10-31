@@ -14,26 +14,26 @@ const VENDORS = {
                   note: "Body is 'healthy: dynamodb.<region>…', so the page can confirm the region." },
   oracle:       { name: "Oracle Cloud",  method: "HEAD", cors: true,  tier: "A", kind: "Object Storage",
                   note: "GET closes the connection after every 404 (each sample ≈ 3–4 RTT); HEAD reuses it." },
-  vultr:        { name: "Vultr",         method: "HEAD", cors: true,  tier: "A", kind: "Looking glass",
-                  note: "GET returns a ~12 KB page and adds 50–70 ms; HEAD avoids the body." },
+  vultr:        { name: "Vultr",         method: "HEAD", cors: true,  tier: "A", kind: "Looking glass (favicon)",
+                  note: "The looking-glass page is PHP and adds ~100 ms even to HEAD; its static favicon.ico is answered by nginx at once." },
   azure:        { name: "Microsoft Azure", method: "GET", cors: false, tier: "B", kind: "Cognitive Services",
                   note: "CNAME chain ends at <region>.cloudapp.azure.com. Very stable samples." },
   gcp:          { name: "Google Cloud",  method: "GET",  cors: false, tier: "B", kind: "Storage regional endpoint (rep)",
-                  note: "HEAD adds a fixed ~1 s, never use it. Per-region IPs (34.1.x), not the global anycast front end." },
+                  note: "HEAD adds a fixed ~1 s, never use it; over HTTP/1.1 so does every 400 on a reused connection, hence /generate_204 (a fast 404). Per-region IPs (34.1.x), not the global anycast front end." },
   aliyun:       { name: "Alibaba Cloud", method: "HEAD", cors: false, tier: "B", kind: "OSS",
                   note: "GET 403 closes the connection; HEAD reuses it." },
   tencent:      { name: "Tencent Cloud", method: "HEAD", cors: false, tier: "B", kind: "COS",
                   note: "GET 403 closes the connection; HEAD reuses it." },
-  huawei:       { name: "Huawei Cloud",  method: "GET",  cors: false, tier: "B", kind: "OBS",
-                  note: "GET and HEAD both keep the connection alive." },
+  huawei:       { name: "Huawei Cloud",  method: "HEAD", cors: false, tier: "B", kind: "API gateway (ECS endpoint)",
+                  note: "OBS closes the connection after every answer (each sample ≈ 3 RTT); the regional API gateway reuses it. GET reaches the API and adds 20–100 ms; HEAD gets a 404 from the gateway." },
   linode:       { name: "Akamai (Linode)", method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
                   note: "Legacy speedtest.<dc>.linode.com hosts no longer answer; only regions with an Object Storage cluster are covered." },
   digitalocean: { name: "DigitalOcean",  method: "GET",  cors: false, tier: "B", kind: "Spaces",
                   note: "speedtest-<dc>.digitalocean.com is gone; NYC1/NYC2 have no Spaces (use nyc3 for New York)." },
   ovh:          { name: "OVHcloud",      method: "HEAD", cors: false, tier: "B", kind: "Speed test (proof)",
                   note: "proof.ovh.net hosts redirect to <site>.speedtest.network.ovh.net; the registry uses the targets." },
-  hetzner:      { name: "Hetzner",       method: "IMG",  cors: false, tier: "C", kind: "Speed test",
-                  note: "fetch() fails in the browser (cause unclear; curl works); <img> works but opens a new connection each time, so samples ≈ 3 RTT." },
+  hetzner:      { name: "Hetzner",       method: "GET",  cors: false, tier: "B", kind: "Speed test", bust: false,
+                  note: "Any query string gets an empty reply (connection closed), so requests go to the bare URL; cache: no-store still keeps them off the cache." },
   ibm:          { name: "IBM Cloud",     method: "HEAD", cors: false, tier: "B", kind: "Cloud Object Storage",
                   note: "GET 403 closes the connection; HEAD reuses it." },
   scaleway:     { name: "Scaleway",      method: "GET",  cors: false, tier: "B", kind: "Object Storage",
@@ -76,8 +76,7 @@ const REVIEW = {
   "aws:sa-west-1": "Not in AWS's public region list yet, but the endpoint answers.",
   "linode:us-iad-2": "Cluster us-iad-2 assumed to belong to Washington 2.",
   "linode:in-bom-2": "Served by cluster in-bom-1.", "linode:de-fra-2": "Served by cluster de-fra-1.",
-  "linode:sg-sin-2": "Served by cluster sg-sin-1.", "linode:jp-tyo-3": "Served by cluster jp-tyo-1.",
-  "huawei:my-kualalumpur-1": "Returns a 404 HTML page instead of the usual OBS XML."
+  "linode:sg-sin-2": "Served by cluster sg-sin-1.", "linode:jp-tyo-3": "Served by cluster jp-tyo-1."
 };
 
 const CONTINENTS = {
@@ -105,6 +104,7 @@ for (const c of CANDIDATES) {
   const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: last.url, method: METHOD[id] || v.method };
   if (v.method !== "IMG" && (FALLBACK_IMG.has(id) || FALLBACK_IMG.has(`${c.vendor}:*`))) e.fallback = "IMG";
   if (v.cors && last.get?.acao) e.cors = true;
+  if (v.bust === false) e.bust = false;
   if (c.vendor === "aws") e.expect = "healthy: dynamodb";
   e.tier = v.tier;
   if (IP6[id]) { e.fam = IP6[id].fam; if (IP6[id].url6) e.url6 = IP6[id].url6; }
