@@ -316,7 +316,7 @@
   "id": "gcp:europe-west15",
   "city": "?",
   "tried": [
-   "https://storage.europe-west15.rep.googleapis.com/"
+   "https://storage.europe-west15.rep.googleapis.com/generate_204"
   ],
   "reason": "no such host"
  },
@@ -324,7 +324,7 @@
   "id": "gcp:asia-southeast3",
   "city": "Bangkok",
   "tried": [
-   "https://storage.asia-southeast3.rep.googleapis.com/"
+   "https://storage.asia-southeast3.rep.googleapis.com/generate_204"
   ],
   "reason": "no such host"
  },

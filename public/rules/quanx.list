@@ -125,7 +125,7 @@ host, objectstorage.us-shawnee-1.oraclecloud.com, direct
 host, objectstorage.us-boardman-1.oraclecloud.com, direct
 host, objectstorage.us-quincy-1.oraclecloud.com, direct
 host, objectstorage.sa-riodejaneiro-2.oraclecloud.com, direct
-# Vultr · Looking glass
+# Vultr · Looking glass (favicon)
 host, ams-nl-ping.vultr.com, direct
 host, ga-us-ping.vultr.com, direct
 host, blr-in-ping.vultr.com, direct
@@ -222,30 +222,30 @@ host, cos.na-siliconvalley.myqcloud.com, direct
 host, cos.na-ashburn.myqcloud.com, direct
 host, cos.sa-saopaulo.myqcloud.com, direct
 host, cos.eu-frankfurt.myqcloud.com, direct
-# Huawei Cloud · OBS
-host, obs.cn-north-1.myhuaweicloud.com, direct
-host, obs.cn-north-4.myhuaweicloud.com, direct
-host, obs.cn-north-9.myhuaweicloud.com, direct
-host, obs.cn-east-2.myhuaweicloud.com, direct
-host, obs.cn-east-3.myhuaweicloud.com, direct
-host, obs.cn-east-5.myhuaweicloud.com, direct
-host, obs.cn-south-1.myhuaweicloud.com, direct
-host, obs.cn-south-4.myhuaweicloud.com, direct
-host, obs.cn-southwest-2.myhuaweicloud.com, direct
-host, obs.ap-southeast-1.myhuaweicloud.com, direct
-host, obs.ap-southeast-2.myhuaweicloud.com, direct
-host, obs.ap-southeast-3.myhuaweicloud.com, direct
-host, obs.ap-southeast-4.myhuaweicloud.com, direct
-host, obs.ap-southeast-5.myhuaweicloud.com, direct
-host, obs.my-kualalumpur-1.myhuaweicloud.com, direct
-host, obs.af-south-1.myhuaweicloud.com, direct
-host, obs.af-north-1.myhuaweicloud.com, direct
-host, obs.la-north-2.myhuaweicloud.com, direct
-host, obs.na-mexico-1.myhuaweicloud.com, direct
-host, obs.la-south-2.myhuaweicloud.com, direct
-host, obs.sa-brazil-1.myhuaweicloud.com, direct
-host, obs.tr-west-1.myhuaweicloud.com, direct
-host, obs.me-east-1.myhuaweicloud.com, direct
+# Huawei Cloud · API gateway (ECS endpoint)
+host, ecs.cn-north-1.myhuaweicloud.com, direct
+host, ecs.cn-north-4.myhuaweicloud.com, direct
+host, ecs.cn-north-9.myhuaweicloud.com, direct
+host, ecs.cn-east-2.myhuaweicloud.com, direct
+host, ecs.cn-east-3.myhuaweicloud.com, direct
+host, ecs.cn-east-5.myhuaweicloud.com, direct
+host, ecs.cn-south-1.myhuaweicloud.com, direct
+host, ecs.cn-south-4.myhuaweicloud.com, direct
+host, ecs.cn-southwest-2.myhuaweicloud.com, direct
+host, ecs.ap-southeast-1.myhuaweicloud.com, direct
+host, ecs.ap-southeast-2.myhuaweicloud.com, direct
+host, ecs.ap-southeast-3.myhuaweicloud.com, direct
+host, ecs.ap-southeast-4.myhuaweicloud.com, direct
+host, ecs.ap-southeast-5.myhuaweicloud.com, direct
+host, ecs.my-kualalumpur-1.myhuaweicloud.com, direct
+host, ecs.af-south-1.myhuaweicloud.com, direct
+host, ecs.af-north-1.myhuaweicloud.com, direct
+host, ecs.la-north-2.myhuaweicloud.com, direct
+host, ecs.na-mexico-1.myhuaweicloud.com, direct
+host, ecs.la-south-2.myhuaweicloud.com, direct
+host, ecs.sa-brazil-1.myhuaweicloud.com, direct
+host, ecs.tr-west-1.myhuaweicloud.com, direct
+host, ecs.me-east-1.myhuaweicloud.com, direct
 # Microsoft Azure · Cognitive Services
 host, eastus.api.cognitive.microsoft.com, direct
 host, eastus2.api.cognitive.microsoft.com, direct

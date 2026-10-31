@@ -125,7 +125,7 @@ DOMAIN,objectstorage.us-shawnee-1.oraclecloud.com
 DOMAIN,objectstorage.us-boardman-1.oraclecloud.com
 DOMAIN,objectstorage.us-quincy-1.oraclecloud.com
 DOMAIN,objectstorage.sa-riodejaneiro-2.oraclecloud.com
-# Vultr · Looking glass
+# Vultr · Looking glass (favicon)
 DOMAIN,ams-nl-ping.vultr.com
 DOMAIN,ga-us-ping.vultr.com
 DOMAIN,blr-in-ping.vultr.com
@@ -222,30 +222,30 @@ DOMAIN,cos.na-siliconvalley.myqcloud.com
 DOMAIN,cos.na-ashburn.myqcloud.com
 DOMAIN,cos.sa-saopaulo.myqcloud.com
 DOMAIN,cos.eu-frankfurt.myqcloud.com
-# Huawei Cloud · OBS
-DOMAIN,obs.cn-north-1.myhuaweicloud.com
-DOMAIN,obs.cn-north-4.myhuaweicloud.com
-DOMAIN,obs.cn-north-9.myhuaweicloud.com
-DOMAIN,obs.cn-east-2.myhuaweicloud.com
-DOMAIN,obs.cn-east-3.myhuaweicloud.com
-DOMAIN,obs.cn-east-5.myhuaweicloud.com
-DOMAIN,obs.cn-south-1.myhuaweicloud.com
-DOMAIN,obs.cn-south-4.myhuaweicloud.com
-DOMAIN,obs.cn-southwest-2.myhuaweicloud.com
-DOMAIN,obs.ap-southeast-1.myhuaweicloud.com
-DOMAIN,obs.ap-southeast-2.myhuaweicloud.com
-DOMAIN,obs.ap-southeast-3.myhuaweicloud.com
-DOMAIN,obs.ap-southeast-4.myhuaweicloud.com
-DOMAIN,obs.ap-southeast-5.myhuaweicloud.com
-DOMAIN,obs.my-kualalumpur-1.myhuaweicloud.com
-DOMAIN,obs.af-south-1.myhuaweicloud.com
-DOMAIN,obs.af-north-1.myhuaweicloud.com
-DOMAIN,obs.la-north-2.myhuaweicloud.com
-DOMAIN,obs.na-mexico-1.myhuaweicloud.com
-DOMAIN,obs.la-south-2.myhuaweicloud.com
-DOMAIN,obs.sa-brazil-1.myhuaweicloud.com
-DOMAIN,obs.tr-west-1.myhuaweicloud.com
-DOMAIN,obs.me-east-1.myhuaweicloud.com
+# Huawei Cloud · API gateway (ECS endpoint)
+DOMAIN,ecs.cn-north-1.myhuaweicloud.com
+DOMAIN,ecs.cn-north-4.myhuaweicloud.com
+DOMAIN,ecs.cn-north-9.myhuaweicloud.com
+DOMAIN,ecs.cn-east-2.myhuaweicloud.com
+DOMAIN,ecs.cn-east-3.myhuaweicloud.com
+DOMAIN,ecs.cn-east-5.myhuaweicloud.com
+DOMAIN,ecs.cn-south-1.myhuaweicloud.com
+DOMAIN,ecs.cn-south-4.myhuaweicloud.com
+DOMAIN,ecs.cn-southwest-2.myhuaweicloud.com
+DOMAIN,ecs.ap-southeast-1.myhuaweicloud.com
+DOMAIN,ecs.ap-southeast-2.myhuaweicloud.com
+DOMAIN,ecs.ap-southeast-3.myhuaweicloud.com
+DOMAIN,ecs.ap-southeast-4.myhuaweicloud.com
+DOMAIN,ecs.ap-southeast-5.myhuaweicloud.com
+DOMAIN,ecs.my-kualalumpur-1.myhuaweicloud.com
+DOMAIN,ecs.af-south-1.myhuaweicloud.com
+DOMAIN,ecs.af-north-1.myhuaweicloud.com
+DOMAIN,ecs.la-north-2.myhuaweicloud.com
+DOMAIN,ecs.na-mexico-1.myhuaweicloud.com
+DOMAIN,ecs.la-south-2.myhuaweicloud.com
+DOMAIN,ecs.sa-brazil-1.myhuaweicloud.com
+DOMAIN,ecs.tr-west-1.myhuaweicloud.com
+DOMAIN,ecs.me-east-1.myhuaweicloud.com
 # Microsoft Azure · Cognitive Services
 DOMAIN,eastus.api.cognitive.microsoft.com
 DOMAIN,eastus2.api.cognitive.microsoft.com
