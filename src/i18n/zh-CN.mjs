@@ -223,7 +223,7 @@ export default {
   okShort: "直连",
   unkShort: "网络未知",
   netDetails: "详情",
-  egressLink: "各网站看到的 IP →",
+  egressLink: "各网站看到的 IP",
   pl_vendors: "厂商",
   pl_areas: "地区",
   off: "已停用",

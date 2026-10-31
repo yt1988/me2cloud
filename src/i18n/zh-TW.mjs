@@ -67,7 +67,7 @@ export default {
   okShort: "直連",
   unkShort: "網路未知",
   netDetails: "詳情",
-  egressLink: "各網站看到的 IP →",
+  egressLink: "各網站看到的 IP",
   pl_vendors: "廠商",
   pl_areas: "地區",
   off: "已停用",

@@ -779,6 +779,7 @@
   }
   const ICON_EYE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
   const ICON_EYEOFF = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
+  const ICON_EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
   function renderNet() {
     const N = NET, ck = N.state === "checking", warn = N.verdict === "warn";
     const bar = $("#netbar");
@@ -792,7 +793,7 @@
     // optional exit checker: a host can announce one with <meta name="egress" content="https://…">, which gets a link
     // to its page in this language (shown while checking too, so the bar keeps its height); without the meta nothing is shown
     const eg = (document.querySelector('meta[name="egress"]') || {}).content;
-    const egl = !eg ? "" : `<a class="nb-eg" href="${esc(eg.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/"))}" target="_blank" rel="noopener">${esc(t("egressLink"))}</a>`;
+    const egl = !eg ? "" : `<a class="nb-eg" href="${esc(eg.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/"))}" target="_blank" rel="noopener">${esc(t("egressLink"))}${ICON_EXT}</a>`;
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
       <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">· ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>${egl}
       <span class="nb-acts">
