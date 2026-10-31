@@ -1,6 +1,12 @@
 // Me2Cloud text: zh-CN. Keys missing here fall back to en.mjs.
 export default {
   name: "Me2Cloud",
+  a_lang: "语言",
+  a_help: "帮助",
+  a_settings: "设置",
+  a_close: "关闭",
+  a_prev: "上一个",
+  a_next: "下一个",
   seo_title: "Me2Cloud｜云服务器延迟测试：从你家网络实测 AWS、阿里云、腾讯云等 360+ 区域",
   seo_desc: "免费的云服务器延迟测试：直接在你的浏览器里实测 AWS、Azure、Google Cloud、甲骨文云、IBM Cloud、阿里云、腾讯云、华为云、火山引擎、百度智能云、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVH、Hetzner 共 360+ 个区域的延迟、抖动和丢包，算上你的运营商、Wi‑Fi 和晚高峰。数据不出浏览器。",
   seo_kw: "云服务器延迟测试, 云服务器 ping, 机房测速, AWS 延迟, 阿里云 ping, 腾讯云 延迟, 华为云 ping, Vultr 测速, 哪个区域最快",

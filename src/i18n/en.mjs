@@ -1,6 +1,12 @@
 // Me2Cloud text: en. Keys missing here fall back to en.mjs.
 export default {
   name: "Me2Cloud",
+  a_lang: "Language",
+  a_help: "Help",
+  a_settings: "Settings",
+  a_close: "Close",
+  a_prev: "Previous",
+  a_next: "Next",
   seo_title: "Me2Cloud: cloud latency test from your own network · AWS, Azure, Google Cloud and 360+ regions",
   seo_desc: "Free latency test from your own browser to 360+ cloud regions of AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud and Hetzner. Median, jitter and loss over your real ISP, Wi-Fi and peak hours. Nothing leaves your browser.",
   seo_kw: "cloud ping, cloud latency test, region latency, AWS ping, Azure latency, Google Cloud ping, Alibaba Cloud ping, Vultr ping, which cloud region is closest",

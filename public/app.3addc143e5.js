@@ -78,6 +78,7 @@
     try { regionNames = new Intl.DisplayNames([LANG], { type: "region" }); } catch (e) { regionNames = { of: c => c }; }
     $$("[data-i]").forEach(el => { el.textContent = t(el.dataset.i); });
     $$("[data-ph]").forEach(el => { el.placeholder = t(el.dataset.ph); });
+    $$("[data-al]").forEach(el => { el.setAttribute("aria-label", t(el.dataset.al)); });
     $("#footTxt").textContent = t("foot", { d: ENDPOINTS.verified });
     renderDocs();
   }

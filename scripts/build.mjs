@@ -53,12 +53,41 @@ async function loadI18n() {
   return out;
 }
 
+// Visible text is a brand (the same everywhere) or translated into every language: the page falls back to English
+// for a missing key or city, which nobody notices, so a gap fails the build instead. Checked: every key of en.mjs
+// (nested ones and list lengths too) in every language, every vendor's kind and note, every city name the page
+// shows, every text key the template names, and no literal English in aria-label / title / alt / placeholder.
+const BRAND_ATTR = new Set(["GitHub", "URL", "1ms"]);
+function i18nGaps(tpl, I, E, langs) {
+  const gaps = [], en = I.en;
+  const walk = (a, b, at, lang) => {
+    if (Array.isArray(a)) { if (!Array.isArray(b) || b.length !== a.length) gaps.push(`${lang}: ${at} (list)`); return; }
+    if (a && typeof a === "object") { for (const k of Object.keys(a)) walk(a[k], b?.[k], at + "." + k, lang); return; }
+    if (b == null || b === "") gaps.push(`${lang}: ${at}`);
+  };
+  for (const v of Object.keys(E.vendors)) for (const k of ["kind", "note"]) if (E.vendors[v][k] && !en.vendors?.[v]?.[k]) gaps.push(`en: vendors.${v}.${k}`);
+  const enRegion = new Intl.DisplayNames(["en"], { type: "region" });
+  const cities = new Set(E.endpoints.filter(e => e.city && e.city !== "?" && e.city !== enRegion.of(e.country)).map(e => /^(.*?)( \d)?$/.exec(e.city)[1]).filter(c => c !== "Taiwan"));
+  for (const [lang] of langs) {
+    if (lang === "en") continue;
+    for (const k of Object.keys(en)) walk(en[k], I[lang][k], k, lang);
+    for (const c of cities) if (!I[lang].cities?.[c]) gaps.push(`${lang}: cities.${c}`);
+  }
+  const used = new Set([...tpl.matchAll(/\bdata-(?:i|ph|al)="(\w+)"/g), ...tpl.matchAll(/\bt\("(\w+)"\s*[,)]/g)].map(m => m[1]));
+  for (const k of used) if (en[k] == null) gaps.push(`en: ${k} (used in page.html)`);
+  for (const m of tpl.matchAll(/<[a-z]+\b[^>]*>/g)) for (const [, a, v] of m[0].matchAll(/\s(aria-label|title|alt|placeholder)="([^"$]*[A-Za-z][^"$]*)"/g))
+    if (!BRAND_ATTR.has(v) && !/^https:\/\//.test(v) && !(a === "aria-label" && /\sdata-al="/.test(m[0])) && !(a === "placeholder" && /\sdata-ph="/.test(m[0]))) gaps.push(`page.html: ${a}="${v}"`);
+  return gaps;
+}
+
 export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
   const I = await loadI18n();
   const E = block(tpl, "ENDPOINTS", "ENDPOINTS"), spec = block(tpl, "RULES", "RULE_SPEC");
   const langs = LANGS.filter(([l]) => I[l] && I[l].heroT);            // languages with a translation
   const vids = Object.keys(E.vendors);
+  const gaps = i18nGaps(tpl, I, E, langs);
+  if (gaps.length) throw new Error(`untranslated text (${gaps.length}): ${gaps.slice(0, 12).join(" | ")}${gaps.length > 12 ? " …" : ""}`);
 
   // app code: the big inline script becomes a shared, content-hashed file
   const scripts = [...tpl.matchAll(/<script>([\s\S]*?)<\/script>/g)];
@@ -109,10 +138,11 @@ export async function build({ check = false } = {}) {
         `<meta name="twitter:image" content="${SITE}/og/${lang.toLowerCase()}.png">`,
         `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`
       ].join("\n");
-      // static text: every data-i element and placeholder already in this language, so crawlers read it without JS
+      // static text: every data-i element, placeholder and data-al aria-label already in this language, so crawlers read it without JS
       let body = shell
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
-        .replace(/(<[^>]*\sdata-ph="(\w+)"[^>]*>)/g, (m, el, k) => el.replace(/placeholder="[^"]*"/, `placeholder="${esc(T(k))}"`));
+        .replace(/(<[^>]*\sdata-ph="(\w+)"[^>]*>)/g, (m, el, k) => el.replace(/placeholder="[^"]*"/, `placeholder="${esc(T(k))}"`))
+        .replace(/(<[^>]*\sdata-al="(\w+)"[^>]*>)/g, (m, el, k) => el.replace(/aria-label="[^"]*"/, `aria-label="${esc(T(k))}"`));
       if (v) body = body.replace(/<h1 data-i="heroT">[^<]*<\/h1>/, `<h1>${esc(fill(T("lp_h1"), { v: vn(v) }))}</h1>`);
       const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
       const helpSel = docs.map(([q], i) => `<option value="${i}">${i + 1} / ${docs.length} · ${esc(q)}</option>`).join("");

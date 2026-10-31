@@ -1,6 +1,12 @@
 // Me2Cloud text: zh-TW. Keys missing here fall back to en.mjs.
 export default {
   name: "Me2Cloud",
+  a_lang: "語言",
+  a_help: "說明",
+  a_settings: "設定",
+  a_close: "關閉",
+  a_prev: "上一個",
+  a_next: "下一個",
   seo_title: "Me2Cloud｜雲伺服器延遲測試：從你家網路實測 AWS、阿里雲、騰訊雲等 360+ 區域",
   seo_desc: "免費的雲伺服器延遲測試：直接在你的瀏覽器裡實測 AWS、Azure、Google Cloud、甲骨文雲、IBM Cloud、阿里雲、騰訊雲、華為雲、火山引擎、百度智慧雲、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVH、Hetzner 共 360+ 個區域的延遲、抖動和丟包，算上你的運營商、Wi‑Fi 和晚高峰。資料不出瀏覽器。",
   seo_kw: "雲伺服器延遲測試, 雲伺服器 ping, 機房測速, AWS 延遲, 阿里雲 ping, 騰訊雲 延遲, 華為雲 ping, Vultr 測速, 哪個區域最快",
