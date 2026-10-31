@@ -796,7 +796,7 @@
       <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">· ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>${egl}
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
-        ${ck && !N.partial && !N.recheck || N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}
+        ${N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"${ck && !N.partial && !N.recheck ? ` style="visibility:hidden" tabindex="-1" aria-hidden="true"` : ""}><span>${t("rulesBtn")}</span></button>`}
         <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
         <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
@@ -819,7 +819,7 @@
     // addresses wrap after a colon instead of being cut off (a full IPv6 address doesn't fit a column), one address
     // per line; the tooltip carries the whole value unless addresses are hidden
     const ipx = x => esc(x).replace(/:/g, ":<wbr>"), tip = x => S.hideIp || !x ? "" : ` title="${esc(x)}"`;
-    // a host can announce an IP quality check with <meta name="ipqs" content="https://…">: the exit address links to it
+    // a host can announce an IP quality check with <meta name="ipqs" content="https://…">: the exit addresses (and the IPv4 / IPv6 ones) link to it
     const ipqs = (document.querySelector('meta[name="ipqs"]') || {}).content || "";
     const ipq = x => ipqs ? `<a class="ipq" href="${esc(ipqs)}/?ip=${encodeURIComponent(x)}" target="_blank" rel="noopener">${ipx(x)}</a>` : ipx(x);
     const v4 = N.ip4 || (N.has6 === null ? t("chkFail") : "–"), v6 = N.ip6 || (pending ? "" : N.has6 === null ? t("chkBlocked") : t("ip_no6short"));
@@ -831,7 +831,7 @@
       <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v ip${blur}"${tip(N.ip)}>${N.ip ? ipq(N.ip) : "–"}</span><span class="s">${s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : "")}</span></div>
       <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || N.via || "–")}</span><span class="s">${s(N.asn ? "AS" + N.asn : N.hidden ? esc(t("ipHidden")) : "")}</span></div>
       <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${s(esc(N.colo || "") + (N.http ? " · " + esc(N.http) : ""))}</span></div>
-      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v ip${blur}"${tip(N.ip4)}>${ipx(v4)}</span><span class="s ip${blur}"${tip(N.ip6)}>${s(ipx(v6))}</span></div>
+      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v ip${blur}"${tip(N.ip4)}>${N.ip4 ? ipq(N.ip4) : ipx(v4)}</span><span class="s ip${blur}"${tip(N.ip6)}>${N.ip6 ? ipq(N.ip6) : s(ipx(v6))}</span></div>
       <div class="kv"><span class="lbl">WebRTC</span><span class="v ip${blur}"${tip(rtc)}>${rtc ? N.rtc.map(ipx).join("<br>") : "–"}</span><span class="s">${s(esc(N.tz || ""))}</span></div>
       ${note}`;
   }
