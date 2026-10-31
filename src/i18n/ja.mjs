@@ -61,6 +61,7 @@ export default {
   okShort: "直結",
   unkShort: "ネットワーク不明",
   netDetails: "詳細",
+  egressLink: "サイトごとの IP →",
   pl_vendors: "クラウド",
   pl_areas: "地域",
   off: "オフ",

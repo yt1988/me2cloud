@@ -61,6 +61,7 @@ export default {
   okShort: "직접 연결",
   unkShort: "네트워크 알 수 없음",
   netDetails: "자세히",
+  egressLink: "사이트별 IP →",
   pl_vendors: "클라우드",
   pl_areas: "지역",
   off: "끔",

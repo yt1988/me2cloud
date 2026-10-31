@@ -788,8 +788,12 @@
     // IP families that answered, as a plain trailing segment once the check is done (so it doesn't push the rest)
     const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
     const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}">· ${fams}</span>`;
+    // optional exit checker: a host can announce one with <meta name="egress" content="https://…">, which gets a link
+    // to its page in this language (shown while checking too, so the bar keeps its height); without the meta nothing is shown
+    const eg = (document.querySelector('meta[name="egress"]') || {}).content;
+    const egl = !eg ? "" : `<a class="nb-eg" href="${esc(eg.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/"))}" target="_blank" rel="noopener">${esc(t("egressLink"))}</a>`;
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
-      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">· ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>
+      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">· ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>${egl}
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${ck && !N.partial && !N.recheck || N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"><span>${t("rulesBtn")}</span></button>`}

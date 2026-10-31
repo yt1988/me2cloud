@@ -66,6 +66,7 @@ export default {
   okShort: "Conexión directa",
   unkShort: "Red desconocida",
   netDetails: "Detalles",
+  egressLink: "IP por sitio →",
   pl_vendors: "Proveedores",
   pl_areas: "Zonas",
   off: "No",
