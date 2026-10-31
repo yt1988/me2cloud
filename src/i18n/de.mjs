@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud: Cloud-Latenztest aus deinem eigenen Netz · AWS, Azure, Google Cloud und 360+ Regionen",
   seo_desc: "Kostenloser Latenztest direkt im Browser zu über 360 Regionen von AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud und Hetzner. Median, Jitter und Verlust über deinen echten Anbieter, dein WLAN und deine Stoßzeiten. Nichts verlässt deinen Browser.",
   seo_kw: "Cloud Ping, Cloud Latenz Test, Latenz pro Region, AWS Ping, Azure Latenz, Google Cloud Ping, Hetzner Ping, welche Region ist am nächsten",
-  og_sub: "360+ Regionen · 17 Anbieter · im eigenen Browser gemessen",
+  og_sub: "360+ Regionen · 22 Anbieter · im eigenen Browser gemessen",
   unlisted: "nicht gelistete Region",
   share_btn: "Teilen", viewingShared: "Du siehst ein geteiltes Ergebnis; drück Start, um deine eigene Leitung zu testen",
   share_h: "Ergebnisse teilen", share_sub: "Bild und Link entstehen direkt hier in deinem Browser. Es wird nichts hochgeladen.",
@@ -144,6 +144,11 @@ export default {
     scaleway: { kind: "Object Storage", note: "GET und HEAD halten die Verbindung beide offen. Dual-Stack-Hosts." },
     volcengine: { kind: "TOS", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." },
     baidu: { kind: "BOS", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." },
+    ionos: { kind: "Logging-API (regional)", note: "Ein API-Host pro Compute-Standort; Object Storage deckt weniger ab, und seine älteren Cluster halten die Verbindung nicht offen." },
+    aruba: { kind: "Object Storage", note: "HEAD nutzt die Verbindung überall weiter; GET schließt sie in R3-IT." },
+    leaseweb: { kind: "Object Storage", note: "GET 400 schließt die Verbindung; HEAD nutzt sie weiter. Nach Land verortet, die Doku nennt keine Städte." },
+    gcore: { kind: "Object Storage", note: "GET schließt die Verbindung; HEAD nutzt sie weiter. Sines und London-2 laufen auf einem anderen Speichersystem und werden mit einem CORS-GET gemessen, der den Body liest." },
+    yandex: { kind: "Object Storage", note: "GET und HEAD halten die Verbindung offen. Dual-Stack-Hosts; ein Endpunkt pro Region." },
     naver: { kind: "Object Storage", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." }
   },
   docs: [
@@ -160,7 +165,7 @@ export default {
     ["So wird jede Messung gemacht",
       `<ol><li>Eine <b>Aufwärm</b>-Anfrage baut DNS, TCP und TLS auf. Ihre Zeit wird angezeigt, aber nie mitgezählt.</li>
       <li>Danach schickt der Browser 5, 10 oder 20 weitere Anfragen an denselben Host über <b>dieselbe Verbindung</b>. Jede kostet eine Laufzeit plus die Bearbeitungszeit beim Anbieter.</li>
-      <li>Jeder Anbieter bekommt die Anfrageart, bei der wir geprüft haben, dass die Verbindung offen bleibt: <code>GET</code> für AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean und Scaleway; <code>HEAD</code> für Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr und OVHcloud (ihr GET schließt die Verbindung und würde jede Messung verdreifachen); <code>&lt;img&gt;</code> nur für Hetzner.</li>
+      <li>Jeder Anbieter bekommt die Anfrageart, bei der wir geprüft haben, dass die Verbindung offen bleibt: <code>GET</code> für AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean und Scaleway; <code>HEAD</code> für Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore und Yandex Cloud (ihr GET schließt die Verbindung und würde jede Messung verdreifachen); <code>&lt;img&gt;</code> nur für Hetzner.</li>
       <li>Wir zeigen <b>Median</b> (den typischen Wert), <b>Mittelwert</b>, <b>P90</b> (9 von 10 Messungen liegen darunter), <b>Jitter</b> (mittlere Änderung zwischen aufeinanderfolgenden Messungen) und <b>Verlust</b> (Messungen ohne Antwort im Zeitlimit).</li>
       <li>Die <b>Stufe</b> ergibt sich aus dem Median: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 darüber. Die Gesamtwertung für die Tipps ist Median + 2 × Jitter + Verlust-Abzug – stabile 60 ms schlagen also sprunghafte 45 ms.</li></ol>`],
     ["Warum HTTPS-Messung näher an der Praxis ist als ICMP-Ping",

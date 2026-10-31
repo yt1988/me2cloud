@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud｜雲伺服器延遲測試：從你家網路實測 AWS、阿里雲、騰訊雲等 360+ 區域",
   seo_desc: "免費的雲伺服器延遲測試：直接在你的瀏覽器裡實測 AWS、Azure、Google Cloud、甲骨文雲、IBM Cloud、阿里雲、騰訊雲、華為雲、火山引擎、百度智慧雲、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVH、Hetzner 共 360+ 個區域的延遲、抖動和丟包，算上你的運營商、Wi‑Fi 和晚高峰。資料不出瀏覽器。",
   seo_kw: "雲伺服器延遲測試, 雲伺服器 ping, 機房測速, AWS 延遲, 阿里雲 ping, 騰訊雲 延遲, 華為雲 ping, Vultr 測速, 哪個區域最快",
-  og_sub: "360+ 個雲區域 · 17 家廠商 · 瀏覽器本地實測",
+  og_sub: "360+ 個雲區域 · 22 家廠商 · 瀏覽器本地實測",
   unlisted: "未公開區域",
   share_btn: "分享結果",
   viewingShared: "正在看別人分享的結果，點開始測試你自己的線路",
@@ -247,7 +247,7 @@ export default {
       "每次取樣是怎麼測的",
       `<ol><li>先發一次<b>預熱</b>請求，把 DNS、TCP、TLS 都建好。這次的時間會顯示出來，但不計入結果。</li>
           <li>然後在<b>同一條連線</b>上，對同一個主機再發 5、10 或 20 次請求。每次只花一個往返，再加上廠商伺服器的處理時間。</li>
-          <li>每家廠商都用我們實測過、能保持連線的請求方式：AWS、Azure、Google Cloud、華為雲、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里雲、騰訊雲、火山引擎、百度智慧雲、Naver Cloud、Linode、Vultr、OVHcloud 用 <code>HEAD</code>（它們的 GET 會斷開連線，測出來會翻 3 倍）；只有 Hetzner 用 <code>&lt;img&gt;</code>。</li>
+          <li>每家廠商都用我們實測過、能保持連線的請求方式：AWS、Azure、Google Cloud、華為雲、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里雲、騰訊雲、火山引擎、百度智慧雲、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它們的 GET 會斷開連線，測出來會翻 3 倍）；只有 Hetzner 用 <code>&lt;img&gt;</code>。</li>
           <li>結果給出<b>中位數</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次裡有 9 次不超過它）、<b>抖動</b>（相鄰兩次的平均變化）和<b>丟包</b>（超時沒響應的次數）。</li>
           <li><b>等級</b>按中位數劃分：T0 夯 ≤ 30 ms、T1 頂級 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推薦用的綜合分是“中位數 + 2 × 抖動 + 丟包懲罰”，所以穩定的 60 ms 會排在忽高忽低的 45 ms 前面。</li></ol>`
     ],
@@ -394,6 +394,11 @@ export default {
       kind: "物件儲存",
       note: "GET 和 HEAD 都能保持連線，域名是雙棧。"
     },
+    ionos: { kind: "日誌服務 API（區域入口）", note: "每個運算機房一個 API 入口；物件儲存涵蓋的機房較少，舊叢集在瀏覽器裡無法保持連線。" },
+    aruba: { kind: "物件儲存", note: "HEAD 在所有區域都能重複使用連線；R3-IT 的 GET 會斷開連線。" },
+    leaseweb: { kind: "物件儲存", note: "GET 回傳 400 會斷開連線，HEAD 能重複使用。官方文件只列出國家，所以按國家標示。" },
+    gcore: { kind: "物件儲存", note: "GET 會斷開連線，HEAD 能重複使用。Sines 和 London-2 用的是另一套儲存，改用讀取回應內容的 CORS GET。" },
+    yandex: { kind: "物件儲存", note: "GET 和 HEAD 都能保持連線，網域是雙堆疊；每個區域一個入口。" },
     naver: {
       kind: "物件儲存",
       note: "GET 返回 403 後會斷開連線，HEAD 會複用連線。"
@@ -488,6 +493,14 @@ export default {
     Kulai: "古來",
     "Las Vegas": "拉斯維加斯",
     Lenexa: "萊內克薩",
+    Arezzo: "阿雷佐",
+    "Logroño": "洛格羅尼奧",
+    Worcester: "伍斯特",
+    Bergamo: "貝加莫",
+    Luxembourg: "盧森堡",
+    Almaty: "阿拉木圖",
+    Sines: "錫尼什",
+    Prague: "布拉格",
     London: "倫敦",
     "Los Angeles": "洛杉磯",
     Madrid: "馬德里",

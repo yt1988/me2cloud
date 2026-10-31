@@ -1,4 +1,4 @@
-# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 417 exact hosts, generated 2026-10-27.
+# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 448 exact hosts, generated 2026-10-27.
 # https://m2c.1ms.dog/ · https://github.com/yt1988/me2cloud
 payload:
   # AWS · DynamoDB /ping
@@ -427,6 +427,42 @@ payload:
   - DOMAIN,sg.object.ncloudstorage.com
   - DOMAIN,us.object.ncloudstorage.com
   - DOMAIN,de.object.ncloudstorage.com
+  # IONOS Cloud · Logging API (regional)
+  - DOMAIN,logging.de-fra.ionos.com
+  - DOMAIN,logging.de-txl.ionos.com
+  - DOMAIN,logging.es-vit.ionos.com
+  - DOMAIN,logging.gb-lhr.ionos.com
+  - DOMAIN,logging.gb-bhx.ionos.com
+  - DOMAIN,logging.fr-par.ionos.com
+  - DOMAIN,logging.us-mci.ionos.com
+  - DOMAIN,logging.us-las.ionos.com
+  - DOMAIN,logging.us-ewr.ionos.com
+  # Aruba Cloud · Object Storage
+  - DOMAIN,r1-it.storage.cloud.it
+  - DOMAIN,r3-it.storage.cloud.it
+  - DOMAIN,r1-fr.storage.arubacloud.fr
+  - DOMAIN,r1-cz.storage.forpsicloud.cz
+  - DOMAIN,r1-de.storage.arubacloud.de
+  - DOMAIN,r1-uk.storage.arubacloud.co.uk
+  - DOMAIN,r1-pl.storage.arubacloud.pl
+  # Leaseweb · Object Storage
+  - DOMAIN,nl.object-storage.io
+  - DOMAIN,de.object-storage.io
+  - DOMAIN,uk.object-storage.io
+  - DOMAIN,us.object-storage.io
+  - DOMAIN,ca.object-storage.io
+  - DOMAIN,sg.object-storage.io
+  # Gcore · Object Storage
+  - DOMAIN,luxembourg-2.storage.gcore.dev
+  - DOMAIN,chicago-1.storage.gcore.dev
+  - DOMAIN,almaty-1.storage.gcore.dev
+  - DOMAIN,sines-2.storage.gcore.dev
+  - DOMAIN,sines-3.storage.gcore.dev
+  - DOMAIN,london-2.storage.gcore.dev
+  - DOMAIN,singapore-1.storage.gcore.dev
+  # Yandex Cloud · Object Storage
+  - DOMAIN,storage.yandexcloud.net
+  - DOMAIN,storage.yandexcloud.kz
   # Me2Cloud network check (Cloudflare, ipify, ident.me)
   - DOMAIN,speed.cloudflare.com
   - DOMAIN,stun.cloudflare.com

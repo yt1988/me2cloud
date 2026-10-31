@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud｜クラウド遅延テスト：自宅の回線から AWS・Azure・Google Cloud など 360+ リージョンを実測",
   seo_desc: "ブラウザだけで、AWS、Azure、Google Cloud、Oracle、IBM Cloud、Alibaba Cloud、Tencent Cloud、Huawei Cloud、Volcengine、Baidu AI Cloud、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVHcloud、Hetzner の 360+ リージョンへの遅延・ジッター・パケットロスを実測。あなたのプロバイダ、Wi‑Fi、夜のピークも込み。データはブラウザの外に出ません。",
   seo_kw: "クラウド ping, クラウド 遅延 測定, リージョン 遅延, AWS ping, Azure 遅延, Google Cloud ping, Vultr ping, どのリージョンが近い",
-  og_sub: "360+ リージョン · 17 社 · ブラウザで実測",
+  og_sub: "360+ リージョン · 22 社 · ブラウザで実測",
   unlisted: "非公開リージョン",
   share_btn: "結果を共有",
   viewingShared: "共有された結果を表示中。スタートを押すと自分の回線をテストします",
@@ -327,6 +327,11 @@ export default {
       kind: "BOS",
       note: "GET の 403 で接続が切れます。HEAD は接続を再利用します。"
     },
+    ionos: { kind: "Logging API（リージョン別）", note: "コンピュートの拠点ごとに API ホストが 1 つあります。オブジェクトストレージは拠点が少なく、旧クラスタはブラウザで接続を保てません。" },
+    aruba: { kind: "オブジェクトストレージ", note: "HEAD はどこでも接続を再利用します。R3-IT の GET は接続を切ります。" },
+    leaseweb: { kind: "オブジェクトストレージ", note: "GET の 400 で接続が切れます。HEAD は再利用します。公式資料が国のみのため国で表示しています。" },
+    gcore: { kind: "オブジェクトストレージ", note: "GET は接続を切り、HEAD は再利用します。Sines と London-2 は別のストレージで、本文を読み切る CORS GET で測ります。" },
+    yandex: { kind: "オブジェクトストレージ", note: "GET も HEAD も接続を保ちます。デュアルスタック、リージョンごとに 1 つの窓口です。" },
     naver: {
       kind: "オブジェクトストレージ",
       note: "GET の 403 で接続が切れます。HEAD は接続を再利用します。"
@@ -349,7 +354,7 @@ export default {
       "1 回ごとの測り方",
       `<ol><li>まず<b>ウォームアップ</b>のリクエストで DNS、TCP、TLS を確立します。この時間は表示しますが集計には入れません。</li>
       <li>続けて<b>同じ接続</b>で同じホストに 5・10・20 回リクエストします。1 回あたり往復 1 回分と、クラウド側の処理時間だけがかかります。</li>
-      <li>各社とも、接続を保てることを確かめた方式を使います：AWS、Azure、Google Cloud、Huawei Cloud、DigitalOcean、Scaleway は <code>GET</code>、Oracle、IBM Cloud、Alibaba Cloud、Tencent Cloud、Volcengine、Baidu AI Cloud、Naver Cloud、Linode、Vultr、OVHcloud は <code>HEAD</code>（GET だと接続が切れて 3 倍になる）、Hetzner だけ <code>&lt;img&gt;</code>。</li>
+      <li>各社とも、接続を保てることを確かめた方式を使います：AWS、Azure、Google Cloud、Huawei Cloud、DigitalOcean、Scaleway は <code>GET</code>、Oracle、IBM Cloud、Alibaba Cloud、Tencent Cloud、Volcengine、Baidu AI Cloud、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud は <code>HEAD</code>（GET だと接続が切れて 3 倍になる）、Hetzner だけ <code>&lt;img&gt;</code>。</li>
       <li>結果は<b>中央値</b>（いちばん典型的な値）、<b>平均</b>、<b>P90</b>（10 回中 9 回はこれ以下）、<b>ジッター</b>（連続する 2 回の差の平均）、<b>ロス</b>（タイムアウトの割合）。</li>
       <li><b>段階</b>は中央値で決まります：T0 神 ≤ 30 ms、T1 最強 ≤ 80 ms、T2 勝ち組 ≤ 150 ms、T3 モブ ≤ 250 ms、それ以上は T4 終わってる。おすすめに使う総合スコアは「中央値 + 2 × ジッター + ロスのペナルティ」なので、安定した 60 ms は不安定な 45 ms より上に来ます。</li></ol>`
     ],

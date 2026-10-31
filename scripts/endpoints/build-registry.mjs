@@ -43,8 +43,27 @@ const VENDORS = {
   baidu:        { name: "Baidu AI Cloud", method: "HEAD", cors: false, tier: "B", kind: "BOS",
                   note: "GET 403 closes the connection; HEAD reuses it." },
   naver:        { name: "Naver Cloud",   method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
-                  note: "GET 403 closes the connection; HEAD reuses it." }
+                  note: "GET 403 closes the connection; HEAD reuses it." },
+  // added 2026-10-31 (S3 object storage; checked as described in candidates.mjs)
+  ionos:        { name: "IONOS Cloud",   method: "HEAD", cors: true,  tier: "A", kind: "Logging API (regional)",
+                  note: "One API host per compute location; Object Storage covers fewer and its older clusters can't keep a connection open." },
+  aruba:        { name: "Aruba Cloud",   method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
+                  note: "HEAD reuses the connection everywhere; GET closes it in R3-IT." },
+  leaseweb:     { name: "Leaseweb",      method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
+                  note: "GET 400 closes the connection; HEAD reuses it. Located by country, as the docs give no cities." },
+  gcore:        { name: "Gcore",         method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
+                  note: "GET closes the connection; HEAD reuses it. Sines and London-2 run on another storage system and use a CORS GET that reads the body." },
+  yandex:       { name: "Yandex Cloud",  method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
+                  note: "GET and HEAD both keep the connection alive. Dual-stack hosts; one endpoint per region." }
 };
+
+// Answer like the rest but fail in the browser: held out of the registry (listed in excluded.json with the reason)
+const HOLD = {};
+
+// Per-endpoint method where the vendor's doesn't work. Gcore's VAST clusters answer HEAD with a malformed 405 and a
+// no-cors GET with a chunked body Chrome won't drain, so the connection is dropped; they send ACAO *, and a CORS GET
+// that reads the body keeps it (checked in Chrome: ~1 RTT per sample after the first)
+const METHOD = Object.fromEntries(["gcore:s-ndp1-2", "gcore:s-ndp1-3", "gcore:s-ndlo-2"].map(id => [id, "CORS"]));
 
 // Per-endpoint exceptions seen in the browser
 const FALLBACK_IMG = new Set(["vultr:scl", "gcp:*"]);  // fetch failed at least once; <img> worked
@@ -62,8 +81,8 @@ const REVIEW = {
 };
 
 const CONTINENTS = {
-  na: "US CA MX", sa: "BR CL CO AR PE", eu: "GB IE FR DE NL BE CH IT ES PT SE NO FI DK PL AT RS CZ RU",
-  as: "CN HK TW JP KR SG IN ID MY TH PH VN", oc: "AU NZ", me: "AE SA QA BH IL TR", af: "ZA EG MA KE NG"
+  na: "US CA MX", sa: "BR CL CO AR PE", eu: "GB IE FR DE NL BE CH IT ES PT SE NO FI DK PL AT RS CZ RU LU",
+  as: "CN HK TW JP KR SG IN ID MY TH PH VN KZ", oc: "AU NZ", me: "AE SA QA BH IL TR", af: "ZA EG MA KE NG"
 };
 const continentOf = cc => Object.keys(CONTINENTS).find(k => CONTINENTS[k].split(" ").includes(cc)) || "xx";
 
@@ -76,14 +95,14 @@ const byKey = new Map(cli.map(r => [`${r.vendor}:${r.code}`, r]));
 const endpoints = [], excluded = [];
 for (const c of CANDIDATES) {
   const id = `${c.vendor}:${c.code}`, r = byKey.get(id), last = r?.tries.at(-1);
-  if (!last || last.result !== "http") {
-    const why = !last ? "not checked" : last.result === "nxdomain" ? "no such host" : last.result === "no-endpoint" ? "no public endpoint"
+  if (!last || last.result !== "http" || HOLD[id]) {
+    const why = HOLD[id] ? `held: ${HOLD[id]}` : !last ? "not checked" : last.result === "nxdomain" ? "no such host" : last.result === "no-endpoint" ? "no public endpoint"
       : `no response (${last.get?.error || "?"})`;
     excluded.push({ id, city: c.city, tried: c.urls, reason: why });
     continue;
   }
   const v = VENDORS[c.vendor];
-  const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: last.url, method: v.method };
+  const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: last.url, method: METHOD[id] || v.method };
   if (v.method !== "IMG" && (FALLBACK_IMG.has(id) || FALLBACK_IMG.has(`${c.vendor}:*`))) e.fallback = "IMG";
   if (v.cors && last.get?.acao) e.cors = true;
   if (c.vendor === "aws") e.expect = "healthy: dynamodb";

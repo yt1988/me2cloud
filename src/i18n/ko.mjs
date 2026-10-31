@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud｜클라우드 지연 테스트: 우리 집 회선에서 AWS·Azure·Google Cloud 등 360+ 리전 실측",
   seo_desc: "브라우저만으로 AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud, Hetzner의 360+ 리전까지 지연·지터·패킷 손실을 실측합니다. 내 통신사, Wi‑Fi, 저녁 피크까지 포함. 데이터는 브라우저 밖으로 나가지 않습니다.",
   seo_kw: "클라우드 핑, 클라우드 지연 측정, 리전 지연, AWS 핑, Azure 지연, Google Cloud 핑, Naver Cloud 핑, 가장 가까운 리전",
-  og_sub: "360+ 리전 · 17개 클라우드 · 브라우저에서 실측",
+  og_sub: "360+ 리전 · 22개 클라우드 · 브라우저에서 실측",
   unlisted: "비공개 리전",
   share_btn: "결과 공유",
   viewingShared: "공유된 결과를 보는 중입니다. 시작을 누르면 내 회선을 테스트합니다",
@@ -327,6 +327,11 @@ export default {
       kind: "BOS",
       note: "GET 403에서 연결이 끊깁니다. HEAD는 연결을 재사용합니다."
     },
+    ionos: { kind: "로깅 API(리전별)", note: "컴퓨트 위치마다 API 호스트가 하나씩 있습니다. 오브젝트 스토리지는 위치가 적고, 예전 클러스터는 브라우저에서 연결을 유지하지 못합니다." },
+    aruba: { kind: "오브젝트 스토리지", note: "HEAD는 모든 리전에서 연결을 재사용합니다. R3-IT의 GET은 연결을 끊습니다." },
+    leaseweb: { kind: "오브젝트 스토리지", note: "GET 400은 연결을 끊고 HEAD는 재사용합니다. 공식 문서에 국가만 있어 국가로 표시합니다." },
+    gcore: { kind: "오브젝트 스토리지", note: "GET은 연결을 끊고 HEAD는 재사용합니다. Sines와 London-2는 다른 스토리지라서 본문을 끝까지 읽는 CORS GET으로 잽니다." },
+    yandex: { kind: "오브젝트 스토리지", note: "GET과 HEAD 모두 연결을 유지합니다. 듀얼 스택, 리전마다 엔드포인트 하나입니다." },
     naver: {
       kind: "오브젝트 스토리지",
       note: "GET 403에서 연결이 끊깁니다. HEAD는 연결을 재사용합니다."
@@ -349,7 +354,7 @@ export default {
       "한 번씩 어떻게 재나",
       `<ol><li>먼저 <b>워밍업</b> 요청으로 DNS, TCP, TLS를 맺습니다. 이 시간은 보여 주지만 집계에는 넣지 않습니다.</li>
       <li>이어서 <b>같은 연결</b>로 같은 호스트에 5, 10, 20번 요청합니다. 한 번에 왕복 한 번과 업체 서버의 처리 시간만 걸립니다.</li>
-      <li>업체마다 연결을 유지한다고 확인한 방식을 씁니다: AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud는 <code>HEAD</code>(GET은 연결이 끊겨 3배가 됨), Hetzner만 <code>&lt;img&gt;</code>.</li>
+      <li>업체마다 연결을 유지한다고 확인한 방식을 씁니다: AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 <code>HEAD</code>(GET은 연결이 끊겨 3배가 됨), Hetzner만 <code>&lt;img&gt;</code>.</li>
       <li>결과는 <b>중앙값</b>(가장 대표적인 값), <b>평균</b>, <b>P90</b>(10번 중 9번은 이 이하), <b>지터</b>(연속 두 번의 차이 평균), <b>손실</b>(시간 초과 비율)입니다.</li>
       <li><b>등급</b>은 중앙값으로 정합니다: T0 갓 ≤ 30 ms, T1 최상급 ≤ 80 ms, T2 상위권 ≤ 150 ms, T3 NPC ≤ 250 ms, 그 이상은 T4 망함. 추천에 쓰는 종합 점수는 '중앙값 + 2 × 지터 + 손실 벌점'이라, 안정적인 60 ms가 들쭉날쭉한 45 ms보다 앞섭니다.</li></ol>`
     ],

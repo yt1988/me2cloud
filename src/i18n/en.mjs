@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud: cloud latency test from your own network · AWS, Azure, Google Cloud and 360+ regions",
   seo_desc: "Free latency test from your own browser to 360+ cloud regions of AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud and Hetzner. Median, jitter and loss over your real ISP, Wi-Fi and peak hours. Nothing leaves your browser.",
   seo_kw: "cloud ping, cloud latency test, region latency, AWS ping, Azure latency, Google Cloud ping, Alibaba Cloud ping, Vultr ping, which cloud region is closest",
-  og_sub: "360+ regions · 17 providers · measured in your own browser",
+  og_sub: "360+ regions · 22 providers · measured in your own browser",
   unlisted: "unlisted region",
   share_btn: "Share",
   viewingShared: "Viewing a shared result; press Start to test your own line",
@@ -252,7 +252,7 @@ export default {
       "How each sample is measured",
       `<ol><li>A <b>warm-up</b> request opens DNS, TCP and TLS. Its time is shown but never counted.</li>
           <li>Then the browser sends 5, 10 or 20 more requests to the same host over the <b>same connection</b>. Each one costs a single round trip plus the provider's processing time.</li>
-          <li>Each provider uses the request type we verified keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean and Scaleway; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr and OVHcloud (their GET closes the connection, which would triple every sample); <code>&lt;img&gt;</code> only for Hetzner.</li>
+          <li>Each provider uses the request type we verified keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean and Scaleway; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud (their GET closes the connection, which would triple every sample); <code>&lt;img&gt;</code> only for Hetzner.</li>
           <li>We report <b>median</b> (the typical value), <b>average</b>, <b>P90</b> (9 out of 10 samples are at or below it), <b>jitter</b> (average change between consecutive samples) and <b>loss</b> (samples with no answer within the timeout).</li>
           <li>The <b>tier</b> comes from the median: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 above that. The overall score used for picks is median + 2 × jitter + loss penalty, so a steady 60 ms beats a jumpy 45 ms.</li></ol>`
     ],
@@ -412,6 +412,11 @@ export default {
       kind: "BOS",
       note: "GET 403 closes the connection; HEAD reuses it."
     },
+    ionos: { kind: "Logging API (regional)", note: "One API host per compute location; Object Storage covers fewer and its older clusters can't keep a connection open." },
+    aruba: { kind: "Object Storage", note: "HEAD reuses the connection everywhere; GET closes it in R3-IT." },
+    leaseweb: { kind: "Object Storage", note: "GET 400 closes the connection; HEAD reuses it. Located by country, as the docs give no cities." },
+    gcore: { kind: "Object Storage", note: "GET closes the connection; HEAD reuses it. Sines and London-2 run on another storage system and use a CORS GET that reads the body." },
+    yandex: { kind: "Object Storage", note: "GET and HEAD both keep the connection alive. Dual-stack hosts; one endpoint per region." },
     naver: {
       kind: "Object Storage",
       note: "GET 403 closes the connection; HEAD reuses it."

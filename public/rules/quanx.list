@@ -1,4 +1,4 @@
-# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 417 exact hosts, generated 2026-10-27.
+# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 448 exact hosts, generated 2026-10-27.
 # https://m2c.1ms.dog/ · https://github.com/yt1988/me2cloud
 # AWS · DynamoDB /ping
 host, dynamodb.us-east-1.amazonaws.com, direct
@@ -426,6 +426,42 @@ host, jp.object.ncloudstorage.com, direct
 host, sg.object.ncloudstorage.com, direct
 host, us.object.ncloudstorage.com, direct
 host, de.object.ncloudstorage.com, direct
+# IONOS Cloud · Logging API (regional)
+host, logging.de-fra.ionos.com, direct
+host, logging.de-txl.ionos.com, direct
+host, logging.es-vit.ionos.com, direct
+host, logging.gb-lhr.ionos.com, direct
+host, logging.gb-bhx.ionos.com, direct
+host, logging.fr-par.ionos.com, direct
+host, logging.us-mci.ionos.com, direct
+host, logging.us-las.ionos.com, direct
+host, logging.us-ewr.ionos.com, direct
+# Aruba Cloud · Object Storage
+host, r1-it.storage.cloud.it, direct
+host, r3-it.storage.cloud.it, direct
+host, r1-fr.storage.arubacloud.fr, direct
+host, r1-cz.storage.forpsicloud.cz, direct
+host, r1-de.storage.arubacloud.de, direct
+host, r1-uk.storage.arubacloud.co.uk, direct
+host, r1-pl.storage.arubacloud.pl, direct
+# Leaseweb · Object Storage
+host, nl.object-storage.io, direct
+host, de.object-storage.io, direct
+host, uk.object-storage.io, direct
+host, us.object-storage.io, direct
+host, ca.object-storage.io, direct
+host, sg.object-storage.io, direct
+# Gcore · Object Storage
+host, luxembourg-2.storage.gcore.dev, direct
+host, chicago-1.storage.gcore.dev, direct
+host, almaty-1.storage.gcore.dev, direct
+host, sines-2.storage.gcore.dev, direct
+host, sines-3.storage.gcore.dev, direct
+host, london-2.storage.gcore.dev, direct
+host, singapore-1.storage.gcore.dev, direct
+# Yandex Cloud · Object Storage
+host, storage.yandexcloud.net, direct
+host, storage.yandexcloud.kz, direct
 # Me2Cloud network check (Cloudflare, ipify, ident.me)
 host, speed.cloudflare.com, direct
 host, stun.cloudflare.com, direct

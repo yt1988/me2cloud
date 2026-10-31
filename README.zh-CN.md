@@ -2,7 +2,7 @@
 
 [English](README.md) · **简体中文**
 
-从你自己的网络出发，各家云的每个区域到底有多快？Me2Cloud 在你的浏览器里测量到 17 家云厂商、361 个区域的延迟、抖动和丢包，算上你真实的运营商、Wi‑Fi 和晚高峰。纯静态站点，没有后端。
+从你自己的网络出发，各家云的每个区域到底有多快？Me2Cloud 在你的浏览器里测量到 22 家云厂商、392 个区域的延迟、抖动和丢包，算上你真实的运营商、Wi‑Fi 和晚高峰。纯静态站点，没有后端。
 
 **线上地址：** https://m2c.1ms.dog
 
@@ -15,7 +15,7 @@
 ## 功能
 
 - **在你的浏览器里测**：每个请求都从访问者的浏览器直接发给厂商，中间没有服务器，不用登录，代码里也没有统计和追踪。
-- **17 家厂商、361 个验证过的端点**：AWS、Azure、Google Cloud、Oracle Cloud、IBM Cloud、阿里云、腾讯云、华为云、火山引擎、百度智能云、Naver Cloud、Vultr、Akamai（Linode）、DigitalOcean、Scaleway、OVHcloud、Hetzner。
+- **22 家厂商、392 个验证过的端点**：AWS、Azure、Google Cloud、Oracle Cloud、IBM Cloud、阿里云、腾讯云、华为云、火山引擎、百度智能云、Naver Cloud、Vultr、Akamai（Linode）、DigitalOcean、Scaleway、OVHcloud、Hetzner、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud。IONOS Cloud 测的是各机房的日志服务 API 入口；Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 测的是 S3 对象存储入口。
 - **复用连接的真实 HTTPS 请求**：第一个请求只用来建连接，不计入；之后每个样本都复用这条连接。每家厂商用的是实测能保持连接的请求方式（GET、HEAD，Hetzner 用 `<img>`）。
 - **每个区域给出中位数、平均、P90、抖动和丢包**，测试时图表实时刷新，点开能看每一次采样。按中位数分五档：T0 夯 ≤30 ms、T1 顶级 ≤80 ms、T2 人上人 ≤150 ms、T3 NPC ≤250 ms、T4 拉完了。
 - **按用途推荐**：游戏、视频会议、SSH、建站各有一套延迟、抖动、丢包要求。本国的区域可以选择包含、排除或只看。

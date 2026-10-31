@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud: задержка до облаков из вашей собственной сети · AWS, Azure, Google Cloud и 360+ регионов",
   seo_desc: "Бесплатный тест задержки прямо в браузере до 360+ регионов AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud и Hetzner. Медиана, джиттер и потери с вашим настоящим провайдером, Wi‑Fi и в час пик. Ничего не покидает ваш браузер.",
   seo_kw: "пинг до облака, задержка облака, задержка по регионам, пинг AWS, задержка Azure, пинг Google Cloud, пинг Oracle, ближайший регион",
-  og_sub: "360+ регионов · 17 провайдеров · измерено в вашем браузере",
+  og_sub: "360+ регионов · 22 провайдеров · измерено в вашем браузере",
   unlisted: "регион не в списке",
   share_btn: "Поделиться", viewingShared: "Вы смотрите чужой результат; нажмите «Старт», чтобы проверить своё подключение",
   share_h: "Поделиться результатами", share_sub: "Картинка и ссылка создаются прямо в вашем браузере. Ничего не загружается.",
@@ -144,6 +144,11 @@ export default {
     scaleway: { kind: "Object Storage", note: "И GET, и HEAD держат соединение открытым. Хосты двухстековые." },
     volcengine: { kind: "TOS", note: "GET 403 закрывает соединение; HEAD его переиспользует." },
     baidu: { kind: "BOS", note: "GET 403 закрывает соединение; HEAD его переиспользует." },
+    ionos: { kind: "Logging API (региональный)", note: "Один API-хост на каждую площадку; Object Storage есть не везде, а его старые кластеры не держат соединение." },
+    aruba: { kind: "Object Storage", note: "HEAD везде переиспользует соединение; GET в R3-IT его закрывает." },
+    leaseweb: { kind: "Object Storage", note: "GET 400 закрывает соединение; HEAD переиспользует его. Указана страна: в документации нет городов." },
+    gcore: { kind: "Object Storage", note: "GET закрывает соединение; HEAD переиспользует его. Sines и London-2 работают на другом хранилище и измеряются CORS-запросом GET с чтением тела." },
+    yandex: { kind: "Object Storage", note: "GET и HEAD держат соединение. Хосты dual-stack; одна точка входа на регион." },
     naver: { kind: "Object Storage", note: "GET 403 закрывает соединение; HEAD его переиспользует." }
   },
   docs: [
@@ -160,7 +165,7 @@ export default {
     ["Как измеряется каждый замер",
       `<ol><li>Один <b>прогревочный</b> запрос поднимает DNS, TCP и TLS. Его время показывается, но в расчёт не идёт.</li>
       <li>Дальше браузер шлёт ещё 5, 10 или 20 запросов на тот же хост по <b>тому же соединению</b>. Каждый стоит одного RTT плюс время обработки у провайдера.</li>
-      <li>Для каждого провайдера используется тип запроса, который, как мы проверили, держит соединение: <code>GET</code> для AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean и Scaleway; <code>HEAD</code> для Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr и OVHcloud (их GET закрывает соединение и утроил бы каждый замер); <code>&lt;img&gt;</code> только для Hetzner.</li>
+      <li>Для каждого провайдера используется тип запроса, который, как мы проверили, держит соединение: <code>GET</code> для AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean и Scaleway; <code>HEAD</code> для Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore и Yandex Cloud (их GET закрывает соединение и утроил бы каждый замер); <code>&lt;img&gt;</code> только для Hetzner.</li>
       <li>Показываем <b>медиану</b> (типичное значение), <b>среднее</b>, <b>P90</b> (9 из 10 замеров ниже), <b>джиттер</b> (среднее изменение между соседними замерами) и <b>потери</b> (замеры без ответа за таймаут).</li>
       <li><b>Уровень</b> считается по медиане: T0 ≤ 30 мс, T1 ≤ 80 мс, T2 ≤ 150 мс, T3 ≤ 250 мс, T4 выше. Оценка для выбора = медиана + 2 × джиттер + штраф за потери, так что стабильные 60 мс побеждают скачущие 45 мс.</li></ol>`],
     ["Почему HTTPS ближе к реальности, чем ICMP‑пинг",

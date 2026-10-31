@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud: teste de latência da nuvem na sua própria rede · AWS, Azure, Google Cloud e 360+ regiões",
   seo_desc: "Teste de latência grátis no seu navegador para mais de 360 regiões de AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud e Hetzner. Mediana, jitter e perda com a sua operadora, o seu Wi‑Fi e o seu horário de pico reais. Nada sai do seu navegador.",
   seo_kw: "ping nuvem, teste de latência nuvem, latência por região, ping AWS, latência Azure, ping Google Cloud, ping Oracle, qual região é mais perto",
-  og_sub: "360+ regiões · 17 provedores · medido no seu navegador",
+  og_sub: "360+ regiões · 22 provedores · medido no seu navegador",
   unlisted: "região não listada",
   share_btn: "Compartilhar", viewingShared: "Você está vendo um resultado compartilhado; aperte Iniciar para testar a sua própria conexão",
   share_h: "Compartilhe seus resultados", share_sub: "A imagem e o link são criados aqui mesmo, no seu navegador. Nada é enviado.",
@@ -144,6 +144,11 @@ export default {
     scaleway: { kind: "Object Storage", note: "GET e HEAD mantêm a conexão aberta. Hosts dual stack." },
     volcengine: { kind: "TOS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
     baidu: { kind: "BOS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
+    ionos: { kind: "API de Logging (regional)", note: "Um host de API por local de computação; o Object Storage cobre menos e seus clusters antigos não mantêm a conexão." },
+    aruba: { kind: "Object Storage", note: "HEAD reutiliza a conexão em todas; GET a fecha em R3-IT." },
+    leaseweb: { kind: "Object Storage", note: "GET 400 fecha a conexão; HEAD a reutiliza. Localizado por país, a documentação não dá cidades." },
+    gcore: { kind: "Object Storage", note: "GET fecha a conexão; HEAD a reutiliza. Sines e London-2 usam outro sistema de armazenamento e são medidos com um GET CORS que lê o corpo." },
+    yandex: { kind: "Object Storage", note: "GET e HEAD mantêm a conexão. Hosts dual-stack; um endpoint por região." },
     naver: { kind: "Object Storage", note: "O GET 403 fecha a conexão; o HEAD reaproveita." }
   },
   docs: [
@@ -160,7 +165,7 @@ export default {
     ["Como cada amostra é medida",
       `<ol><li>Uma requisição de <b>aquecimento</b> abre DNS, TCP e TLS. O tempo dela aparece, mas nunca entra na conta.</li>
       <li>Depois o navegador manda mais 5, 10 ou 20 requisições ao mesmo host pela <b>mesma conexão</b>. Cada uma custa uma ida e volta mais o tempo de processamento do provedor.</li>
-      <li>Cada provedor usa o tipo de requisição que verificamos manter a conexão aberta: <code>GET</code> para AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean e Scaleway; <code>HEAD</code> para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr e OVHcloud (o GET deles fecha a conexão e triplicaria cada amostra); <code>&lt;img&gt;</code> só para a Hetzner.</li>
+      <li>Cada provedor usa o tipo de requisição que verificamos manter a conexão aberta: <code>GET</code> para AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean e Scaleway; <code>HEAD</code> para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore e Yandex Cloud (o GET deles fecha a conexão e triplicaria cada amostra); <code>&lt;img&gt;</code> só para a Hetzner.</li>
       <li>Mostramos a <b>mediana</b> (o valor típico), a <b>média</b>, o <b>P90</b> (9 de cada 10 amostras ficam abaixo), o <b>jitter</b> (mudança média entre amostras seguidas) e a <b>perda</b> (amostras sem resposta no tempo limite).</li>
       <li>O <b>nível</b> vem da mediana: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms e T4 acima disso. A pontuação das sugestões é mediana + 2 × jitter + penalidade de perda, então 60 ms estáveis ganham de 45 ms que oscilam.</li></ol>`],
     ["Por que medir com HTTPS é mais próximo da vida real que o ping ICMP",

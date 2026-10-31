@@ -1129,5 +1129,98 @@
  },
  "naver:de": {
   "fam": "4"
+ },
+ "ionos:de-fra": {
+  "fam": "4"
+ },
+ "ionos:de-txl": {
+  "fam": "4"
+ },
+ "ionos:es-vit": {
+  "fam": "4"
+ },
+ "ionos:gb-lhr": {
+  "fam": "4"
+ },
+ "ionos:gb-bhx": {
+  "fam": "4"
+ },
+ "ionos:fr-par": {
+  "fam": "4"
+ },
+ "ionos:us-mci": {
+  "fam": "4"
+ },
+ "ionos:us-las": {
+  "fam": "4"
+ },
+ "ionos:us-ewr": {
+  "fam": "4"
+ },
+ "aruba:r1-it": {
+  "fam": "4"
+ },
+ "aruba:r3-it": {
+  "fam": "4"
+ },
+ "aruba:r1-fr": {
+  "fam": "4"
+ },
+ "aruba:r1-cz": {
+  "fam": "4"
+ },
+ "aruba:r1-de": {
+  "fam": "4"
+ },
+ "aruba:r1-uk": {
+  "fam": "4"
+ },
+ "aruba:r1-pl": {
+  "fam": "4"
+ },
+ "leaseweb:nl-01": {
+  "fam": "4"
+ },
+ "leaseweb:de-01": {
+  "fam": "4"
+ },
+ "leaseweb:uk-01": {
+  "fam": "4"
+ },
+ "leaseweb:us-01": {
+  "fam": "4"
+ },
+ "leaseweb:ca-01": {
+  "fam": "4"
+ },
+ "leaseweb:sg-01": {
+  "fam": "4"
+ },
+ "gcore:s-ed1": {
+  "fam": "4"
+ },
+ "gcore:s-drc2": {
+  "fam": "4"
+ },
+ "gcore:s-kal2": {
+  "fam": "4"
+ },
+ "gcore:s-ndp1-2": {
+  "fam": "4"
+ },
+ "gcore:s-ndp1-3": {
+  "fam": "4"
+ },
+ "gcore:s-ndlo-2": {
+  "fam": "4"
+ },
+ "gcore:s-sgc1": {
+  "fam": "4"
+ },
+ "yandex:ru-central1": {
+  "fam": "46"
+ },
+ "yandex:kz1": {
+  "fam": "46"
  }
 }

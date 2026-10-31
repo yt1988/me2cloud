@@ -167,6 +167,38 @@ const VOLC = [["cn-beijing", "Beijing", "CN"], ["cn-shanghai", "Shanghai", "CN"]
 const BAIDU = [["bj", "Beijing", "CN"], ["bd", "Baoding", "CN"], ["su", "Suzhou", "CN"], ["gz", "Guangzhou", "CN"], ["fwh", "Wuhan", "CN"], ["hkg", "Hong Kong", "HK"], ["sin", "Singapore", "SG"]];
 const NAVER = [["kr", "Chuncheon", "KR"], ["jp", "Tokyo", "JP"], ["sg", "Singapore", "SG"], ["us", "Silicon Valley", "US"], ["de", "Frankfurt", "DE"]];
 
+// added 2026-10-31: S3 object storage endpoints from each provider's own docs. Every one was checked for DNS, TLS, anonymous
+// HTTP, where it really is (one HTTPS request from a Globalping probe in or next to the city: a few ms) and connection reuse
+// in a browser; the ones that fail a browser check are listed and held back in build-registry.mjs (HOLD).
+// docs.ionos.com/cloud/observability/logging-service/api-how-tos: the Logging Service API has a host in every compute
+// location (logging.<location>.ionos.com, HTTP/2, CORS *). Used instead of Object Storage, which is in only 6 of them:
+// s3.eu-central-3/4 and us-central-1 work, but eu-central-1/2 and eu-south-2 are Cloudian clusters whose connections
+// Chrome never reuses (HEAD 405 with a body length), and eu-south-2 also resets TLS handshakes now and then
+const IONOS = [["de-fra", "Frankfurt", "DE"], ["de-txl", "Berlin", "DE"], ["es-vit", "Logroño", "ES"], ["gb-lhr", "London", "GB"],
+  ["gb-bhx", "Worcester", "GB"], ["fr-par", "Paris", "FR"], ["us-mci", "Lenexa", "US"], ["us-las", "Las Vegas", "US"],
+  ["us-ewr", "Newark", "US"]];
+// kb.arubacloud.com/en/public-cloud/storage/object-storage/connection-information.aspx; R1-IT is the Arezzo campus (IT1),
+// R3-IT Ponte San Pietro near Bergamo (IT3); some countries use the group's local brand domains
+const ARUBA = [["r1-it", "Arezzo", "IT", "r1-it.storage.cloud.it"], ["r3-it", "Bergamo", "IT", "r3-it.storage.cloud.it"],
+  ["r1-fr", "Paris", "FR", "r1-fr.storage.arubacloud.fr"], ["r1-cz", "Prague", "CZ", "r1-cz.storage.forpsicloud.cz"],
+  ["r1-de", "Frankfurt", "DE", "r1-de.storage.arubacloud.de"], ["r1-uk", "London", "GB", "r1-uk.storage.arubacloud.co.uk"],
+  ["r1-pl", "Warsaw", "PL", "r1-pl.storage.arubacloud.pl"]];
+// developer.leaseweb.com/aws/: the docs give countries only, so the "city" is the country; each host round-robins a few IPs,
+// all in its own region (checked from far probes: no geo steering). The per-data-center speed test servers
+// (kb.leaseweb.com/network/link-speeds, speedtest.<dc>.<cc>.leaseweb.net) would give cities, but they serve plain HTTP only
+const LEASEWEB = [["nl-01", "Netherlands", "NL", "nl"], ["de-01", "Germany", "DE", "de"], ["uk-01", "United Kingdom", "GB", "uk"],
+  ["us-01", "United States", "US", "us"], ["ca-01", "Canada", "CA", "ca"], ["sg-01", "Singapore", "SG", "sg"]];
+// docs.gcore.com/storage/manage-object-storage/s3-service-urls-and-default-region-names: the *.storage.gcore.dev names are
+// CNAMEs of the older s-*.cloud.gcore.lu hosts (same servers). Sines and London-2 run on Northern Data's VAST clusters
+// (measured with a CORS GET, see build-registry.mjs). singapore-1 is the same naming for s-sgc1, which the docs no longer
+// list but which answers with a valid certificate from Singapore. Not listed: luxembourg-4 (self-signed certificate),
+// chester-2 (private addresses), s-nhn2 (Incheon) and s-darz (Darmstadt), which refuse connections from everywhere.
+const GCORE = [["s-ed1", "Luxembourg", "LU", "luxembourg-2"], ["s-drc2", "Chicago", "US", "chicago-1"], ["s-kal2", "Almaty", "KZ", "almaty-1"],
+  ["s-ndp1-2", "Sines", "PT", "sines-2"], ["s-ndp1-3", "Sines 2", "PT", "sines-3"], ["s-ndlo-2", "London", "GB", "london-2"],
+  ["s-sgc1", "Singapore", "SG", "singapore-1"]];
+// yandex.cloud/en/docs/overview/concepts/region: one endpoint per region (ru-central1 spans several zones; no city given)
+const YANDEX = [["ru-central1", "Russia", "RU", "storage.yandexcloud.net"], ["kz1", "Kazakhstan", "KZ", "storage.yandexcloud.kz"]];
+
 export const CANDIDATES = [
   ...AWS.map(([c, city, cc]) => r("aws", c, city, cc, c.startsWith("cn-")
     ? [`https://dynamodb.${c}.amazonaws.com.cn/ping`]
@@ -191,5 +223,10 @@ export const CANDIDATES = [
   ...SCALEWAY.map(([c, city, cc]) => r("scaleway", c, city, cc, [`https://s3.${c}.scw.cloud/`])),
   ...VOLC.map(([c, city, cc]) => r("volcengine", c, city, cc, [`https://tos-${c}.volces.com/`])),
   ...BAIDU.map(([c, city, cc]) => r("baidu", c, city, cc, [`https://${c}.bcebos.com/`])),
-  ...NAVER.map(([c, city, cc]) => r("naver", c, city, cc, [`https://${c}.object.ncloudstorage.com/`]))
+  ...NAVER.map(([c, city, cc]) => r("naver", c, city, cc, [`https://${c}.object.ncloudstorage.com/`])),
+  ...IONOS.map(([c, city, cc]) => r("ionos", c, city, cc, [`https://logging.${c}.ionos.com/`])),
+  ...ARUBA.map(([c, city, cc, h]) => r("aruba", c, city, cc, [`https://${h}/`])),
+  ...LEASEWEB.map(([c, city, cc, h]) => r("leaseweb", c, city, cc, [`https://${h}.object-storage.io/`])),
+  ...GCORE.map(([c, city, cc, h]) => r("gcore", c, city, cc, [`https://${h}.storage.gcore.dev/`])),
+  ...YANDEX.map(([c, city, cc, h]) => r("yandex", c, city, cc, [`https://${h}/`]))
 ];

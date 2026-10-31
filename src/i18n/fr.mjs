@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud : test de latence cloud depuis votre propre réseau · AWS, Azure, Google Cloud et 360+ régions",
   seo_desc: "Test de latence gratuit depuis votre navigateur vers plus de 360 régions d’AWS, Azure, Google Cloud, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Linode, DigitalOcean, Scaleway, OVHcloud et Hetzner. Médiane, gigue et perte avec votre vrai FAI, votre Wi‑Fi et vos heures de pointe. Rien ne quitte votre navigateur.",
   seo_kw: "ping cloud, test latence cloud, latence par région, ping AWS, latence Azure, ping Google Cloud, ping OVHcloud, ping Scaleway, quelle région est la plus proche",
-  og_sub: "360+ régions · 17 fournisseurs · mesuré dans votre navigateur",
+  og_sub: "360+ régions · 22 fournisseurs · mesuré dans votre navigateur",
   unlisted: "région non publiée",
   share_btn: "Partager",
   viewingShared: "Vous regardez un résultat partagé ; appuyez sur Lancer pour tester votre propre ligne",
@@ -332,6 +332,11 @@ export default {
       kind: "BOS",
       note: "GET 403 ferme la connexion ; HEAD la réutilise."
     },
+    ionos: { kind: "API Logging (régionale)", note: "Un hôte d’API par site de calcul ; l’Object Storage en couvre moins et ses anciens clusters ne gardent pas la connexion." },
+    aruba: { kind: "Object Storage", note: "HEAD réutilise la connexion partout ; GET la ferme en R3-IT." },
+    leaseweb: { kind: "Object Storage", note: "GET 400 ferme la connexion ; HEAD la réutilise. Situé par pays, la doc ne donne pas de villes." },
+    gcore: { kind: "Object Storage", note: "GET ferme la connexion ; HEAD la réutilise. Sines et London-2 tournent sur un autre stockage et sont mesurés avec un GET CORS qui lit le corps." },
+    yandex: { kind: "Object Storage", note: "GET et HEAD gardent la connexion. Hôtes double pile ; un point d’accès par région." },
     naver: {
       kind: "Object Storage",
       note: "GET 403 ferme la connexion ; HEAD la réutilise."
@@ -354,7 +359,7 @@ export default {
       "Comment chaque mesure est faite",
       `<ol><li>Une requête de <b>préchauffage</b> ouvre DNS, TCP et TLS. Son temps est affiché mais jamais compté.</li>
       <li>Ensuite le navigateur envoie 5, 10 ou 20 requêtes au même hôte sur la <b>même connexion</b>. Chacune coûte un aller-retour plus le temps de traitement du fournisseur.</li>
-      <li>Chaque fournisseur utilise le type de requête dont nous avons vérifié qu’il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean et Scaleway ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr et OVHcloud (leur GET ferme la connexion et triplerait chaque mesure) ; <code>&lt;img&gt;</code> seulement pour Hetzner.</li>
+      <li>Chaque fournisseur utilise le type de requête dont nous avons vérifié qu’il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean et Scaleway ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore et Yandex Cloud (leur GET ferme la connexion et triplerait chaque mesure) ; <code>&lt;img&gt;</code> seulement pour Hetzner.</li>
       <li>Nous donnons la <b>médiane</b> (la valeur typique), la <b>moyenne</b>, le <b>P90</b> (9 mesures sur 10 en dessous), la <b>gigue</b> (écart moyen entre deux mesures consécutives) et la <b>perte</b> (mesures sans réponse dans le délai).</li>
       <li>Le <b>niveau</b> vient de la médiane : T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 au-delà. Le score des recommandations est médiane + 2 × gigue + pénalité de perte : 60 ms réguliers battent 45 ms en dents de scie.</li></ol>`
     ],

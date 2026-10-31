@@ -19364,5 +19364,1678 @@
     "result": "http"
    }
   ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "de-fra",
+  "city": "Frankfurt",
+  "cc": "DE",
+  "urls": [
+   "https://logging.de-fra.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.de-fra.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "85.215.75.93"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 938,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 1046,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "de-txl",
+  "city": "Berlin",
+  "cc": "DE",
+  "urls": [
+   "https://logging.de-txl.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.de-txl.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "85.215.196.160"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 2132,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 945,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "es-vit",
+  "city": "Logroño",
+  "cc": "ES",
+  "urls": [
+   "https://logging.es-vit.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.es-vit.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "194.164.165.102"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 1025,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 1046,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "gb-lhr",
+  "city": "London",
+  "cc": "GB",
+  "urls": [
+   "https://logging.gb-lhr.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.gb-lhr.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "82.165.230.137"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 1906,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 1033,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "gb-bhx",
+  "city": "Worcester",
+  "cc": "GB",
+  "urls": [
+   "https://logging.gb-bhx.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.gb-bhx.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "194.164.92.15"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 1919,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 1002,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "fr-par",
+  "city": "Paris",
+  "cc": "FR",
+  "urls": [
+   "https://logging.fr-par.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.fr-par.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "5.250.177.220"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 2004,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 1244,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "us-mci",
+  "city": "Lenexa",
+  "cc": "US",
+  "urls": [
+   "https://logging.us-mci.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.us-mci.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "74.208.249.232"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 1648,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 761,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "us-las",
+  "city": "Las Vegas",
+  "cc": "US",
+  "urls": [
+   "https://logging.us-las.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.us-las.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "192.96.159.66"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 683,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 640,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "ionos",
+  "code": "us-ewr",
+  "city": "Newark",
+  "cc": "US",
+  "urls": [
+   "https://logging.us-ewr.ionos.com/"
+  ],
+  "tries": [
+   {
+    "url": "https://logging.us-ewr.ionos.com/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "74.208.38.40"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 404,
+     "ms": 1481,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<html> <head><title>404 Not Found</title></head> <body> <center><h1>404 Not Found</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    "head": {
+     "ok": true,
+     "status": 404,
+     "ms": 729,
+     "acao": "*",
+     "tao": "",
+     "type": "text/html",
+     "len": 146,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r1-it",
+  "city": "Arezzo",
+  "cc": "IT",
+  "urls": [
+   "https://r1-it.storage.cloud.it/"
+  ],
+  "tries": [
+   {
+    "url": "https://r1-it.storage.cloud.it/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "46.37.10.199"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1041,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID><DisplayName></DisplayNam"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 1025,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r3-it",
+  "city": "Bergamo",
+  "cc": "IT",
+  "urls": [
+   "https://r3-it.storage.cloud.it/"
+  ],
+  "tries": [
+   {
+    "url": "https://r3-it.storage.cloud.it/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "195.231.77.85"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1008,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID><DisplayName></DisplayNam"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 995,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r1-fr",
+  "city": "Paris",
+  "cc": "FR",
+  "urls": [
+   "https://r1-fr.storage.arubacloud.fr/"
+  ],
+  "tries": [
+   {
+    "url": "https://r1-fr.storage.arubacloud.fr/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "185.8.48.38"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 975,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 999,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r1-cz",
+  "city": "Prague",
+  "cc": "CZ",
+  "urls": [
+   "https://r1-cz.storage.forpsicloud.cz/"
+  ],
+  "tries": [
+   {
+    "url": "https://r1-cz.storage.forpsicloud.cz/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "81.2.232.71"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1005,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 986,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r1-de",
+  "city": "Frankfurt",
+  "cc": "DE",
+  "urls": [
+   "https://r1-de.storage.arubacloud.de/"
+  ],
+  "tries": [
+   {
+    "url": "https://r1-de.storage.arubacloud.de/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "185.12.176.38"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 993,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 918,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r1-uk",
+  "city": "London",
+  "cc": "GB",
+  "urls": [
+   "https://r1-uk.storage.arubacloud.co.uk/"
+  ],
+  "tries": [
+   {
+    "url": "https://r1-uk.storage.arubacloud.co.uk/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "185.43.208.38"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 988,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 1019,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "aruba",
+  "code": "r1-pl",
+  "city": "Warsaw",
+  "cc": "PL",
+  "urls": [
+   "https://r1-pl.storage.arubacloud.pl/"
+  ],
+  "tries": [
+   {
+    "url": "https://r1-pl.storage.arubacloud.pl/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "80.211.248.38"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1055,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 1024,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "Ceph Object Gateway (squid)",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "leaseweb",
+  "code": "nl-01",
+  "city": "Netherlands",
+  "cc": "NL",
+  "urls": [
+   "https://nl.object-storage.io/"
+  ],
+  "tries": [
+   {
+    "url": "https://nl.object-storage.io/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "85.17.11.39"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 400,
+     "ms": 1003,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 213,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <Error><Code>InvalidRequest</Code><Message>Anonymous request cannot perform service operations.</Message><Resource>/</Res"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 899,
+     "acao": "",
+     "tao": "",
+     "type": "",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "leaseweb",
+  "code": "de-01",
+  "city": "Germany",
+  "cc": "DE",
+  "urls": [
+   "https://de.object-storage.io/"
+  ],
+  "tries": [
+   {
+    "url": "https://de.object-storage.io/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "78.159.104.131"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 400,
+     "ms": 1026,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 213,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <Error><Code>InvalidRequest</Code><Message>Anonymous request cannot perform service operations.</Message><Resource>/</Res"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 934,
+     "acao": "",
+     "tao": "",
+     "type": "",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "leaseweb",
+  "code": "uk-01",
+  "city": "United Kingdom",
+  "cc": "GB",
+  "urls": [
+   "https://uk.object-storage.io/"
+  ],
+  "tries": [
+   {
+    "url": "https://uk.object-storage.io/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "173.234.141.19"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 400,
+     "ms": 1014,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 213,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <Error><Code>InvalidRequest</Code><Message>Anonymous request cannot perform service operations.</Message><Resource>/</Res"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 882,
+     "acao": "",
+     "tao": "",
+     "type": "",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "leaseweb",
+  "code": "us-01",
+  "city": "United States",
+  "cc": "US",
+  "urls": [
+   "https://us.object-storage.io/"
+  ],
+  "tries": [
+   {
+    "url": "https://us.object-storage.io/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "23.105.171.211"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 400,
+     "ms": 867,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 213,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.4",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <Error><Code>InvalidRequest</Code><Message>Anonymous request cannot perform service operations.</Message><Resource>/</Res"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 748,
+     "acao": "",
+     "tao": "",
+     "type": "",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.4",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "leaseweb",
+  "code": "ca-01",
+  "city": "Canada",
+  "cc": "CA",
+  "urls": [
+   "https://ca.object-storage.io/"
+  ],
+  "tries": [
+   {
+    "url": "https://ca.object-storage.io/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "64.15.130.51"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 400,
+     "ms": 818,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 213,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <Error><Code>InvalidRequest</Code><Message>Anonymous request cannot perform service operations.</Message><Resource>/</Res"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 727,
+     "acao": "",
+     "tao": "",
+     "type": "",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "leaseweb",
+  "code": "sg-01",
+  "city": "Singapore",
+  "cc": "SG",
+  "urls": [
+   "https://sg.object-storage.io/"
+  ],
+  "tries": [
+   {
+    "url": "https://sg.object-storage.io/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "173.234.12.67"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 400,
+     "ms": 542,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 213,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <Error><Code>InvalidRequest</Code><Message>Anonymous request cannot perform service operations.</Message><Resource>/</Res"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 421,
+     "acao": "",
+     "tao": "",
+     "type": "",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "StorageGRID/12.0.0.8",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-ed1",
+  "city": "Luxembourg",
+  "cc": "LU",
+  "urls": [
+   "https://luxembourg-2.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://luxembourg-2.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-ed1.cloud.gcore.lu"
+     ],
+     "a": [
+      "185.145.113.131",
+      "185.145.113.133",
+      "185.145.113.132",
+      "185.145.113.130"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1435,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 1037,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-drc2",
+  "city": "Chicago",
+  "cc": "US",
+  "urls": [
+   "https://chicago-1.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://chicago-1.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-drc2.cloud.gcore.lu"
+     ],
+     "a": [
+      "87.120.252.252",
+      "87.120.252.253"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1018,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "nginx/1.24.0",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 643,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "nginx/1.24.0",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-kal2",
+  "city": "Almaty",
+  "cc": "KZ",
+  "urls": [
+   "https://almaty-1.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://almaty-1.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-kal2.cloud.gcore.lu"
+     ],
+     "a": [
+      "92.223.3.102",
+      "92.223.3.103"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1737,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 1282,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-ndp1-2",
+  "city": "Sines",
+  "cc": "PT",
+  "urls": [
+   "https://sines-2.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://sines-2.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-ndp1-2.cloud.gcore.lu"
+     ],
+     "a": [
+      "85.234.67.14",
+      "85.234.67.50",
+      "85.234.67.47",
+      "85.234.67.17",
+      "85.234.67.7",
+      "85.234.67.42",
+      "85.234.67.24",
+      "85.234.67.22",
+      "85.234.67.48",
+      "85.234.67.51",
+      "85.234.67.19",
+      "85.234.67.46",
+      "85.234.67.15",
+      "85.234.67.41",
+      "85.234.67.26",
+      "85.234.67.45",
+      "85.234.67.31",
+      "85.234.67.10",
+      "85.234.67.4",
+      "85.234.67.25",
+      "85.234.67.56",
+      "85.234.67.18",
+      "85.234.67.39",
+      "85.234.67.43",
+      "85.234.67.33",
+      "85.234.67.49",
+      "85.234.67.23",
+      "85.234.67.40",
+      "85.234.67.1",
+      "85.234.67.11",
+      "85.234.67.21",
+      "85.234.67.13",
+      "85.234.67.53",
+      "85.234.67.38",
+      "85.234.67.37",
+      "85.234.67.52",
+      "85.234.67.8",
+      "85.234.67.29",
+      "85.234.67.55",
+      "85.234.67.35",
+      "85.234.67.9",
+      "85.234.67.28",
+      "85.234.67.5",
+      "85.234.67.3",
+      "85.234.67.32",
+      "85.234.67.6",
+      "85.234.67.30",
+      "85.234.67.34",
+      "85.234.67.20",
+      "85.234.67.44",
+      "85.234.67.16",
+      "85.234.67.2",
+      "85.234.67.36",
+      "85.234.67.54",
+      "85.234.67.12",
+      "85.234.67.27"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1349,
+     "acao": "*",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "vast 5.4.4.0",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Buckets></Buckets><Owner><DisplayName>Anonymous</"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 2264,
+     "acao": "*",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "vast 5.4.4.0",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-ndp1-3",
+  "city": "Sines 2",
+  "cc": "PT",
+  "urls": [
+   "https://sines-3.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://sines-3.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-ndp1-3.cloud.gcore.lu"
+     ],
+     "a": [
+      "85.234.67.88",
+      "85.234.67.94",
+      "85.234.67.78",
+      "85.234.67.72",
+      "85.234.67.109",
+      "85.234.67.100",
+      "85.234.67.96",
+      "85.234.67.66",
+      "85.234.67.95",
+      "85.234.67.87",
+      "85.234.67.77",
+      "85.234.67.73",
+      "85.234.67.114",
+      "85.234.67.105",
+      "85.234.67.101",
+      "85.234.67.99",
+      "85.234.67.110",
+      "85.234.67.119",
+      "85.234.67.65",
+      "85.234.67.115",
+      "85.234.67.79",
+      "85.234.67.82",
+      "85.234.67.83",
+      "85.234.67.69",
+      "85.234.67.104",
+      "85.234.67.97",
+      "85.234.67.117",
+      "85.234.67.86",
+      "85.234.67.71",
+      "85.234.67.111",
+      "85.234.67.85",
+      "85.234.67.68",
+      "85.234.67.74",
+      "85.234.67.90",
+      "85.234.67.75",
+      "85.234.67.84",
+      "85.234.67.106",
+      "85.234.67.102",
+      "85.234.67.89",
+      "85.234.67.76",
+      "85.234.67.107",
+      "85.234.67.118",
+      "85.234.67.91",
+      "85.234.67.98",
+      "85.234.67.70",
+      "85.234.67.120",
+      "85.234.67.81",
+      "85.234.67.93",
+      "85.234.67.108",
+      "85.234.67.92",
+      "85.234.67.67",
+      "85.234.67.103",
+      "85.234.67.113",
+      "85.234.67.116",
+      "85.234.67.112",
+      "85.234.67.80"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1362,
+     "acao": "*",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "vast 5.4.4.0",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Buckets></Buckets><Owner><DisplayName>Anonymous</"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 2401,
+     "acao": "*",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "vast 5.4.4.0",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-ndlo-2",
+  "city": "London",
+  "cc": "GB",
+  "urls": [
+   "https://london-2.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://london-2.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-ndlo-2.cloud.gcore.lu"
+     ],
+     "a": [
+      "85.234.82.161",
+      "85.234.82.139",
+      "85.234.82.184",
+      "85.234.82.151",
+      "85.234.82.176",
+      "85.234.82.175",
+      "85.234.82.144",
+      "85.234.82.143",
+      "85.234.82.165",
+      "85.234.82.152",
+      "85.234.82.174",
+      "85.234.82.158",
+      "85.234.82.164",
+      "85.234.82.171",
+      "85.234.82.138",
+      "85.234.82.154",
+      "85.234.82.179",
+      "85.234.82.150",
+      "85.234.82.170",
+      "85.234.82.146",
+      "85.234.82.129",
+      "85.234.82.140",
+      "85.234.82.145",
+      "85.234.82.169",
+      "85.234.82.148",
+      "85.234.82.178",
+      "85.234.82.168",
+      "85.234.82.131",
+      "85.234.82.172",
+      "85.234.82.163",
+      "85.234.82.137",
+      "85.234.82.149",
+      "85.234.82.167",
+      "85.234.82.155",
+      "85.234.82.153",
+      "85.234.82.135",
+      "85.234.82.173",
+      "85.234.82.182",
+      "85.234.82.130",
+      "85.234.82.162",
+      "85.234.82.160",
+      "85.234.82.147",
+      "85.234.82.166",
+      "85.234.82.181",
+      "85.234.82.156",
+      "85.234.82.157",
+      "85.234.82.177",
+      "85.234.82.132",
+      "85.234.82.136",
+      "85.234.82.133",
+      "85.234.82.142",
+      "85.234.82.180",
+      "85.234.82.183",
+      "85.234.82.141",
+      "85.234.82.134",
+      "85.234.82.159"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1300,
+     "acao": "*",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "vast 5.4.4.0",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Buckets></Buckets><Owner><DisplayName>Anonymous</"
+    },
+    "head": {
+     "ok": true,
+     "status": 405,
+     "ms": 2286,
+     "acao": "*",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "vast 5.4.4.0",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "gcore",
+  "code": "s-sgc1",
+  "city": "Singapore",
+  "cc": "SG",
+  "urls": [
+   "https://singapore-1.storage.gcore.dev/"
+  ],
+  "tries": [
+   {
+    "url": "https://singapore-1.storage.gcore.dev/",
+    "dns": {
+     "rcode": 0,
+     "cname": [
+      "s-sgc1.cloud.gcore.lu"
+     ],
+     "a": [
+      "91.243.81.8",
+      "91.243.81.7"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 708,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "nginx/1.20.1",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>anonymous</ID></Owner><Buckets></Bucket"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 172,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": null,
+     "corp": "",
+     "location": "",
+     "server": "nginx/1.20.1",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "yandex",
+  "code": "ru-central1",
+  "city": "Russia",
+  "cc": "RU",
+  "urls": [
+   "https://storage.yandexcloud.net/"
+  ],
+  "tries": [
+   {
+    "url": "https://storage.yandexcloud.net/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "213.180.193.243"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1147,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Buckets></Buckets><Owner><DisplayName></DisplayN"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 421,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 206,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
+ },
+ {
+  "vendor": "yandex",
+  "code": "kz1",
+  "city": "Kazakhstan",
+  "cc": "KZ",
+  "urls": [
+   "https://storage.yandexcloud.kz/"
+  ],
+  "tries": [
+   {
+    "url": "https://storage.yandexcloud.kz/",
+    "dns": {
+     "rcode": 0,
+     "cname": [],
+     "a": [
+      "5.35.110.123"
+     ]
+    },
+    "get": {
+     "ok": true,
+     "status": 200,
+     "ms": 1260,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 160,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Buckets></Buckets><Owner><DisplayName></DisplayN"
+    },
+    "head": {
+     "ok": true,
+     "status": 200,
+     "ms": 457,
+     "acao": "",
+     "tao": "",
+     "type": "application/xml",
+     "len": 206,
+     "corp": "",
+     "location": "",
+     "server": "nginx",
+     "body": ""
+    },
+    "result": "http"
+   }
+  ]
  }
 ]

@@ -74,6 +74,8 @@ export async function build({ check = false } = {}) {
     const d = I[lang], en = I.en, T = k => d[k] ?? en[k] ?? k;
     const vn = v => ((d.vendors || {})[v] || {}).name || ((en.vendors || {})[v] || {}).name || E.vendors[v].name;
     const vk = v => ((d.vendors || {})[v] || {}).kind || ((en.vendors || {})[v] || {}).kind || E.vendors[v].kind;
+    // a region placed by country only ("Germany") shows that country's name, as on the page
+    const enRegion = cc => { try { return new Intl.DisplayNames(["en"], { type: "region" }).of(cc); } catch (e) { return ""; } };
     // Mainland China, Hong Kong, Macao and Taiwan: the language file's names (ccNames), as on the page
     const country = cc => (d.ccNames || en.ccNames || {})[cc] || (() => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } })();
     const city = c => { const m = /^(.*?)( \d)?$/.exec(c), C = d.cities || {}; return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || ""); };
@@ -121,7 +123,7 @@ export async function build({ check = false } = {}) {
         const eps = E.endpoints.filter(e => e.vendor === v);
         const groups = ["as", "na", "eu", "oc", "sa", "me", "af", "xx"].map(c => [c, eps.filter(e => e.continent === c)]).filter(([, l]) => l.length);
         landing = `<section class="card lp" id="lpRegions"><h2>${esc(fill(T("lp_h2"), { v: vn(v), n }))}</h2><p>${esc(fill(T("lp_intro"), { v: vn(v), k: vk(v) }))}</p>` +
-          groups.map(([c, l]) => `<div class="lp-ct"><h3>${esc(T("ct_" + c))}</h3><ul class="lp-rs">${l.map(e => `<li>${esc(e.city === "?" ? e.region : city(e.city))}${e.country && e.country !== "--" ? " · " + esc(country(e.country)) : ""}<code>${esc(e.region)}</code></li>`).join("")}</ul></div>`).join("") + `</section>`;
+          groups.map(([c, l]) => `<div class="lp-ct"><h3>${esc(T("ct_" + c))}</h3><ul class="lp-rs">${l.map(e => `<li>${esc(e.city === "?" ? e.region : e.city === enRegion(e.country) ? country(e.country) : city(e.city))}${e.country && e.country !== "--" && e.city !== enRegion(e.country) ? " · " + esc(country(e.country)) : ""}<code>${esc(e.region)}</code></li>`).join("")}</ul></div>`).join("") + `</section>`;
       }
       const vendorNav = `<nav class="vlinks" aria-label="${esc(T("nav_h"))}"><b>${esc(T("nav_h"))}</b>${vids.map(x => `<a href="${path(slug, x)}"${x === v ? ' aria-current="page"' : ""}>${esc(vn(x))}</a>`).join("")}</nav>`;
       const paths = Object.fromEntries(langs.map(([l, s]) => [l, path(s, sub)]));
@@ -179,7 +181,7 @@ export async function build({ check = false } = {}) {
   const files = {
     [appName]: app,
     "endpoints.json": JSON.stringify({ schema: 1, verified: E.verified, source: "https://github.com/yt1988/me2cloud",
-      howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload.",
+      howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body.",
       vendors: E.vendors, endpoints: E.endpoints }, null, 1) + "\n",
     "sitemap.xml": sitemap, "robots.txt": robots, "_headers": headers
   };

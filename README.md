@@ -2,7 +2,7 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
-How fast is each cloud region from your own connection? Me2Cloud measures latency, jitter and packet loss from your browser to 361 regions of 17 cloud providers, over your real ISP, Wi‑Fi and peak hour. It's a static site with no backend.
+How fast is each cloud region from your own connection? Me2Cloud measures latency, jitter and packet loss from your browser to 392 regions of 22 cloud providers, over your real ISP, Wi‑Fi and peak hour. It's a static site with no backend.
 
 **Live:** https://m2c.1ms.dog
 
@@ -15,7 +15,7 @@ Latency maps and provider looking glasses measure from datacenters with premium 
 ## Features
 
 - **Measured in your browser.** Every request goes straight from the visitor's browser to the provider. No server in between, no account, and the code has no analytics or tracking.
-- **361 verified endpoints across 17 providers:** AWS, Azure, Google Cloud, Oracle Cloud, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Akamai (Linode), DigitalOcean, Scaleway, OVHcloud and Hetzner.
+- **392 verified endpoints across 22 providers:** AWS, Azure, Google Cloud, Oracle Cloud, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Akamai (Linode), DigitalOcean, Scaleway, OVHcloud, Hetzner, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud. IONOS Cloud is measured at its regional Logging API hosts; Aruba Cloud, Leaseweb, Gcore and Yandex Cloud at their S3 object storage endpoints.
 - **Real HTTPS on a warm connection.** The first request opens the connection and isn't counted; every sample after it reuses the connection. Each provider uses the request type verified to keep the connection alive (GET, HEAD, or `<img>` for Hetzner).
 - **Median, average, P90, jitter and loss** per region, with a live chart while it runs and every sample on click. Five tiers by median: T0 GOATed ≤30 ms, T1 Top tier ≤80 ms, T2 Solid ≤150 ms, T3 NPC ≤250 ms, T4 Cooked.
 - **Picks for your use case:** gaming, video calls, SSH or a website, each with its own latency, jitter and loss limits. Regions in your own country can be included, excluded or tested alone.

@@ -4,7 +4,7 @@ export default {
   seo_title: "Me2Cloud｜云服务器延迟测试：从你家网络实测 AWS、阿里云、腾讯云等 360+ 区域",
   seo_desc: "免费的云服务器延迟测试：直接在你的浏览器里实测 AWS、Azure、Google Cloud、甲骨文云、IBM Cloud、阿里云、腾讯云、华为云、火山引擎、百度智能云、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVH、Hetzner 共 360+ 个区域的延迟、抖动和丢包，算上你的运营商、Wi‑Fi 和晚高峰。数据不出浏览器。",
   seo_kw: "云服务器延迟测试, 云服务器 ping, 机房测速, AWS 延迟, 阿里云 ping, 腾讯云 延迟, 华为云 ping, Vultr 测速, 哪个区域最快",
-  og_sub: "360+ 个云区域 · 17 家厂商 · 浏览器本地实测",
+  og_sub: "360+ 个云区域 · 22 家厂商 · 浏览器本地实测",
   unlisted: "未公开区域",
   cities: {
     Abilene: "阿比林",
@@ -74,6 +74,14 @@ export default {
     Kulai: "古来",
     "Las Vegas": "拉斯维加斯",
     Lenexa: "莱内克萨",
+    Arezzo: "阿雷佐",
+    "Logroño": "洛格罗尼奥",
+    Worcester: "伍斯特",
+    Bergamo: "贝加莫",
+    Luxembourg: "卢森堡",
+    Almaty: "阿拉木图",
+    Sines: "锡尼什",
+    Prague: "布拉格",
     London: "伦敦",
     "Los Angeles": "洛杉矶",
     Madrid: "马德里",
@@ -395,7 +403,7 @@ export default {
       "每次采样是怎么测的",
       `<ol><li>先发一次<b>预热</b>请求，把 DNS、TCP、TLS 都建好。这次的时间会显示出来，但不计入结果。</li>
           <li>然后在<b>同一条连接</b>上，对同一个主机再发 5、10 或 20 次请求。每次只花一个往返，再加上厂商服务器的处理时间。</li>
-          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、华为云、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、Linode、Vultr、OVHcloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）；只有 Hetzner 用 <code>&lt;img&gt;</code>。</li>
+          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、华为云、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）；只有 Hetzner 用 <code>&lt;img&gt;</code>。</li>
           <li>结果给出<b>中位数</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次里有 9 次不超过它）、<b>抖动</b>（相邻两次的平均变化）和<b>丢包</b>（超时没响应的次数）。</li>
           <li><b>等级</b>按中位数划分：T0 夯 ≤ 30 ms、T1 顶级 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推荐用的综合分是“中位数 + 2 × 抖动 + 丢包惩罚”，所以稳定的 60 ms 会排在忽高忽低的 45 ms 前面。</li></ol>`
     ],
@@ -542,6 +550,11 @@ export default {
       kind: "对象存储",
       note: "GET 和 HEAD 都能保持连接，域名是双栈。"
     },
+    ionos: { kind: "日志服务 API（区域入口）", note: "每个计算机房一个 API 入口；对象存储覆盖的机房更少，老集群在浏览器里无法保持连接。" },
+    aruba: { kind: "对象存储", note: "HEAD 在所有区域都能复用连接；R3-IT 的 GET 会断开连接。" },
+    leaseweb: { kind: "对象存储", note: "GET 返回 400 会断开连接，HEAD 能复用。官方文档只给出国家，所以按国家标注。" },
+    gcore: { kind: "对象存储", note: "GET 会断开连接，HEAD 能复用。Sines 和 London-2 用的是另一套存储，改用读取响应体的 CORS GET。" },
+    yandex: { kind: "对象存储", note: "GET 和 HEAD 都能保持连接，域名是双栈；每个区域一个入口。" },
     naver: {
       kind: "对象存储",
       note: "GET 返回 403 后会断开连接，HEAD 会复用连接。"
