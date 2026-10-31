@@ -940,13 +940,13 @@
   // results are what the last test measured, whatever the pickers say now; before any test, the picks preview what will run
   const rankList = () => (VIEW.shared || R.size ? ALL.filter(e => R.has(e.id)) : selected()).map(e => { const r = R.get(e.id), st = stats(r); return { e, r, st, pass: meets(st) }; });
   const byScore = (a, b) => a.st.score - b.st.score;
-  const dirty = new Set(), fresh = new Set(); let openId = null, dirtyAll = true, lastSort = 0;
+  const dirty = new Set(), fresh = new Set(); let openId = null, dirtyAll = true;
   function markDirty(id, isNew) { dirty.add(id); if (isNew) fresh.add(id); schedule(); }
   // rAF for smooth updates; the timeout covers background tabs, where rAF is paused
   let raf = 0, rafT = 0;
   function frame() { cancelAnimationFrame(raf); clearTimeout(rafT); raf = rafT = 0; renderResults(); renderRun(); }
   function schedule() { if (!raf && !rafT) { raf = requestAnimationFrame(frame); rafT = setTimeout(frame, 250); } }
-  function renderAll() { dirtyAll = true; lastSort = 0; schedule(); }
+  function renderAll() { dirtyAll = true; schedule(); }
 
   function renderResults() {
     const list = rankList(), ok = list.filter(x => x.st.ok);
@@ -957,13 +957,16 @@
   }
   function renderPodium(ok) {
     const pass = ok.filter(x => x.pass), top = (pass.length ? pass : ok).slice().sort(byScore).slice(0, 3);
-    $("#resWrap").hidden = !top.length;
-    if (!top.length) return;
-    $("#podiumT").textContent = t(pass.length ? "picks_h" : "picks_closest");
-    $("#podiumS").textContent = pass.length ? t("picks_sub2", { n: pass.length, need: needText() }) : t("picks_none");
+    // a running test holds its slots from the start, so the picks fill in place instead of pushing the page down
+    const slots = RUN ? Math.min(3, RUN.total) : top.length;
+    $("#resWrap").hidden = !slots;
+    if (!slots) return;
+    $("#podiumT").textContent = t(pass.length || !ok.length ? "picks_h" : "picks_closest");
+    $("#podiumS").textContent = pass.length ? t("picks_sub2", { n: pass.length, need: needText() }) : RUN ? "" : t("picks_none");
     $("#podium").innerHTML = top.map((x, i) => { const g = grade(x.st.med);
       return `<button type="button" class="pd c${g}" data-go="${esc(x.e.id)}"><span class="rk">#${i + 1}</span><span class="ms">${fmt(x.st.med)}<small>ms</small></span>
-        <span class="inf"><span class="nm">${esc(x.e.city)}</span><span class="sb"><span class="tg">${tierCode(g)} ${esc(tierName(g))}</span><span>${esc(x.e.vname)}</span><span class="num">±${fmt(x.st.jit)}</span></span></span></button>`; }).join("");
+        <span class="inf"><span class="nm">${esc(x.e.city)}</span><span class="sb"><span class="tg">${tierCode(g)} ${esc(tierName(g))}</span><span>${esc(x.e.vname)}</span><span class="num">±${fmt(x.st.jit)}</span></span></span></button>`; }).join("")
+      + Array.from({ length: slots - top.length }, (_, i) => `<div class="pd pend" aria-hidden="true"><span class="rk">#${top.length + i + 1}</span><span class="ms">…</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div>`).join("");
   }
   const needText = () => { const N = NEED(); return (N.lat ? "≤" + N.lat + " ms" : t("anyLat")) + (N.jit ? " · ±" + N.jit : ""); };
   // Distribution chart: one lane per provider on the shared log axis, tier bands behind. Each region is a dot at its
@@ -1048,24 +1051,25 @@
     card.hidden = !touched.length;
     if (!touched.length) { box.innerHTML = ""; rowEls.clear(); return; }
     const q = $("#q").value.trim().toLowerCase();
-    const shown = touched.filter(x => (!q || (x.e.vname + " " + x.e.city + " " + (x.e.cityEn || "") + " " + x.e.region + " " + country(x.e.country)).toLowerCase().includes(q)) && (!S.onlyPass || x.pass));
-    // groups: T0…T4 by median, then "waiting / unreachable"
+    // while a test runs, every row stays where it was drawn at the start and only its numbers fill in;
+    // filtering, grouping and sorting change the rows, so they happen once when the test ends
+    const live = !!RUN;
+    const shown = touched.filter(x => (!q || (x.e.vname + " " + x.e.city + " " + (x.e.cityEn || "") + " " + x.e.region + " " + country(x.e.country)).toLowerCase().includes(q)) && (live || !S.onlyPass || x.pass));
+    // groups: T0…T4 by median, then "waiting / unreachable"; one plain group while running
     const nov6 = x => x.r && x.r.st === "nov6";
-    const G = [1, 2, 3, 4, 5, 0, -1].map(g => ({ g, items: shown.filter(x => x.st.ok ? grade(x.st.med) === g : g === -1 ? nov6(x) : g === 0 && !nov6(x)) }));
-    const now = performance.now();
-    const resort = dirtyAll || !RUN || now - lastSort > 1000;
-    if (resort) lastSort = now;
-    if (box.querySelectorAll(".grp").length !== G.length) box.innerHTML = G.map(({ g }) => `<div class="grp" data-g="${g}"><div class="grp-h"></div><div class="grp-b"></div></div>`).join("");
+    const G = live ? [{ g: 9, items: shown }] : [1, 2, 3, 4, 5, 0, -1].map(g => ({ g, items: shown.filter(x => x.st.ok ? grade(x.st.med) === g : g === -1 ? nov6(x) : g === 0 && !nov6(x)) }));
+    const gk = G.map(x => x.g).join();
+    if (box.dataset.g !== gk) { box.dataset.g = gk; box.innerHTML = G.map(({ g }) => `<div class="grp" data-g="${g}"><div class="grp-h"></div><div class="grp-b"></div></div>`).join(""); }
     for (const { g, items } of G) {
       const el = box.querySelector(`.grp[data-g="${g}"]`);
       el.hidden = !items.length;
       const meds = items.filter(x => x.st.ok).map(x => x.st.med);
-      el.firstChild.innerHTML = g > 0 ? `<span class="tg c${g}">${tierCode(g)} · ${esc(tierName(g))}</span><span class="n">${items.length}</span><span class="rng">${meds.length ? fmt(Math.min(...meds)) + "–" + fmt(Math.max(...meds)) + " ms" : ""}</span>`
+      el.firstChild.hidden = live;
+      if (!live) el.firstChild.innerHTML = g > 0 ? `<span class="tg c${g}">${tierCode(g)} · ${esc(tierName(g))}</span><span class="n">${items.length}</span><span class="rng">${meds.length ? fmt(Math.min(...meds)) + "–" + fmt(Math.max(...meds)) + " ms" : ""}</span>`
         : `<span class="tg c0">${esc(t(g === -1 ? "grp_nov6" : "grp_other"))}</span><span class="n">${items.length}</span>`;
       const body = el.lastChild;
       if (!items.length) { body.innerHTML = ""; continue; }
-      if (resort) items.sort((a, b) => a.st.ok && b.st.ok ? byScore(a, b) : (a.r.st === "running" ? -1 : 0) - (b.r.st === "running" ? -1 : 0));
-      else items.sort((a, b) => (rowEls.get(a.e.id)?.__o ?? 1e9) - (rowEls.get(b.e.id)?.__o ?? 1e9));
+      if (!live) items.sort((a, b) => a.st.ok && b.st.ok ? byScore(a, b) : 0);
       items.forEach((x, i) => {
         let row = rowEls.get(x.e.id);
         if (!row) { row = document.createElement("div"); row.className = "ri"; row.dataset.id = x.e.id; rowEls.set(x.e.id, row); }
@@ -1075,7 +1079,6 @@
           row.classList.toggle("fail", !!x.r && x.r.st === "fail");
           row.__g = g;
         }
-        row.__o = i;
         if (body.children[i] !== row) body.insertBefore(row, body.children[i] || null);
       });
       while (body.children.length > items.length) { const extra = body.lastChild; rowEls.forEach((v, k) => { if (v === extra) rowEls.delete(k); }); extra.remove(); }
