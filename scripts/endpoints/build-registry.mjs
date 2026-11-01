@@ -24,8 +24,11 @@ const VENDORS = {
                   note: "GET 403 closes the connection; HEAD reuses it." },
   tencent:      { name: "Tencent Cloud", method: "HEAD", cors: false, tier: "B", kind: "COS",
                   note: "GET 403 closes the connection; HEAD reuses it." },
-  huawei:       { name: "Huawei Cloud",  method: "GET",  cors: false, tier: "B", kind: "OBS",
-                  note: "GET and HEAD both keep the connection alive." },
+  // OBS answers every anonymous request (GET, HEAD, any path) with an error and Connection: close; the regional ECS API
+  // host keeps the connection on HEAD (404, no body) in all regions (checked 2026-11-01)
+  huawei:       { name: "Huawei Cloud",  method: "HEAD", cors: false, tier: "B", kind: "ECS API",
+                  url: code => `https://ecs.${code}.myhuaweicloud.com/`,
+                  note: "OBS closes the connection after every anonymous request, so the regional ECS API host is used; HEAD keeps the connection." },
   linode:       { name: "Akamai (Linode)", method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
                   note: "Legacy speedtest.<dc>.linode.com hosts no longer answer; only regions with an Object Storage cluster are covered." },
   digitalocean: { name: "DigitalOcean",  method: "GET",  cors: false, tier: "B", kind: "Spaces",
@@ -33,9 +36,11 @@ const VENDORS = {
   ovh:          { name: "OVHcloud",      method: "HEAD", cors: false, tier: "B", kind: "Speed test (proof)",
                   note: "proof.ovh.net hosts redirect to <site>.speedtest.network.ovh.net; the registry uses the targets." },
   // nobust: *-speed.hetzner.com closes the connection after TLS on any request with a query string (or a Referer), so
-  // a cache-busted fetch() never got an answer and <img> paid a new handshake per sample (2026-11-01, reported on LES)
-  hetzner:      { name: "Hetzner",       method: "GET",  cors: false, tier: "B", kind: "Speed test", nobust: true,
-                  note: "The server drops any request with a query string, so the URL is sent without the cache-busting parameter (cache: no-store instead); GET then keeps the connection." },
+  // a cache-busted fetch() never got an answer and <img> paid a new handshake per sample (2026-11-01, reported on LES).
+  // noacao: "/" (the only path it answers) is HTML, which Chrome's Opaque Response Blocking cuts off on a no-cors GET,
+  // dropping the connection; a CORS GET gets the whole answer before failing the CORS check and keeps it
+  hetzner:      { name: "Hetzner",       method: "CORS", cors: false, tier: "B", kind: "Speed test", nobust: true, noacao: true,
+                  note: "The server drops any request with a query string, so the URL is sent as is (cache: no-store instead). The page is HTML, which the browser cuts off on a no-cors request, closing the connection; a CORS GET receives the whole page before the CORS check fails, so the connection is kept and that failure counts as the answer." },
   ibm:          { name: "IBM Cloud",     method: "HEAD", cors: false, tier: "B", kind: "Cloud Object Storage",
                   note: "GET 403 closes the connection; HEAD reuses it." },
   scaleway:     { name: "Scaleway",      method: "GET",  cors: false, tier: "B", kind: "Object Storage",
@@ -94,7 +99,7 @@ const REVIEW = {
   "linode:us-iad-2": "Cluster us-iad-2 assumed to belong to Washington 2.",
   "linode:in-bom-2": "Served by cluster in-bom-1.", "linode:de-fra-2": "Served by cluster de-fra-1.",
   "linode:sg-sin-2": "Served by cluster sg-sin-1.", "linode:jp-tyo-3": "Served by cluster jp-tyo-1.",
-  "huawei:my-kualalumpur-1": "Returns a 404 HTML page instead of the usual OBS XML."
+
 };
 
 const CONTINENTS = {
@@ -119,10 +124,11 @@ for (const c of CANDIDATES) {
     continue;
   }
   const v = VENDORS[c.vendor];
-  const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: last.url, method: METHOD[id] || v.method };
+  const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: v.url ? v.url(c.code) : last.url, method: METHOD[id] || v.method };
   if (v.method !== "IMG" && (FALLBACK_IMG.has(id) || FALLBACK_IMG.has(`${c.vendor}:*`))) e.fallback = "IMG";
   if (v.cors && last.get?.acao) e.cors = true;
   if (v.nobust) e.nobust = true;
+  if (v.noacao) e.noacao = true;
   if (c.vendor === "aws") e.expect = "healthy: dynamodb";
   e.tier = v.tier;
   if (IP6[id]) { e.fam = IP6[id].fam; if (IP6[id].url6) e.url6 = IP6[id].url6; }

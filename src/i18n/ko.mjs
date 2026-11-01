@@ -453,8 +453,8 @@ export default {
       note: "GET 403에서 연결이 끊깁니다. HEAD는 연결을 재사용합니다."
     },
     huawei: {
-      kind: "OBS",
-      note: "GET과 HEAD 모두 연결을 유지합니다."
+      kind: "ECS API",
+      note: "OBS는 익명 요청마다 연결을 끊어서 같은 리전의 ECS API 호스트를 씁니다. HEAD로 연결이 유지됩니다."
     },
     linode: {
       kind: "오브젝트 스토리지",
@@ -470,7 +470,7 @@ export default {
     },
     hetzner: {
       kind: "속도 테스트",
-      note: `쿼리 문자열이 붙은 요청은 서버가 끊어 버려서 캐시 회피 파라미터 없이 보냅니다(대신 cache: no-store). GET으로 연결이 유지됩니다.`
+      note: `쿼리 문자열이 붙은 요청은 서버가 끊어서 URL을 그대로 보냅니다. 응답이 HTML이라 no-cors 요청에서는 브라우저가 차단하고 연결을 끊습니다. CORS GET은 페이지를 다 받은 뒤 CORS 오류가 나므로 연결이 유지됩니다.`
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -515,7 +515,7 @@ export default {
       "한 번씩 어떻게 재나",
       `<ol><li>먼저 <b>워밍업</b> 요청으로 DNS, TCP, TLS를 맺습니다. 이 시간은 보여 주지만 집계에는 넣지 않습니다.</li>
       <li>이어서 <b>같은 연결</b>로 같은 호스트에 5, 10, 20번 요청합니다. 한 번에 왕복 한 번과 업체 서버의 처리 시간만 걸립니다.</li>
-      <li>업체마다 연결을 유지한다고 확인한 방식을 씁니다: AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway, Hetzner는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 <code>HEAD</code>(GET은 연결이 끊겨 3배가 됨).</li>
+      <li>업체마다 연결을 유지한다고 확인한 방식을 씁니다: AWS, Azure, Google Cloud, DigitalOcean, Scaleway는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 <code>HEAD</code>(GET은 연결이 끊겨 3배가 됨), Hetzner는 CORS <code>GET</code>(그렇지 않으면 브라우저가 페이지를 차단하고 연결을 끊음).</li>
       <li>결과는 <b>중앙값</b>(가장 대표적인 값), <b>평균</b>, <b>P90</b>(10번 중 9번은 이 이하), <b>지터</b>(연속 두 번의 차이 평균), <b>손실</b>(시간 초과 비율)입니다.</li>
       <li><b>등급</b>은 중앙값으로 정합니다: T0 갓 ≤ 30 ms, T1 최상급 ≤ 80 ms, T2 상위권 ≤ 150 ms, T3 NPC ≤ 250 ms, 그 이상은 T4 망함. 추천에 쓰는 종합 점수는 '중앙값 + 2 × 지터 + 손실 벌점'이라, 안정적인 60 ms가 들쭉날쭉한 45 ms보다 앞섭니다.</li></ol>`
     ],

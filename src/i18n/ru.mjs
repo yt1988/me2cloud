@@ -299,11 +299,11 @@ export default {
     gcp: { kind: "Региональный endpoint Storage (rep)", note: "HEAD добавляет ~1 с, поэтому только GET. IP свой для каждого региона (34.1.x), а не глобальный anycast‑фронтенд." },
     aliyun: { kind: "OSS", note: "GET 403 закрывает соединение; HEAD его переиспользует." },
     tencent: { kind: "COS", note: "GET 403 закрывает соединение; HEAD его переиспользует." },
-    huawei: { kind: "OBS", note: "И GET, и HEAD держат соединение открытым." },
+    huawei: { kind: "ECS API", note: "OBS закрывает соединение после каждого анонимного запроса, поэтому используется региональный хост ECS API; с HEAD соединение держится." },
     linode: { kind: "Object Storage", note: "Старые speedtest.<dc>.linode.com больше не отвечают; в список попали только регионы с кластером Object Storage." },
     digitalocean: { kind: "Spaces", note: "speedtest-<dc>.digitalocean.com больше нет; в NYC1/NYC2 нет Spaces (для Нью‑Йорка — nyc3)." },
     ovh: { kind: "Speedtest (proof)", note: "proof.ovh.net перенаправляет на <site>.speedtest.network.ovh.net; мы используем конечный адрес." },
-    hetzner: { kind: "Speedtest", note: "Сервер обрывает любой запрос со строкой запроса, поэтому URL отправляется без параметра против кэша (вместо него cache: no-store); с GET соединение держится." },
+    hetzner: { kind: "Speedtest", note: "Сервер обрывает любой запрос со строкой запроса, поэтому URL отправляется как есть. Его страница — HTML, который браузер обрезает в no-cors-запросе (закрывая соединение); CORS-GET получает страницу целиком до того, как проверка CORS не пройдёт, и соединение сохраняется." },
     ibm: { kind: "Cloud Object Storage", note: "GET 403 закрывает соединение; HEAD его переиспользует." },
     scaleway: { kind: "Object Storage", note: "И GET, и HEAD держат соединение открытым. Хосты двухстековые." },
     volcengine: { kind: "TOS", note: "GET 403 закрывает соединение; HEAD его переиспользует." },
@@ -329,7 +329,7 @@ export default {
     ["Как измеряется каждый замер",
       `<ol><li>Один <b>прогревочный</b> запрос поднимает DNS, TCP и TLS. Его время показывается, но в расчёт не идёт.</li>
       <li>Дальше браузер шлёт ещё 5, 10 или 20 запросов на тот же хост по <b>тому же соединению</b>. Каждый стоит одного RTT плюс время обработки у провайдера.</li>
-      <li>Для каждого провайдера используется тип запроса, который, как мы проверили, держит соединение: <code>GET</code> для AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway и Hetzner; <code>HEAD</code> для Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore и Yandex Cloud (их GET закрывает соединение и утроил бы каждый замер).</li>
+      <li>Для каждого провайдера используется тип запроса, который, как мы проверили, держит соединение: <code>GET</code> для AWS, Azure, Google Cloud, DigitalOcean и Scaleway; <code>HEAD</code> для Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore и Yandex Cloud (их GET закрывает соединение и утроил бы каждый замер); CORS-<code>GET</code> для Hetzner, иначе браузер обрежет его страницу и закроет соединение.</li>
       <li>Показываем <b>медиану</b> (типичное значение), <b>среднее</b>, <b>P90</b> (9 из 10 замеров ниже), <b>джиттер</b> (среднее изменение между соседними замерами) и <b>потери</b> (замеры без ответа за таймаут).</li>
       <li><b>Уровень</b> считается по медиане: T0 ≤ 30 мс, T1 ≤ 80 мс, T2 ≤ 150 мс, T3 ≤ 250 мс, T4 выше. Оценка для выбора = медиана + 2 × джиттер + штраф за потери, так что стабильные 60 мс побеждают скачущие 45 мс.</li></ol>`],
     ["Почему HTTPS ближе к реальности, чем ICMP‑пинг",

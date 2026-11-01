@@ -458,8 +458,8 @@ export default {
       note: "GET 403 ferme la connexion ; HEAD la réutilise."
     },
     huawei: {
-      kind: "OBS",
-      note: "GET et HEAD gardent tous deux la connexion ouverte."
+      kind: "ECS API",
+      note: "OBS ferme la connexion après chaque requête anonyme : on utilise donc l’hôte régional de l’API ECS, où HEAD garde la connexion."
     },
     linode: {
       kind: "Object Storage",
@@ -475,7 +475,7 @@ export default {
     },
     hetzner: {
       kind: "Test de débit",
-      note: `Le serveur coupe toute requête avec une query string : l’URL part donc sans paramètre anti-cache (cache: no-store à la place), et le GET garde la connexion.`
+      note: `Le serveur coupe toute requête avec une query string, donc l’URL part telle quelle. Sa page est du HTML, que le navigateur coupe sur une requête no-cors (en fermant la connexion) ; un GET CORS reçoit toute la page avant l’échec du contrôle CORS, et la connexion est gardée.`
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -520,7 +520,7 @@ export default {
       "Comment chaque mesure est faite",
       `<ol><li>Une requête de <b>préchauffage</b> ouvre DNS, TCP et TLS. Son temps est affiché mais jamais compté.</li>
       <li>Ensuite le navigateur envoie 5, 10 ou 20 requêtes au même hôte sur la <b>même connexion</b>. Chacune coûte un aller-retour plus le temps de traitement du fournisseur.</li>
-      <li>Chaque fournisseur utilise le type de requête dont nous avons vérifié qu’il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway et Hetzner ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore et Yandex Cloud (leur GET ferme la connexion et triplerait chaque mesure).</li>
+      <li>Chaque fournisseur utilise le type de requête dont nous avons vérifié qu’il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, DigitalOcean et Scaleway ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore et Yandex Cloud (leur GET ferme la connexion et triplerait chaque mesure) ; un <code>GET</code> CORS pour Hetzner, dont le navigateur couperait sinon la page en fermant la connexion.</li>
       <li>Nous donnons la <b>médiane</b> (la valeur typique), la <b>moyenne</b>, le <b>P90</b> (9 mesures sur 10 en dessous), la <b>gigue</b> (écart moyen entre deux mesures consécutives) et la <b>perte</b> (mesures sans réponse dans le délai).</li>
       <li>Le <b>niveau</b> vient de la médiane : T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 au-delà. Le score des recommandations est médiane + 2 × gigue + pénalité de perte : 60 ms réguliers battent 45 ms en dents de scie.</li></ol>`
     ],

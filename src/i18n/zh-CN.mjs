@@ -413,7 +413,7 @@ export default {
       "每次采样是怎么测的",
       `<ol><li>先发一次<b>预热</b>请求，把 DNS、TCP、TLS 都建好。这次的时间会显示出来，但不计入结果。</li>
           <li>然后在<b>同一条连接</b>上，对同一个主机再发 5、10 或 20 次请求。每次只花一个往返，再加上厂商服务器的处理时间。</li>
-          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、华为云、DigitalOcean、Scaleway、Hetzner 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）。</li>
+          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、华为云、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）；Hetzner 用 CORS 方式的 <code>GET</code>，否则浏览器会截断它返回的网页并断开连接。</li>
           <li>结果给出<b>中位数</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次里有 9 次不超过它）、<b>抖动</b>（相邻两次的平均变化）和<b>丢包</b>（超时没响应的次数）。</li>
           <li><b>等级</b>按中位数划分：T0 夯 ≤ 30 ms、T1 顶级 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推荐用的综合分是“中位数 + 2 × 抖动 + 丢包惩罚”，所以稳定的 60 ms 会排在忽高忽低的 45 ms 前面。</li></ol>`
     ],
@@ -501,8 +501,8 @@ export default {
     },
     huawei: {
       name: "华为云",
-      kind: "OBS",
-      note: "GET 和 HEAD 都能保持连接。"
+      kind: "ECS API",
+      note: "OBS 每次匿名请求后都会断开连接，所以改用同区域的 ECS API 地址，HEAD 能保持连接。"
     },
     azure: {
       name: "微软 Azure",
@@ -550,7 +550,7 @@ export default {
     },
     hetzner: {
       kind: "测速服务器",
-      note: `服务器会直接断开带查询参数的请求，所以请求不加防缓存参数（改用 cache: no-store），GET 能保持连接。`
+      note: `服务器会直接断开带查询参数的请求，所以请求不加防缓存参数。它返回的是网页，浏览器在 no-cors 请求里会截断它并断开连接；CORS 方式的 GET 会先收完整个网页再报跨域错误，连接得以保持。`
     },
     ibm: {
       kind: "Cloud Object Storage",

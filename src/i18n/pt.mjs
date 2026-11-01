@@ -299,11 +299,11 @@ export default {
     gcp: { kind: "Endpoint regional do Storage (rep)", note: "O HEAD soma ~1 s fixo, então só usamos GET. IP por região (34.1.x), não o front-end anycast global." },
     aliyun: { kind: "OSS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
     tencent: { kind: "COS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
-    huawei: { kind: "OBS", note: "GET e HEAD mantêm a conexão aberta." },
+    huawei: { kind: "ECS API", note: "O OBS fecha a conexão após cada requisição anônima, então usamos o host regional da API do ECS; com HEAD a conexão se mantém." },
     linode: { kind: "Object Storage", note: "Os antigos speedtest.<dc>.linode.com não respondem mais; só regiões com cluster de Object Storage entram." },
     digitalocean: { kind: "Spaces", note: "speedtest-<dc>.digitalocean.com não existe mais; NYC1/NYC2 não têm Spaces (para Nova York, nyc3)." },
     ovh: { kind: "Teste de velocidade (proof)", note: "proof.ovh.net redireciona para <site>.speedtest.network.ovh.net; usamos o destino final." },
-    hetzner: { kind: "Teste de velocidade", note: "O servidor derruba qualquer requisição com query string, então a URL vai sem o parâmetro anticache (usa-se cache: no-store); com GET a conexão se mantém." },
+    hetzner: { kind: "Teste de velocidade", note: "O servidor derruba qualquer requisição com query string, então a URL vai como está. A página é HTML, que o navegador corta numa requisição no-cors (fechando a conexão); um GET CORS recebe a página inteira antes de a verificação CORS falhar, e a conexão se mantém." },
     ibm: { kind: "Cloud Object Storage", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
     scaleway: { kind: "Object Storage", note: "GET e HEAD mantêm a conexão aberta. Hosts dual stack." },
     volcengine: { kind: "TOS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
@@ -329,7 +329,7 @@ export default {
     ["Como cada amostra é medida",
       `<ol><li>Uma requisição de <b>aquecimento</b> abre DNS, TCP e TLS. O tempo dela aparece, mas nunca entra na conta.</li>
       <li>Depois o navegador manda mais 5, 10 ou 20 requisições ao mesmo host pela <b>mesma conexão</b>. Cada uma custa uma ida e volta mais o tempo de processamento do provedor.</li>
-      <li>Cada provedor usa o tipo de requisição que verificamos manter a conexão aberta: <code>GET</code> para AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway e Hetzner; <code>HEAD</code> para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore e Yandex Cloud (o GET deles fecha a conexão e triplicaria cada amostra).</li>
+      <li>Cada provedor usa o tipo de requisição que verificamos manter a conexão aberta: <code>GET</code> para AWS, Azure, Google Cloud, DigitalOcean e Scaleway; <code>HEAD</code> para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore e Yandex Cloud (o GET deles fecha a conexão e triplicaria cada amostra); um <code>GET</code> CORS para a Hetzner, cuja página o navegador cortaria, fechando a conexão.</li>
       <li>Mostramos a <b>mediana</b> (o valor típico), a <b>média</b>, o <b>P90</b> (9 de cada 10 amostras ficam abaixo), o <b>jitter</b> (mudança média entre amostras seguidas) e a <b>perda</b> (amostras sem resposta no tempo limite).</li>
       <li>O <b>nível</b> vem da mediana: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms e T4 acima disso. A pontuação das sugestões é mediana + 2 × jitter + penalidade de perda, então 60 ms estáveis ganham de 45 ms que oscilam.</li></ol>`],
     ["Por que medir com HTTPS é mais próximo da vida real que o ping ICMP",

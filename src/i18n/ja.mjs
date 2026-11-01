@@ -453,8 +453,8 @@ export default {
       note: "GET の 403 で接続が切れます。HEAD は接続を再利用します。"
     },
     huawei: {
-      kind: "OBS",
-      note: "GET も HEAD も接続を保ちます。"
+      kind: "ECS API",
+      note: "OBS は匿名リクエストのたびに接続を切るため、同じリージョンの ECS API ホストを使います。HEAD で接続を保てます。"
     },
     linode: {
       kind: "オブジェクトストレージ",
@@ -470,7 +470,7 @@ export default {
     },
     hetzner: {
       kind: "速度テスト",
-      note: `クエリ文字列付きのリクエストはサーバーが切断するため、キャッシュ回避パラメータを付けずに送ります（代わりに cache: no-store）。GET で接続を保てます。`
+      note: `クエリ文字列付きのリクエストはサーバーが切断するため、URL はそのまま送ります。返るのは HTML で、no-cors だとブラウザが遮断して接続を切ります。CORS の GET ならページを受け取りきってから CORS エラーになるので、接続を保てます。`
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -515,7 +515,7 @@ export default {
       "1 回ごとの測り方",
       `<ol><li>まず<b>ウォームアップ</b>のリクエストで DNS、TCP、TLS を確立します。この時間は表示しますが集計には入れません。</li>
       <li>続けて<b>同じ接続</b>で同じホストに 5・10・20 回リクエストします。1 回あたり往復 1 回分と、クラウド側の処理時間だけがかかります。</li>
-      <li>各社とも、接続を保てることを確かめた方式を使います：AWS、Azure、Google Cloud、Huawei Cloud、DigitalOcean、Scaleway、Hetzner は <code>GET</code>、Oracle、IBM Cloud、Alibaba Cloud、Tencent Cloud、Volcengine、Baidu AI Cloud、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud は <code>HEAD</code>（GET だと接続が切れて 3 倍になる）。</li>
+      <li>各社とも、接続を保てることを確かめた方式を使います：AWS、Azure、Google Cloud、DigitalOcean、Scaleway は <code>GET</code>、Oracle、IBM Cloud、Alibaba Cloud、Tencent Cloud、Volcengine、Baidu AI Cloud、Naver Cloud、Huawei Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud は <code>HEAD</code>（GET だと接続が切れて 3 倍になる）、Hetzner は CORS の <code>GET</code>（そうしないとブラウザがページを遮断して接続を切る）。</li>
       <li>結果は<b>中央値</b>（いちばん典型的な値）、<b>平均</b>、<b>P90</b>（10 回中 9 回はこれ以下）、<b>ジッター</b>（連続する 2 回の差の平均）、<b>ロス</b>（タイムアウトの割合）。</li>
       <li><b>段階</b>は中央値で決まります：T0 神 ≤ 30 ms、T1 最強 ≤ 80 ms、T2 勝ち組 ≤ 150 ms、T3 モブ ≤ 250 ms、それ以上は T4 終わってる。おすすめに使う総合スコアは「中央値 + 2 × ジッター + ロスのペナルティ」なので、安定した 60 ms は不安定な 45 ms より上に来ます。</li></ol>`
     ],

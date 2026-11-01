@@ -262,7 +262,7 @@ export default {
       "How each sample is measured",
       `<ol><li>A <b>warm-up</b> request opens DNS, TCP and TLS. Its time is shown but never counted.</li>
           <li>Then the browser sends 5, 10 or 20 more requests to the same host over the <b>same connection</b>. Each one costs a single round trip plus the provider's processing time.</li>
-          <li>Each provider uses the request type we verified keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway and Hetzner; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud (their GET closes the connection, which would triple every sample).</li>
+          <li>Each provider uses the request type we verified keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, DigitalOcean and Scaleway; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud (their GET closes the connection, which would triple every sample); a CORS <code>GET</code> for Hetzner, whose page the browser would otherwise cut off and drop the connection.</li>
           <li>We report <b>median</b> (the typical value), <b>average</b>, <b>P90</b> (9 out of 10 samples are at or below it), <b>jitter</b> (average change between consecutive samples) and <b>loss</b> (samples with no answer within the timeout).</li>
           <li>The <b>tier</b> comes from the median: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 above that. The overall score used for picks is median + 2 × jitter + loss penalty, so a steady 60 ms beats a jumpy 45 ms.</li></ol>`
     ],
@@ -387,8 +387,8 @@ export default {
       note: "GET 403 closes the connection; HEAD reuses it."
     },
     huawei: {
-      kind: "OBS",
-      note: "GET and HEAD both keep the connection alive."
+      kind: "ECS API",
+      note: "OBS closes the connection after every anonymous request, so the regional ECS API host is used; HEAD keeps the connection."
     },
     linode: {
       kind: "Object Storage",
@@ -404,7 +404,7 @@ export default {
     },
     hetzner: {
       kind: "Speed test",
-      note: `The server drops any request with a query string, so the URL is sent without the cache-busting parameter (cache: no-store instead); GET then keeps the connection.`
+      note: `The server drops any request with a query string, so the URL is sent as is. Its page is HTML, which the browser cuts off on a no-cors request (closing the connection); a CORS GET receives the whole page before the CORS check fails, so the connection is kept.`
     },
     ibm: {
       kind: "Cloud Object Storage",
