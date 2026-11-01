@@ -1410,6 +1410,17 @@ footer a { color: var(--muted); }
   let saveT = 0;
   function saveSoon() { if (!saveT) saveT = setTimeout(() => { saveT = 0; saveResults(); }, 3000); }
   addEventListener("pagehide", () => { if (RUN) saveResults(); });
+  // the last run, restored on load. A provider's own page (/vultr/ …) picks only that provider, so it shows only the
+  // restored results of what is picked, not the rest of a full run made on the home page (which stays saved)
+  const scoped = PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] && !/[?&]vendors=/.test(location.search);
+  function restoreLast() {
+    try {
+      const last = JSON.parse(localStorage.getItem(RES_KEY));
+      if (!last || !last.res) return;
+      if (scoped) last.res = Object.fromEntries(Object.entries(last.res).filter(([id]) => S.vendors.includes(isCdn(id) ? id : id.split(":")[0])));
+      applySnapshot(last, true);
+    } catch (e) {}
+  }
   function loadHist() { try { const h = JSON.parse(localStorage.getItem(HIST_KEY)); return Array.isArray(h) ? h : []; } catch (e) { return []; } }
   function applySnapshot(snap, live) {
     R = new Map();
@@ -2093,7 +2104,7 @@ footer a { color: var(--muted); }
   const clearHash = () => { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} };
   function exitShared() {
     clearHash(); R = new Map(); VIEW = { ts: 0, live: true };
-    try { const last = JSON.parse(localStorage.getItem(RES_KEY)); if (last && last.res) applySnapshot(last, true); } catch (e) {}
+    restoreLast();
     renderShared(); renderAll();
   }
   // run the shared regions' providers and areas on this visitor's own line
@@ -2431,7 +2442,7 @@ footer a { color: var(--muted); }
   $("#hist").addEventListener("change", e => {
     if (RUN) { renderHist(); return; }
     const v = e.target.value;
-    if (v === "") { try { const last = JSON.parse(localStorage.getItem(RES_KEY)); if (last) applySnapshot(last, true); } catch (x) {} }
+    if (v === "") { restoreLast(); }
     else { const h = loadHist()[+v]; if (h) applySnapshot(h, false); }
     openId = null; renderAll();
   });
@@ -2478,7 +2489,7 @@ footer a { color: var(--muted); }
   setInterval(() => { if (NET.state === "done") renderNet(); }, 60000);
   addEventListener("beforeunload", e => { if (RUN) { e.preventDefault(); e.returnValue = ""; } });
 
-  try { const last = JSON.parse(localStorage.getItem(RES_KEY)); if (last && last.res) applySnapshot(last, true); } catch (e) {}
+  restoreLast();
   full();
   checkNetwork();
   // the shiba's frames are fetched while the page is idle, so they are there when a test starts rather than downloading alongside it
