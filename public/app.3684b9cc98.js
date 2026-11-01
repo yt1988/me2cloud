@@ -791,6 +791,10 @@
   const ICON_EYE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
   const ICON_EYEOFF = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
   const ICON_EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
+  // sibling tools: the host announces each with <meta name="<id>" content="https://…"> (egress, ipqs, asn, ipv6, speed, …);
+  // links go to the page in this language, and without the meta there is no link
+  const toolUrl = (id, path = "") => { const b = (document.querySelector(`meta[name="${id}"]`) || {}).content; return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : ""; };
+  const toolLink = (id, text, path, cls = "tl") => { const u = toolUrl(id, path); return u ? `<a class="${cls}" href="${esc(u)}" target="_blank" rel="noopener">${esc(text)}${ICON_EXT}</a>` : ""; };
   function renderNet() {
     const N = NET, ck = N.state === "checking", warn = N.verdict === "warn";
     const bar = $("#netbar");
@@ -801,10 +805,8 @@
     // IP families that answered, as a plain trailing segment once the check is done (so it doesn't push the rest)
     const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
     const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}">· ${fams}</span>`;
-    // optional exit checker: a host can announce one with <meta name="egress" content="https://…">, which gets a link
-    // to its page in this language (shown while checking too, so the bar keeps its height); without the meta nothing is shown
-    const eg = (document.querySelector('meta[name="egress"]') || {}).content;
-    const egl = !eg ? "" : `<a class="nb-eg" href="${esc(eg.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/"))}" target="_blank" rel="noopener">${esc(t("egressLink"))}${ICON_EXT}</a>`;
+    // the exit checker (shown while checking too, so the bar keeps its height)
+    const egl = toolLink("egress", t("egressLink"), "", "nb-eg");
     bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
       <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "–")}${N.org ? ` <span class="m">· ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">· ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">· CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">· ${esc(N.step || "")}</span>` : ""}`}</span>${egl}
       <span class="nb-acts">
@@ -832,19 +834,20 @@
     // addresses wrap after a colon instead of being cut off (a full IPv6 address doesn't fit a column), one address
     // per line; the tooltip carries the whole value unless addresses are hidden
     const ipx = x => esc(x).replace(/:/g, ":<wbr>"), tip = x => S.hideIp || !x ? "" : ` title="${esc(x)}"`;
-    // a host can announce an IP quality check with <meta name="ipqs" content="https://…">: the exit addresses (and the IPv4 / IPv6 ones) link to it
-    const ipqs = (document.querySelector('meta[name="ipqs"]') || {}).content || "";
-    const ipq = x => ipqs ? `<a class="ipq" href="${esc(ipqs)}/?ip=${encodeURIComponent(x)}" target="_blank" rel="noopener">${ipx(x)}</a>` : ipx(x);
+    // the addresses link to the IP quality check; the exit IP, the AS number and a missing IPv6 also get a short link
+    // (IP quality, ASN lookup, IPv6 test), and a proxy verdict one to the exit checker
+    const ipq = x => { const u = toolUrl("ipqs", "?ip=" + encodeURIComponent(x)); return u ? `<a class="ipq" href="${esc(u)}" target="_blank" rel="noopener">${ipx(x)}</a>` : ipx(x); };
+    const dot = x => x ? " · " + x : "";
     const v4 = N.ip4 || (N.has6 === null ? t("chkFail") : "–"), v6 = N.ip6 || (pending ? "" : N.has6 === null ? t("chkBlocked") : t("ip_no6short"));
     const rtc = N.rtc && N.rtc.length ? N.rtc.join(", ") : "";
     const note = pending != null ? `<div class="note" style="grid-column:1/-1">${esc(pending)}</div>`
-      : N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}</ul>`
+      : N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map(r => `<li>${r}</li>`).join("")}${N.relay ? "" : (x => x && `<li>${x}</li>`)(toolLink("egress", t("lk_egress")))}</ul>`
       : `<div class="note" style="grid-column:1/-1">${t(N.hidden ? "px_hiddenNote" : N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`;
     return `
-      <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v ip${blur}"${tip(N.ip)}>${N.ip ? ipq(N.ip) : "–"}</span><span class="s">${s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") : "")}</span></div>
-      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || N.via || "–")}</span><span class="s">${s(N.asn ? "AS" + N.asn : N.hidden ? esc(t("ipHidden")) : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v ip${blur}"${tip(N.ip)}>${N.ip ? ipq(N.ip) : "–"}</span><span class="s">${s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") + dot(toolLink("ipqs", t("lk_ipqs"), "?ip=" + encodeURIComponent(N.ip))) : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || N.via || "–")}</span><span class="s">${s(N.asn ? "AS" + N.asn + dot(toolLink("asn", t("lk_asn"), "AS" + N.asn)) : N.hidden ? esc(t("ipHidden")) : "")}</span></div>
       <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "–"}</span><span class="s">${s(esc(N.colo || "") + (N.http ? " · " + esc(N.http) : ""))}</span></div>
-      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v ip${blur}"${tip(N.ip4)}>${N.ip4 ? ipq(N.ip4) : ipx(v4)}</span><span class="s ip${blur}"${tip(N.ip6)}>${N.ip6 ? ipq(N.ip6) : s(ipx(v6))}</span></div>
+      <div class="kv" title="IPv4 ← ${esc(N.src4 || "–")} · IPv6 ← ${esc(N.src6 || "–")}"><span class="lbl">IPv4 / IPv6</span><span class="v ip${blur}"${tip(N.ip4)}>${N.ip4 ? ipq(N.ip4) : ipx(v4)}</span><span class="s ip${blur}"${tip(N.ip6)}>${N.ip6 ? ipq(N.ip6) : s(ipx(v6) + (N.has6 === false ? dot(toolLink("ipv6", t("lk_ipv6"))) : ""))}</span></div>
       <div class="kv"><span class="lbl">WebRTC</span><span class="v ip${blur}"${tip(rtc)}>${rtc ? N.rtc.map(ipx).join("<br>") : "–"}</span><span class="s">${s(esc(N.tz || ""))}</span></div>
       ${note}`;
   }
@@ -1505,7 +1508,9 @@
   }
   function renderSettings() { $("#conc").value = S.conc; $("#concV").textContent = S.conc; $("#timeout").value = String(S.timeout); $("#rtc").checked = S.rtc; $("#onlyPass").checked = S.onlyPass; }
   function full() {
-    buildAll(); applyLang(); $("#lang").value = LANG; applyTheme(); renderSettings(); renderCtrl(); renderNet(); renderHist(); renderAll();
+    buildAll(); applyLang(); $("#lang").value = LANG;
+    // links in the help text (<span data-tool="speed" hidden>… <a>…</a></span>): filled from the tool's meta, or removed
+    $$("[data-tool]").forEach(el => { const u = toolUrl(el.dataset.tool), a = el.querySelector("a"); if (!u || !a) return el.remove(); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.className = "tl"; a.insertAdjacentHTML("beforeend", ICON_EXT); el.hidden = false; }); applyTheme(); renderSettings(); renderCtrl(); renderNet(); renderHist(); renderAll();
   }
   function changed() { save(); renderCtrl(); renderAll(); }
 
