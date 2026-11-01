@@ -73,6 +73,10 @@ export default {
   unkShort: "Network unknown",
   netDetails: "Details",
   egressLink: "Exit IP check",
+  lk_ipqs: "IP quality",
+  lk_asn: "ASN lookup",
+  lk_ipv6: "IPv6 test",
+  lk_egress: "See which exit each site uses",
   cdn_h: "CDN",
   cdn_edge: "Nearest edge",
   cdn_note: "Each CDN answers from its edge nearest to you.",
@@ -288,7 +292,7 @@ export default {
       "What it cannot tell you",
       `<ul><li><b>One location only.</b> It is your line, not your users'. Ask a few users to run it, or export and compare.</li>
           <li><b>Endpoints, not your future VM.</b> We test each provider's public API or storage endpoint in the region. Servers in the same region usually share the network, but premium routes (for example CN2, BGP vs single-carrier lines, Lightsail vs EC2) can differ.</li>
-          <li><b>No bandwidth, no UDP, no route trace.</b> It measures round trips, not download speed, UDP game traffic or the hops in between.</li>
+          <li><b>No bandwidth, no UDP, no route trace.</b> It measures round trips, not download speed, UDP game traffic or the hops in between.<span data-tool="speed" hidden> To measure download speed, use the <a>speed test</a>.</span></li>
           <li><b>Browser effects.</b> Extensions, proxies, VPNs and a busy tab add noise. Close heavy tabs and keep the page in front.</li>
           <li><b>Hetzner</b> cannot keep a connection open from a browser, so its numbers include a handshake every time. Some endpoints can also be unreachable from a few countries.</li></ul>`
     ],

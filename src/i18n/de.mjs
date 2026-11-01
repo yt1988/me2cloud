@@ -190,6 +190,10 @@ export default {
   heroT: "Wie schnell ist die Cloud von dir zu Hause?", lgMiss: "hohl = passt nicht zu deinen Vorgaben",
   pxShort: "Proxy erkannt", okShort: "Direkte Verbindung", unkShort: "Netz unbekannt", netDetails: "Details",
   egressLink: "Exit-IP prüfen",
+  lk_ipqs: "IP-Qualität",
+  lk_asn: "ASN-Abfrage",
+  lk_ipv6: "IPv6-Test",
+  lk_egress: "Ausgang je Website ansehen",
   cdn_h: "CDN",
   cdn_edge: "Nächster Edge-Knoten",
   cdn_note: "Jedes CDN antwortet vom Edge-Knoten, der dir am nächsten ist.",
@@ -347,7 +351,7 @@ export default {
     ["Was der Test nicht sagen kann",
       `<ul><li><b>Nur ein Ort.</b> Es ist deine Leitung, nicht die deiner Nutzer. Lass ein paar Nutzer ebenfalls testen oder exportier und vergleich.</li>
       <li><b>Endpunkte, nicht deine künftige VM.</b> Wir testen den öffentlichen API- oder Speicher-Endpunkt jedes Anbieters in der Region. Server derselben Region teilen meist das Netz, Premium-Routen (z. B. CN2, BGP vs. Einzelanbieter, Lightsail vs. EC2) können aber abweichen.</li>
-      <li><b>Keine Bandbreite, kein UDP, kein Traceroute.</b> Gemessen werden Laufzeiten, nicht Download-Tempo, UDP-Spieleverkehr oder die Hops dazwischen.</li>
+      <li><b>Keine Bandbreite, kein UDP, kein Traceroute.</b> Gemessen werden Laufzeiten, nicht Download-Tempo, UDP-Spieleverkehr oder die Hops dazwischen.<span data-tool="speed" hidden> Die Download-Geschwindigkeit misst der <a>Speedtest</a>.</span></li>
       <li><b>Browser-Effekte.</b> Erweiterungen, Proxys, VPNs und schwere Tabs bringen Rauschen. Schwere Tabs schließen und diese Seite im Vordergrund lassen.</li>
       <li><b>Hetzner</b> kann aus dem Browser keine Verbindung offen halten, daher steckt in jeder Zahl ein Handshake. Manche Ziele sind aus einigen Ländern nicht erreichbar.</li></ul>`],
     ["Jede Anfrage kommt aus deinem Browser",

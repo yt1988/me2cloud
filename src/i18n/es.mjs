@@ -224,6 +224,10 @@ export default {
   unkShort: "Red desconocida",
   netDetails: "Detalles",
   egressLink: "Comprobar IP de salida",
+  lk_ipqs: "Calidad de IP",
+  lk_asn: "Consultar ASN",
+  lk_ipv6: "Prueba de IPv6",
+  lk_egress: "Ver qué salida usa cada sitio",
   cdn_h: "CDN",
   cdn_edge: "Nodo más cercano",
   cdn_note: "Cada CDN responde desde su nodo más cercano a ti.",
@@ -546,7 +550,7 @@ export default {
       "Lo que no puede decirte",
       `<ul><li><b>Una sola ubicación.</b> Es tu línea, no la de tus usuarios. Pide a algunos usuarios que la ejecuten, o exporta y compara.</li>
       <li><b>Destinos, no tu futura VM.</b> Probamos el endpoint público de API o almacenamiento de cada proveedor en la región. Los servidores de la misma región suelen compartir red, pero las rutas premium (por ejemplo CN2, BGP frente a un solo operador, Lightsail frente a EC2) pueden diferir.</li>
-      <li><b>Sin ancho de banda, sin UDP, sin traza de ruta.</b> Mide viajes de ida y vuelta, no la velocidad de descarga, el tráfico UDP de juegos ni los saltos intermedios.</li>
+      <li><b>Sin ancho de banda, sin UDP, sin traza de ruta.</b> Mide viajes de ida y vuelta, no la velocidad de descarga, el tráfico UDP de juegos ni los saltos intermedios.<span data-tool="speed" hidden> Para medir la velocidad de descarga, usa la <a>prueba de velocidad</a>.</span></li>
       <li><b>Efectos del navegador.</b> Extensiones, proxies, VPN y pestañas pesadas añaden ruido. Cierra pestañas pesadas y deja esta página delante.</li>
       <li><b>Hetzner</b> no puede mantener la conexión desde un navegador, así que sus cifras incluyen un saludo cada vez. Algunos destinos pueden no ser accesibles desde ciertos países.</li></ul>`
     ],

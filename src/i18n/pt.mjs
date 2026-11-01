@@ -190,6 +190,10 @@ export default {
   heroT: "Quão rápida é a nuvem da sua casa?", lgMiss: "vazado = não atende às suas exigências",
   pxShort: "Proxy detectado", okShort: "Conexão direta", unkShort: "Rede desconhecida", netDetails: "Detalhes",
   egressLink: "Verificar IP de saída",
+  lk_ipqs: "Qualidade do IP",
+  lk_asn: "Consultar ASN",
+  lk_ipv6: "Teste de IPv6",
+  lk_egress: "Ver a saída de cada site",
   cdn_h: "CDN",
   cdn_edge: "Nó mais próximo",
   cdn_note: "Cada CDN responde do nó mais próximo de você.",
@@ -347,7 +351,7 @@ export default {
     ["O que o teste não diz",
       `<ul><li><b>Um lugar só.</b> É a sua conexão, não a dos seus usuários. Peça para alguns usuários rodarem também, ou exporte e compare.</li>
       <li><b>Destinos, não a sua futura VM.</b> Testamos o endpoint público de API ou armazenamento de cada provedor na região. Servidores da mesma região costumam compartilhar a rede, mas rotas premium (por exemplo CN2, BGP versus uma única operadora, Lightsail versus EC2) podem ser diferentes.</li>
-      <li><b>Sem banda, sem UDP, sem traceroute.</b> Medimos idas e voltas, não a velocidade de download, o tráfego UDP de jogos ou os saltos no meio do caminho.</li>
+      <li><b>Sem banda, sem UDP, sem traceroute.</b> Medimos idas e voltas, não a velocidade de download, o tráfego UDP de jogos ou os saltos no meio do caminho.<span data-tool="speed" hidden> Para medir a velocidade de download, use o <a>teste de velocidade</a>.</span></li>
       <li><b>Efeitos do navegador.</b> Extensões, proxies, VPNs e abas pesadas trazem ruído. Feche abas pesadas e deixe esta página na frente.</li>
       <li><b>A Hetzner</b> não consegue manter a conexão a partir de um navegador, então os números dela incluem um handshake toda vez. Alguns destinos podem estar inacessíveis de certos países.</li></ul>`],
     ["Toda requisição sai do seu navegador",

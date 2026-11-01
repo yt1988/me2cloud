@@ -224,6 +224,10 @@ export default {
   unkShort: "Réseau inconnu",
   netDetails: "Détails",
   egressLink: "Vérifier l’IP de sortie",
+  lk_ipqs: "Qualité de l’IP",
+  lk_asn: "Recherche ASN",
+  lk_ipv6: "Test IPv6",
+  lk_egress: "Voir la sortie de chaque site",
   cdn_h: "CDN",
   cdn_edge: "Nœud le plus proche",
   cdn_note: "Chaque CDN répond depuis son nœud le plus proche de vous.",
@@ -546,7 +550,7 @@ export default {
       "Ce que le test ne dit pas",
       `<ul><li><b>Un seul endroit.</b> C’est votre ligne, pas celle de vos utilisateurs. Demandez à quelques-uns de lancer le test, ou exportez et comparez.</li>
       <li><b>Des cibles, pas votre future VM.</b> Nous testons le point de terminaison public d’API ou de stockage de chaque fournisseur dans la région. Les serveurs d’une même région partagent généralement le réseau, mais les routes premium (par exemple CN2, BGP ou mono-opérateur, Lightsail ou EC2) peuvent différer.</li>
-      <li><b>Ni débit, ni UDP, ni traceroute.</b> On mesure des allers-retours, pas la vitesse de téléchargement, le trafic UDP des jeux ou les sauts intermédiaires.</li>
+      <li><b>Ni débit, ni UDP, ni traceroute.</b> On mesure des allers-retours, pas la vitesse de téléchargement, le trafic UDP des jeux ou les sauts intermédiaires.<span data-tool="speed" hidden> Pour mesurer le débit, utilisez le <a>test de débit</a>.</span></li>
       <li><b>Effets du navigateur.</b> Extensions, proxies, VPN et onglets lourds ajoutent du bruit. Fermez les onglets lourds et gardez cette page au premier plan.</li>
       <li><b>Hetzner</b> ne peut pas garder une connexion ouverte depuis un navigateur : ses chiffres incluent une négociation à chaque fois. Certaines cibles peuvent être injoignables depuis quelques pays.</li></ul>`
     ],
