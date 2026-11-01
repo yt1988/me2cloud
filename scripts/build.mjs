@@ -211,8 +211,8 @@ export async function build({ check = false } = {}) {
   const files = {
     [appName]: app,
     "endpoints.json": JSON.stringify({ schema: 1, verified: E.verified, source: "https://github.com/yt1988/me2cloud",
-      howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body.",
-      vendors: E.vendors, endpoints: E.endpoints }, null, 1) + "\n",
+      howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body. cdns (kind cdn) are one global address per CDN, answered by the edge nearest the client: nobust means send the URL exactly as given, with no added query (a cache-buster sends some CDNs to the origin), relying on cache: 'no-store' (outside a browser, no query and no cache), GET only.",
+      vendors: E.vendors, endpoints: E.endpoints, cdns: E.cdns || [] }, null, 1) + "\n",
     "sitemap.xml": sitemap, "robots.txt": robots, "_headers": headers
   };
   for (const [name, text] of Object.entries(ruleSets(E, spec))) files["rules/" + name] = text;

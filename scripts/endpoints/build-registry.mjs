@@ -57,6 +57,21 @@ const VENDORS = {
                   note: "GET and HEAD both keep the connection alive. Dual-stack hosts; one endpoint per region." }
 };
 
+// CDNs: one global address each, answered by the edge nearest the visitor (no region, no location). Chosen and checked
+// 2026-11-01 as described in 1ms-shell docs/cdn.md, shared with the 1ms home page and vps2cloud.
+//   nobust   send the URL exactly as given: a cache-busting query sends Akamai (Steam) and Azure (Xbox) to the origin,
+//            so the page relies on cache: "no-store" instead; the Azure URL's own ?n= must stay
+//   GET only (the Azure URL answers HEAD with 405); the first request opens the connection and is not counted, as for regions
+const CDNS = [
+  { id: "cloudflare", name: "Cloudflare",         url: "https://www.cloudflare.com/cdn-cgi/trace", cors: true },
+  { id: "akamai",     name: "Akamai",             url: "https://store.akamai.steamstatic.com/favicon.ico" },
+  { id: "cloudfront", name: "Amazon CloudFront",  url: "https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico" },
+  { id: "google",     name: "Google Cloud CDN",   url: "https://www.gstatic.com/generate_204" },
+  { id: "fastly",     name: "Fastly",             url: "https://github.githubassets.com/favicons/favicon.svg", cors: true },
+  { id: "azure",      name: "Azure Front Door",   url: "https://assets.xboxservices.com/assets/f8/67/f86740d7-eedd-4d9c-a963-76af7e36c4b2.svg?n=Xbox-Follow-Footer_Image-0_Mail_32x32_02.svg" }
+].map(c => ({ id: "cdn:" + c.id, vendor: "cdn:" + c.id, kind: "cdn", name: c.name, url: c.url, method: "GET", nobust: true,
+  ...(c.cors ? { cors: true } : {}), tier: c.cors ? "A" : "B", region: "edge", city: "", country: "", continent: "xx" }));
+
 // Answer like the rest but fail in the browser: held out of the registry (listed in excluded.json with the reason)
 const HOLD = {};
 
@@ -122,7 +137,7 @@ const html = await readFile(page, "utf8");
 const BEGIN = "/* ENDPOINTS:BEGIN */", END = "/* ENDPOINTS:END */";
 const a = html.indexOf(BEGIN), b = html.indexOf(END);
 if (a < 0 || b < 0) throw new Error("ENDPOINTS markers not found in src/page.html");
-const block = `${BEGIN}\n  const ENDPOINTS = ${JSON.stringify({ verified: VERIFIED, vendors, endpoints })};\n  `;
+const block = `${BEGIN}\n  const ENDPOINTS = ${JSON.stringify({ verified: VERIFIED, vendors, endpoints, cdns: CDNS })};\n  `;
 await writeFile(page, html.slice(0, a) + block + html.slice(b));
 await writeFile(new URL("./excluded.json", import.meta.url), JSON.stringify(excluded, null, 1) + "\n");
 

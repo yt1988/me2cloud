@@ -2,7 +2,7 @@
  "schema": 1,
  "verified": "2026-10-27",
  "source": "https://github.com/yt1988/me2cloud",
- "howTo": "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body.",
+ "howTo": "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body. cdns (kind cdn) are one global address per CDN, answered by the edge nearest the client: nobust means send the URL exactly as given, with no added query (a cache-buster sends some CDNs to the origin), relying on cache: 'no-store' (outside a browser, no query and no cache), GET only.",
  "vendors": {
   "aws": {
    "name": "AWS",
@@ -5192,6 +5192,94 @@
    "tier": "B",
    "fam": "46",
    "continent": "as"
+  }
+ ],
+ "cdns": [
+  {
+   "id": "cdn:cloudflare",
+   "vendor": "cdn:cloudflare",
+   "kind": "cdn",
+   "name": "Cloudflare",
+   "url": "https://www.cloudflare.com/cdn-cgi/trace",
+   "method": "GET",
+   "nobust": true,
+   "cors": true,
+   "tier": "A",
+   "region": "edge",
+   "city": "",
+   "country": "",
+   "continent": "xx"
+  },
+  {
+   "id": "cdn:akamai",
+   "vendor": "cdn:akamai",
+   "kind": "cdn",
+   "name": "Akamai",
+   "url": "https://store.akamai.steamstatic.com/favicon.ico",
+   "method": "GET",
+   "nobust": true,
+   "tier": "B",
+   "region": "edge",
+   "city": "",
+   "country": "",
+   "continent": "xx"
+  },
+  {
+   "id": "cdn:cloudfront",
+   "vendor": "cdn:cloudfront",
+   "kind": "cdn",
+   "name": "Amazon CloudFront",
+   "url": "https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico",
+   "method": "GET",
+   "nobust": true,
+   "tier": "B",
+   "region": "edge",
+   "city": "",
+   "country": "",
+   "continent": "xx"
+  },
+  {
+   "id": "cdn:google",
+   "vendor": "cdn:google",
+   "kind": "cdn",
+   "name": "Google Cloud CDN",
+   "url": "https://www.gstatic.com/generate_204",
+   "method": "GET",
+   "nobust": true,
+   "tier": "B",
+   "region": "edge",
+   "city": "",
+   "country": "",
+   "continent": "xx"
+  },
+  {
+   "id": "cdn:fastly",
+   "vendor": "cdn:fastly",
+   "kind": "cdn",
+   "name": "Fastly",
+   "url": "https://github.githubassets.com/favicons/favicon.svg",
+   "method": "GET",
+   "nobust": true,
+   "cors": true,
+   "tier": "A",
+   "region": "edge",
+   "city": "",
+   "country": "",
+   "continent": "xx"
+  },
+  {
+   "id": "cdn:azure",
+   "vendor": "cdn:azure",
+   "kind": "cdn",
+   "name": "Azure Front Door",
+   "url": "https://assets.xboxservices.com/assets/f8/67/f86740d7-eedd-4d9c-a963-76af7e36c4b2.svg?n=Xbox-Follow-Footer_Image-0_Mail_32x32_02.svg",
+   "method": "GET",
+   "nobust": true,
+   "tier": "B",
+   "region": "edge",
+   "city": "",
+   "country": "",
+   "continent": "xx"
   }
  ]
 }
