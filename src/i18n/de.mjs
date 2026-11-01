@@ -303,7 +303,7 @@ export default {
     linode: { kind: "Object Storage", note: "Die alten speedtest.<dc>.linode.com antworten nicht mehr; abgedeckt sind nur Regionen mit Object-Storage-Cluster." },
     digitalocean: { kind: "Spaces", note: "speedtest-<dc>.digitalocean.com gibt es nicht mehr; NYC1/NYC2 haben keine Spaces (für New York nyc3)." },
     ovh: { kind: "Speedtest (proof)", note: "proof.ovh.net leitet zu <site>.speedtest.network.ovh.net um; das Register nutzt direkt das Ziel." },
-    hetzner: { kind: "Speedtest", note: "fetch() scheitert im Browser (Ursache unklar; curl klappt); <img> geht, öffnet aber jedes Mal eine neue Verbindung, also ≈ 3 Laufzeiten pro Messung." },
+    hetzner: { kind: "Speedtest", note: "Der Server bricht jede Anfrage mit Query-String ab, daher geht die URL ohne Cache-Buster raus (stattdessen cache: no-store); mit GET bleibt die Verbindung offen." },
     ibm: { kind: "Cloud Object Storage", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." },
     scaleway: { kind: "Object Storage", note: "GET und HEAD halten die Verbindung beide offen. Dual-Stack-Hosts." },
     volcengine: { kind: "TOS", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." },
@@ -329,7 +329,7 @@ export default {
     ["So wird jede Messung gemacht",
       `<ol><li>Eine <b>Aufwärm</b>-Anfrage baut DNS, TCP und TLS auf. Ihre Zeit wird angezeigt, aber nie mitgezählt.</li>
       <li>Danach schickt der Browser 5, 10 oder 20 weitere Anfragen an denselben Host über <b>dieselbe Verbindung</b>. Jede kostet eine Laufzeit plus die Bearbeitungszeit beim Anbieter.</li>
-      <li>Jeder Anbieter bekommt die Anfrageart, bei der wir geprüft haben, dass die Verbindung offen bleibt: <code>GET</code> für AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean und Scaleway; <code>HEAD</code> für Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore und Yandex Cloud (ihr GET schließt die Verbindung und würde jede Messung verdreifachen); <code>&lt;img&gt;</code> nur für Hetzner.</li>
+      <li>Jeder Anbieter bekommt die Anfrageart, bei der wir geprüft haben, dass die Verbindung offen bleibt: <code>GET</code> für AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway und Hetzner; <code>HEAD</code> für Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore und Yandex Cloud (ihr GET schließt die Verbindung und würde jede Messung verdreifachen).</li>
       <li>Wir zeigen <b>Median</b> (den typischen Wert), <b>Mittelwert</b>, <b>P90</b> (9 von 10 Messungen liegen darunter), <b>Jitter</b> (mittlere Änderung zwischen aufeinanderfolgenden Messungen) und <b>Verlust</b> (Messungen ohne Antwort im Zeitlimit).</li>
       <li>Die <b>Stufe</b> ergibt sich aus dem Median: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 darüber. Die Gesamtwertung für die Tipps ist Median + 2 × Jitter + Verlust-Abzug – stabile 60 ms schlagen also sprunghafte 45 ms.</li></ol>`],
     ["Warum HTTPS-Messung näher an der Praxis ist als ICMP-Ping",
@@ -353,7 +353,7 @@ export default {
       <li><b>Endpunkte, nicht deine künftige VM.</b> Wir testen den öffentlichen API- oder Speicher-Endpunkt jedes Anbieters in der Region. Server derselben Region teilen meist das Netz, Premium-Routen (z. B. CN2, BGP vs. Einzelanbieter, Lightsail vs. EC2) können aber abweichen.</li>
       <li><b>Keine Bandbreite, kein UDP, kein Traceroute.</b> Gemessen werden Laufzeiten, nicht Download-Tempo, UDP-Spieleverkehr oder die Hops dazwischen.<span data-tool="speed" hidden> Die Download-Geschwindigkeit misst der <a>Speedtest</a>.</span></li>
       <li><b>Browser-Effekte.</b> Erweiterungen, Proxys, VPNs und schwere Tabs bringen Rauschen. Schwere Tabs schließen und diese Seite im Vordergrund lassen.</li>
-      <li><b>Hetzner</b> kann aus dem Browser keine Verbindung offen halten, daher steckt in jeder Zahl ein Handshake. Manche Ziele sind aus einigen Ländern nicht erreichbar.</li></ul>`],
+      <li>Manche Ziele sind aus einigen Ländern nicht erreichbar.</li></ul>`],
     ["Jede Anfrage kommt aus deinem Browser",
       `<ul><li>Die Seite besteht nur aus statischen Dateien bei Cloudflare. Kein Backend, kein Konto, keine Statistik, und Ergebnisse werden nie hochgeladen.</li>
       <li>Alle Testanfragen gehen direkt von deinem Browser zum Anbieter. Öffne das <b>Anfrageprotokoll</b> oder die Entwicklertools (Tab Netzwerk), um jede einzelne zu sehen.</li>

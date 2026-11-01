@@ -262,7 +262,7 @@ export default {
       "How each sample is measured",
       `<ol><li>A <b>warm-up</b> request opens DNS, TCP and TLS. Its time is shown but never counted.</li>
           <li>Then the browser sends 5, 10 or 20 more requests to the same host over the <b>same connection</b>. Each one costs a single round trip plus the provider's processing time.</li>
-          <li>Each provider uses the request type we verified keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean and Scaleway; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud (their GET closes the connection, which would triple every sample); <code>&lt;img&gt;</code> only for Hetzner.</li>
+          <li>Each provider uses the request type we verified keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway and Hetzner; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud (their GET closes the connection, which would triple every sample).</li>
           <li>We report <b>median</b> (the typical value), <b>average</b>, <b>P90</b> (9 out of 10 samples are at or below it), <b>jitter</b> (average change between consecutive samples) and <b>loss</b> (samples with no answer within the timeout).</li>
           <li>The <b>tier</b> comes from the median: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 above that. The overall score used for picks is median + 2 × jitter + loss penalty, so a steady 60 ms beats a jumpy 45 ms.</li></ol>`
     ],
@@ -294,7 +294,7 @@ export default {
           <li><b>Endpoints, not your future VM.</b> We test each provider's public API or storage endpoint in the region. Servers in the same region usually share the network, but premium routes (for example CN2, BGP vs single-carrier lines, Lightsail vs EC2) can differ.</li>
           <li><b>No bandwidth, no UDP, no route trace.</b> It measures round trips, not download speed, UDP game traffic or the hops in between.<span data-tool="speed" hidden> To measure download speed, use the <a>speed test</a>.</span></li>
           <li><b>Browser effects.</b> Extensions, proxies, VPNs and a busy tab add noise. Close heavy tabs and keep the page in front.</li>
-          <li><b>Hetzner</b> cannot keep a connection open from a browser, so its numbers include a handshake every time. Some endpoints can also be unreachable from a few countries.</li></ul>`
+          <li>Some endpoints can also be unreachable from a few countries.</li></ul>`
     ],
     [
       "Every request comes from your browser",
@@ -404,7 +404,7 @@ export default {
     },
     hetzner: {
       kind: "Speed test",
-      note: `fetch() fails in the browser (cause unclear; curl works); <img> works but opens a new connection each time, so samples ≈ 3 RTT.`
+      note: `The server drops any request with a query string, so the URL is sent without the cache-busting parameter (cache: no-store instead); GET then keeps the connection.`
     },
     ibm: {
       kind: "Cloud Object Storage",

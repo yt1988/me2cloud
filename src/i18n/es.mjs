@@ -475,7 +475,7 @@ export default {
     },
     hetzner: {
       kind: "Test de velocidad",
-      note: `fetch() falla en el navegador (causa desconocida; curl funciona); <img> sirve pero abre conexión nueva cada vez, así que cada muestra ≈ 3 viajes.`
+      note: `El servidor corta cualquier petición con query string, así que la URL va sin el parámetro anticaché (se usa cache: no-store); con GET la conexión se mantiene.`
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -520,7 +520,7 @@ export default {
       "Cómo se mide cada muestra",
       `<ol><li>Una petición de <b>calentamiento</b> abre DNS, TCP y TLS. Su tiempo se muestra pero nunca se cuenta.</li>
       <li>Después el navegador envía 5, 10 o 20 peticiones más al mismo host por la <b>misma conexión</b>. Cada una cuesta un viaje de ida y vuelta más el tiempo de proceso del proveedor.</li>
-      <li>Cada proveedor usa el tipo de petición que comprobamos que mantiene la conexión: <code>GET</code> para AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean y Scaleway; <code>HEAD</code> para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore y Yandex Cloud (su GET cierra la conexión y triplicaría cada muestra); <code>&lt;img&gt;</code> solo para Hetzner.</li>
+      <li>Cada proveedor usa el tipo de petición que comprobamos que mantiene la conexión: <code>GET</code> para AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway y Hetzner; <code>HEAD</code> para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore y Yandex Cloud (su GET cierra la conexión y triplicaría cada muestra).</li>
       <li>Damos la <b>mediana</b> (el valor típico), la <b>media</b>, el <b>P90</b> (9 de cada 10 muestras quedan por debajo), el <b>jitter</b> (cambio medio entre muestras seguidas) y la <b>pérdida</b> (muestras sin respuesta en el tiempo límite).</li>
       <li>El <b>nivel</b> sale de la mediana: T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms y T4 por encima. La puntuación de las recomendaciones es mediana + 2 × jitter + penalización por pérdida, así que unos 60 ms estables ganan a unos 45 ms que saltan.</li></ol>`
     ],
@@ -552,7 +552,7 @@ export default {
       <li><b>Destinos, no tu futura VM.</b> Probamos el endpoint público de API o almacenamiento de cada proveedor en la región. Los servidores de la misma región suelen compartir red, pero las rutas premium (por ejemplo CN2, BGP frente a un solo operador, Lightsail frente a EC2) pueden diferir.</li>
       <li><b>Sin ancho de banda, sin UDP, sin traza de ruta.</b> Mide viajes de ida y vuelta, no la velocidad de descarga, el tráfico UDP de juegos ni los saltos intermedios.<span data-tool="speed" hidden> Para medir la velocidad de descarga, usa la <a>prueba de velocidad</a>.</span></li>
       <li><b>Efectos del navegador.</b> Extensiones, proxies, VPN y pestañas pesadas añaden ruido. Cierra pestañas pesadas y deja esta página delante.</li>
-      <li><b>Hetzner</b> no puede mantener la conexión desde un navegador, así que sus cifras incluyen un saludo cada vez. Algunos destinos pueden no ser accesibles desde ciertos países.</li></ul>`
+      <li>Algunos destinos pueden no ser accesibles desde ciertos países.</li></ul>`
     ],
     [
       "Cada petición sale de tu navegador",

@@ -475,7 +475,7 @@ export default {
     },
     hetzner: {
       kind: "Test de débit",
-      note: `fetch() échoue dans le navigateur (cause inconnue ; curl fonctionne) ; <img> marche mais ouvre une nouvelle connexion à chaque fois, donc chaque mesure ≈ 3 allers-retours.`
+      note: `Le serveur coupe toute requête avec une query string : l’URL part donc sans paramètre anti-cache (cache: no-store à la place), et le GET garde la connexion.`
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -520,7 +520,7 @@ export default {
       "Comment chaque mesure est faite",
       `<ol><li>Une requête de <b>préchauffage</b> ouvre DNS, TCP et TLS. Son temps est affiché mais jamais compté.</li>
       <li>Ensuite le navigateur envoie 5, 10 ou 20 requêtes au même hôte sur la <b>même connexion</b>. Chacune coûte un aller-retour plus le temps de traitement du fournisseur.</li>
-      <li>Chaque fournisseur utilise le type de requête dont nous avons vérifié qu’il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean et Scaleway ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore et Yandex Cloud (leur GET ferme la connexion et triplerait chaque mesure) ; <code>&lt;img&gt;</code> seulement pour Hetzner.</li>
+      <li>Chaque fournisseur utilise le type de requête dont nous avons vérifié qu’il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway et Hetzner ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore et Yandex Cloud (leur GET ferme la connexion et triplerait chaque mesure).</li>
       <li>Nous donnons la <b>médiane</b> (la valeur typique), la <b>moyenne</b>, le <b>P90</b> (9 mesures sur 10 en dessous), la <b>gigue</b> (écart moyen entre deux mesures consécutives) et la <b>perte</b> (mesures sans réponse dans le délai).</li>
       <li>Le <b>niveau</b> vient de la médiane : T0 ≤ 30 ms, T1 ≤ 80 ms, T2 ≤ 150 ms, T3 ≤ 250 ms, T4 au-delà. Le score des recommandations est médiane + 2 × gigue + pénalité de perte : 60 ms réguliers battent 45 ms en dents de scie.</li></ol>`
     ],
@@ -552,7 +552,7 @@ export default {
       <li><b>Des cibles, pas votre future VM.</b> Nous testons le point de terminaison public d’API ou de stockage de chaque fournisseur dans la région. Les serveurs d’une même région partagent généralement le réseau, mais les routes premium (par exemple CN2, BGP ou mono-opérateur, Lightsail ou EC2) peuvent différer.</li>
       <li><b>Ni débit, ni UDP, ni traceroute.</b> On mesure des allers-retours, pas la vitesse de téléchargement, le trafic UDP des jeux ou les sauts intermédiaires.<span data-tool="speed" hidden> Pour mesurer le débit, utilisez le <a>test de débit</a>.</span></li>
       <li><b>Effets du navigateur.</b> Extensions, proxies, VPN et onglets lourds ajoutent du bruit. Fermez les onglets lourds et gardez cette page au premier plan.</li>
-      <li><b>Hetzner</b> ne peut pas garder une connexion ouverte depuis un navigateur : ses chiffres incluent une négociation à chaque fois. Certaines cibles peuvent être injoignables depuis quelques pays.</li></ul>`
+      <li>Certaines cibles peuvent être injoignables depuis quelques pays.</li></ul>`
     ],
     [
       "Chaque requête part de votre navigateur",

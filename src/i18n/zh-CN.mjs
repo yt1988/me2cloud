@@ -413,7 +413,7 @@ export default {
       "每次采样是怎么测的",
       `<ol><li>先发一次<b>预热</b>请求，把 DNS、TCP、TLS 都建好。这次的时间会显示出来，但不计入结果。</li>
           <li>然后在<b>同一条连接</b>上，对同一个主机再发 5、10 或 20 次请求。每次只花一个往返，再加上厂商服务器的处理时间。</li>
-          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、华为云、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）；只有 Hetzner 用 <code>&lt;img&gt;</code>。</li>
+          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、华为云、DigitalOcean、Scaleway、Hetzner 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）。</li>
           <li>结果给出<b>中位数</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次里有 9 次不超过它）、<b>抖动</b>（相邻两次的平均变化）和<b>丢包</b>（超时没响应的次数）。</li>
           <li><b>等级</b>按中位数划分：T0 夯 ≤ 30 ms、T1 顶级 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推荐用的综合分是“中位数 + 2 × 抖动 + 丢包惩罚”，所以稳定的 60 ms 会排在忽高忽低的 45 ms 前面。</li></ol>`
     ],
@@ -445,7 +445,7 @@ export default {
           <li><b>测的是端点，不是你以后的云主机。</b>我们测的是厂商在该区域的公共 API 或存储端点。同区域的服务器一般共用网络，但精品线路（比如 CN2、BGP 和单线、Lightsail 和 EC2）可能不一样。</li>
           <li><b>不测带宽、不测 UDP、不做路由追踪。</b>只测往返时间，不测下载速度、UDP 游戏流量，也看不到中间经过哪些节点。<span data-tool="speed" hidden>要测下载速度，可以用<a>网速测试</a>。</span></li>
           <li><b>浏览器本身的影响。</b>插件、代理、VPN、很忙的标签页都会带来噪声。测试时关掉占资源的标签页，让本页保持在前台。</li>
-          <li><b>Hetzner</b> 在浏览器里没法保持连接，所以它的数字每次都包含握手时间。个别端点在某些国家和地区可能访问不到。</li></ul>`
+          <li>个别端点在某些国家和地区可能访问不到。</li></ul>`
     ],
     [
       "所有请求都从你的浏览器发出",
@@ -550,7 +550,7 @@ export default {
     },
     hetzner: {
       kind: "测速服务器",
-      note: `浏览器里 fetch() 会失败（原因不明，curl 正常）；<img> 可以测，但每次都新建连接，采样约等于 3 个往返。`
+      note: `服务器会直接断开带查询参数的请求，所以请求不加防缓存参数（改用 cache: no-store），GET 能保持连接。`
     },
     ibm: {
       kind: "Cloud Object Storage",

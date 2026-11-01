@@ -32,8 +32,10 @@ const VENDORS = {
                   note: "speedtest-<dc>.digitalocean.com is gone; NYC1/NYC2 have no Spaces (use nyc3 for New York)." },
   ovh:          { name: "OVHcloud",      method: "HEAD", cors: false, tier: "B", kind: "Speed test (proof)",
                   note: "proof.ovh.net hosts redirect to <site>.speedtest.network.ovh.net; the registry uses the targets." },
-  hetzner:      { name: "Hetzner",       method: "IMG",  cors: false, tier: "C", kind: "Speed test",
-                  note: "fetch() fails in the browser (cause unclear; curl works); <img> works but opens a new connection each time, so samples ≈ 3 RTT." },
+  // nobust: *-speed.hetzner.com closes the connection after TLS on any request with a query string (or a Referer), so
+  // a cache-busted fetch() never got an answer and <img> paid a new handshake per sample (2026-11-01, reported on LES)
+  hetzner:      { name: "Hetzner",       method: "GET",  cors: false, tier: "B", kind: "Speed test", nobust: true,
+                  note: "The server drops any request with a query string, so the URL is sent without the cache-busting parameter (cache: no-store instead); GET then keeps the connection." },
   ibm:          { name: "IBM Cloud",     method: "HEAD", cors: false, tier: "B", kind: "Cloud Object Storage",
                   note: "GET 403 closes the connection; HEAD reuses it." },
   scaleway:     { name: "Scaleway",      method: "GET",  cors: false, tier: "B", kind: "Object Storage",
@@ -120,6 +122,7 @@ for (const c of CANDIDATES) {
   const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: last.url, method: METHOD[id] || v.method };
   if (v.method !== "IMG" && (FALLBACK_IMG.has(id) || FALLBACK_IMG.has(`${c.vendor}:*`))) e.fallback = "IMG";
   if (v.cors && last.get?.acao) e.cors = true;
+  if (v.nobust) e.nobust = true;
   if (c.vendor === "aws") e.expect = "healthy: dynamodb";
   e.tier = v.tier;
   if (IP6[id]) { e.fam = IP6[id].fam; if (IP6[id].url6) e.url6 = IP6[id].url6; }

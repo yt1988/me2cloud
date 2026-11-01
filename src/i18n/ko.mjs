@@ -470,7 +470,7 @@ export default {
     },
     hetzner: {
       kind: "속도 테스트",
-      note: `브라우저의 fetch()는 실패합니다(원인 불명, curl은 정상). <img>로는 잴 수 있지만 매번 새 연결이라 값은 약 3번 왕복입니다.`
+      note: `쿼리 문자열이 붙은 요청은 서버가 끊어 버려서 캐시 회피 파라미터 없이 보냅니다(대신 cache: no-store). GET으로 연결이 유지됩니다.`
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -515,7 +515,7 @@ export default {
       "한 번씩 어떻게 재나",
       `<ol><li>먼저 <b>워밍업</b> 요청으로 DNS, TCP, TLS를 맺습니다. 이 시간은 보여 주지만 집계에는 넣지 않습니다.</li>
       <li>이어서 <b>같은 연결</b>로 같은 호스트에 5, 10, 20번 요청합니다. 한 번에 왕복 한 번과 업체 서버의 처리 시간만 걸립니다.</li>
-      <li>업체마다 연결을 유지한다고 확인한 방식을 씁니다: AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 <code>HEAD</code>(GET은 연결이 끊겨 3배가 됨), Hetzner만 <code>&lt;img&gt;</code>.</li>
+      <li>업체마다 연결을 유지한다고 확인한 방식을 씁니다: AWS, Azure, Google Cloud, Huawei Cloud, DigitalOcean, Scaleway, Hetzner는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 <code>HEAD</code>(GET은 연결이 끊겨 3배가 됨).</li>
       <li>결과는 <b>중앙값</b>(가장 대표적인 값), <b>평균</b>, <b>P90</b>(10번 중 9번은 이 이하), <b>지터</b>(연속 두 번의 차이 평균), <b>손실</b>(시간 초과 비율)입니다.</li>
       <li><b>등급</b>은 중앙값으로 정합니다: T0 갓 ≤ 30 ms, T1 최상급 ≤ 80 ms, T2 상위권 ≤ 150 ms, T3 NPC ≤ 250 ms, 그 이상은 T4 망함. 추천에 쓰는 종합 점수는 '중앙값 + 2 × 지터 + 손실 벌점'이라, 안정적인 60 ms가 들쭉날쭉한 45 ms보다 앞섭니다.</li></ol>`
     ],
@@ -547,7 +547,7 @@ export default {
       <li><b>재는 건 엔드포인트이지, 앞으로 쓸 서버 자체가 아닙니다.</b> 그 리전의 공개 API나 스토리지를 잽니다. 같은 리전의 서버는 보통 같은 네트워크지만 프리미엄 회선(CN2, BGP와 단일 통신사, Lightsail과 EC2 등)은 다를 수 있습니다.</li>
       <li><b>대역폭, UDP, 경로는 재지 않습니다.</b> 왕복 시간만 재며 다운로드 속도, UDP 게임 트래픽, 중간 경로는 모릅니다.<span data-tool="speed" hidden> 다운로드 속도는 <a>속도 테스트</a>로 재세요.</span></li>
       <li><b>브라우저의 영향.</b> 확장 기능, 프록시, VPN, 무거운 탭은 잡음이 됩니다. 무거운 탭은 닫고 이 페이지를 앞에 두세요.</li>
-      <li><b>Hetzner</b>는 브라우저에서 연결을 유지할 수 없어 매번 핸드셰이크가 포함됩니다. 일부 나라에서는 닿지 않는 대상도 있습니다.</li></ul>`
+      <li>일부 나라에서는 닿지 않는 대상도 있습니다.</li></ul>`
     ],
     [
       "모든 요청은 내 브라우저에서",
