@@ -1911,8 +1911,9 @@ footer a { color: var(--muted); }
     const kv = (k, v) => `<div class="kv"><span class="lbl">${t(k)}</span><span class="v">${v}</span></div>`;
     const ms = v => v == null || !isFinite(v) ? "–" : fmt(v) + " ms";
     const lines = [`<span>${esc(e.vname)} · ${t("d_method")} <b>${esc(r ? r.m : e.method)}</b>${r && r.w != null ? " · " + t("d_warm") + " " + fmt(r.w) + " ms" : ""} · <code>${esc(e.url)}</code></span>`];
-    // samples about as slow as the warm-up (which includes the handshake): the connection isn't being reused
-    if (r && r.w != null && st.ok && st.med > r.w * 0.75) lines.push(`<span class="w">${t("d_cold")}</span>`);
+    // even the fastest sample about as slow as the warm-up (which includes the handshake): the connection isn't being
+    // reused. The minimum, not the median, so a jittery route doesn't look like it
+    if (r && r.w != null && st.ok && st.min > r.w * 0.9) lines.push(`<span class="w">${t("d_cold")}</span>`);
     if (r && r.st === "nov6") lines.push(`<span class="w">${t("d_nov6")}</span>`);
     else if (r && r.ip === "v6") lines.push(`<span>${t("d_v6")}</span>`);
     else if (r && (e.fam || "").includes("6")) lines.push(`<span class="w">${t("d_dual")}</span>`);
