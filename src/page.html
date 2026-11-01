@@ -864,10 +864,11 @@ footer a { color: var(--muted); }
   }
   $("#lang").innerHTML = LANGS.filter(([c]) => LANG_PATHS[c]).map(([c, n]) => `<option value="${c}">${n}</option>`).join("");
 
-  /* ---------- state ---------- */
+  // no provider is picked at first (the page leads the visitor to pick them; areas follow the providers); the CDNs are,
+  // and the saved picks of an earlier version (v 2) get them once
   // nothing is selected at first: the page leads the visitor to pick providers; areas follow the providers
   function defaults() {
-    return { v: 2, vendors: [], cts: [], mode: "std", conc: 4, timeout: 4000,
+    return { v: 3, vendors: CDN_IDS.slice(), cts: [], mode: "std", conc: 4, timeout: 4000,
       need: { preset: "web", lat: 250, jit: 50, loss: 2 }, home: "all", ip: "v4", custom: [], onlyPass: false, hideIp: false, rtc: true, ruleFmt: "clash" };
   }
   function sanitize(s) {
@@ -894,6 +895,7 @@ footer a { color: var(--muted); }
     o.timeout = [3000, 4000, 6000, 8000].includes(+o.timeout) ? +o.timeout : 4000;
     o.need = Object.assign(d.need, o.need || {});
     if (!RULE_FORMATS.includes(o.ruleFmt)) o.ruleFmt = "clash";
+    if (!(o.v >= 3)) { o.vendors = [...new Set(o.vendors.concat(CDN_IDS))]; o.v = 3; }
     return o;
   }
   function load() { try { return sanitize(JSON.parse(localStorage.getItem(KEY))); } catch (e) { return defaults(); } }
@@ -1213,7 +1215,7 @@ footer a { color: var(--muted); }
   const coveredCts = () => CT_ORDER.filter(c => ENDPOINTS.endpoints.some(e => S.vendors.includes(e.vendor) && e.continent === c)
     || S.custom.some(x => S.vendors.includes("c:" + x.g) && CC_CT[x.cc] === c));
   // picking from "everything selected" narrows to the one clicked; after that, clicks add or remove
-  if (PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] && !/[?&]vendors=/.test(location.search)) { S.vendors = [PAGE.vendor]; S.cts = coveredCts(); }
+  if (PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] && !/[?&]vendors=/.test(location.search)) { S.vendors = [PAGE.vendor].concat(S.vendors.filter(isCdn)); S.cts = coveredCts(); }
   // from "all", a tap picks just that one; tapping the only pick goes back to all (emptying is the Clear link's job)
   const pickToggle = (list, all, x) => all.length < 2 ? (list.includes(x) ? [] : [x])
     : list.length === all.length ? [x]
@@ -1657,13 +1659,15 @@ footer a { color: var(--muted); }
   function renderCtrl() {
     if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
     const N = S.need, cov = coveredCts();
-    const noV = !S.vendors.length;
+    // the CDNs are picked by default and have no areas: the prompt and the areas wait for a provider
+    const noV = !S.vendors.some(v => !isCdn(v));
     // providers and custom groups share one list; a star marks the groups
-    const vLabel = sumList(S.vendors.map(v => (isCustom(v) ? "★ " : "") + vnm(v)), allVids().length + CDN_IDS.length, t("allVendors"));
+    // the providers and groups by name; picked CDNs (on by default) add one "+ CDN" rather than six names
+    const vLabel = sumList(S.vendors.filter(v => !isCdn(v)).map(v => (isCustom(v) ? "★ " : "") + vnm(v)), allVids().length, t("allVendors")) + (S.vendors.some(isCdn) ? " + " + t("cdn_h") : "");
     $("#plV").classList.toggle("ask", noV);
     $("#plV > summary").innerHTML = `${SVG_V}${noV ? `<span>${t("pickVendor")}</span>` : `<span class="pl-k">${t("pl_vendors")}</span><b>${esc(vLabel)}</b>`}${caret}`;
     // areas are the second step: they only open once a provider is chosen, and only list the areas it covers
-    const aOff = !S.vendors.length;
+    const aOff = noV;
     $("#plA").classList.toggle("off", aOff);
     $("#plA > summary").innerHTML = `${SVG_A}<span class="pl-k">${t("pl_areas")}</span><b>${aOff ? "–" : S.cts.length ? esc(sumList(S.cts.map(c => t("ct_" + c)), cov.length, t("allAreas"))) : t("noArea")}${!aOff && S.home !== "all" && homeCC() ? ` · ${esc(t("home_" + S.home))} ${flag(homeCC())}` : ""}</b>${caret}`;
     $("#plN > summary").innerHTML = `<span>${PRESET_IC[N.preset] || "🎯"}</span><span>${esc(t("p_" + N.preset))}</span><b class="num">${N.lat ? "≤" + N.lat + "ms" : ""}</b>${caret}`;
@@ -1674,7 +1678,7 @@ footer a { color: var(--muted); }
     // one list, one "all · none": custom groups sit next to the providers and behave the same
     $("#popV").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_vendors")}</span>${allNone("vendors")}</div>
       <div class="chips">${allVids().map(v => `<button type="button" class="chip${vCount(v) ? "" : " zero"}" data-v="${esc(v)}" aria-pressed="${S.vendors.includes(v)}">${isCustom(v) ? gIcon(v) : ""}${esc(vnm(v))}<span class="c">${vCount(v)}</span></button>`).join("")}</div></section>
-      ${CDNS.length ? `<section class="pg"><div class="pg-h"><span>${t("cdn_h")}</span>${allNone("cdn")}</div>
+      ${CDNS.length ? `<section class="pg"><div class="pg-h"><span>${t("cdn_h")}</span></div>
       <div class="chips">${CDN_IDS.map(v => `<button type="button" class="chip" data-cdn="${esc(v)}" aria-pressed="${S.vendors.includes(v)}">${esc(vnm(v))}</button>`).join("")}</div>
       <div class="note">${esc(t("cdn_note"))}</div></section>` : ""}
       <section class="pg cust${CADD ? " adding" : ""}"><div class="pg-h"><span class="pg-hl"><span>${t("cust_h")}</span>${S.custom.length ? `<button type="button" class="cust-rules" data-rules>⚠ ${esc(t("cust_rules"))} →</button>` : ""}</span><button type="button" data-cadd aria-expanded="${CADD}">＋ ${t("add")}</button></div>
@@ -2290,7 +2294,7 @@ footer a { color: var(--muted); }
   document.addEventListener("toggle", e => {
     if (!(e.target.matches && e.target.matches("details.menu") && e.target.open)) return;
     // areas come second: without a provider, send the visitor to the provider picker instead
-    if (e.target.id === "plA" && !S.vendors.length) { e.target.open = false; $("#plV").open = true; return; }
+    if (e.target.id === "plA" && !S.vendors.some(v => !isCdn(v))) { e.target.open = false; $("#plV").open = true; return; }
     $$("details.menu[open]").forEach(d => { if (d !== e.target) d.open = false; });
   }, true);
   document.addEventListener("pointerdown", e => { if (!e.target.closest("details.menu")) $$("details.menu[open]").forEach(d => { d.open = false; }); });
@@ -2306,8 +2310,8 @@ footer a { color: var(--muted); }
     if (el.matches("[data-c]")) { S.cts = pickToggle(S.cts, coveredCts(), el.dataset.c); changed(); return; }
     if (el.dataset.all || el.dataset.none) {
       const k = el.dataset.all || el.dataset.none, on = !!el.dataset.all;
-      if (k === "vendors") { S.vendors = (on ? allVids() : []).concat(cdnPicks()); S.cts = coveredCts(); }
-      else if (k === "cdn") S.vendors = cloudPicks().concat(on ? CDN_IDS : []);
+      // the providers' all / none covers the CDNs and the custom groups too
+      if (k === "vendors") { S.vendors = on ? allVids().concat(CDN_IDS) : []; S.cts = coveredCts(); }
       else if (k === "cts") S.cts = on ? coveredCts() : [];
       changed(); return;
     }
