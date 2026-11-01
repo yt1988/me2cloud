@@ -1937,6 +1937,8 @@ footer a { color: var(--muted); }
   function ruleItems(withCustom) {
     const items = [], seen = new Set(), add = r => { if (!seen.has(r.d)) { seen.add(r.d); items.push(r); } };
     for (const e of ENDPOINTS.endpoints) for (const u of [e.url, e.url6]) if (u) add({ v: e.vendor, d: hostOf(u) });
+    // the CDN test hosts too: exact hosts, so only these addresses go direct, not the rest of those sites
+    for (const c of CDNS) add({ v: c.vendor, d: hostOf(c.url) });
     RULE_SPEC.forEach(r => add(Object.assign({}, r)));
     if (withCustom) S.custom.forEach(c => { const n = (c.g ? c.g + " · " : "") + c.name; add({ v: "custom", d: hostOf(c.url), n }); if (c.url6) add({ v: "custom", d: hostOf(c.url6), n }); });
     return items.map(r => Object.assign(r, { c: ruleNote(r) }));

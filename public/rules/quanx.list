@@ -1,4 +1,4 @@
-# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 448 exact hosts, generated 2026-10-27.
+# Me2Cloud: hosts used by the latency test, to be sent DIRECT. 454 exact hosts, generated 2026-10-27.
 # https://m2c.1ms.dog/ · https://github.com/yt1988/me2cloud
 # AWS · DynamoDB /ping
 host, dynamodb.us-east-1.amazonaws.com, direct
@@ -462,6 +462,18 @@ host, singapore-1.storage.gcore.dev, direct
 # Yandex Cloud · Object Storage
 host, storage.yandexcloud.net, direct
 host, storage.yandexcloud.kz, direct
+# Cloudflare · CDN
+host, www.cloudflare.com, direct
+# Akamai · CDN
+host, store.akamai.steamstatic.com, direct
+# Amazon CloudFront · CDN
+host, a0.awsstatic.com, direct
+# Google Cloud CDN · CDN
+host, www.gstatic.com, direct
+# Fastly · CDN
+host, github.githubassets.com, direct
+# Azure Front Door · CDN
+host, assets.xboxservices.com, direct
 # Me2Cloud network check (Cloudflare, ipify, ident.me)
 host, speed.cloudflare.com, direct
 host, stun.cloudflare.com, direct
