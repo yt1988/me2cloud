@@ -311,6 +311,8 @@ a.tl:hover { text-decoration: underline; }
 .cchip .x { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
 .cchip .x:hover { color: var(--bad); background: var(--bad-soft); }
 .run { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.run-x { margin-left: auto; font-size: 13px; }
+.pd-x { margin: 10px 2px 0; font-size: 13px; color: var(--muted); }
 .go { height: 52px; padding: 0 26px 0 20px; border-radius: 26px; border: 0; background: var(--ink); color: var(--ink-fg); cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 6px 18px color-mix(in srgb, var(--ink) 30%, transparent); }
 .go:hover { filter: brightness(1.05); }
 .go svg { width: 18px; height: 18px; }
@@ -692,12 +694,14 @@ footer a { color: var(--muted); }
     <div class="run">
       <button class="go" type="button" id="runBtn"></button>
       <div class="run-tx"><span id="runT"></span><div class="bar-row" id="bar" hidden><div class="bar"><i></i></div><span class="run-eta" id="runEta"></span></div></div>
+      <span class="run-x" id="v2cL"></span>
     </div>
   </section>
 
   <section id="resWrap" hidden>
     <div class="pd-h" style="margin:0 2px 10px"><b id="podiumT"></b><span class="note" id="podiumS"></span><button class="btn sm" type="button" id="shareBtn" style="margin-left:auto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.5M5 5.2L8 2.3l3 2.9M3.5 8.5v4.5h9V8.5"/></svg><span data-i="share_btn">Share</span></button></div>
     <div class="podium" id="podium"></div>
+    <p class="pd-x" id="speedL" hidden></p>
   </section>
 
   <section class="card" id="vizCard">
@@ -1684,6 +1688,9 @@ footer a { color: var(--muted); }
   };
   function renderCtrl() {
     if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
+    // VPS2Cloud measures the same regions from a server: its page for the one provider picked, else its home page
+    const one = S.vendors.filter(v => ENDPOINTS.vendors[v]);
+    $("#v2cL").innerHTML = one.length === 1 ? toolLink("v2c", t("lk_v2c", { v: vtext(one[0], "name") }), one[0] + "/") : toolLink("v2c", t("lk_v2cAll"));
     const N = S.need, cov = coveredCts();
     // the CDNs are picked by default and have no areas: the prompt and the areas wait for a provider
     const noV = !S.vendors.some(v => !isCdn(v));
@@ -1790,6 +1797,9 @@ footer a { color: var(--muted); }
     if (!slots) return;
     $("#podiumT").textContent = t(pass.length || !ok.length ? "picks_h" : "picks_closest");
     $("#podiumS").textContent = pass.length ? t("picks_sub2", { n: pass.length, need: needText() }) : RUN ? "" : t("picks_none");
+    // once a test is done: latency isn't bandwidth, the speed test is
+    const sl = RUN ? "" : toolLink("speed", t("lk_speed"));
+    $("#speedL").hidden = !sl; if (sl) $("#speedL").innerHTML = esc(t("speedPre")) + " " + sl;
     $("#podium").innerHTML = top.map((x, i) => { const g = grade(x.st.med);
       return `<button type="button" class="pd c${g}" data-go="${esc(x.e.id)}"><span class="rk">#${i + 1}</span><span class="ms">${fmt(x.st.med)}<small>ms</small></span>
         <span class="inf"><span class="nm">${esc(x.e.city)}</span><span class="sb"><span class="tg">${tierCode(g)} ${esc(tierName(g))}</span><span>${esc(x.e.vname)}</span><span class="num">±${fmt(x.st.jit)}</span></span></span></button>`; }).join("")

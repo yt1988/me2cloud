@@ -904,6 +904,9 @@
   };
   function renderCtrl() {
     if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
+    // VPS2Cloud measures the same regions from a server: its page for the one provider picked, else its home page
+    const one = S.vendors.filter(v => ENDPOINTS.vendors[v]);
+    $("#v2cL").innerHTML = one.length === 1 ? toolLink("v2c", t("lk_v2c", { v: vtext(one[0], "name") }), one[0] + "/") : toolLink("v2c", t("lk_v2cAll"));
     const N = S.need, cov = coveredCts();
     // the CDNs are picked by default and have no areas: the prompt and the areas wait for a provider
     const noV = !S.vendors.some(v => !isCdn(v));
@@ -1010,6 +1013,9 @@
     if (!slots) return;
     $("#podiumT").textContent = t(pass.length || !ok.length ? "picks_h" : "picks_closest");
     $("#podiumS").textContent = pass.length ? t("picks_sub2", { n: pass.length, need: needText() }) : RUN ? "" : t("picks_none");
+    // once a test is done: latency isn't bandwidth, the speed test is
+    const sl = RUN ? "" : toolLink("speed", t("lk_speed"));
+    $("#speedL").hidden = !sl; if (sl) $("#speedL").innerHTML = esc(t("speedPre")) + " " + sl;
     $("#podium").innerHTML = top.map((x, i) => { const g = grade(x.st.med);
       return `<button type="button" class="pd c${g}" data-go="${esc(x.e.id)}"><span class="rk">#${i + 1}</span><span class="ms">${fmt(x.st.med)}<small>ms</small></span>
         <span class="inf"><span class="nm">${esc(x.e.city)}</span><span class="sb"><span class="tg">${tierCode(g)} ${esc(tierName(g))}</span><span>${esc(x.e.vname)}</span><span class="num">±${fmt(x.st.jit)}</span></span></span></button>`; }).join("")
