@@ -299,7 +299,7 @@ export default {
     gcp: { kind: "Regionaler Storage-Endpunkt (rep)", note: "HEAD kostet fest ~1 s extra, daher nur GET. IP pro Region (34.1.x), nicht das globale Anycast-Frontend." },
     aliyun: { kind: "OSS", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." },
     tencent: { kind: "COS", note: "GET 403 schließt die Verbindung; HEAD nutzt sie weiter." },
-    huawei: { kind: "ECS API", note: "OBS schließt die Verbindung nach jeder anonymen Anfrage, daher wird der regionale ECS-API-Host genutzt; mit HEAD bleibt die Verbindung offen." },
+    huawei: { kind: "ECS API", note: "OBS schließt die Verbindung nach jeder anonymen Anfrage, daher wird der regionale ECS-API-Host genutzt. Die Antwort ist JSON, das der Browser bei einer no-cors-Anfrage abschneidet (und die Verbindung schließt); deshalb geht der HEAD im CORS-Modus raus, der sie offen hält." },
     linode: { kind: "Object Storage", note: "Die alten speedtest.<dc>.linode.com antworten nicht mehr; abgedeckt sind nur Regionen mit Object-Storage-Cluster." },
     digitalocean: { kind: "Spaces", note: "speedtest-<dc>.digitalocean.com gibt es nicht mehr; NYC1/NYC2 haben keine Spaces (für New York nyc3)." },
     ovh: { kind: "Speedtest (proof)", note: "proof.ovh.net leitet zu <site>.speedtest.network.ovh.net um; das Register nutzt direkt das Ziel." },

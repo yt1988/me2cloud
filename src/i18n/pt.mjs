@@ -299,7 +299,7 @@ export default {
     gcp: { kind: "Endpoint regional do Storage (rep)", note: "O HEAD soma ~1 s fixo, então só usamos GET. IP por região (34.1.x), não o front-end anycast global." },
     aliyun: { kind: "OSS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
     tencent: { kind: "COS", note: "O GET 403 fecha a conexão; o HEAD reaproveita." },
-    huawei: { kind: "ECS API", note: "O OBS fecha a conexão após cada requisição anônima, então usamos o host regional da API do ECS; com HEAD a conexão se mantém." },
+    huawei: { kind: "ECS API", note: "O OBS fecha a conexão após cada requisição anônima, então usamos o host regional da API do ECS. A resposta é JSON, que o navegador corta numa requisição no-cors (fechando a conexão); por isso o HEAD vai em modo CORS, que a mantém." },
     linode: { kind: "Object Storage", note: "Os antigos speedtest.<dc>.linode.com não respondem mais; só regiões com cluster de Object Storage entram." },
     digitalocean: { kind: "Spaces", note: "speedtest-<dc>.digitalocean.com não existe mais; NYC1/NYC2 não têm Spaces (para Nova York, nyc3)." },
     ovh: { kind: "Teste de velocidade (proof)", note: "proof.ovh.net redireciona para <site>.speedtest.network.ovh.net; usamos o destino final." },

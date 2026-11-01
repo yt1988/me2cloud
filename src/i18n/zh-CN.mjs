@@ -502,7 +502,7 @@ export default {
     huawei: {
       name: "华为云",
       kind: "ECS API",
-      note: "OBS 每次匿名请求后都会断开连接，所以改用同区域的 ECS API 地址，HEAD 能保持连接。"
+      note: "OBS 每次匿名请求后都会断开连接，所以改用同区域的 ECS API 地址。它返回的是 JSON，浏览器在 no-cors 请求里会截断并断开连接，所以 HEAD 用 CORS 方式发送，连接得以保持。"
     },
     azure: {
       name: "微软 Azure",

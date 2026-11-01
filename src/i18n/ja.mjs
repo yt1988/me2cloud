@@ -454,7 +454,7 @@ export default {
     },
     huawei: {
       kind: "ECS API",
-      note: "OBS は匿名リクエストのたびに接続を切るため、同じリージョンの ECS API ホストを使います。HEAD で接続を保てます。"
+      note: "OBS は匿名リクエストのたびに接続を切るため、同じリージョンの ECS API ホストを使います。応答は JSON で、no-cors だとブラウザが遮断して接続を切るので、HEAD を CORS モードで送り接続を保ちます。"
     },
     linode: {
       kind: "オブジェクトストレージ",

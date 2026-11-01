@@ -9,6 +9,9 @@ const VERIFIED = "2026-10-27";
 //   method   the request that keeps the connection alive, so warm samples ≈ RTT
 //   cors     Access-Control-Allow-Origin: * — the page can read status/body to confirm it reached the vendor
 //   tier     A: CORS + keep-alive · B: keep-alive, no CORS · C: no reuse possible, warm RTT not measurable
+//   noacao   send the request in CORS mode although the host sends no ACAO, and count the CORS rejection as the answer:
+//            a no-cors answer typed HTML / JSON / XML is cut off by Chrome's Opaque Response Blocking, which drops the
+//            connection (check: warm-up ≈ samples in the browser while curl reuses the connection)
 const VENDORS = {
   aws:          { name: "AWS",           method: "GET",  cors: true,  tier: "A", kind: "DynamoDB /ping",
                   note: "Body is 'healthy: dynamodb.<region>…', so the page can confirm the region." },
@@ -25,10 +28,11 @@ const VENDORS = {
   tencent:      { name: "Tencent Cloud", method: "HEAD", cors: false, tier: "B", kind: "COS",
                   note: "GET 403 closes the connection; HEAD reuses it." },
   // OBS answers every anonymous request (GET, HEAD, any path) with an error and Connection: close; the regional ECS API
-  // host keeps the connection on HEAD (404, no body) in all regions (checked 2026-11-01)
-  huawei:       { name: "Huawei Cloud",  method: "HEAD", cors: false, tier: "B", kind: "ECS API",
+  // host keeps the connection on HEAD in all regions (checked 2026-11-01). Its 404 is typed JSON, which ORB cuts off on
+  // a no-cors request (even a HEAD), dropping the connection: noacao sends it in CORS mode
+  huawei:       { name: "Huawei Cloud",  method: "HEAD", cors: false, tier: "B", kind: "ECS API", noacao: true,
                   url: code => `https://ecs.${code}.myhuaweicloud.com/`,
-                  note: "OBS closes the connection after every anonymous request, so the regional ECS API host is used; HEAD keeps the connection." },
+                  note: "OBS closes the connection after every anonymous request, so the regional ECS API host is used: HEAD in CORS mode keeps the connection (the browser cuts off its JSON answer on a no-cors request)." },
   linode:       { name: "Akamai (Linode)", method: "HEAD", cors: false, tier: "B", kind: "Object Storage",
                   note: "Legacy speedtest.<dc>.linode.com hosts no longer answer; only regions with an Object Storage cluster are covered." },
   digitalocean: { name: "DigitalOcean",  method: "GET",  cors: false, tier: "B", kind: "Spaces",
@@ -39,7 +43,7 @@ const VENDORS = {
   // a cache-busted fetch() never got an answer and <img> paid a new handshake per sample (2026-11-01, reported on LES).
   // noacao: "/" (the only path it answers) is HTML, which Chrome's Opaque Response Blocking cuts off on a no-cors GET,
   // dropping the connection; a CORS GET gets the whole answer before failing the CORS check and keeps it
-  hetzner:      { name: "Hetzner",       method: "CORS", cors: false, tier: "B", kind: "Speed test", nobust: true, noacao: true,
+  hetzner:      { name: "Hetzner",       method: "GET",  cors: false, tier: "B", kind: "Speed test", nobust: true, noacao: true,
                   note: "The server drops any request with a query string, so the URL is sent as is (cache: no-store instead). The page is HTML, which the browser cuts off on a no-cors request, closing the connection; a CORS GET receives the whole page before the CORS check fails, so the connection is kept and that failure counts as the answer." },
   ibm:          { name: "IBM Cloud",     method: "HEAD", cors: false, tier: "B", kind: "Cloud Object Storage",
                   note: "GET 403 closes the connection; HEAD reuses it." },

@@ -388,7 +388,7 @@ export default {
     },
     huawei: {
       kind: "ECS API",
-      note: "OBS closes the connection after every anonymous request, so the regional ECS API host is used; HEAD keeps the connection."
+      note: "OBS closes the connection after every anonymous request, so the regional ECS API host is used. Its answer is JSON, which the browser cuts off on a no-cors request (closing the connection), so the HEAD is sent in CORS mode, which keeps it."
     },
     linode: {
       kind: "Object Storage",

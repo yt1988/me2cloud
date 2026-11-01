@@ -346,7 +346,7 @@ export default {
     huawei: {
       name: "華為雲",
       kind: "ECS API",
-      note: "OBS 每次匿名請求後都會斷開連線，所以改用同區域的 ECS API 位址，HEAD 能保持連線。"
+      note: "OBS 每次匿名請求後都會斷開連線，所以改用同區域的 ECS API 位址。它回傳的是 JSON，瀏覽器在 no-cors 請求裡會截斷並斷開連線，所以 HEAD 用 CORS 方式發送，連線得以保持。"
     },
     azure: {
       name: "微軟 Azure",
