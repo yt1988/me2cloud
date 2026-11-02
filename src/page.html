@@ -2276,7 +2276,10 @@ footer a { color: var(--muted); }
         const mw = g.measureText(fmt(x.st.med)).width;
         font(500, 28, true); text("ms", cx + 30 + mw, cy + 128, C.mu);
         font(700, 32); text(fit(x.e.city, cw - 48), cx + 26, cy + 172, C.fg);
-        font(500, 24); text(fit(x.e.vname, cw - 48), cx + 26, cy + 204, C.mu);
+        // the jitter too, as on the page: the picks are ranked by median + 2 × jitter, so a steadier region can lead a faster one
+        font(500, 24); const jt = "±" + fmt(x.st.jit), jw = (font(500, 24, true), g.measureText(jt).width);
+        font(500, 24); text(fit(x.e.vname, cw - 64 - jw), cx + 26, cy + 204, C.mu);
+        font(500, 24, true); text(jt, cx + cw - 24, cy + 204, C.mu, "right");
       });
       // distribution: up to 6 providers, best first, on the page's log axis and tier bands
       const lx = P + 196, rx = W - P, y0 = cy + ch + 56;
