@@ -311,32 +311,39 @@ a.tl:hover { text-decoration: underline; }
 .cchip .x { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
 .cchip .x:hover { color: var(--bad); background: var(--bad-soft); }
 .run { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.cli { padding: 16px 20px; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.25fr); gap: 10px 14px; align-items: center; }
-.cli-ic svg { width: 26px; height: 26px; display: block; color: var(--fg); }
-.cli-t h3 { margin: 0; font-size: 15px; font-weight: 600; }
-.cli-t .note { margin: 3px 0 0; font-size: 12.5px; }
-.cli-cmd { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cli { padding: 12px 18px; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; gap: 10px 14px; align-items: center; }
+.cli-ic svg { width: 24px; height: 24px; display: block; color: var(--fg); }
+.cli-t { margin: 0; font-size: 15px; font-weight: 600; white-space: nowrap; }
 .cli-links { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding-right: 2px; }
-.lnk { border: 0; background: none; padding: 0; font: inherit; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.lnk { border: 0; background: none; padding: 0; font: inherit; font-size: 12.5px; color: var(--muted); cursor: pointer; white-space: nowrap; }
 .lnk:hover, .lnk:focus-visible { color: var(--fg); }
 .cli-gh { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); text-decoration: none; white-space: nowrap; }
 .cli-gh:hover { color: var(--fg); }
-.cli-gh svg { width: 14px; height: 14px; flex: none; }
+.cli-gh svg { width: 15px; height: 15px; flex: none; }
 .cli-gh .ext { width: 11px; height: 11px; }
 .gh-link { display: inline-flex; vertical-align: -2px; margin-left: 8px; color: var(--muted); }
 .gh-link:hover { color: var(--fg); }
 .gh-link svg { width: 16px; height: 16px; }
 .dialog.cli-dlg { width: 640px; }
 #cliBody { display: flex; flex-direction: column; gap: 14px; }
-.cmdline { display: flex; align-items: center; gap: 8px; }
-.cmdline code { flex: 1; min-width: 0; font-size: 12.5px; padding: 7px 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
-.cmdline .btn.sm { flex: none; }
-.rblk .note + .cmdline { margin-top: 4px; }
+/* a command box is its own copy button: the copy icon shows on hover (always on touch screens), a tick once copied */
+.cmdline { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; border: 0; border-radius: 8px; background: var(--soft); color: var(--fg); padding: 8px 36px 8px 12px; text-align: left; cursor: copy; transition: background .15s; }
+.cmdline:hover { background: color-mix(in srgb, var(--fg) 7%, var(--soft)); }
+.cmdline code { flex: 1; min-width: 0; font: 13px var(--f-num); background: none; padding: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cli > .cmdline code { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cmdline svg { position: absolute; right: 11px; top: 50%; width: 15px; height: 15px; margin-top: -7.5px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; color: var(--muted); transition: opacity .15s; }
+.cmdline .ok { display: none; color: var(--pool); stroke-width: 1.8; }
+.cmdline.done .cp { display: none; }
+.cmdline.done .ok { display: block; }
+@media (hover: hover) { .cmdline:not(:hover):not(:focus-visible) .cp { opacity: 0; } }
+.rblk .cmdline + .note { margin-top: -2px; }
 a.dl { font-size: 12.5px; color: var(--fg); align-self: flex-start; }
 #cliBody > .cli-gh { align-self: flex-start; }
+/* after the rules above, so it wins: icon and title on a line, then the command and the links each on their own */
 @media (max-width: 720px) {
   .cli { padding: 14px 16px; grid-template-columns: auto minmax(0, 1fr); }
-  .cli-cmd { grid-column: 1 / -1; }
+  .cli > .cmdline, .cli-links { grid-column: 1 / -1; }
+  .cli > .cmdline code { white-space: pre-wrap; }
 }
 .pd-x { margin: 10px 2px 0; font-size: 13px; color: var(--muted); }
 .go { height: 52px; padding: 0 26px 0 20px; border-radius: 26px; border: 0; background: var(--ink); color: var(--ink-fg); cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 6px 18px color-mix(in srgb, var(--ink) 30%, transparent); }
@@ -728,9 +735,9 @@ footer a { color: var(--muted); }
 
   <section class="card cli">
     <span class="cli-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg></span>
-    <div class="cli-t"><h3 data-i="cli_h">Test from a server: vps2cloud</h3><p class="note" data-i="cli_sub"></p></div>
-    <div class="cli-cmd"><div class="cmdline"><code id="cliCmd">curl -fsSL https://m2c.1ms.dog/i | sh</code><button class="btn sm" type="button" id="cliCopy" data-i="copy">Copy</button></div>
-      <div class="cli-links"><button class="lnk" type="button" data-cli data-i="cli_more">More ways</button><a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>GitHub<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a></div></div>
+    <h3 class="cli-t" data-i="cli_h">Test from your server too</h3>
+    <button class="cmdline" type="button" data-cmd data-al="copy" data-tl="copy"><code id="cliCmd">curl -fsSL https://m2c.1ms.dog/i | sh</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+    <div class="cli-links"><button class="lnk" type="button" data-cli aria-haspopup="dialog" aria-controls="cliDlg" data-i="cli_more">More ways</button><a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></div>
   </section>
 
   <section id="resWrap" hidden>
@@ -910,6 +917,7 @@ footer a { color: var(--muted); }
     $$("[data-i]").forEach(el => { el.textContent = t(el.dataset.i); });
     $$("[data-ph]").forEach(el => { el.placeholder = t(el.dataset.ph); });
     $$("[data-al]").forEach(el => { el.setAttribute("aria-label", t(el.dataset.al)); });
+    $$("[data-tl]").forEach(el => { el.title = t(el.dataset.tl); });
     $("#footTxt").textContent = t("foot", { d: ENDPOINTS.verified });
     renderDocs();
   }
@@ -2438,7 +2446,7 @@ footer a { color: var(--muted); }
     return `curl -fsSL ${SITE}/i | sh` + (one.length === 1 ? " -s -- -p " + one[0] : "");
   }
   function renderCli() {
-    const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy="${esc(cmd)}">${esc(t("copy"))}</button></div>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`;
     const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
     $("#cliBody").innerHTML = [
@@ -2528,7 +2536,7 @@ footer a { color: var(--muted); }
     if (el.id === "logBtn") { renderLog(); openDlg("logDlg"); return; }
     if (el.id === "aiBtn") { renderAI(); openDlg("aiDlg"); return; }
     if (el.matches("[data-cli]")) { renderCli(); openDlg("cliDlg"); return; }
-    if (el.id === "cliCopy") { copyText($("#cliCmd").textContent); return; }
+    if (el.matches("[data-cmd]")) { copyText(el.querySelector("code").textContent); el.classList.add("done"); setTimeout(() => el.classList.remove("done"), 1200); return; }
     if (el.matches("[data-copyai]")) { copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value); return; }
     if (el.matches("[data-retest]")) { const ep = ALL.find(x => x.id === el.dataset.retest); if (ep) runTests([ep], MODES.precise, 1, true); return; }
     if (el.matches("[data-copy]")) { copyText(el.dataset.copy); return; }

@@ -83,6 +83,7 @@
     $$("[data-i]").forEach(el => { el.textContent = t(el.dataset.i); });
     $$("[data-ph]").forEach(el => { el.placeholder = t(el.dataset.ph); });
     $$("[data-al]").forEach(el => { el.setAttribute("aria-label", t(el.dataset.al)); });
+    $$("[data-tl]").forEach(el => { el.title = t(el.dataset.tl); });
     $("#footTxt").textContent = t("foot", { d: ENDPOINTS.verified });
     renderDocs();
   }
@@ -1611,7 +1612,7 @@
     return `curl -fsSL ${SITE}/i | sh` + (one.length === 1 ? " -s -- -p " + one[0] : "");
   }
   function renderCli() {
-    const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy="${esc(cmd)}">${esc(t("copy"))}</button></div>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`;
     const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
     $("#cliBody").innerHTML = [
@@ -1701,7 +1702,7 @@
     if (el.id === "logBtn") { renderLog(); openDlg("logDlg"); return; }
     if (el.id === "aiBtn") { renderAI(); openDlg("aiDlg"); return; }
     if (el.matches("[data-cli]")) { renderCli(); openDlg("cliDlg"); return; }
-    if (el.id === "cliCopy") { copyText($("#cliCmd").textContent); return; }
+    if (el.matches("[data-cmd]")) { copyText(el.querySelector("code").textContent); el.classList.add("done"); setTimeout(() => el.classList.remove("done"), 1200); return; }
     if (el.matches("[data-copyai]")) { copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value); return; }
     if (el.matches("[data-retest]")) { const ep = ALL.find(x => x.id === el.dataset.retest); if (ep) runTests([ep], MODES.precise, 1, true); return; }
     if (el.matches("[data-copy]")) { copyText(el.dataset.copy); return; }
