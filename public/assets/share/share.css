@@ -1,0 +1,25 @@
+/* The share dialog (share.js). Colors come from the tool's own theme variables, so it follows light and dark. */
+.ms-share{box-sizing:border-box;width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;margin:auto;padding:20px;
+  border:1px solid var(--line,#8884);border-radius:16px;background:var(--bg,#fff);color:var(--fg,#111);
+  font:14px/1.5 Geist,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;box-shadow:0 20px 60px #0005}
+.ms-share::backdrop{background:#0008}
+.ms-share *{box-sizing:border-box}
+.ms-share-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ms-share-top h2{margin:0;font-size:17px;font-weight:650}
+.ms-share-x{flex:none;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:8px;background:none;color:var(--muted,#666);cursor:pointer}
+.ms-share-x:hover{background:color-mix(in srgb,var(--fg,#111) 8%,transparent);color:var(--fg,#111)}
+.ms-share-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.ms-share-img{display:block;width:100%;height:auto;min-height:120px;border:1px solid var(--line,#8884);border-radius:10px;background:color-mix(in srgb,var(--fg,#111) 4%,transparent)}
+.ms-share-link{display:flex;gap:8px;margin-top:14px}
+.ms-share-link input{flex:1;min-width:0;height:38px;padding:0 10px;border:1px solid var(--line,#8884);border-radius:8px;background:transparent;color:inherit;font:13px 'Geist Mono',Consolas,monospace}
+.ms-share-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ms-share-b{height:38px;padding:0 14px;border:1px solid var(--line,#8884);border-radius:8px;background:transparent;color:inherit;font:inherit;font-weight:550;cursor:pointer;white-space:nowrap}
+.ms-share-b:hover:not(:disabled){border-color:var(--ink,#2563eb)}
+.ms-share-b:disabled{opacity:.5;cursor:default}
+.ms-share-b.pri{border-color:var(--ink,#2563eb);background:var(--ink,#2563eb);color:#fff}
+.ms-share-b:focus-visible,.ms-share-x:focus-visible,.ms-share-chk input:focus-visible{outline:2px solid var(--ink,#2563eb);outline-offset:2px}
+.ms-share-chk{display:flex;align-items:flex-start;gap:8px;margin-top:14px;cursor:pointer}
+.ms-share-chk input{flex:none;margin:3px 0 0;accent-color:var(--ink,#2563eb)}
+.ms-share-chk:has(input:disabled){opacity:.5;cursor:default}
+.ms-share-note{margin:10px 0 0;color:var(--muted,#666);font-size:12.5px}
+@media (max-width:480px){.ms-share{padding:16px}.ms-share-acts .ms-share-b{flex:1 1 auto}}
