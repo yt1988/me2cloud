@@ -724,31 +724,36 @@
       }
       return { ip: "", src: "" };
     };
-    // The host's /_ms/me answers first: Cloudflare's view of this connection, first-party and with no third party.
-    // Its family needs no outside check; self-hosts get a 404 and fall back to speed.cloudflare.com/meta and the
-    // providers above. Everything else starts at once. The bar shows who and where as soon as one of them answers;
-    // the IP checks, WebRTC and the edge timing fill in the verdict afterwards.
+    // Two views of the exit, asked at once. The host's /_ms/me is first-party and quick, but it sees the path to this
+    // site, which a split proxy may send elsewhere; speed.cloudflare.com is in the direct rules, so its /meta sees the
+    // path the tests take and decides. The bar shows whichever answers first, and /meta then replaces a different
+    // address or, for the same one, only fills in what /_ms/me lacked. Self-hosts get a 404 from /_ms/me and use /meta
+    // alone. Only when /meta and the trace both fail does /_ms/me stand in, and then without a proxy verdict.
     const meU = "/_ms/me";
     const meP = fetch(meU, { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.json() : null).then(j => {
       if (!j || !j.ip) { logReq(location.origin + meU, "GET", null); return null; }
-      logReq(location.origin + meU, "GET", 0); ipSeen.push(j.ip);
+      logReq(location.origin + meU, "GET", 0);
       return { clientIp: j.ip, family: j.family || (j.ip.includes(":") ? 6 : 4), country: j.country || "", city: j.city || "", asn: j.asn,
         asOrganization: j.org || "", colo: j.colo ? { iata: j.colo } : null, httpProtocol: j.http || "" };
     }).catch(() => null);
-    const fams = meP.then(m => Promise.all([4, 6].map(f => m && m.family === f ? { ip: m.clientIp, src: location.hostname } : ipOf(f))));
+    // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
+    const metaP = fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
+      .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null);
+    const traceP = getTrace();
+    // the tests' exit: /meta's address, else the trace's ("" when both failed)
+    const pathP = Promise.all([metaP, traceP]).then(([m, tr]) => (m && m.clientIp) || (tr && tr.data.ip) || "");
+    // /_ms/me's family needs no outside check when it's the tests' exit too (or nothing else answered)
+    const fams = Promise.all([4, 6].map(f => Promise.all([meP, pathP]).then(([m, ip]) =>
+      m && m.family === f && (!ip || ip === m.clientIp) ? { ip: m.clientIp, src: location.hostname } : ipOf(f))));
     const rtcP = S.rtc ? stunIPs() : Promise.resolve(null);
     // this site's own Cloudflare trace: a first-party request, which Safari relays only under iCloud Private Relay,
     // never for "Limit IP Address Tracking" (self-hosts off Cloudflare just get nothing here)
     const selfP = fetch("/cdn-cgi/trace", { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : "")
       .then(x => (RX_TRACE.exec(x) || [])[1] || "").catch(() => "");
-    // without /_ms/me, speed.cloudflare.com/meta gives ASN, network name and city; it needs the default referrer policy (origin only)
-    const cfP = meP.then(m => m ? null : fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
-      .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null));
-    const metaP = Promise.all([meP, cfP]).then(([a, b]) => a || b);
-    // latency to the nearest Cloudflare edge: an empty download, median of 3. When /meta has opened the connection
-    // to the same host no warm-up is needed; otherwise one uncounted request opens it first
+    // latency to the nearest Cloudflare edge: an empty download, median of 3. It starts once /meta has opened the
+    // connection to the same host, so no warm-up is needed; if /meta failed, one uncounted request opens it first
     const edgeU = "https://speed.cloudflare.com/__down?bytes=0";
-    const edgeP = cfP.then(async m => {
+    const edgeP = metaP.then(async m => {
       const xs = [], warm = m ? 0 : 1;
       for (let i = 0; i < 3 + warm; i++) {
         if (i >= warm) step("chk_edge", { i: i - warm + 1, n: 3 });
@@ -759,12 +764,19 @@
       xs.sort((a, b) => a - b);
       return xs.length ? xs[xs.length >> 1] : null;
     });
-    const [meta, trace] = await Promise.all([metaP, getTrace()]);
+    const mkN = (m, tr) => ({ ok: !!(m || tr.ip), state: "checking", partial: true, step: NET.step, tz,
+      ip: (m && m.clientIp) || tr.ip || "", cc: (m && m.country) || tr.loc || "", city: m ? m.city || "" : "",
+      asn: m ? m.asn : null, org: m ? m.asOrganization : "", colo: (m && m.colo && m.colo.iata) || tr.colo || "",
+      http: tr.http || (m && m.httpProtocol) || "", warp: tr.warp || "off", recheck: NET.recheck });
+    // first paint from /_ms/me if it beats /meta; /meta doesn't wait for it
+    let me = null, painted = false;
+    meP.then(m => { me = m; if (m && !painted && run === netRun) { painted = true; NET = mkN(m, {}); renderNet(); } });
+    const [meta, trace] = await Promise.all([metaP, traceP]);
+    painted = true;
     const tr = trace ? trace.data : {};
-    const N = { ok: !!(meta || trace), state: "checking", partial: true, step: NET.step, tz,
-      ip: (meta && meta.clientIp) || tr.ip || "", cc: (meta && meta.country) || tr.loc || "", city: meta ? meta.city || "" : "",
-      asn: meta ? meta.asn : null, org: meta ? meta.asOrganization : "", colo: (meta && meta.colo && meta.colo.iata) || tr.colo || "",
-      http: tr.http || (meta && meta.httpProtocol) || "", warp: tr.warp || "off", recheck: NET.recheck };
+    let N = mkN(meta, tr);
+    if (!N.ok && (me = await meP)) { N = mkN(me, {}); N.self = true; }
+    else if (me && me.clientIp === N.ip) for (const [k, v] of Object.entries(mkN(me, {}))) if (!N[k] && v) N[k] = v;
     if (run !== netRun) return;
     if (N.ok) { NET = N; renderNet(); }                      // first paint, while the rest finishes
     edgeP.then(() => step("chk_ip"));
@@ -798,7 +810,7 @@
     // outside the relay ranges tells that form apart: the connection is direct and only the check's location is the relay's
     const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
     const RELAY_IP = /^(104\.28\.|146\.75\.|172\.2(2[4-9]|3[01])\.|2a09:bac[0-7]:|2a02:26f7:|2a04:4e41:)/i;
-    const viaRelay = N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
+    const viaRelay = !N.self && N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
     const direct = () => [...ipSeen, selfIp].filter(x => x && !RELAY_IP.test(x));
     // the first IP answer per family may well be a relayed one: before calling it Private Relay, wait for the rest
     if (viaRelay && !direct().length) { await Promise.allSettled(ipAll); if (run !== netRun) return; }
@@ -812,8 +824,8 @@
       N.cc = tzc || ""; N.city = ""; N.org = ""; N.asn = null;
       reasons.length = 0;
     }
-    N.reasons = N.relay ? [t("r_relay", { org: esc(N.org || "") + (N.asn ? " (AS" + N.asn + ")" : "") })] : reasons;
-    N.verdict = !N.ok ? "unknown" : N.reasons.length ? "warn" : "good";
+    N.reasons = N.self ? [] : N.relay ? [t("r_relay", { org: esc(N.org || "") + (N.asn ? " (AS" + N.asn + ")" : "") })] : reasons;
+    N.verdict = !N.ok || N.self ? "unknown" : N.reasons.length ? "warn" : "good";
     N.state = "done"; N.partial = false;
     NET = N; renderNet(); renderCtrl();
   }

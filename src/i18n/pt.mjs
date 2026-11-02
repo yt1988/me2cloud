@@ -362,7 +362,7 @@ export default {
     ["Toda requisição sai do seu navegador",
       `<ul><li>A página é só um conjunto de arquivos estáticos no Cloudflare. Sem servidor próprio, sem cadastro, sem analytics, e os resultados nunca são enviados.</li>
       <li>Todas as requisições de teste vão direto do seu navegador ao provedor. Abra o <b>Registro de requisições</b> ou as ferramentas de desenvolvedor (aba Rede) para ver uma por uma.</li>
-      <li>As informações de rede vêm primeiro do próprio <code>/_ms/me</code> deste site, o que o Cloudflare sabe da sua conexão, sem terceiros (uma cópia auto-hospedada sem ele usa <code>speed.cloudflare.com/meta</code>); o indicador WARP vem de <code>/cdn-cgi/trace</code>, e a verificação WebRTC opcional pergunta a <code>stun.cloudflare.com</code> o seu endereço de saída UDP. Dá para desligar nas Configurações.</li>
+      <li>As informações de rede vêm do Cloudflare: o próprio <code>/_ms/me</code> deste site responde primeiro, e valem <code>speed.cloudflare.com/meta</code> e <code>/cdn-cgi/trace</code>, que seguem o mesmo caminho dos testes, e a verificação WebRTC opcional pergunta a <code>stun.cloudflare.com</code> o seu endereço de saída UDP. Dá para desligar nas Configurações.</li>
       <li>A detecção de IPv4/IPv6 também consulta <code>ipify.org</code> e <code>ident.me</code>, dois provedores fora da Cloudflare, para que uma rede que bloqueie um deles não seja dada como sem IPv6.</li>
       <li>Configurações, destinos personalizados e os últimos testes ficam no armazenamento local deste navegador; “Apagar dados de teste” remove os resultados.</li></ul>`],
     ["Gentil com os provedores: sem limitação, sem bloqueio",

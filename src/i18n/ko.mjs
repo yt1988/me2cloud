@@ -558,7 +558,7 @@ export default {
       "모든 요청은 내 브라우저에서",
       `<ul><li>이 페이지는 Cloudflare에 올린 정적 파일뿐입니다. 백엔드도 가입도 분석 도구도 없고, 결과를 업로드하지 않습니다.</li>
       <li>테스트 요청은 모두 브라우저에서 업체로 바로 갑니다. 위의 <b>요청 기록</b>이나 개발자 도구 Network 탭에서 하나씩 볼 수 있습니다.</li>
-      <li>네트워크 정보는 먼저 이 사이트의 <code>/_ms/me</code>에 묻습니다. Cloudflare가 이 연결에 대해 답하며 제3자를 거치지 않습니다(직접 호스팅해 이것이 없으면 <code>speed.cloudflare.com/meta</code>). WARP 상태는 <code>/cdn-cgi/trace</code>에서 받고, 선택 사항인 WebRTC 확인은 <code>stun.cloudflare.com</code>에 UDP 출구 주소를 묻습니다. 설정에서 끌 수 있습니다.</li>
+      <li>네트워크 정보는 Cloudflare에서 받습니다. 이 사이트의 <code>/_ms/me</code>가 먼저 답하고, 테스트와 같은 경로를 쓰는 <code>speed.cloudflare.com/meta</code>, <code>/cdn-cgi/trace</code>의 결과를 최종으로 씁니다. 선택 사항인 WebRTC 확인은 <code>stun.cloudflare.com</code>에 UDP 출구 주소를 묻습니다. 설정에서 끌 수 있습니다.</li>
       <li>IPv4/IPv6 확인은 Cloudflare 외에 <code>ipify.org</code>와 <code>ident.me</code>에도 함께 물어보므로, 그중 하나가 막혀 있어도 IPv6가 없다고 잘못 판단하지 않습니다.</li>
       <li>설정, 사용자 지정 대상, 최근 결과는 이 브라우저의 로컬 저장소에만 있고 '테스트 데이터 지우기'로 결과를 지울 수 있습니다.</li></ul>`
     ],

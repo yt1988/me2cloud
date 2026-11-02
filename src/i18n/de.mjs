@@ -362,7 +362,7 @@ export default {
     ["Jede Anfrage kommt aus deinem Browser",
       `<ul><li>Die Seite besteht nur aus statischen Dateien bei Cloudflare. Kein Backend, kein Konto, keine Statistik, und Ergebnisse werden nie hochgeladen.</li>
       <li>Alle Testanfragen gehen direkt von deinem Browser zum Anbieter. Öffne das <b>Anfrageprotokoll</b> oder die Entwicklertools (Tab Netzwerk), um jede einzelne zu sehen.</li>
-      <li>Die Netzinfos kommen zuerst vom eigenen <code>/_ms/me</code> dieser Seite, Cloudflares Sicht auf deine Verbindung, ohne Dritte (eine selbst gehostete Kopie ohne ihn nutzt <code>speed.cloudflare.com/meta</code>); das WARP-Flag kommt von <code>/cdn-cgi/trace</code>; der optionale WebRTC-Check fragt <code>stun.cloudflare.com</code> nach deiner UDP-Ausgangsadresse. Lässt sich in den Einstellungen abschalten.</li>
+      <li>Die Netzinfos kommen von Cloudflare: Zuerst antwortet der eigene <code>/_ms/me</code> dieser Seite, maßgeblich sind dann <code>speed.cloudflare.com/meta</code> und <code>/cdn-cgi/trace</code>, die denselben Weg nehmen wie die Tests; der optionale WebRTC-Check fragt <code>stun.cloudflare.com</code> nach deiner UDP-Ausgangsadresse. Lässt sich in den Einstellungen abschalten.</li>
       <li>Die IPv4/IPv6-Erkennung fragt zusätzlich <code>ipify.org</code> und <code>ident.me</code>, zwei Anbieter außerhalb von Cloudflare. Blockiert ein Netz einen davon, gilt es deshalb nicht fälschlich als IPv6-los.</li>
       <li>Einstellungen, eigene Ziele und die letzten Tests bleiben im lokalen Speicher dieses Browsers; „Testdaten löschen“ entfernt die Ergebnisse.</li></ul>`],
     ["Rücksichtsvoll gegenüber Anbietern: keine Drosselung, keine Sperre",

@@ -563,7 +563,7 @@ export default {
       "Cada petición sale de tu navegador",
       `<ul><li>La página son archivos estáticos en Cloudflare. No hay servidor propio, ni cuentas, ni analítica, y los resultados nunca se suben.</li>
       <li>Todas las peticiones de prueba van directamente de tu navegador al proveedor. Abre el <b>Registro de peticiones</b> o las herramientas de desarrollo (pestaña Network) para verlas una a una.</li>
-      <li>La información de red sale primero del propio <code>/_ms/me</code> de este sitio, lo que Cloudflare sabe de tu conexión, sin terceros (una copia autoalojada sin él usa <code>speed.cloudflare.com/meta</code>); el indicador WARP viene de <code>/cdn-cgi/trace</code>, y la comprobación WebRTC opcional pregunta a <code>stun.cloudflare.com</code> tu dirección de salida UDP. Puedes desactivarla en Ajustes.</li>
+      <li>La información de red viene de Cloudflare: primero responde el propio <code>/_ms/me</code> de este sitio, y mandan <code>speed.cloudflare.com/meta</code> y <code>/cdn-cgi/trace</code>, que siguen la misma ruta que las pruebas, y la comprobación WebRTC opcional pregunta a <code>stun.cloudflare.com</code> tu dirección de salida UDP. Puedes desactivarla en Ajustes.</li>
       <li>La detección de IPv4/IPv6 también consulta <code>ipify.org</code> e <code>ident.me</code>, dos proveedores ajenos a Cloudflare, para que una red que bloquee a uno de ellos no se dé por red sin IPv6.</li>
       <li>Los ajustes, los destinos personalizados y las últimas pruebas se quedan en el almacenamiento local de este navegador. “Borrar datos de prueba” elimina los resultados.</li></ul>`
     ],

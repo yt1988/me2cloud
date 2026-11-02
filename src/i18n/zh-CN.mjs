@@ -456,7 +456,7 @@ export default {
       "所有请求都从你的浏览器发出",
       `<ul><li>本页是放在 Cloudflare 上的纯静态文件。没有后端、不用注册、没有统计代码，结果也从不上传。</li>
           <li>所有测试请求都由你的浏览器直接发给厂商。打开上面的<b>请求记录</b>，或者浏览器开发者工具的 Network 面板，每一条都看得到。</li>
-          <li>网络信息先问本站自己的 <code>/_ms/me</code>，由 Cloudflare 按这次连接作答，不经第三方（自部署没有它时改用 <code>speed.cloudflare.com/meta</code>）；WARP 状态来自 <code>/cdn-cgi/trace</code>。可选的 WebRTC 检测会向 <code>stun.cloudflare.com</code> 询问你的 UDP 出口地址，不想用可以在设置里关掉。</li>
+          <li>网络信息来自 Cloudflare：本站自己的 <code>/_ms/me</code> 先给出结果，再以和测试走同一路径的 <code>speed.cloudflare.com/meta</code> 与 <code>/cdn-cgi/trace</code> 为准。可选的 WebRTC 检测会向 <code>stun.cloudflare.com</code> 询问你的 UDP 出口地址，不想用可以在设置里关掉。</li>
       <li>IPv4/IPv6 检测会同时询问 Cloudflare 以外的 <code>ipify.org</code> 和 <code>ident.me</code>，某一家被网络阻断时，不会被误判成没有 IPv6。</li>
           <li>设置、自定义节点和最近几次结果只存在这个浏览器的本地存储里，“清空全部数据”会把它们全删掉。</li></ul>`
     ],

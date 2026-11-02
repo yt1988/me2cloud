@@ -300,7 +300,7 @@ export default {
       "所有請求都從你的瀏覽器發出",
       `<ul><li>本頁是放在 Cloudflare 上的純靜態檔案。沒有後端、不用註冊、沒有統計程式碼，結果也從不上傳。</li>
           <li>所有測試請求都由你的瀏覽器直接發給廠商。開啟上面的<b>請求記錄</b>，或者瀏覽器開發者工具的 Network 面板，每一條都看得到。</li>
-          <li>網路資訊先問本站自己的 <code>/_ms/me</code>，由 Cloudflare 依這次連線作答，不經第三方（自架沒有它時改用 <code>speed.cloudflare.com/meta</code>）；WARP 狀態來自 <code>/cdn-cgi/trace</code>。可選的 WebRTC 檢測會向 <code>stun.cloudflare.com</code> 詢問你的 UDP 出口地址，不想用可以在設定裡關掉。</li>
+          <li>網路資訊來自 Cloudflare：本站自己的 <code>/_ms/me</code> 先給出結果，再以和測試走同一路徑的 <code>speed.cloudflare.com/meta</code> 與 <code>/cdn-cgi/trace</code> 為準。可選的 WebRTC 檢測會向 <code>stun.cloudflare.com</code> 詢問你的 UDP 出口地址，不想用可以在設定裡關掉。</li>
       <li>IPv4/IPv6 檢測會同時詢問 Cloudflare 以外的 <code>ipify.org</code> 和 <code>ident.me</code>，某一家被網路阻斷時，不會被誤判成沒有 IPv6。</li>
           <li>設定、自定義節點和最近幾次結果只存在這個瀏覽器的本地儲存裡，“清空全部資料”會把它們全刪掉。</li></ul>`
     ],
