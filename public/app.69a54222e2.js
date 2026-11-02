@@ -815,7 +815,7 @@
   const toolUrl = (id, path = "") => { const b = (document.querySelector(`meta[name="${id}"]`) || {}).content; return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : ""; };
   const toolLink = (id, text, path, cls = "tl") => { const u = toolUrl(id, path); return u ? `<a class="${cls}" href="${esc(u)}" target="_blank" rel="noopener">${esc(text)}${ICON_EXT}</a>` : ""; };
   // the cost planner covers these providers; its result link takes where the user is (na, eu, ap or cn), 1 vCPU 2 GB 1 TB
-  const COST_V = new Set(["aws", "gcp", "azure", "oracle", "hetzner", "digitalocean", "vultr", "linode"]);
+  const COST_V = new Set(["aws", "gcp", "azure", "oracle", "hetzner", "digitalocean", "vultr", "linode", "tencent", "aliyun"]);
   const costLink = v => { if (!COST_V.has(v)) return "";
     const c = NET.cc === "CN" ? "cn" : { na: "na", eu: "eu", as: "ap", oc: "ap" }[CC_CT[NET.cc]];
     return toolLink("cost", t("lk_cost"), c ? `r/1_-_1_2_20_1_1024_0_0_${c}_1_500` : "", "tl dc"); };
