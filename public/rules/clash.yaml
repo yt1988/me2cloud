@@ -126,7 +126,7 @@ payload:
   - DOMAIN,objectstorage.us-boardman-1.oraclecloud.com
   - DOMAIN,objectstorage.us-quincy-1.oraclecloud.com
   - DOMAIN,objectstorage.sa-riodejaneiro-2.oraclecloud.com
-  # Vultr · Looking glass
+  # Vultr · Looking glass (favicon)
   - DOMAIN,ams-nl-ping.vultr.com
   - DOMAIN,ga-us-ping.vultr.com
   - DOMAIN,blr-in-ping.vultr.com

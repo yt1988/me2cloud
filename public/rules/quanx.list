@@ -125,7 +125,7 @@ host, objectstorage.us-shawnee-1.oraclecloud.com, direct
 host, objectstorage.us-boardman-1.oraclecloud.com, direct
 host, objectstorage.us-quincy-1.oraclecloud.com, direct
 host, objectstorage.sa-riodejaneiro-2.oraclecloud.com, direct
-# Vultr · Looking glass
+# Vultr · Looking glass (favicon)
 host, ams-nl-ping.vultr.com, direct
 host, ga-us-ping.vultr.com, direct
 host, blr-in-ping.vultr.com, direct
