@@ -724,21 +724,31 @@
       }
       return { ip: "", src: "" };
     };
-    // Everything starts at once. The bar shows who and where as soon as /meta answers; the IP checks, WebRTC and the
-    // edge timing fill in the verdict afterwards.
-    const fams = Promise.all([ipOf(4), ipOf(6)]);
+    // The host's /_ms/me answers first: Cloudflare's view of this connection, first-party and with no third party.
+    // Its family needs no outside check; self-hosts get a 404 and fall back to speed.cloudflare.com/meta and the
+    // providers above. Everything else starts at once. The bar shows who and where as soon as one of them answers;
+    // the IP checks, WebRTC and the edge timing fill in the verdict afterwards.
+    const meU = "/_ms/me";
+    const meP = fetch(meU, { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.json() : null).then(j => {
+      if (!j || !j.ip) { logReq(location.origin + meU, "GET", null); return null; }
+      logReq(location.origin + meU, "GET", 0); ipSeen.push(j.ip);
+      return { clientIp: j.ip, family: j.family || (j.ip.includes(":") ? 6 : 4), country: j.country || "", city: j.city || "", asn: j.asn,
+        asOrganization: j.org || "", colo: j.colo ? { iata: j.colo } : null, httpProtocol: j.http || "" };
+    }).catch(() => null);
+    const fams = meP.then(m => Promise.all([4, 6].map(f => m && m.family === f ? { ip: m.clientIp, src: location.hostname } : ipOf(f))));
     const rtcP = S.rtc ? stunIPs() : Promise.resolve(null);
     // this site's own Cloudflare trace: a first-party request, which Safari relays only under iCloud Private Relay,
     // never for "Limit IP Address Tracking" (self-hosts off Cloudflare just get nothing here)
     const selfP = fetch("/cdn-cgi/trace", { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : "")
       .then(x => (RX_TRACE.exec(x) || [])[1] || "").catch(() => "");
-    // speed.cloudflare.com/meta adds ASN, network name and city; it needs the default referrer policy (origin only)
-    const metaP = fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
-      .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null);
-    // latency to the nearest Cloudflare edge: an empty download, median of 3. It starts once /meta has opened the
-    // connection to the same host, so no warm-up is needed; if /meta failed, one uncounted request opens it first
+    // without /_ms/me, speed.cloudflare.com/meta gives ASN, network name and city; it needs the default referrer policy (origin only)
+    const cfP = meP.then(m => m ? null : fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6000) }).then(r => r.ok ? r.json() : null)
+      .then(j => { logReq("https://speed.cloudflare.com/meta", "GET", 0); return j; }).catch(() => null));
+    const metaP = Promise.all([meP, cfP]).then(([a, b]) => a || b);
+    // latency to the nearest Cloudflare edge: an empty download, median of 3. When /meta has opened the connection
+    // to the same host no warm-up is needed; otherwise one uncounted request opens it first
     const edgeU = "https://speed.cloudflare.com/__down?bytes=0";
-    const edgeP = metaP.then(async m => {
+    const edgeP = cfP.then(async m => {
       const xs = [], warm = m ? 0 : 1;
       for (let i = 0; i < 3 + warm; i++) {
         if (i >= warm) step("chk_edge", { i: i - warm + 1, n: 3 });

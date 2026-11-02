@@ -305,7 +305,7 @@ export default {
       "Every request comes from your browser",
       `<ul><li>The page is static files on Cloudflare. There is no backend, no account, no analytics, and results are never uploaded.</li>
           <li>All test requests go directly from your browser to the provider. Open the <b>Request log</b> above or your browser's developer tools (Network tab) to see each one.</li>
-          <li>Network info comes from Cloudflare (<code>speed.cloudflare.com/meta</code> and <code>/cdn-cgi/trace</code>), and the optional WebRTC check asks <code>stun.cloudflare.com</code> for your UDP exit address. Turn it off in Settings if you prefer.</li>
+          <li>Network info comes first from this site's own <code>/_ms/me</code>, Cloudflare's view of your connection with no third party involved (a self-hosted copy without it uses <code>speed.cloudflare.com/meta</code>); the WARP flag comes from <code>/cdn-cgi/trace</code>, and the optional WebRTC check asks <code>stun.cloudflare.com</code> for your UDP exit address. Turn it off in Settings if you prefer.</li>
       <li>IPv4/IPv6 detection also asks <code>ipify.org</code> and <code>ident.me</code>, two providers outside Cloudflare, so a network that blocks one of them isn't reported as having no IPv6.</li>
           <li>Settings, custom endpoints and the last runs stay in this browser's local storage. “Reset all data” wipes them.</li></ul>`
     ],

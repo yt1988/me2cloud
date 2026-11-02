@@ -558,7 +558,7 @@ export default {
       "すべてのリクエストはあなたのブラウザから",
       `<ul><li>このページは Cloudflare 上の静的ファイルだけです。バックエンドも登録も解析ツールもなく、結果をアップロードすることはありません。</li>
       <li>テストのリクエストはすべてブラウザからクラウド事業者へ直接送られます。上の<b>リクエストログ</b>か、開発者ツールの Network タブで 1 件ずつ確認できます。</li>
-      <li>ネットワーク情報は Cloudflare（<code>speed.cloudflare.com/meta</code> と <code>/cdn-cgi/trace</code>）から取得し、オプションの WebRTC チェックは <code>stun.cloudflare.com</code> に UDP の出口アドレスを問い合わせます。設定でオフにできます。</li>
+      <li>ネットワーク情報はまずこのサイト自身の <code>/_ms/me</code> に問い合わせます。Cloudflare がこの接続について答えるもので、第三者は介しません（自前でホストしてこれがない場合は <code>speed.cloudflare.com/meta</code>）。WARP の状態は <code>/cdn-cgi/trace</code> から取得し、オプションの WebRTC チェックは <code>stun.cloudflare.com</code> に UDP の出口アドレスを問い合わせます。設定でオフにできます。</li>
       <li>IPv4/IPv6 の判定では Cloudflare 以外の <code>ipify.org</code> と <code>ident.me</code> にも同時に問い合わせるので、どれか一つが遮断されていても IPv6 なしと誤判定しません。</li>
       <li>設定、カスタム接続先、最近の結果はこのブラウザのローカルストレージにだけ保存され、「テストデータを消去」で結果を削除できます。</li></ul>`
     ],
