@@ -195,6 +195,9 @@ export async function build({ check = false } = {}) {
   Cache-Control: public, max-age=31536000, immutable
 /assets/*
   Cache-Control: public, max-age=604800
+/assets/share/*
+  ! Cache-Control
+  Cache-Control: public, max-age=0, must-revalidate
 /assets/fonts/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable

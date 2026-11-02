@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js");
+//   const { share } = await import("/assets/share/share.js?v=3");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -25,6 +25,10 @@
 // 1ms.dog logo from /assets/. Short links come from the shell's <meta name="shortener">; without one (self-hosted)
 // the full link is used. The box starts unticked every time the dialog opens.
 //
+// Caching: serve /assets/share/* with Cache-Control: max-age=0, must-revalidate (a 304 costs little, and the folder is
+// loaded only when needed), and import with ?v=VERSION. A browser that kept an old copy for a week otherwise runs the
+// old dialog against the tool's new code. This file asks for share.css and qr.js with the same ?v=.
+//
 // On 1ms.dog (the shortener meta is there) two more things happen, both skipped when self-hosted:
 //   - the card, fitted into 1200×630, is stored with the short link, so chat apps show this result as the link's
 //     preview image (1ms-link: PUT /api/og/<code>); the dialog says so instead of "never uploaded"
@@ -33,7 +37,7 @@
 // Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
 // visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
 //
-//   const { received } = await import("/assets/share/share.js");
+//   const { received } = await import("/assets/share/share.js?v=3");
 //   const r = received({
 //     lang: "zh-CN",
 //     ts: 1730000000000,            // when the shared result was measured
@@ -43,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 2;
+export const VERSION = 3;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -123,7 +127,7 @@ export const WHAT = ["ip", "country", "city", "isp", "colo"];
 const W = 1200, P = 56, TOP = 200;
 const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif";
 const M = "'Geist Mono', Consolas, monospace";
-const here = name => new URL(name, import.meta.url).href;
+const here = name => new URL(`${name}?v=${VERSION}`, import.meta.url).href;
 
 function roundRect(x, a, b, w, h, r) {
   x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r);
