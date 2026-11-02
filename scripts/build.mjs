@@ -202,6 +202,9 @@ export async function build({ check = false } = {}) {
   Cache-Control: public, max-age=2592000
 /endpoints.json
   Access-Control-Allow-Origin: *
+/e/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=86400
 /llms.txt
   Access-Control-Allow-Origin: *
   Content-Type: text/plain; charset=utf-8
@@ -217,6 +220,11 @@ export async function build({ check = false } = {}) {
       vendors: E.vendors, endpoints: E.endpoints, cdns: E.cdns || [] }, null, 1) + "\n",
     "sitemap.xml": sitemap, "robots.txt": robots, "_headers": headers
   };
+  // the endpoint list again under its fingerprint, as the command-line version (vps2cloud) names the list in its share
+  // links: SHA-256 over the region ids in order, each followed by a newline, first 6 bytes, base64url. Files already in
+  // public/e/ stay, so links made with an older list keep decoding.
+  const fp = createHash("sha256").update(E.endpoints.map(e => e.id + "\n").join("")).digest().subarray(0, 6).toString("base64url");
+  files["e/" + fp + ".json"] = files["endpoints.json"];
   for (const [name, text] of Object.entries(ruleSets(E, spec))) files["rules/" + name] = text;
   for (const p of pages) files[p.file] = p.html;
 

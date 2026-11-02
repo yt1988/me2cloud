@@ -931,9 +931,7 @@
   };
   function renderCtrl() {
     if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
-    // VPS2Cloud measures the same regions from a server: its page for the one provider picked, else its home page
-    const one = S.vendors.filter(v => ENDPOINTS.vendors[v]);
-    $("#v2cL").innerHTML = one.length === 1 ? toolLink("v2c", t("lk_v2c", { v: vtext(one[0], "name") }), one[0] + "/") : toolLink("v2c", t("lk_v2cAll"));
+    $("#cliCmd").textContent = cliCmd();
     const N = S.need, cov = coveredCts();
     // the CDNs are picked by default and have no areas: the prompt and the areas wait for a provider
     const noV = !S.vendors.some(v => !isCdn(v));
@@ -1316,7 +1314,7 @@
   const b64u = bytes => { let s = ""; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
   const b64d = str => { const s = atob(str.replace(/-/g, "+").replace(/_/g, "/")); const b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; };
   const zip = async text => new Uint8Array(await new Response(new Blob([text]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());
-  const unzip = bytes => new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text();
+  const unzipBytes = async bytes => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
   // whose line it was: the sharer's in a shared view, otherwise this visitor's network check
   function shareLoc() {
     const P = VIEW.shared;
@@ -1333,11 +1331,65 @@
     return { v: 1, t: Math.round((VIEW.ts || Date.now()) / 60000), p: VIEW.peak ? 1 : 0, k: VIEW.mode || MODES[S.mode], f: VIEW.ip === "v6" ? 6 : 4, x: L.proxy ? 1 : 0, l: withLoc && (L.city || L.org) ? [L.city, L.cc, L.org] : 0, r };
   }
   const shareLink = async withLoc => location.origin + location.pathname + "#s=" + b64u(await zip(JSON.stringify(sharePayload(withLoc))));
+  // The command-line version (vps2cloud) writes formats 2 and 3, binary, as docs/share-format.md in yt1988/vps2cloud
+  // describes them: regions are bits over the endpoint list the run used, named by a fingerprint of its region ids;
+  // format 3 adds each family's CDNs by id. This page's list, or an archived one under /e/, resolves them.
+  const listFp = async ids => b64u(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ids.map(i => i + "\n").join("")))).subarray(0, 6));
+  function decodeCLI(b) {
+    let p = 0;
+    const byte = () => b[p++];
+    const uv = () => { let v = 0, sh = 0, x; do { x = b[p++]; v += (x & 127) * 2 ** sh; sh += 7; } while (x & 128); return v; };
+    const str = () => { const n = uv(), out = new TextDecoder().decode(b.subarray(p, p + n)); p += n; return out; };
+    const format = byte(), flags = byte(), mode = byte(), n = uv(), t = uv(), fp = b64u(b.subarray(p, p + 6)); p += 6;
+    const l = [str(), str(), str()];
+    const blocks = (flags & 8 ? [4, 6] : [flags & 2 ? 6 : 4]).map(f => {
+      const count = uv(), bm = b.subarray(p, p + Math.ceil(count / 8)); p += Math.ceil(count / 8);
+      const rows = [], cdns = [];
+      for (let i = 0; i < count; i++) if (bm[i >> 3] & (1 << (i & 7))) rows.push([i, uv(), uv(), uv(), byte()]);
+      if (format === 3) for (let k = uv(); k > 0; k--) cdns.push([str(), uv(), uv(), uv(), byte()]);
+      return { f, rows, cdns };
+    });
+    return { flags, mode: ["tcp", "https", "icmp"][mode] || "tcp", n, t, fp, l, blocks };
+  }
+  async function listIds(fp) {
+    const ids = ENDPOINTS.endpoints.map(e => e.id);
+    if (await listFp(ids) === fp) return ids;
+    const r = await fetch("/e/" + fp + ".json");
+    if (!r.ok) throw new Error("list");
+    return (await r.json()).endpoints.map(e => e.id);
+  }
+  // a CLI link over both families holds one result per family; the banner switches between them
+  function useFam(i) {
+    const P = VIEW.shared;
+    if (!P || !P.maps || !P.maps[i]) return;
+    P.fi = i; P.f = P.fams[i]; R = P.maps[i]; VIEW.ip = P.f === 6 ? "v6" : "v4"; openId = null;
+  }
   async function loadShared() {
     const m = /(?:^#|&)s=([A-Za-z0-9_-]+)/.exec(location.hash);
     if (!m) return false;
     try {
-      const P = JSON.parse(await unzip(b64d(m[1])));
+      const bytes = await unzipBytes(b64d(m[1]));
+      if (bytes[0] === 2 || bytes[0] === 3) {
+        // a CDN-only run has no regions, so it needs no list
+        const D = decodeCLI(bytes), ids = D.blocks.some(bl => bl.rows.length) ? await listIds(D.fp) : [];
+        const maps = D.blocks.map(bl => {
+          const map = new Map();
+          const put = (id, med, dp90, jit, loss) => {
+            if (!id || !ALL.some(e => e.id === id)) return;              // a region or CDN this page doesn't know
+            const md = med / 10, p90 = md + dp90 / 10;
+            map.set(id, { s: [], st: "done", m: "", sum: { med: md, p25: md, p75: (md + p90) / 2, p90, jit: jit / 10, loss: loss / 100, n: D.n } });
+          };
+          for (const [i, ...v] of bl.rows) put(ids[i], ...v);
+          for (const [id, ...v] of bl.cdns) put(id, ...v);
+          return map;
+        });
+        // flag bit 4: the CLI saw a local proxy or TUN answer the connections, the same note as a proxied browser run
+        const P = { v: 2, t: D.t, p: D.flags & 1, k: D.n, x: D.flags & 16 ? 1 : 0, l: D.l[0] || D.l[2] ? D.l : 0, m: D.mode, fams: D.blocks.map(bl => bl.f), maps };
+        VIEW = { ts: D.t * 60000, live: false, peak: !!(D.flags & 1), mode: D.n, shared: P };
+        useFam(0);
+        return true;
+      }
+      const P = JSON.parse(new TextDecoder().decode(bytes));
       if (!P || P.v !== 1 || !P.r || typeof P.r !== "object") throw 0;
       const next = new Map();
       for (const [v, rows] of Object.entries(P.r)) for (const row of rows) {
@@ -1354,7 +1406,9 @@
     $("#sharedBar").hidden = !P;
     if (!P) return;
     const who = P.l ? [P.l[0], country(P.l[1]), P.l[2]].filter(Boolean).join(" · ") : t("share_anon");
-    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc(t("share_banner", { who, d: fmtTs(P.t * 60000) }) + (P.f === 6 ? " · IPv6" : "") + (P.p ? " · " + t("tagPeak") : "") + (P.x ? " · " + t("share_viaProxy") : ""));
+    const two = P.maps && P.maps.length > 1;
+    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc(t("share_banner", { who, d: fmtTs(P.t * 60000) }) + (P.m ? " · " + t("mm_" + P.m) : "") + (P.f === 6 && !two ? " · IPv6" : "") + (P.p ? " · " + t("tagPeak") : "") + (P.x ? " · " + t("share_viaProxy") : ""))
+      + (two ? ` <span class="fam-seg">${P.fams.map((f, i) => `<button type="button" class="btn sm" data-fam="${i}" aria-pressed="${i === (P.fi || 0)}">IPv${f}</button>`).join("")}</span>` : "");
   }
   const clearHash = () => { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} };
   function exitShared() {
@@ -1550,6 +1604,26 @@
   /* ---------- misc UI ---------- */
   let toastT = 0;
   function toast(msg) { const el = $("#toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, Math.max(2200, msg.length * 110)); }
+  // the command-line version, vps2cloud: this site serves its installers (src/worker.js). With one provider picked
+  // the command tests just that one, as the page does
+  function cliCmd() {
+    const one = S.vendors.filter(v => ENDPOINTS.vendors[v]);
+    return `curl -fsSL ${SITE}/i | sh` + (one.length === 1 ? " -s -- -p " + one[0] : "");
+  }
+  function renderCli() {
+    const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy="${esc(cmd)}">${esc(t("copy"))}</button></div>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+    const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`;
+    const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
+    $("#cliBody").innerHTML = [
+      sec("cli_install", line(`curl -fsSL ${SITE}/i | sh`, t("cli_install_s"))),
+      sec("cli_once", line(`curl -fsSL ${SITE}/i | sh -s -- run`)),
+      sec("cli_wget", line(`wget -qO- ${SITE}/i | sh`)),
+      sec("cli_opts", line("vps2cloud -p aws,gcp --continent as", t("cli_o_pick")) + line("vps2cloud --ip both", t("cli_o_ip")) +
+        line("vps2cloud --cdn", t("cli_o_cdn")) + line("vps2cloud -m icmp", t("cli_o_icmp")) + line("vps2cloud -o md", t("cli_o_md"))),
+      sec("cli_win", line(`irm ${SITE}/i.ps1 | iex`, t("cli_win_s")) + `<a class="dl" href="${esc(win)}">vps2cloud-windows-amd64.exe ↓</a>`),
+      `<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(t("cli_src"))}<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>`,
+    ].join("");
+  }
   async function copyText(s) {
     try { await navigator.clipboard.writeText(s); }
     catch (e) { const ta = document.createElement("textarea"); ta.value = s; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (x) {} ta.remove(); }
@@ -1626,6 +1700,8 @@
     if (el.matches("[data-close]")) { closeDlg(); return; }
     if (el.id === "logBtn") { renderLog(); openDlg("logDlg"); return; }
     if (el.id === "aiBtn") { renderAI(); openDlg("aiDlg"); return; }
+    if (el.matches("[data-cli]")) { renderCli(); openDlg("cliDlg"); return; }
+    if (el.id === "cliCopy") { copyText($("#cliCmd").textContent); return; }
     if (el.matches("[data-copyai]")) { copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value); return; }
     if (el.matches("[data-retest]")) { const ep = ALL.find(x => x.id === el.dataset.retest); if (ep) runTests([ep], MODES.precise, 1, true); return; }
     if (el.matches("[data-copy]")) { copyText(el.dataset.copy); return; }
@@ -1644,6 +1720,7 @@
     if (el.id === "shareNative" && shareCache) { navigator.share({ files: [shareCache.file], title: "Me2Cloud", text: t("card_cta") + " " + shareCache.link }).catch(() => {}); return; }
     if (el.id === "sharedExit") { exitShared(); return; }
     if (el.id === "sharedSame") { testSame(); return; }
+    if (el.matches("[data-fam]")) { useFam(+el.dataset.fam); renderShared(); renderAll(); return; }
     if (el.matches("[data-hq]")) { helpIdx = +el.dataset.hq; renderDocs(); return; }
     if (el.matches("[data-hstep]")) { helpIdx = clamp(helpIdx + +el.dataset.hstep, 0, $("#helpSel").options.length - 1); renderDocs(); return; }
     if (el.classList.contains("r")) { const id = el.parentElement.dataset.id; const prev = openId; openId = openId === id ? null : id; markDirty(id); if (prev) markDirty(prev); return; }
