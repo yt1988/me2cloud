@@ -204,7 +204,8 @@ export const CANDIDATES = [
     ? [`https://dynamodb.${c}.amazonaws.com.cn/ping`]
     : [`https://dynamodb.${c}.amazonaws.com/ping`, `https://ec2.${c}.amazonaws.com/ping`])),
   ...ORACLE.map(([c, city, cc]) => r("oracle", c, city, cc, [`https://objectstorage.${c}.oraclecloud.com/`])),
-  ...VULTR.map(([c, city, cc, ps]) => r("vultr", c, city, cc, ps.map(p => `https://${p}-ping.vultr.com/`))),
+  // the looking-glass page itself is PHP (~100 ms of server time); its favicon is a static file nginx answers by itself
+  ...VULTR.map(([c, city, cc, ps]) => r("vultr", c, city, cc, ps.map(p => `https://${p}-ping.vultr.com/favicon.ico`))),
   ...ALIYUN.map(([c, city, cc]) => r("aliyun", c, city, cc, [`https://oss-${c}.aliyuncs.com/`])),
   ...TENCENT.map(([c, city, cc]) => r("tencent", c, city, cc, [`https://cos.${c}.myqcloud.com/`])),
   ...HUAWEI.map(([c, city, cc]) => r("huawei", c, city, cc, [`https://obs.${c}.myhuaweicloud.com/`])),
@@ -218,7 +219,8 @@ export const CANDIDATES = [
   ...DO.map(([c, city, cc]) => r("digitalocean", c, city, cc, [`https://${c}.digitaloceanspaces.com/`, `https://speedtest-${c}.digitalocean.com/`])),
   ...HETZNER.map(([c, city, cc]) => r("hetzner", c, city, cc, [`https://${c}-speed.hetzner.com/`])),
   ...OVH.map(([c, city, cc, us]) => r("ovh", c, city, cc, us)),
-  ...GCP.map(([c, city, cc]) => r("gcp", c, city, cc, [`https://storage.${c}.rep.googleapis.com/`])),
+  // over HTTP/1.1 each 400 the Storage front end sends on a reused connection takes ~1 s; /generate_204 (a 404) does not
+  ...GCP.map(([c, city, cc]) => r("gcp", c, city, cc, [`https://storage.${c}.rep.googleapis.com/generate_204`])),
   ...IBM.map(([c, city, cc]) => r("ibm", c, city, cc, [`https://s3.${c}.cloud-object-storage.appdomain.cloud/`])),
   ...SCALEWAY.map(([c, city, cc]) => r("scaleway", c, city, cc, [`https://s3.${c}.scw.cloud/`])),
   ...VOLC.map(([c, city, cc]) => r("volcengine", c, city, cc, [`https://tos-${c}.volces.com/`])),

@@ -4680,11 +4680,11 @@
   "city": "Amsterdam",
   "cc": "NL",
   "urls": [
-   "https://ams-nl-ping.vultr.com/"
+   "https://ams-nl-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://ams-nl-ping.vultr.com/",
+    "url": "https://ams-nl-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4695,24 +4695,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 893,
+     "ms": 830,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 699,
+     "ms": 714,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -4728,11 +4728,11 @@
   "city": "Atlanta",
   "cc": "US",
   "urls": [
-   "https://ga-us-ping.vultr.com/"
+   "https://ga-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://ga-us-ping.vultr.com/",
+    "url": "https://ga-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4743,24 +4743,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 916,
+     "ms": 826,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 908,
+     "ms": 737,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -4776,11 +4776,11 @@
   "city": "Bangalore",
   "cc": "IN",
   "urls": [
-   "https://blr-in-ping.vultr.com/"
+   "https://blr-in-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://blr-in-ping.vultr.com/",
+    "url": "https://blr-in-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4791,24 +4791,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 894,
+     "ms": 700,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 725,
+     "ms": 754,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -4824,11 +4824,11 @@
   "city": "Mumbai",
   "cc": "IN",
   "urls": [
-   "https://bom-in-ping.vultr.com/"
+   "https://bom-in-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://bom-in-ping.vultr.com/",
+    "url": "https://bom-in-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4839,24 +4839,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1202,
+     "ms": 491,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1120,
+     "ms": 1138,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -4872,11 +4872,11 @@
   "city": "Paris",
   "cc": "FR",
   "urls": [
-   "https://par-fr-ping.vultr.com/"
+   "https://par-fr-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://par-fr-ping.vultr.com/",
+    "url": "https://par-fr-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4887,24 +4887,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 891,
+     "ms": 640,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 730,
+     "ms": 471,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -4920,11 +4920,11 @@
   "city": "Delhi NCR",
   "cc": "IN",
   "urls": [
-   "https://del-in-ping.vultr.com/"
+   "https://del-in-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://del-in-ping.vultr.com/",
+    "url": "https://del-in-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4935,24 +4935,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 847,
+     "ms": 720,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 862,
+     "ms": 800,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -4968,11 +4968,11 @@
   "city": "Dallas",
   "cc": "US",
   "urls": [
-   "https://tx-us-ping.vultr.com/"
+   "https://tx-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://tx-us-ping.vultr.com/",
+    "url": "https://tx-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -4983,24 +4983,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1255,
+     "ms": 829,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 919,
+     "ms": 732,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5016,11 +5016,11 @@
   "city": "New Jersey",
   "cc": "US",
   "urls": [
-   "https://nj-us-ping.vultr.com/"
+   "https://nj-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://nj-us-ping.vultr.com/",
+    "url": "https://nj-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5031,24 +5031,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 970,
+     "ms": 846,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 880,
+     "ms": 704,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5064,11 +5064,11 @@
   "city": "Frankfurt",
   "cc": "DE",
   "urls": [
-   "https://fra-de-ping.vultr.com/"
+   "https://fra-de-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://fra-de-ping.vultr.com/",
+    "url": "https://fra-de-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5079,24 +5079,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 881,
+     "ms": 414,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 661,
+     "ms": 383,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5112,12 +5112,12 @@
   "city": "Honolulu",
   "cc": "US",
   "urls": [
-   "https://hon-hi-us-ping.vultr.com/",
-   "https://hnl-us-ping.vultr.com/"
+   "https://hon-hi-us-ping.vultr.com/favicon.ico",
+   "https://hnl-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://hon-hi-us-ping.vultr.com/",
+    "url": "https://hon-hi-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5128,24 +5128,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 987,
+     "ms": 777,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 806,
+     "ms": 635,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5161,11 +5161,11 @@
   "city": "Seoul",
   "cc": "KR",
   "urls": [
-   "https://sel-kor-ping.vultr.com/"
+   "https://sel-kor-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://sel-kor-ping.vultr.com/",
+    "url": "https://sel-kor-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5176,24 +5176,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1249,
+     "ms": 850,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 841,
+     "ms": 752,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5209,12 +5209,12 @@
   "city": "Osaka",
   "cc": "JP",
   "urls": [
-   "https://osk-jp-ping.vultr.com/",
-   "https://itm-jp-ping.vultr.com/"
+   "https://osk-jp-ping.vultr.com/favicon.ico",
+   "https://itm-jp-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://osk-jp-ping.vultr.com/",
+    "url": "https://osk-jp-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5225,24 +5225,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 858,
+     "ms": 774,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 816,
+     "ms": 682,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5258,11 +5258,11 @@
   "city": "Johannesburg",
   "cc": "ZA",
   "urls": [
-   "https://jnb-za-ping.vultr.com/"
+   "https://jnb-za-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://jnb-za-ping.vultr.com/",
+    "url": "https://jnb-za-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5273,24 +5273,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1382,
+     "ms": 1436,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 3429,
+     "ms": 1095,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5306,11 +5306,11 @@
   "city": "Los Angeles",
   "cc": "US",
   "urls": [
-   "https://lax-ca-us-ping.vultr.com/"
+   "https://lax-ca-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://lax-ca-us-ping.vultr.com/",
+    "url": "https://lax-ca-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5321,24 +5321,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1058,
+     "ms": 827,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1179,
+     "ms": 762,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5354,11 +5354,11 @@
   "city": "London",
   "cc": "GB",
   "urls": [
-   "https://lon-gb-ping.vultr.com/"
+   "https://lon-gb-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://lon-gb-ping.vultr.com/",
+    "url": "https://lon-gb-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5369,24 +5369,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 999,
+     "ms": 642,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 790,
+     "ms": 504,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5402,11 +5402,11 @@
   "city": "Madrid",
   "cc": "ES",
   "urls": [
-   "https://mad-es-ping.vultr.com/"
+   "https://mad-es-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://mad-es-ping.vultr.com/",
+    "url": "https://mad-es-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5417,24 +5417,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 788,
+     "ms": 900,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 691,
+     "ms": 609,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5450,12 +5450,12 @@
   "city": "Manchester",
   "cc": "GB",
   "urls": [
-   "https://man-uk-ping.vultr.com/",
-   "https://man-gb-ping.vultr.com/"
+   "https://man-uk-ping.vultr.com/favicon.ico",
+   "https://man-gb-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://man-uk-ping.vultr.com/",
+    "url": "https://man-uk-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5466,24 +5466,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 818,
+     "ms": 647,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 638,
+     "ms": 611,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5499,11 +5499,11 @@
   "city": "Melbourne",
   "cc": "AU",
   "urls": [
-   "https://mel-au-ping.vultr.com/"
+   "https://mel-au-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://mel-au-ping.vultr.com/",
+    "url": "https://mel-au-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5514,24 +5514,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1102,
+     "ms": 916,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1102,
+     "ms": 804,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5547,11 +5547,11 @@
   "city": "Mexico City",
   "cc": "MX",
   "urls": [
-   "https://mex-mx-ping.vultr.com/"
+   "https://mex-mx-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://mex-mx-ping.vultr.com/",
+    "url": "https://mex-mx-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5562,24 +5562,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1055,
+     "ms": 1001,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 864,
+     "ms": 799,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5595,11 +5595,11 @@
   "city": "Miami",
   "cc": "US",
   "urls": [
-   "https://fl-us-ping.vultr.com/"
+   "https://fl-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://fl-us-ping.vultr.com/",
+    "url": "https://fl-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5610,24 +5610,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1029,
+     "ms": 1190,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1248,
+     "ms": 720,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5643,12 +5643,12 @@
   "city": "Milan",
   "cc": "IT",
   "urls": [
-   "https://mil-it-ping.vultr.com/",
-   "https://mxp-it-ping.vultr.com/"
+   "https://mil-it-ping.vultr.com/favicon.ico",
+   "https://mxp-it-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://mil-it-ping.vultr.com/",
+    "url": "https://mil-it-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5657,7 +5657,7 @@
     "result": "nxdomain"
    },
    {
-    "url": "https://mxp-it-ping.vultr.com/",
+    "url": "https://mxp-it-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5668,24 +5668,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 746,
+     "ms": 640,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 620,
+     "ms": 657,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5701,11 +5701,11 @@
   "city": "Tokyo",
   "cc": "JP",
   "urls": [
-   "https://hnd-jp-ping.vultr.com/"
+   "https://hnd-jp-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://hnd-jp-ping.vultr.com/",
+    "url": "https://hnd-jp-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5716,24 +5716,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 531,
+     "ms": 1589,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 544,
+     "ms": 536,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5749,11 +5749,11 @@
   "city": "Chicago",
   "cc": "US",
   "urls": [
-   "https://il-us-ping.vultr.com/"
+   "https://il-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://il-us-ping.vultr.com/",
+    "url": "https://il-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5764,24 +5764,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 921,
+     "ms": 726,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 861,
+     "ms": 645,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5797,11 +5797,11 @@
   "city": "São Paulo",
   "cc": "BR",
   "urls": [
-   "https://sao-br-ping.vultr.com/"
+   "https://sao-br-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://sao-br-ping.vultr.com/",
+    "url": "https://sao-br-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5812,24 +5812,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1189,
+     "ms": 1046,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1123,
+     "ms": 954,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5845,11 +5845,11 @@
   "city": "Santiago",
   "cc": "CL",
   "urls": [
-   "https://scl-cl-ping.vultr.com/"
+   "https://scl-cl-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://scl-cl-ping.vultr.com/",
+    "url": "https://scl-cl-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5860,24 +5860,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1577,
+     "ms": 1239,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1170,
+     "ms": 1071,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5893,11 +5893,11 @@
   "city": "Seattle",
   "cc": "US",
   "urls": [
-   "https://wa-us-ping.vultr.com/"
+   "https://wa-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://wa-us-ping.vultr.com/",
+    "url": "https://wa-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5908,24 +5908,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1037,
+     "ms": 768,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 957,
+     "ms": 968,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5941,11 +5941,11 @@
   "city": "Singapore",
   "cc": "SG",
   "urls": [
-   "https://sgp-ping.vultr.com/"
+   "https://sgp-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://sgp-ping.vultr.com/",
+    "url": "https://sgp-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -5956,24 +5956,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1558,
+     "ms": 1105,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1018,
+     "ms": 576,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -5989,11 +5989,11 @@
   "city": "Silicon Valley",
   "cc": "US",
   "urls": [
-   "https://sjo-ca-us-ping.vultr.com/"
+   "https://sjo-ca-us-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://sjo-ca-us-ping.vultr.com/",
+    "url": "https://sjo-ca-us-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -6004,24 +6004,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 890,
+     "ms": 578,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 682,
+     "ms": 509,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -6037,11 +6037,11 @@
   "city": "Stockholm",
   "cc": "SE",
   "urls": [
-   "https://sto-se-ping.vultr.com/"
+   "https://sto-se-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://sto-se-ping.vultr.com/",
+    "url": "https://sto-se-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -6052,24 +6052,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 889,
+     "ms": 600,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 662,
+     "ms": 700,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -6085,11 +6085,11 @@
   "city": "Sydney",
   "cc": "AU",
   "urls": [
-   "https://syd-au-ping.vultr.com/"
+   "https://syd-au-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://syd-au-ping.vultr.com/",
+    "url": "https://syd-au-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -6100,24 +6100,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1296,
+     "ms": 1188,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 1561,
+     "ms": 888,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -6133,11 +6133,11 @@
   "city": "Tel Aviv",
   "cc": "IL",
   "urls": [
-   "https://tlv-il-ping.vultr.com/"
+   "https://tlv-il-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://tlv-il-ping.vultr.com/",
+    "url": "https://tlv-il-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -6148,24 +6148,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1119,
+     "ms": 1037,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 973,
+     "ms": 701,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -6181,11 +6181,11 @@
   "city": "Warsaw",
   "cc": "PL",
   "urls": [
-   "https://waw-pl-ping.vultr.com/"
+   "https://waw-pl-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://waw-pl-ping.vultr.com/",
+    "url": "https://waw-pl-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -6196,24 +6196,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 733,
+     "ms": 695,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 700,
+     "ms": 593,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -6229,11 +6229,11 @@
   "city": "Toronto",
   "cc": "CA",
   "urls": [
-   "https://tor-ca-ping.vultr.com/"
+   "https://tor-ca-ping.vultr.com/favicon.ico"
   ],
   "tries": [
    {
-    "url": "https://tor-ca-ping.vultr.com/",
+    "url": "https://tor-ca-ping.vultr.com/favicon.ico",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -6244,24 +6244,24 @@
     "get": {
      "ok": true,
      "status": 200,
-     "ms": 1168,
+     "ms": 702,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": 146,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
-     "body": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>Looking Glass - Vultr.com</title> <link rel=\"icon\" type=\"image/png\" sizes=\"1"
+     "body": "\u0000\u0000\u0001\u0000\u0003\u000000\u0000\u0000\u0001\u0000 \u0000�%\u0000\u00006\u0000\u0000\u0000 \u0000\u0000\u0001\u0000 \u0000�\u0010\u0000\u0000�%\u0000\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000h\u0004\u0000\u0000�6\u0000\u0000(\u0000\u0000\u00000\u0000\u0000\u0000`\u0000\u0000\u0000\u0001\u0000 \u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
     },
     "head": {
      "ok": true,
      "status": 200,
-     "ms": 881,
+     "ms": 689,
      "acao": "*",
      "tao": "",
-     "type": "text/html",
-     "len": null,
+     "type": "image/x-icon",
+     "len": 15086,
      "corp": "",
      "location": "",
      "server": "nginx",
@@ -15560,11 +15560,11 @@
   "city": "Iowa",
   "cc": "US",
   "urls": [
-   "https://storage.us-central1.rep.googleapis.com/"
+   "https://storage.us-central1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-central1.rep.googleapis.com/",
+    "url": "https://storage.us-central1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15574,25 +15574,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 757,
+     "status": 404,
+     "ms": 703,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 841,
+     "status": 404,
+     "ms": 675,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15608,11 +15608,11 @@
   "city": "Oklahoma",
   "cc": "US",
   "urls": [
-   "https://storage.us-central2.rep.googleapis.com/"
+   "https://storage.us-central2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-central2.rep.googleapis.com/",
+    "url": "https://storage.us-central2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15622,25 +15622,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1276,
+     "status": 404,
+     "ms": 613,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 812,
+     "status": 404,
+     "ms": 592,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15656,11 +15656,11 @@
   "city": "South Carolina",
   "cc": "US",
   "urls": [
-   "https://storage.us-east1.rep.googleapis.com/"
+   "https://storage.us-east1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-east1.rep.googleapis.com/",
+    "url": "https://storage.us-east1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15670,25 +15670,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 784,
+     "status": 404,
+     "ms": 718,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 860,
+     "status": 404,
+     "ms": 703,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15704,11 +15704,11 @@
   "city": "Virginia",
   "cc": "US",
   "urls": [
-   "https://storage.us-east4.rep.googleapis.com/"
+   "https://storage.us-east4.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-east4.rep.googleapis.com/",
+    "url": "https://storage.us-east4.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15718,25 +15718,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 721,
+     "status": 404,
+     "ms": 684,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 861,
+     "status": 404,
+     "ms": 675,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15752,11 +15752,11 @@
   "city": "Columbus",
   "cc": "US",
   "urls": [
-   "https://storage.us-east5.rep.googleapis.com/"
+   "https://storage.us-east5.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-east5.rep.googleapis.com/",
+    "url": "https://storage.us-east5.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15766,25 +15766,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1299,
+     "status": 404,
+     "ms": 1023,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 813,
+     "status": 404,
+     "ms": 724,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15800,11 +15800,11 @@
   "city": "Alabama",
   "cc": "US",
   "urls": [
-   "https://storage.us-east7.rep.googleapis.com/"
+   "https://storage.us-east7.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-east7.rep.googleapis.com/",
+    "url": "https://storage.us-east7.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15814,25 +15814,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1384,
+     "status": 404,
+     "ms": 692,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 832,
+     "status": 404,
+     "ms": 681,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15848,11 +15848,11 @@
   "city": "Dallas",
   "cc": "US",
   "urls": [
-   "https://storage.us-south1.rep.googleapis.com/"
+   "https://storage.us-south1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-south1.rep.googleapis.com/",
+    "url": "https://storage.us-south1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15862,25 +15862,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1517,
+     "status": 404,
+     "ms": 570,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 294,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 661,
+     "status": 404,
+     "ms": 563,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 294,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15896,11 +15896,11 @@
   "city": "Oregon",
   "cc": "US",
   "urls": [
-   "https://storage.us-west1.rep.googleapis.com/"
+   "https://storage.us-west1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-west1.rep.googleapis.com/",
+    "url": "https://storage.us-west1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15910,25 +15910,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 605,
+     "status": 404,
+     "ms": 612,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 585,
+     "status": 404,
+     "ms": 610,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15944,11 +15944,11 @@
   "city": "Los Angeles",
   "cc": "US",
   "urls": [
-   "https://storage.us-west2.rep.googleapis.com/"
+   "https://storage.us-west2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-west2.rep.googleapis.com/",
+    "url": "https://storage.us-west2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -15958,25 +15958,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1162,
+     "status": 404,
+     "ms": 496,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 679,
+     "status": 404,
+     "ms": 492,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -15992,11 +15992,11 @@
   "city": "Salt Lake City",
   "cc": "US",
   "urls": [
-   "https://storage.us-west3.rep.googleapis.com/"
+   "https://storage.us-west3.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-west3.rep.googleapis.com/",
+    "url": "https://storage.us-west3.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16006,25 +16006,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1292,
+     "status": 404,
+     "ms": 534,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 721,
+     "status": 404,
+     "ms": 533,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16040,11 +16040,11 @@
   "city": "Las Vegas",
   "cc": "US",
   "urls": [
-   "https://storage.us-west4.rep.googleapis.com/"
+   "https://storage.us-west4.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-west4.rep.googleapis.com/",
+    "url": "https://storage.us-west4.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16054,25 +16054,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1365,
+     "status": 404,
+     "ms": 511,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 660,
+     "status": 404,
+     "ms": 517,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16088,11 +16088,11 @@
   "city": "Phoenix",
   "cc": "US",
   "urls": [
-   "https://storage.us-west8.rep.googleapis.com/"
+   "https://storage.us-west8.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.us-west8.rep.googleapis.com/",
+    "url": "https://storage.us-west8.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16102,25 +16102,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1222,
+     "status": 404,
+     "ms": 515,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 722,
+     "status": 404,
+     "ms": 594,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16136,11 +16136,11 @@
   "city": "Montréal",
   "cc": "CA",
   "urls": [
-   "https://storage.northamerica-northeast1.rep.googleapis.com/"
+   "https://storage.northamerica-northeast1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.northamerica-northeast1.rep.googleapis.com/",
+    "url": "https://storage.northamerica-northeast1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16150,25 +16150,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1291,
+     "status": 404,
+     "ms": 699,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 308,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 726,
+     "status": 404,
+     "ms": 684,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 308,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16184,11 +16184,11 @@
   "city": "Toronto",
   "cc": "CA",
   "urls": [
-   "https://storage.northamerica-northeast2.rep.googleapis.com/"
+   "https://storage.northamerica-northeast2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.northamerica-northeast2.rep.googleapis.com/",
+    "url": "https://storage.northamerica-northeast2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16198,25 +16198,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1609,
+     "status": 404,
+     "ms": 678,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 308,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 765,
+     "status": 404,
+     "ms": 657,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 308,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16232,11 +16232,11 @@
   "city": "Querétaro",
   "cc": "MX",
   "urls": [
-   "https://storage.northamerica-south1.rep.googleapis.com/"
+   "https://storage.northamerica-south1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.northamerica-south1.rep.googleapis.com/",
+    "url": "https://storage.northamerica-south1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16246,25 +16246,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1128,
+     "status": 404,
+     "ms": 696,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 304,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 709,
+     "status": 404,
+     "ms": 655,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 304,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16280,11 +16280,11 @@
   "city": "São Paulo",
   "cc": "BR",
   "urls": [
-   "https://storage.southamerica-east1.rep.googleapis.com/"
+   "https://storage.southamerica-east1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.southamerica-east1.rep.googleapis.com/",
+    "url": "https://storage.southamerica-east1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16294,25 +16294,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1125,
+     "status": 404,
+     "ms": 986,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 303,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1006,
+     "status": 404,
+     "ms": 944,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 303,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16328,11 +16328,11 @@
   "city": "Santiago",
   "cc": "CL",
   "urls": [
-   "https://storage.southamerica-west1.rep.googleapis.com/"
+   "https://storage.southamerica-west1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.southamerica-west1.rep.googleapis.com/",
+    "url": "https://storage.southamerica-west1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16342,25 +16342,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1302,
+     "status": 404,
+     "ms": 856,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 303,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 869,
+     "status": 404,
+     "ms": 864,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 303,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16376,11 +16376,11 @@
   "city": "Belgium",
   "cc": "BE",
   "urls": [
-   "https://storage.europe-west1.rep.googleapis.com/"
+   "https://storage.europe-west1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west1.rep.googleapis.com/",
+    "url": "https://storage.europe-west1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16390,25 +16390,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 965,
+     "status": 404,
+     "ms": 931,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 954,
+     "status": 404,
+     "ms": 949,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16424,11 +16424,11 @@
   "city": "London",
   "cc": "GB",
   "urls": [
-   "https://storage.europe-west2.rep.googleapis.com/"
+   "https://storage.europe-west2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west2.rep.googleapis.com/",
+    "url": "https://storage.europe-west2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16438,25 +16438,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1403,
+     "status": 404,
+     "ms": 865,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1011,
+     "status": 404,
+     "ms": 945,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16472,11 +16472,11 @@
   "city": "Frankfurt",
   "cc": "DE",
   "urls": [
-   "https://storage.europe-west3.rep.googleapis.com/"
+   "https://storage.europe-west3.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west3.rep.googleapis.com/",
+    "url": "https://storage.europe-west3.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16486,25 +16486,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 954,
+     "status": 404,
+     "ms": 908,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 956,
+     "status": 404,
+     "ms": 940,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16520,11 +16520,11 @@
   "city": "Netherlands",
   "cc": "NL",
   "urls": [
-   "https://storage.europe-west4.rep.googleapis.com/"
+   "https://storage.europe-west4.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west4.rep.googleapis.com/",
+    "url": "https://storage.europe-west4.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16534,25 +16534,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1423,
+     "status": 404,
+     "ms": 981,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 956,
+     "status": 404,
+     "ms": 908,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16568,11 +16568,11 @@
   "city": "Zurich",
   "cc": "CH",
   "urls": [
-   "https://storage.europe-west6.rep.googleapis.com/"
+   "https://storage.europe-west6.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west6.rep.googleapis.com/",
+    "url": "https://storage.europe-west6.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16582,25 +16582,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1365,
+     "status": 404,
+     "ms": 1005,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 997,
+     "status": 404,
+     "ms": 1014,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16616,11 +16616,11 @@
   "city": "Milan",
   "cc": "IT",
   "urls": [
-   "https://storage.europe-west8.rep.googleapis.com/"
+   "https://storage.europe-west8.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west8.rep.googleapis.com/",
+    "url": "https://storage.europe-west8.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16630,25 +16630,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 2490,
+     "status": 404,
+     "ms": 946,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 994,
+     "status": 404,
+     "ms": 962,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16664,11 +16664,11 @@
   "city": "Paris",
   "cc": "FR",
   "urls": [
-   "https://storage.europe-west9.rep.googleapis.com/"
+   "https://storage.europe-west9.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west9.rep.googleapis.com/",
+    "url": "https://storage.europe-west9.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16678,25 +16678,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1518,
+     "status": 404,
+     "ms": 902,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 952,
+     "status": 404,
+     "ms": 891,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 297,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16712,11 +16712,11 @@
   "city": "Berlin",
   "cc": "DE",
   "urls": [
-   "https://storage.europe-west10.rep.googleapis.com/"
+   "https://storage.europe-west10.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west10.rep.googleapis.com/",
+    "url": "https://storage.europe-west10.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16726,25 +16726,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1487,
+     "status": 404,
+     "ms": 1006,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 943,
+     "status": 404,
+     "ms": 940,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16760,11 +16760,11 @@
   "city": "Turin",
   "cc": "IT",
   "urls": [
-   "https://storage.europe-west12.rep.googleapis.com/"
+   "https://storage.europe-west12.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west12.rep.googleapis.com/",
+    "url": "https://storage.europe-west12.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16774,25 +16774,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1368,
+     "status": 404,
+     "ms": 1003,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 958,
+     "status": 404,
+     "ms": 943,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16808,11 +16808,11 @@
   "city": "?",
   "cc": "--",
   "urls": [
-   "https://storage.europe-west15.rep.googleapis.com/"
+   "https://storage.europe-west15.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-west15.rep.googleapis.com/",
+    "url": "https://storage.europe-west15.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 3,
      "cname": [],
@@ -16828,11 +16828,11 @@
   "city": "Warsaw",
   "cc": "PL",
   "urls": [
-   "https://storage.europe-central2.rep.googleapis.com/"
+   "https://storage.europe-central2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-central2.rep.googleapis.com/",
+    "url": "https://storage.europe-central2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16842,25 +16842,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1432,
+     "status": 404,
+     "ms": 1012,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1028,
+     "status": 404,
+     "ms": 1023,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16876,11 +16876,11 @@
   "city": "Finland",
   "cc": "FI",
   "urls": [
-   "https://storage.europe-north1.rep.googleapis.com/"
+   "https://storage.europe-north1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-north1.rep.googleapis.com/",
+    "url": "https://storage.europe-north1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16890,25 +16890,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1943,
+     "status": 404,
+     "ms": 1050,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1494,
+     "status": 404,
+     "ms": 1003,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16924,11 +16924,11 @@
   "city": "Stockholm",
   "cc": "SE",
   "urls": [
-   "https://storage.europe-north2.rep.googleapis.com/"
+   "https://storage.europe-north2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-north2.rep.googleapis.com/",
+    "url": "https://storage.europe-north2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16938,25 +16938,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1448,
+     "status": 404,
+     "ms": 1065,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1016,
+     "status": 404,
+     "ms": 1044,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -16972,11 +16972,11 @@
   "city": "Madrid",
   "cc": "ES",
   "urls": [
-   "https://storage.europe-southwest1.rep.googleapis.com/"
+   "https://storage.europe-southwest1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.europe-southwest1.rep.googleapis.com/",
+    "url": "https://storage.europe-southwest1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -16986,25 +16986,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1387,
+     "status": 404,
+     "ms": 1030,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 302,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 996,
+     "status": 404,
+     "ms": 946,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 302,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17020,11 +17020,11 @@
   "city": "Doha",
   "cc": "QA",
   "urls": [
-   "https://storage.me-central1.rep.googleapis.com/"
+   "https://storage.me-central1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.me-central1.rep.googleapis.com/",
+    "url": "https://storage.me-central1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17034,25 +17034,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1830,
+     "status": 404,
+     "ms": 955,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1183,
+     "status": 404,
+     "ms": 973,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17068,11 +17068,11 @@
   "city": "Dammam",
   "cc": "SA",
   "urls": [
-   "https://storage.me-central2.rep.googleapis.com/"
+   "https://storage.me-central2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.me-central2.rep.googleapis.com/",
+    "url": "https://storage.me-central2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17082,25 +17082,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1588,
+     "status": 404,
+     "ms": 974,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1163,
+     "status": 404,
+     "ms": 946,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17116,11 +17116,11 @@
   "city": "Tel Aviv",
   "cc": "IL",
   "urls": [
-   "https://storage.me-west1.rep.googleapis.com/"
+   "https://storage.me-west1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.me-west1.rep.googleapis.com/",
+    "url": "https://storage.me-west1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17130,25 +17130,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1852,
+     "status": 404,
+     "ms": 898,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1063,
+     "status": 404,
+     "ms": 894,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 293,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17164,11 +17164,11 @@
   "city": "Johannesburg",
   "cc": "ZA",
   "urls": [
-   "https://storage.africa-south1.rep.googleapis.com/"
+   "https://storage.africa-south1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.africa-south1.rep.googleapis.com/",
+    "url": "https://storage.africa-south1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17178,25 +17178,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1749,
+     "status": 404,
+     "ms": 1218,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 1310,
+     "status": 404,
+     "ms": 1220,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 298,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17212,11 +17212,11 @@
   "city": "Taiwan",
   "cc": "TW",
   "urls": [
-   "https://storage.asia-east1.rep.googleapis.com/"
+   "https://storage.asia-east1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-east1.rep.googleapis.com/",
+    "url": "https://storage.asia-east1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17226,25 +17226,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 382,
+     "status": 404,
+     "ms": 914,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 295,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 367,
+     "status": 404,
+     "ms": 906,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 295,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17260,11 +17260,11 @@
   "city": "Hong Kong",
   "cc": "HK",
   "urls": [
-   "https://storage.asia-east2.rep.googleapis.com/"
+   "https://storage.asia-east2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-east2.rep.googleapis.com/",
+    "url": "https://storage.asia-east2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17274,25 +17274,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 402,
+     "status": 404,
+     "ms": 996,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 295,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 377,
+     "status": 404,
+     "ms": 1018,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 295,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17308,11 +17308,11 @@
   "city": "Tokyo",
   "cc": "JP",
   "urls": [
-   "https://storage.asia-northeast1.rep.googleapis.com/"
+   "https://storage.asia-northeast1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-northeast1.rep.googleapis.com/",
+    "url": "https://storage.asia-northeast1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17322,25 +17322,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 306,
+     "status": 404,
+     "ms": 851,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 247,
+     "status": 404,
+     "ms": 844,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17356,11 +17356,11 @@
   "city": "Osaka",
   "cc": "JP",
   "urls": [
-   "https://storage.asia-northeast2.rep.googleapis.com/"
+   "https://storage.asia-northeast2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-northeast2.rep.googleapis.com/",
+    "url": "https://storage.asia-northeast2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17370,25 +17370,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 940,
+     "status": 404,
+     "ms": 834,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 264,
+     "status": 404,
+     "ms": 837,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17404,11 +17404,11 @@
   "city": "Seoul",
   "cc": "KR",
   "urls": [
-   "https://storage.asia-northeast3.rep.googleapis.com/"
+   "https://storage.asia-northeast3.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-northeast3.rep.googleapis.com/",
+    "url": "https://storage.asia-northeast3.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17418,25 +17418,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 732,
+     "status": 404,
+     "ms": 1000,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 345,
+     "status": 404,
+     "ms": 957,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17452,11 +17452,11 @@
   "city": "Mumbai",
   "cc": "IN",
   "urls": [
-   "https://storage.asia-south1.rep.googleapis.com/"
+   "https://storage.asia-south1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-south1.rep.googleapis.com/",
+    "url": "https://storage.asia-south1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17466,25 +17466,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1517,
+     "status": 404,
+     "ms": 1610,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 621,
+     "status": 404,
+     "ms": 1615,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17500,11 +17500,11 @@
   "city": "Delhi",
   "cc": "IN",
   "urls": [
-   "https://storage.asia-south2.rep.googleapis.com/"
+   "https://storage.asia-south2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-south2.rep.googleapis.com/",
+    "url": "https://storage.asia-south2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17514,25 +17514,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1064,
+     "status": 404,
+     "ms": 1205,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 673,
+     "status": 404,
+     "ms": 1300,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 296,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17548,11 +17548,11 @@
   "city": "Singapore",
   "cc": "SG",
   "urls": [
-   "https://storage.asia-southeast1.rep.googleapis.com/"
+   "https://storage.asia-southeast1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-southeast1.rep.googleapis.com/",
+    "url": "https://storage.asia-southeast1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17562,25 +17562,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 465,
+     "status": 404,
+     "ms": 1025,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 464,
+     "status": 404,
+     "ms": 1003,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17596,11 +17596,11 @@
   "city": "Jakarta",
   "cc": "ID",
   "urls": [
-   "https://storage.asia-southeast2.rep.googleapis.com/"
+   "https://storage.asia-southeast2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-southeast2.rep.googleapis.com/",
+    "url": "https://storage.asia-southeast2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17610,25 +17610,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1253,
+     "status": 404,
+     "ms": 1092,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 477,
+     "status": 404,
+     "ms": 1047,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 300,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17644,11 +17644,11 @@
   "city": "Bangkok",
   "cc": "TH",
   "urls": [
-   "https://storage.asia-southeast3.rep.googleapis.com/"
+   "https://storage.asia-southeast3.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.asia-southeast3.rep.googleapis.com/",
+    "url": "https://storage.asia-southeast3.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 3,
      "cname": [],
@@ -17664,11 +17664,11 @@
   "city": "Sydney",
   "cc": "AU",
   "urls": [
-   "https://storage.australia-southeast1.rep.googleapis.com/"
+   "https://storage.australia-southeast1.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.australia-southeast1.rep.googleapis.com/",
+    "url": "https://storage.australia-southeast1.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17678,25 +17678,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 756,
+     "status": 404,
+     "ms": 912,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 305,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 773,
+     "status": 404,
+     "ms": 908,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 305,
      "corp": "",
      "location": "",
      "server": "envoy",
@@ -17712,11 +17712,11 @@
   "city": "Melbourne",
   "cc": "AU",
   "urls": [
-   "https://storage.australia-southeast2.rep.googleapis.com/"
+   "https://storage.australia-southeast2.rep.googleapis.com/generate_204"
   ],
   "tries": [
    {
-    "url": "https://storage.australia-southeast2.rep.googleapis.com/",
+    "url": "https://storage.australia-southeast2.rep.googleapis.com/generate_204",
     "dns": {
      "rcode": 0,
      "cname": [],
@@ -17726,25 +17726,25 @@
     },
     "get": {
      "ok": true,
-     "status": 400,
-     "ms": 1223,
+     "status": 404,
+     "ms": 1008,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 305,
      "corp": "",
      "location": "",
      "server": "envoy",
-     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>MissingSecurityHeader</Code><Message>Your request was missing a required header.</Message><Details>Authorizat"
+     "body": "<?xml version='1.0' encoding='UTF-8'?><Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist at this location.</Message><Details>Request s"
     },
     "head": {
      "ok": true,
-     "status": 400,
-     "ms": 768,
+     "status": 404,
+     "ms": 950,
      "acao": "",
      "tao": "",
      "type": "application/xml",
-     "len": 181,
+     "len": 305,
      "corp": "",
      "location": "",
      "server": "envoy",
