@@ -81,6 +81,7 @@ export default {
   lk_v2cAll: "Test from your server",
   speedPre: "Latency is only round trips; for bandwidth, use the",
   lk_speed: "speed test",
+  lk_cost: "What it costs",
   cdn_h: "CDN",
   cdn_edge: "Nearest edge",
   cdn_note: "Each CDN answers from its edge nearest to you.",

@@ -76,6 +76,7 @@ export default {
   lk_v2cAll: "從你的伺服器測各大雲",
   speedPre: "延遲只反映往返時間，頻寬另測：",
   lk_speed: "網速測試",
+  lk_cost: "這家多少錢",
   cdn_h: "CDN",
   cdn_edge: "就近節點",
   cdn_note: "每家 CDN 由離你最近的節點回應",

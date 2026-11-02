@@ -814,6 +814,11 @@
   // links go to the page in this language, and without the meta there is no link
   const toolUrl = (id, path = "") => { const b = (document.querySelector(`meta[name="${id}"]`) || {}).content; return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : ""; };
   const toolLink = (id, text, path, cls = "tl") => { const u = toolUrl(id, path); return u ? `<a class="${cls}" href="${esc(u)}" target="_blank" rel="noopener">${esc(text)}${ICON_EXT}</a>` : ""; };
+  // the cost planner covers these providers; its result link takes where the user is (na, eu, ap or cn), 1 vCPU 2 GB 1 TB
+  const COST_V = new Set(["aws", "gcp", "azure", "oracle", "hetzner", "digitalocean", "vultr", "linode"]);
+  const costLink = v => { if (!COST_V.has(v)) return "";
+    const c = NET.cc === "CN" ? "cn" : { na: "na", eu: "eu", as: "ap", oc: "ap" }[CC_CT[NET.cc]];
+    return toolLink("cost", t("lk_cost"), c ? `r/1_-_1_2_20_1_1024_0_0_${c}_1_500` : "", "tl dc"); };
   function renderNet() {
     const N = NET, ck = N.state === "checking", warn = N.verdict === "warn";
     const bar = $("#netbar");
@@ -1171,7 +1176,7 @@
     return `<div class="det">
       <div>${r && r.s.length ? chartSVG(r, st) : `<div class="empty">${t(r && r.sum ? "sharedNoRaw" : "noSamples")}</div>`}</div>
       <div class="dstats">${kv("d_med", ms(st.med))}${kv("d_jit", st.ok > 1 ? "±" + ms(st.jit) : "–")}${kv("d_loss", st.n ? Math.round(st.loss * 100) + "%" : "–")}${kv("d_min", ms(st.min))}${kv("d_avg", ms(st.avg))}${kv("d_p90", ms(st.p90))}</div>
-      <div class="dmeta">${lines.join("")}<div class="dbtns"><button class="btn sm" type="button" data-retest="${esc(e.id)}" ${RUN ? "disabled" : ""}>${t("retest")}</button><button class="btn sm" type="button" data-copy="${esc(e.url)}">${t("copyUrl")}</button></div></div>
+      <div class="dmeta">${lines.join("")}<div class="dbtns"><button class="btn sm" type="button" data-retest="${esc(e.id)}" ${RUN ? "disabled" : ""}>${t("retest")}</button><button class="btn sm" type="button" data-copy="${esc(e.url)}">${t("copyUrl")}</button>${costLink(e.vendor)}</div></div>
     </div>`;
   }
 

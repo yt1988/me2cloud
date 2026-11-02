@@ -232,6 +232,7 @@ export default {
   lk_v2cAll: "Mide desde tu servidor",
   speedPre: "La latencia solo mide ida y vuelta; para el ancho de banda, usa la",
   lk_speed: "prueba de velocidad",
+  lk_cost: "Cuánto cuesta",
   cdn_h: "CDN",
   cdn_edge: "Nodo más cercano",
   cdn_note: "Cada CDN responde desde su nodo más cercano a ti.",

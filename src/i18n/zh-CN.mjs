@@ -232,6 +232,7 @@ export default {
   lk_v2cAll: "从你的服务器测各大云",
   speedPre: "延迟只反映往返时间，带宽另测：",
   lk_speed: "网速测试",
+  lk_cost: "这家多少钱",
   cdn_h: "CDN",
   cdn_edge: "就近节点",
   cdn_note: "每家 CDN 由离你最近的节点应答",

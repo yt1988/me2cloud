@@ -227,6 +227,7 @@ export default {
   lk_v2cAll: "サーバーから測る",
   speedPre: "遅延は往復時間だけです。帯域は",
   lk_speed: "速度テストで",
+  lk_cost: "料金を見る",
   cdn_h: "CDN",
   cdn_edge: "最寄りのエッジ",
   cdn_note: "各 CDN は最寄りのエッジから応答します",

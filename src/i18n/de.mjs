@@ -198,6 +198,7 @@ export default {
   lk_v2cAll: "Vom eigenen Server messen",
   speedPre: "Latenz misst nur Laufzeiten; für die Bandbreite gibt es den",
   lk_speed: "Speedtest",
+  lk_cost: "Was es kostet",
   cdn_h: "CDN",
   cdn_edge: "Nächster Edge-Knoten",
   cdn_note: "Jedes CDN antwortet vom Edge-Knoten, der dir am nächsten ist.",

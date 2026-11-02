@@ -198,6 +198,7 @@ export default {
   lk_v2cAll: "Meça do seu servidor",
   speedPre: "A latência mede só idas e voltas; para a banda, use o",
   lk_speed: "teste de velocidade",
+  lk_cost: "Quanto custa",
   cdn_h: "CDN",
   cdn_edge: "Nó mais próximo",
   cdn_note: "Cada CDN responde do nó mais próximo de você.",
