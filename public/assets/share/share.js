@@ -24,8 +24,26 @@
 // The card is drawn in the page's own theme from its CSS variables (--bg --fg --muted --line --ink) with the
 // 1ms.dog logo from /assets/. Short links come from the shell's <meta name="shortener">; without one (self-hosted)
 // the full link is used. The box starts unticked every time the dialog opens.
+//
+// On 1ms.dog (the shortener meta is there) two more things happen, both skipped when self-hosted:
+//   - the card, fitted into 1200×630, is stored with the short link, so chat apps show this result as the link's
+//     preview image (1ms-link: PUT /api/og/<code>); the dialog says so instead of "never uploaded"
+//   - each step is counted, without any result (1ms-shell: POST /_ms/ev, `npm run shares`)
+//
+// Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
+// visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
+//
+//   const { received } = await import("/assets/share/share.js");
+//   const r = received({
+//     lang: "zh-CN",
+//     ts: 1730000000000,            // when the shared result was measured
+//     at: document.querySelector(".result"),   // the banner goes right before this element
+//     test: () => start(),          // runs the visitor's own test (the banner stays, the button goes)
+//   });
+//   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
+//   r.remove();
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -75,6 +93,30 @@ const T = {
     never: "Ни там, ни там нет: {list}.",
     ip: "IP-адрес", country: "страна или регион", city: "город", isp: "провайдер", colo: "дата-центр Cloudflare" },
 };
+// the dialog's note on 1ms.dog, where the short link keeps the preview image; and the shared-result banner
+const R = {
+  en: { stored: "The image and link are made in your browser. The short link and its preview image are kept at {host} so chat apps can show this result.",
+    recv: "A result shared on {date}.", test: "Test mine", ready: "Your result is ready.", cmp: "Compare with theirs" },
+  "zh-CN": { stored: "图片和链接在你的浏览器里生成。短链和预览图保存在 {host}，聊天软件里才能显示这次结果。",
+    recv: "这是 {date} 分享的测试结果。", test: "测测我的", ready: "你的结果出来了。", cmp: "和对方比一比" },
+  "zh-TW": { stored: "圖片和連結在你的瀏覽器裡產生。短網址和預覽圖保存在 {host}，聊天軟體裡才能顯示這次結果。",
+    recv: "這是 {date} 分享的測試結果。", test: "測測我的", ready: "你的結果出來了。", cmp: "和對方比一比" },
+  ja: { stored: "画像とリンクはブラウザ内で作られます。チャットでこの結果を表示できるよう、短縮リンクとプレビュー画像は {host} に保存されます。",
+    recv: "{date} に共有された結果です。", test: "自分も測る", ready: "結果が出ました。", cmp: "相手と比べる" },
+  ko: { stored: "이미지와 링크는 브라우저에서 만들어집니다. 채팅 앱에서 이 결과가 보이도록 짧은 링크와 미리보기 이미지는 {host}에 저장됩니다.",
+    recv: "{date}에 공유된 결과입니다.", test: "내 것도 측정", ready: "결과가 나왔습니다.", cmp: "상대와 비교" },
+  es: { stored: "La imagen y el enlace se crean en tu navegador. El enlace corto y su imagen de vista previa se guardan en {host} para que los chats muestren este resultado.",
+    recv: "Un resultado compartido el {date}.", test: "Probar el mío", ready: "Tu resultado está listo.", cmp: "Comparar con el suyo" },
+  fr: { stored: "L’image et le lien sont créés dans votre navigateur. Le lien court et son image d’aperçu sont conservés sur {host} pour que les messageries affichent ce résultat.",
+    recv: "Un résultat partagé le {date}.", test: "Tester le mien", ready: "Votre résultat est prêt.", cmp: "Comparer avec le sien" },
+  de: { stored: "Bild und Link entstehen in deinem Browser. Kurzlink und Vorschaubild werden auf {host} gespeichert, damit Chat-Apps dieses Ergebnis anzeigen.",
+    recv: "Ein am {date} geteiltes Ergebnis.", test: "Meins testen", ready: "Dein Ergebnis ist da.", cmp: "Mit dem anderen vergleichen" },
+  pt: { stored: "A imagem e o link são criados no seu navegador. O link curto e a imagem de prévia ficam guardados em {host} para que os apps de conversa mostrem este resultado.",
+    recv: "Um resultado compartilhado em {date}.", test: "Testar o meu", ready: "Seu resultado está pronto.", cmp: "Comparar com o dele" },
+  ru: { stored: "Картинка и ссылка создаются в вашем браузере. Короткая ссылка и картинка для превью хранятся на {host}, чтобы мессенджеры показывали этот результат.",
+    recv: "Результат, которым поделились {date}.", test: "Проверить мой", ready: "Ваш результат готов.", cmp: "Сравнить с чужим" },
+};
+
 // what a tool may let the visitor show, or promise never to hold
 export const WHAT = ["ip", "country", "city", "isp", "colo"];
 
@@ -103,18 +145,51 @@ const loadQR = () => qrP ||= new Promise((res, rej) => {
   document.head.appendChild(el);
 });
 
+// the shortener 1ms.dog announces; absent when self-hosted, and then nothing leaves the browser
+const shortener = () => {
+  const meta = document.querySelector('meta[name="shortener"]');
+  return meta && /^https:\/\//.test(meta.content) ? meta.content : null;
+};
+
+// one beacon per step, to the shell on the tool's own host (1ms-shell src/events.js); counts only
+function ev(e, lang) {
+  if (!shortener()) return;
+  try { navigator.sendBeacon("/_ms/ev", new Blob([JSON.stringify({ e, g: lang })], { type: "text/plain" })); } catch (x) {}
+}
+
+// { url, code, og }: og says the short link already has its preview image
 const shortCache = new Map();
 async function shorten(long) {
-  const meta = document.querySelector('meta[name="shortener"]');        // announced by 1ms.dog; absent when self-hosted
-  if (!meta || !/^https:\/\//.test(meta.content)) return long;
+  const api = shortener();
+  if (!api) return { url: long };
   if (shortCache.has(long)) return shortCache.get(long);
   try {
-    const r = await fetch(meta.content, { method: "POST", headers: { "content-type": "application/json" },
+    const r = await fetch(api, { method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ url: long }), signal: AbortSignal.timeout(5000) });
     const j = await r.json();
-    if (j && typeof j.url === "string" && /^https:\/\//.test(j.url)) { shortCache.set(long, j.url); return j.url; }
+    if (j && typeof j.url === "string" && /^https:\/\//.test(j.url)) {
+      const s = { url: j.url, code: typeof j.code === "string" ? j.code : null, og: j.og !== false };
+      shortCache.set(long, s); return s;
+    }
   } catch (e) {}
-  return long;
+  return { url: long };
+}
+
+// the card fitted into a link preview (1200×630, the size every chat app shows whole), stored with the short link
+const OG_W = 1200, OG_H = 630;
+async function storePreview(s, card, bg) {
+  if (!s.code || s.og) return;
+  s.og = true;                                    // once per link, even if it fails
+  const o = document.createElement("canvas"); o.width = OG_W; o.height = OG_H;
+  const x = o.getContext("2d"), k = Math.min(OG_W / card.width, OG_H / card.height);
+  x.fillStyle = bg; x.fillRect(0, 0, OG_W, OG_H);
+  x.drawImage(card, (OG_W - card.width * k) / 2, (OG_H - card.height * k) / 2, card.width * k, card.height * k);
+  const png = await new Promise(r => o.toBlob(r, "image/png"));
+  if (!png) return;
+  try {
+    await fetch(new URL(`/api/og/${s.code}`, shortener()), { method: "PUT", headers: { "content-type": "image/png" }, body: png,
+      signal: AbortSignal.timeout(10000) });
+  } catch (e) {}
 }
 
 let cssP = null;
@@ -127,7 +202,7 @@ const ICON_X = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
 export function share(o) {
-  const lang = T[o.lang] ? o.lang : "en", t = T[lang];
+  const lang = T[o.lang] ? o.lang : "en", t = T[lang], r = R[lang];
   // Chinese puts a space between Han and Latin ("包含 IP 地址") and none between sentences; Japanese neither
   const cjk = /^(zh|ja)/.test(lang), gap = cjk ? "" : " ";
   const space = s => lang.startsWith("zh") ? s.replace(/([一-鿿])([A-Za-z0-9])/g, "$1 $2").replace(/([A-Za-z0-9])([一-鿿])/g, "$1 $2") : s;
@@ -147,7 +222,8 @@ export function share(o) {
       + `<button class="ms-share-b" type="button" data-a="dl">${esc(t.dl)}</button>`
       + `<button class="ms-share-b" type="button" data-a="more" hidden>${esc(t.more)}</button></div>`
       + (show.length ? `<label class="ms-share-chk"><input type="checkbox"><span>${esc(space(t.show.replace("{list}", list(show))))}</span></label>` : "")
-      + `<p class="ms-share-note">${esc(space(t.local + (never.length ? gap + t.never.replace("{list}", list(never)) : "")))}</p>`;
+      + `<p class="ms-share-note">${esc(space((shortener() ? r.stored.replace("{host}", new URL(shortener()).host) : t.local)
+        + (never.length ? gap + t.never.replace("{list}", list(never)) : "")))}</p>`;
     document.body.appendChild(dlg);
     const $ = s => dlg.querySelector(s), box = $(".ms-share-chk input");
     $(".ms-share-x").onclick = () => dlg.close();
@@ -156,19 +232,23 @@ export function share(o) {
     const flash = (b, ok) => { const was = b.textContent; b.textContent = ok ? t.copied : t.failed; setTimeout(() => { b.textContent = was; }, 1500); };
     $('[data-a="link"]').onclick = async e => {
       const b = e.currentTarget, inp = $(".ms-share-link input");
+      ev("link", lang);
       try { await navigator.clipboard.writeText(inp.value); flash(b, true); } catch (x) { inp.select(); }
     };
     $('[data-a="img"]').onclick = async e => {
       const b = e.currentTarget;
+      ev("img", lang);
       try { await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]); flash(b, true); } catch (x) { flash(b, false); }
     };
     $('[data-a="dl"]').onclick = () => {
+      ev("dl", lang);
       const a = document.createElement("a"); a.href = $(".ms-share-img").src; a.download = (o.file || "1ms") + ".png"; a.click();
     };
     $('[data-a="more"]').onclick = async () => {
       const s = shown(), url = $(".ms-share-link input").value, text = o.text ? o.text(s) : document.title;
       const file = blob && new File([blob], (o.file || "1ms") + ".png", { type: "image/png" });
       const data = file && navigator.canShare && navigator.canShare({ files: [file] }) ? { text, url, files: [file] } : { text, url };
+      ev("more", lang);
       try { await navigator.share(data); } catch (e) {}
     };
   }
@@ -207,13 +287,14 @@ export function share(o) {
     $(".ms-share-link input").value = long; im.removeAttribute("src"); blob = null;
     $('[data-a="img"]').disabled = $('[data-a="dl"]').disabled = true;
     loadQR().catch(() => {});
-    const url = await shorten(long);
+    const sl = await shorten(long), url = sl.url;
     if (me !== run) return;
     $(".ms-share-link input").value = url;
     // the QR code carries the link; a long one would be too dense to scan, so then it points at the page
     const c = await card(url.length <= 300 ? url : o.home || location.origin + "/").catch(() => null);
     if (!c || me !== run) return;
     im.height = c.height; im.src = c.toDataURL("image/png");
+    storePreview(sl, c, getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#fff").catch(() => {});
     c.toBlob(b => { if (me === run) { blob = b; $('[data-a="img"]').disabled = false; } }, "image/png");
     $('[data-a="dl"]').disabled = false;
   }
@@ -228,10 +309,36 @@ export function share(o) {
       if (box) { box.checked = false; box.disabled = o.canShow === false; }
       dlg.querySelector('[data-a="img"]').hidden = !(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
       dlg.querySelector('[data-a="more"]').hidden = !navigator.share;
-      if (!dlg.open) dlg.showModal();
+      if (!dlg.open) { dlg.showModal(); ev("open", lang); }
       refresh();
     },
     close() { if (dlg && dlg.open) dlg.close(); },
     refresh() { if (dlg && dlg.open) refresh(); },
+  };
+}
+
+// The banner above someone else's shared result: what it is, and the visitor's own test; with compare mode, the
+// comparison once that test is done. Counted like the dialog: view, test, compare.
+export function received(o) {
+  const lang = R[o.lang] ? o.lang : "en", r = R[lang];
+  loadCSS();
+  const el = document.createElement("div");
+  el.className = "ms-recv"; el.setAttribute("role", "note"); el.lang = lang;
+  const date = new Date(o.ts || Date.now()).toLocaleDateString(lang);
+  const say = document.createElement("span"); say.textContent = r.recv.replace("{date}", date);
+  const btn = document.createElement("button"); btn.type = "button"; btn.className = "ms-recv-b"; btn.textContent = r.test;
+  btn.onclick = () => { ev("test", lang); btn.remove(); if (o.test) o.test(); };
+  el.append(say, btn);
+  if (o.at && o.at.parentNode) o.at.parentNode.insertBefore(el, o.at); else document.body.prepend(el);
+  ev("view", lang);
+  return {
+    done(url) {
+      if (!url || !el.isConnected) return;
+      say.textContent = r.ready;
+      const a = document.createElement("a"); a.className = "ms-recv-b"; a.href = url; a.textContent = r.cmp;
+      a.onclick = () => ev("compare", lang);
+      el.querySelector(".ms-recv-b")?.remove(); el.append(a);
+    },
+    remove() { el.remove(); },
   };
 }

@@ -23,3 +23,11 @@
 .ms-share-chk:has(input:disabled){opacity:.5;cursor:default}
 .ms-share-note{margin:10px 0 0;color:var(--muted,#666);font-size:12.5px}
 @media (max-width:480px){.ms-share{padding:16px}.ms-share-acts .ms-share-b{flex:1 1 auto}}
+/* the banner above a shared result (received()) */
+.ms-recv{box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;margin:0 0 14px;padding:10px 14px;
+  border:1px solid color-mix(in srgb,var(--ink,#2563eb) 35%,var(--line,#8884));border-radius:12px;background:color-mix(in srgb,var(--ink,#2563eb) 8%,var(--bg,#fff));
+  color:var(--fg,#111);font:14px/1.45 Geist,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.ms-recv-b{flex:none;display:inline-flex;align-items:center;height:34px;padding:0 14px;border:0;border-radius:8px;background:var(--ink,#2563eb);color:#fff;
+  font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.ms-recv-b:hover{filter:brightness(1.08)}
+.ms-recv-b:focus-visible{outline:2px solid var(--ink,#2563eb);outline-offset:2px}

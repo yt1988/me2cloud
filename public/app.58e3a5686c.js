@@ -590,7 +590,8 @@
     const ctl = new AbortController();
     RUN = { ctl, total: list.length, done: 0, t0: performance.now(), n, list };
     runnerStart();
-    if (VIEW.shared) { clearHash(); $("#sharedBar").hidden = true; }
+    if (VIEW.shared) { clearHash(); $("#sharedT").hidden = true; hideReceived(); }
+    if (!$("#shareBad").hidden) { clearHash(); $("#shareBad").hidden = true; }
     if (!keep || !VIEW.live) { R = new Map(); VIEW = { ts: Date.now(), live: true, peak: isPeak(new Date()), mode: n, ip: S.ip, need: Object.assign({}, S.need) }; }
     for (const e of list) R.set(e.id, { s: [], w: null, m: e.method, st: "queued" });
     renderAll();
@@ -1064,7 +1065,7 @@
     $("#vizCard").hidden = !lanes.length;
     if (!lanes.length) return;
     // when these results were taken leads the line (a shared view says it is someone else's)
-    const when = VIEW.ts ? (VIEW.shared ? t("viewingShared", { d: fmtTs(VIEW.ts) }) : fmtTs(VIEW.ts)) + (VIEW.peak ? " · " + t("tagPeak") : "") + " · " : "";
+    const when = VIEW.ts ? fmtTs(VIEW.ts) + (VIEW.peak ? " · " + t("tagPeak") : "") + " · " : "";
     $("#vizSub").textContent = got.length ? when + t("vizSub", { n: got.length, p: got.filter(x => x.pass).length }) : "";
     const lh = lanes.length <= 2 ? 84 : lanes.length <= 5 ? 60 : 46;
     const key = [lanes.join(), NEED().lat, LANG, lh].join("|");
@@ -1400,15 +1401,28 @@
       }
       R = next; VIEW = { ts: P.t * 60000, live: false, peak: !!P.p, mode: P.k, ip: P.f === 6 ? "v6" : "v4", shared: P }; openId = null;
       return true;
-    } catch (e) { toast(t("share_bad")); return false; }
+    } catch (e) { $("#shareBad").hidden = false; return false; }
   }
+  // someone else's result: the shared component's banner above the picks (it says when the result is from and offers this
+  // visitor's own test), and a line with whose line it was and how it was measured
+  let RECV = null, recvFor = null;
+  async function showReceived(P) {
+    if (recvFor === P) return;
+    recvFor = P;
+    const { received } = await import("/assets/share/share.js");
+    if (VIEW.shared !== P) return;
+    if (RECV) RECV.remove();
+    RECV = received({ lang: LANG, ts: P.t * 60000, at: $("#resWrap"), test: testSame });
+  }
+  function hideReceived() { recvFor = null; if (RECV) { RECV.remove(); RECV = null; } }
   function renderShared() {
     const P = VIEW.shared;
-    $("#sharedBar").hidden = !P;
-    if (!P) return;
-    const who = P.l ? [P.l[0], country(P.l[1]), P.l[2]].filter(Boolean).join(" · ") : t("share_anon");
+    $("#sharedT").hidden = !P;
+    if (!P) { hideReceived(); return; }
+    showReceived(P);
+    const who = P.l ? [P.l[0], country(P.l[1]), P.l[2]].filter(Boolean).join(" · ") : "";
     const two = P.maps && P.maps.length > 1;
-    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc(t("share_banner", { who, d: fmtTs(P.t * 60000) }) + (P.m ? " · " + t("mm_" + P.m) : "") + (P.f === 6 && !two ? " · IPv6" : "") + (P.p ? " · " + t("tagPeak") : "") + (P.x ? " · " + t("share_viaProxy") : ""))
+    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc([who, P.m ? t("mm_" + P.m) : "", P.f === 6 && !two ? "IPv6" : "", P.p ? t("tagPeak") : "", P.x ? t("share_viaProxy") : ""].filter(Boolean).join(" · "))
       + (two ? ` <span class="fam-seg">${P.fams.map((f, i) => `<button type="button" class="btn sm" data-fam="${i}" aria-pressed="${i === (P.fi || 0)}">IPv${f}</button>`).join("")}</span>` : "");
   }
   const clearHash = () => { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} };
@@ -1645,8 +1659,7 @@
     if (el.id === "shareBtn") { openShare(); return; }
     if (el.matches("[data-home]")) { S.home = el.dataset.home; changed(); return; }
     if (el.matches("[data-ip]")) { S.ip = el.dataset.ip; changed(); return; }
-    if (el.id === "sharedExit") { exitShared(); return; }
-    if (el.id === "sharedSame") { testSame(); return; }
+    if (el.id === "shareBadGo") { runTests(selected(), MODES[S.mode], S.conc); return; }
     if (el.matches("[data-fam]")) { useFam(+el.dataset.fam); renderShared(); renderAll(); return; }
     if (el.matches("[data-hq]")) { helpIdx = +el.dataset.hq; renderDocs(); return; }
     if (el.matches("[data-hstep]")) { helpIdx = clamp(helpIdx + +el.dataset.hstep, 0, $("#helpSel").options.length - 1); renderDocs(); return; }
