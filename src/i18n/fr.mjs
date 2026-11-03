@@ -250,7 +250,7 @@ export default {
   viz_h: "Le niveau de chaque région",
   vizSub: "{n} mesurées",
   viz_empty: "Les régions apparaissent ici au fur et à mesure.",
-  needLine: "votre limite",
+  needLine: "limite",
   picks_sub2: "{n} dans vos limites ({need})",
   grp_other: "En attente ou injoignables",
   jitWarn: "Instable : gigue ±{j} ms",

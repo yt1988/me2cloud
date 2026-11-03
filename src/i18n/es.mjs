@@ -250,7 +250,7 @@ export default {
   viz_h: "En qué nivel queda cada región",
   vizSub: "{n} medidas",
   viz_empty: "Las regiones aparecen aquí a medida que se miden.",
-  needLine: "tu límite",
+  needLine: "límite",
   picks_sub2: "{n} cumplen tus límites ({need})",
   grp_other: "En espera o sin respuesta",
   jitWarn: "Inestable: jitter ±{j} ms",

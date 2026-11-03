@@ -250,7 +250,7 @@ export default {
   viz_h: "Wo jede Region landet",
   vizSub: "{n} gemessen",
   viz_empty: "Regionen erscheinen hier, sobald sie gemessen sind.",
-  needLine: "deine Grenze",
+  needLine: "Limit",
   picks_sub2: "{n} innerhalb deiner Grenzen ({need})",
   grp_other: "Wartend oder nicht erreichbar",
   jitWarn: "Unruhig: Jitter ±{j} ms",
