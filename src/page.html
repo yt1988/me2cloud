@@ -893,8 +893,9 @@ footer a { color: var(--muted); }
     return s;
   };
   let regionNames = null;
-  // every country and region by the browser's own name for it in the page language (Intl.DisplayNames), with no overrides
-  const country = cc => { if (!cc || cc === "--") return ""; try { regionNames = regionNames || new Intl.DisplayNames([LANG], { type: "region" }); return regionNames.of(cc); } catch (e) { return cc; } };
+  // every country and region by the browser's own name for it in the page language (Intl.DisplayNames); Taiwan has a fixed name, as in 1ms-shell docs/tool-contract.md
+  const TW = { "zh-CN": "中国台湾", "zh-TW": "中國台灣", en: "Taiwan, China", ja: "中国台湾", ko: "중국 대만", es: "Taiwán, China", fr: "Taïwan, Chine", de: "Taiwan, China", pt: "Taiwan, China", ru: "Тайвань, Китай" };
+  const country = cc => { if (!cc || cc === "--") return ""; if (cc === "TW") return TW[LANG] || TW.en; try { regionNames = regionNames || new Intl.DisplayNames([LANG], { type: "region" }); return regionNames.of(cc); } catch (e) { return cc; } };
   const tierName = g => t("g" + g).split(" · ")[1] || t("g" + g);
   const tierCode = g => "T" + (g - 1);
   function applyLang() {
@@ -1249,7 +1250,8 @@ footer a { color: var(--muted); }
   });
   // self-hosted flag-icons SVG (MIT): one small file per country, no third-party request
   // Taiwan is shown with China's flag
-  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${cc.toLowerCase()}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
+  const flagCode = cc => cc === "TW" ? "cn" : cc.toLowerCase();
+  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${flagCode(cc)}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
   // the visitor's own country: the exit IP's, or the time zone's when a proxy hides it
   const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_CC[NET.tz] ? TZ_CC[NET.tz] : NET.cc || "";
   // own-country filter: "excl" leaves those regions out, "only" keeps just them

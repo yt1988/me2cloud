@@ -15,6 +15,8 @@ import { fileURLToPath } from "node:url";
 const SITE = (process.env.SITE_URL || "https://m2c.1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
 // language, URL folder, og:locale; the first is the root
+// Taiwan's name in every language, the same table as src/page.html
+const TW = { "zh-CN": "中国台湾", "zh-TW": "中國台灣", en: "Taiwan, China", ja: "中国台湾", ko: "중국 대만", es: "Taiwán, China", fr: "Taïwan, Chine", de: "Taiwan, China", pt: "Taiwan, China", ru: "Тайвань, Китай" };
 const LANGS = [["en", "", "en_US"], ["zh-CN", "zh-cn", "zh_CN"], ["zh-TW", "zh-tw", "zh_TW"], ["ja", "ja", "ja_JP"], ["ko", "ko", "ko_KR"],
   ["es", "es", "es_ES"], ["fr", "fr", "fr_FR"], ["de", "de", "de_DE"], ["pt", "pt", "pt_BR"], ["ru", "ru", "ru_RU"]];
 
@@ -107,8 +109,8 @@ export async function build({ check = false } = {}) {
     const vk = v => ((d.vendors || {})[v] || {}).kind || ((en.vendors || {})[v] || {}).kind || E.vendors[v].kind;
     // a region placed by country only ("Germany") shows that country's name, as on the page
     const enRegion = cc => { try { return new Intl.DisplayNames(["en"], { type: "region" }).of(cc); } catch (e) { return ""; } };
-    // the browser's name for each country in this language, as on the page
-    const country = cc => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
+    // the browser's name for each country in this language, as on the page (Taiwan's fixed name included)
+    const country = cc => { if (cc === "TW") return TW[lang] || TW.en; try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
     const city = c => { const m = /^(.*?)( \d)?$/.exec(c), C = d.cities || {}; return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || ""); };
     for (const sub of ["", ...vids]) {
       const v = sub || null, n = v ? E.endpoints.filter(e => e.vendor === v).length : E.endpoints.length;
