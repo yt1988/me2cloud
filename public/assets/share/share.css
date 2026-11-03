@@ -23,6 +23,10 @@
 .ms-share-chk:has(input:disabled){opacity:.5;cursor:default}
 .ms-share-note{margin:10px 0 0;color:var(--muted,#666);font-size:12.5px}
 @media (max-width:480px){.ms-share{padding:16px}.ms-share-acts .ms-share-b{flex:1 1 auto}}
+/* a finger: 44px buttons, a 16px link field (iOS zooms into smaller ones), bigger boxes; the share sheet leads */
+@media (pointer:coarse){.ms-share-b{height:44px}.ms-share-x{width:44px;height:44px}.ms-share-link input{height:44px;font-size:16px}
+  .ms-share-chk input{width:20px;height:20px;margin-top:1px}.ms-recv-b{height:44px}}
+.ms-share-phone .ms-share-acts [data-a="more"]{flex:1 1 100%;order:-1}
 /* the banner above a shared result (received()) */
 .ms-recv{box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;margin:0 0 14px;padding:10px 14px;
   border:1px solid color-mix(in srgb,var(--ink,#2563eb) 35%,var(--line,#8884));border-radius:12px;background:color-mix(in srgb,var(--ink,#2563eb) 8%,var(--bg,#fff));

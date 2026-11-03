@@ -634,6 +634,23 @@ footer a { color: var(--muted); }
 }
 #settings .pop { max-height: none; overflow: visible; }
 .pd-h b { white-space: nowrap; }
+/* Phones and touch screens (most visitors): fields at 16px, or iOS zooms the page when one is tapped; no text under
+   12px; links at least 32px tall to tap; button labels that don't fit (Russian) wrap instead of being cut */
+@media (max-width: 860px), (pointer: coarse) {
+  input, select, textarea, .sel select, #lang { font-size: 16px; }
+  .sel select { align-self: stretch; }
+  .lane .ln .short { font-size: 12px; }
+  .axis span, .lhead, .lhead .ax span, .det svg text, .cnc[aria-expanded="true"]::after { font-size: 12px; }
+  .legend, .legend em, .chip .c, .r-v small, .r-nm span, .kv .s, code, .cn-h, .cn .st, .dbip, .pg-h, .pg-h button, .pg-h .cust-rules,
+  .opt .tx span, .nin span, .need-l, .lane .ln .lb, .grp-h .rng, .lp-rs li code, .log, .cn-g .c, .cnq, .tg, .vb, .band span,
+  .needl span, .sp .x { font-size: 12px; }
+  .vlinks a, .nb-eg, .lnk, .cli-gh, .gh-link, footer a { display: inline-flex; align-items: center; min-height: 32px; }
+  .vlinks { gap: 0 14px; }
+  .cli-gh { min-width: 32px; justify-content: center; }
+  .nb-acts { flex-wrap: wrap; }
+  .nb-acts > .btn { height: auto; min-height: 32px; padding-top: 4px; padding-bottom: 4px; }
+  .nb-acts > .btn > span { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.25; }
+}
 @media (prefers-reduced-motion: reduce) { .vd.new, .sp .runm, .bar i, .netbar.chk .nb-dot { animation: none; transition: none; } }
 </style>
 </head>
@@ -2211,7 +2228,7 @@ footer a { color: var(--muted); }
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
-    const { received } = await import("/assets/share/share.js?v=3");
+    const { received } = await import("/assets/share/share.js?v=4");
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 60000, at: $("#resWrap"), test: testSame });
@@ -2311,7 +2328,7 @@ footer a { color: var(--muted); }
       let bx = P; counts.forEach((c, i) => { const w = (W - 2 * P) * c / tot; g.fillStyle = C.t[i + 1]; g.fillRect(bx, by, w, 20); bx += w; }); g.restore();
       font(600, 24); counts.forEach((c, i) => text(fit(`${tierCode(i + 1)} ${tierName(i + 1)} ${c}`, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]));
     };
-    const { share } = await import("/assets/share/share.js?v=3");
+    const { share } = await import("/assets/share/share.js?v=4");
     share({
       lang: LANG, name: "Me2Cloud", file: "me2cloud-" + stamp(),
       show: ["city", "isp"], never: ["ip"], canShow: !!where,

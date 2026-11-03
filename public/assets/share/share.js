@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=3");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=4");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -37,7 +37,7 @@
 // Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
 // visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
 //
-//   const { received } = await import("/assets/share/share.js?v=3");
+//   const { received } = await import("/assets/share/share.js?v=4");
 //   const r = received({
 //     lang: "zh-CN",
 //     ts: 1730000000000,            // when the shared result was measured
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 3;
+export const VERSION = 4;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -100,25 +100,25 @@ const T = {
 // the dialog's note on 1ms.dog, where the short link keeps the preview image; and the shared-result banner
 const R = {
   en: { stored: "The image and link are made in your browser. The short link and its preview image are kept at {host} so chat apps can show this result.",
-    recv: "A result shared on {date}.", test: "Test mine", ready: "Your result is ready.", cmp: "Compare with theirs" },
+    recv: "A result shared on {date}.", test: "Test mine", ready: "Your result is ready.", cmp: "Compare with theirs", send: "Send to a friend" },
   "zh-CN": { stored: "图片和链接在你的浏览器里生成。短链和预览图保存在 {host}，聊天软件里才能显示这次结果。",
-    recv: "这是 {date} 分享的测试结果。", test: "测测我的", ready: "你的结果出来了。", cmp: "和对方比一比" },
+    recv: "这是 {date} 分享的测试结果。", test: "测测我的", ready: "你的结果出来了。", cmp: "和对方比一比", send: "发送给朋友" },
   "zh-TW": { stored: "圖片和連結在你的瀏覽器裡產生。短網址和預覽圖保存在 {host}，聊天軟體裡才能顯示這次結果。",
-    recv: "這是 {date} 分享的測試結果。", test: "測測我的", ready: "你的結果出來了。", cmp: "和對方比一比" },
+    recv: "這是 {date} 分享的測試結果。", test: "測測我的", ready: "你的結果出來了。", cmp: "和對方比一比", send: "傳給朋友" },
   ja: { stored: "画像とリンクはブラウザ内で作られます。チャットでこの結果を表示できるよう、短縮リンクとプレビュー画像は {host} に保存されます。",
-    recv: "{date} に共有された結果です。", test: "自分も測る", ready: "結果が出ました。", cmp: "相手と比べる" },
+    recv: "{date} に共有された結果です。", test: "自分も測る", ready: "結果が出ました。", cmp: "相手と比べる", send: "友だちに送る" },
   ko: { stored: "이미지와 링크는 브라우저에서 만들어집니다. 채팅 앱에서 이 결과가 보이도록 짧은 링크와 미리보기 이미지는 {host}에 저장됩니다.",
-    recv: "{date}에 공유된 결과입니다.", test: "내 것도 측정", ready: "결과가 나왔습니다.", cmp: "상대와 비교" },
+    recv: "{date}에 공유된 결과입니다.", test: "내 것도 측정", ready: "결과가 나왔습니다.", cmp: "상대와 비교", send: "친구에게 보내기" },
   es: { stored: "La imagen y el enlace se crean en tu navegador. El enlace corto y su imagen de vista previa se guardan en {host} para que los chats muestren este resultado.",
-    recv: "Un resultado compartido el {date}.", test: "Probar el mío", ready: "Tu resultado está listo.", cmp: "Comparar con el suyo" },
+    recv: "Un resultado compartido el {date}.", test: "Probar el mío", ready: "Tu resultado está listo.", cmp: "Comparar con el suyo", send: "Enviar a un amigo" },
   fr: { stored: "L’image et le lien sont créés dans votre navigateur. Le lien court et son image d’aperçu sont conservés sur {host} pour que les messageries affichent ce résultat.",
-    recv: "Un résultat partagé le {date}.", test: "Tester le mien", ready: "Votre résultat est prêt.", cmp: "Comparer avec le sien" },
+    recv: "Un résultat partagé le {date}.", test: "Tester le mien", ready: "Votre résultat est prêt.", cmp: "Comparer avec le sien", send: "Envoyer à un ami" },
   de: { stored: "Bild und Link entstehen in deinem Browser. Kurzlink und Vorschaubild werden auf {host} gespeichert, damit Chat-Apps dieses Ergebnis anzeigen.",
-    recv: "Ein am {date} geteiltes Ergebnis.", test: "Meins testen", ready: "Dein Ergebnis ist da.", cmp: "Mit dem anderen vergleichen" },
+    recv: "Ein am {date} geteiltes Ergebnis.", test: "Meins testen", ready: "Dein Ergebnis ist da.", cmp: "Mit dem anderen vergleichen", send: "An Freunde senden" },
   pt: { stored: "A imagem e o link são criados no seu navegador. O link curto e a imagem de prévia ficam guardados em {host} para que os apps de conversa mostrem este resultado.",
-    recv: "Um resultado compartilhado em {date}.", test: "Testar o meu", ready: "Seu resultado está pronto.", cmp: "Comparar com o dele" },
+    recv: "Um resultado compartilhado em {date}.", test: "Testar o meu", ready: "Seu resultado está pronto.", cmp: "Comparar com o dele", send: "Enviar a um amigo" },
   ru: { stored: "Картинка и ссылка создаются в вашем браузере. Короткая ссылка и картинка для превью хранятся на {host}, чтобы мессенджеры показывали этот результат.",
-    recv: "Результат, которым поделились {date}.", test: "Проверить мой", ready: "Ваш результат готов.", cmp: "Сравнить с чужим" },
+    recv: "Результат, которым поделились {date}.", test: "Проверить мой", ready: "Ваш результат готов.", cmp: "Сравнить с чужим", send: "Отправить другу" },
 };
 
 // what a tool may let the visitor show, or promise never to hold
@@ -312,7 +312,15 @@ export function share(o) {
       const box = dlg.querySelector(".ms-share-chk input");
       if (box) { box.checked = false; box.disabled = o.canShow === false; }
       dlg.querySelector('[data-a="img"]').hidden = !(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
-      dlg.querySelector('[data-a="more"]').hidden = !navigator.share;
+      const more = dlg.querySelector('[data-a="more"]'), link = dlg.querySelector('[data-a="link"]');
+      more.hidden = !navigator.share;
+      // on a phone the system share sheet is how people send a result (WeChat, Telegram, messages): it leads, full
+      // width, with the image; copying the link becomes a plain button. A mouse keeps copy-the-link first.
+      const phone = !!navigator.share && matchMedia("(pointer:coarse)").matches;
+      dlg.classList.toggle("ms-share-phone", phone);
+      more.classList.toggle("pri", phone); link.classList.toggle("pri", !phone);
+      more.textContent = phone ? R[lang].send : t.more;
+      if (phone) more.parentElement.prepend(more);
       if (!dlg.open) { dlg.showModal(); ev("open", lang); }
       refresh();
     },
