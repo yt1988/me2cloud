@@ -379,12 +379,6 @@ export default {
   cust_cc: "Land / Region",
   cust_auto: "Automatisch",
   cust_rules: "Braucht eigene Direktregeln",
-  ccNames: {
-    CN: "Festlandchina",
-    HK: "Hongkong (China)",
-    MO: "Macau (China)",
-    TW: "Taiwan (China)"
-  },
   share_customOnly: "Geteilt werden nur Ergebnisse von Cloud-Anbietern; deine eigenen Messpunkte bleiben privat. Nimm ein paar Anbieter in den Test auf, um teilen zu können.",
   cust_empty: "Noch keine eigenen Messpunkte. Mit „＋ Hinzufügen“ nimmst du deine eigenen Server oder Seiten auf; eine Gruppe davon erscheint wie ein Anbieter.",
   cust_err_nx: "{h} gibt es nicht. Prüf die Adresse: Hast du Name und URL vertauscht?",

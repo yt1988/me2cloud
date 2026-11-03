@@ -228,12 +228,6 @@ export default {
   cust_cc: "Country / region",
   cust_auto: "Auto",
   cust_rules: "Needs its own bypass rules",
-  ccNames: {
-    CN: "Mainland China",
-    HK: "Hong Kong, China",
-    MO: "Macao, China",
-    TW: "Taiwan, China"
-  },
   share_customOnly: "Only cloud providers' results are shared; your custom endpoints stay private. Add a few providers to the test to share.",
   cust_empty: "No custom endpoints yet. Use “＋ Add” to include your own servers or sites; a group of them shows up like a provider.",
   cust_err_nx: "{h} doesn't exist. Check the address. Did you swap the name and the URL?",

@@ -223,12 +223,6 @@ export default {
   cust_cc: "國家/地區",
   cust_auto: "自動",
   cust_rules: "需要另外加直連規則",
-  ccNames: {
-    CN: "中國大陸",
-    HK: "中國香港",
-    MO: "中國澳門",
-    TW: "中國台灣"
-  },
   share_customOnly: "分享只包含雲端業者的結果，自訂測速點不會分享出去。測試裡加入幾家雲端業者，就能分享了。",
   cust_empty: "還沒有自訂測速點。按「＋ 新增」放進你自己的伺服器或網站；同一個群組會像一家業者那樣顯示。",
   cust_err_nx: "找不到 {h} 這個網域。請檢查網址，是不是和名稱填反了？",
@@ -605,7 +599,6 @@ export default {
     Sydney: "雪梨",
     "São Paulo": "聖保羅",
     Taipei: "台北",
-    Taiwan: "中國台灣",
     "Tel Aviv": "特拉維夫",
     Texas: "德州",
     Tokyo: "東京",

@@ -146,7 +146,6 @@ export default {
     Sydney: "悉尼",
     "São Paulo": "圣保罗",
     Taipei: "台北",
-    Taiwan: "中国台湾",
     "Tel Aviv": "特拉维夫",
     Texas: "得克萨斯",
     Tokyo: "东京",
@@ -379,12 +378,6 @@ export default {
   cust_cc: "国家/地区",
   cust_auto: "自动",
   cust_rules: "要单独加直连规则",
-  ccNames: {
-    CN: "中国大陆",
-    HK: "中国香港",
-    MO: "中国澳门",
-    TW: "中国台湾"
-  },
   share_customOnly: "分享只包含云厂商的结果，自定义测速点不会分享出去。测试里加上几家云厂商，就能分享了。",
   cust_empty: "还没有自定义测速点。点「＋ 添加」放进你自己的服务器或网站；同一个分组会像一家厂商那样显示。",
   cust_err_nx: "找不到 {h} 这个域名。检查一下网址，是不是和名称填反了？",

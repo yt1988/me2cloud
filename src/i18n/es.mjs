@@ -379,12 +379,6 @@ export default {
   cust_cc: "País / región",
   cust_auto: "Automático",
   cust_rules: "Necesita sus propias reglas directas",
-  ccNames: {
-    CN: "China continental",
-    HK: "Hong Kong (China)",
-    MO: "Macao (China)",
-    TW: "Taiwán (China)"
-  },
   share_customOnly: "Solo se comparten los resultados de proveedores de nube; tus puntos propios son privados. Agrega algunos proveedores a la prueba para poder compartir.",
   cust_empty: "Todavía no tienes puntos propios. Con «＋ Agregar» puedes incluir tus servidores o sitios; un grupo de ellos se muestra como un proveedor.",
   cust_err_nx: "{h} no existe. Revisa la dirección: ¿pusiste el nombre y la URL al revés?",
