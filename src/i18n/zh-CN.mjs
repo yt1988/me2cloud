@@ -7,10 +7,10 @@ export default {
   a_close: "关闭",
   a_prev: "上一个",
   a_next: "下一个",
-  seo_title: "Me2Cloud｜云服务器延迟测试：从你家网络实测 AWS、阿里云、腾讯云等 360+ 区域",
-  seo_desc: "免费的云服务器延迟测试：直接在你的浏览器里实测 AWS、Azure、Google Cloud、甲骨文云、IBM Cloud、阿里云、腾讯云、华为云、火山引擎、百度智能云、Naver Cloud、Vultr、Linode、DigitalOcean、Scaleway、OVH、Hetzner 共 360+ 个区域的延迟、抖动和丢包，算上你的运营商、Wi‑Fi 和晚高峰。数据不出浏览器。",
-  seo_kw: "云服务器延迟测试, 云服务器 ping, 机房测速, AWS 延迟, 阿里云 ping, 腾讯云 延迟, 华为云 ping, Vultr 测速, 哪个区域最快",
-  og_sub: "360+ 个云区域 · 22 家厂商 · 浏览器本地实测",
+  seo_title: "云服务器延迟测试：从你家网络实测 AWS、阿里云、腾讯云等 360+ 个区域｜Me2Cloud",
+  seo_desc: "免费的云服务器延迟测试。从你自己的浏览器出发，实测 AWS、Azure、Google Cloud、甲骨文云、阿里云、腾讯云、华为云、火山引擎、百度智能云、Vultr、Linode、DigitalOcean、Hetzner、OVH 等 22 家厂商 360+ 个区域的延迟、抖动和丢包，你的运营商、Wi‑Fi 和晚高峰都算在里面。测试结果不上传。",
+  seo_kw: "云服务器延迟测试, 云服务器 ping, 机房测速, 云服务器测速, AWS 延迟, 阿里云 ping, 腾讯云 延迟, 华为云 ping, Vultr 测速, 哪个区域最快",
+  og_sub: "22 家云厂商 · 360+ 个区域 · 在你的浏览器里实测",
   unlisted: "未公开区域",
   cities: {
     Abilene: "阿比林",
@@ -169,104 +169,105 @@ export default {
     Johor: "柔佛"
   },
   share_btn: "分享结果",
-  share_viaProxy: "测试时走了代理",
+  share_viaProxy: "测试时开着代理",
   mm_tcp: "TCP 握手",
   mm_https: "HTTPS",
   mm_icmp: "ICMP ping",
-  share_bad: "无法读取这条结果", share_test: "测我自己的",
-  share_none: "先测一次再分享",
-  sharedNoRaw: "分享的结果只包含统计值，没有逐次采样数据。",
-  card_title: "从我家出发，各大云到底有多快",
-  card_cta: "测测你家到各大云有多快",
-  card_local: "浏览器本地实测",
-  card_regions: "{n} 个区域 × {k} 次",
-  card_more: "另有 {n} 家",
+  share_bad: "这条结果读不出来",
+  share_test: "我也测测",
+  share_none: "先测一次，再来分享",
+  sharedNoRaw: "分享的结果只带统计数字，看不到每一次采样。",
+  card_title: "从我家到各大云，到底有多快",
+  card_cta: "测测从你家到各大云有多快",
+  card_local: "在浏览器里实测",
+  card_regions: "{n} 个区域 × 每个 {k} 次",
+  card_more: "还有 {n} 家",
   sep: "、",
   allVendors: "全部厂商",
   allAreas: "全部地区",
-  noArea: "未选",
-  pickVendor: "先选择厂商",
-  pickFirst: "先选择要测的厂商",
-  lgLive: "闪动 = 正在测",
+  noArea: "未选地区",
+  pickVendor: "选择厂商",
+  pickFirst: "先选要测的厂商",
+  lgLive: "闪烁 = 正在测",
   reset: "清空测试数据",
-  resetHint: "按住 1 秒。只删除测试结果和历史记录，设置会保留。",
+  resetHint: "按住 1 秒。只删除测试结果和历史记录，设置和自定义测速点都会保留。",
   resetDone: "测试数据已清空",
-  cust_tip: "任何 HTTPS 地址都行，用很小的静态文件或 /ping 路径响应最快。GET 还是 HEAD 会自动选择。",
-  doc_h: "原理与常见问题",
-  rules_sub: "把测试用的域名设成直连，测出来的才是你自己的线路，而不是代理的。规则只匹配测试域名，不影响其他流量。",
+  cust_tip: "填任意 HTTPS 地址。指向一个很小的静态文件或 /ping 这类路径，响应最快。用 GET 还是 HEAD 会自动判断。",
+  doc_h: "原理和常见问题",
+  rules_sub: "让测试用的域名不走代理（直连），测出来的才是你自己的线路。这些规则只匹配测试域名，其他流量照旧。",
   rules_remote_h: "推荐：远程规则集",
-  rules_remote_s: "规则由工具从我们这里拉取，以后新增节点会自动同步。只需要加一次。",
+  rules_remote_s: "代理软件会定期从我们这里拉取规则，以后新增区域也会自动更新。只需要加一次。",
   rules_inline_h: "或者直接粘贴全部规则（{n} 条，带注释）",
-  rules_inline_only: "这个工具不支持远程规则集，直接粘贴规则即可（{n} 条，带注释）",
-  rules_custom: "自定义节点不在远程规则集里，需要另外加上：",
-  rc_detect: "网络检测（Cloudflare、ipify、ident.me）",
+  rules_inline_only: "这个软件不支持远程规则集，请直接粘贴规则（{n} 条，带注释）",
+  rules_custom: "自定义测速点不在远程规则集里，要另外加上：",
+  rc_detect: "网络检测用（Cloudflare、ipify、ident.me）",
   rc_top: "放在其他规则前面",
-  rules_json_note: "JSON 不支持注释，域名按厂商顺序排列。",
-  rules_steps: ["复制规则，放在你其他规则的<b>最前面</b>，保证先匹配到。", "重新加载配置。TUN 或 fake-ip 模式下，真实 IP 那部分也要加上（上面已经包含）。", "浏览器里的代理插件，对本页关闭，或者把列表加进它的直连名单。", "点网络状态旁边的刷新按钮，看到运营商变成你真实的宽带后，再开始测试。"],
+  rules_json_note: "JSON 不能写注释，域名按厂商顺序排列。",
+  rules_steps: ["复制规则，放在你现有规则的<b>最前面</b>，确保先匹配到。", "重新加载配置。用 TUN 或 fake-ip 模式的话，「真实 IP」那部分也要加上（上面已经包含）。", "浏览器里装了代理插件的话，对本页关掉它，或者把这些域名加进它的直连名单。", "点网络状态旁边的刷新按钮。看到运营商变回你自己的宽带，再开始测试。"],
   heroT: "从你家出发，各大云到底有多快？",
-  lgMiss: "空心 = 不符合需求",
+  lgMiss: "空心 = 不符合你的要求",
   pxShort: "检测到代理",
   okShort: "直连",
-  unkShort: "网络未知",
+  unkShort: "判断不了网络",
   netDetails: "详情",
-  egressLink: "出口 IP 探测",
+  egressLink: "出口 IP 检测",
   lk_ipqs: "IP 质量",
   lk_asn: "ASN 查询",
   lk_ipv6: "IPv6 测试",
-  lk_egress: "看看每个网站走哪个出口",
-  speedPre: "延迟只反映往返时间，带宽另测：",
+  lk_egress: "看看每个网站走的哪个出口",
+  speedPre: "这里只测延迟，不测带宽。要测网速，用",
   lk_speed: "网速测试",
   cli_btn: "命令行",
   cli_h: "在服务器上也测一测",
-  cli_sub: "在 VPS、Linux 主机或路由器上运行这条命令，用 TCP 握手（也能用 ICMP）实测同样的区域，全部测完约 1 分钟，并打印一个能在这里打开的结果链接。",
+  cli_sub: "在 VPS、Linux 主机或路由器上运行这条命令，就能测同样这些区域。默认用 TCP 握手计时（也可以用 ICMP），大约 1 分钟测完，最后给你一个结果链接，在这里就能打开。",
   cli_more: "更多用法",
-  cli_install: "安装并运行（Linux、macOS、路由器）",
-  cli_install_s: "把 vps2cloud 装到 /usr/local/bin（或 ~/.local/bin），打开菜单选择要测什么；以后随时输入 vps2cloud 再测。",
-  cli_once: "只跑一次，不安装",
+  cli_install: "安装后运行（Linux、macOS、路由器）",
+  cli_install_s: "把 vps2cloud 装到 /usr/local/bin（没有权限时装到 ~/.local/bin），然后打开菜单选要测什么。以后输入 vps2cloud 就能再测。",
+  cli_once: "只运行一次，不安装",
   cli_wget: "没有 curl？用 wget",
   cli_opts: "常用参数",
   cli_o_pick: "只测部分厂商和地区（vps2cloud --list 列出全部）",
-  cli_o_ip: "一次测 IPv4 和 IPv6",
-  cli_o_cdn: "测各家 CDN 最近的节点",
+  cli_o_ip: "IPv4 和 IPv6 一起测",
+  cli_o_cdn: "测各家 CDN 离你最近的节点",
   cli_o_icmp: "用 ICMP ping 代替 TCP 握手",
-  cli_o_md: "把结果存成 Markdown",
+  cli_o_md: "把结果存成 Markdown 文件",
   cli_win: "Windows",
-  cli_win_s: "在 PowerShell 里运行：安装 vps2cloud 并打开菜单。也可以直接下载程序：",
-  cli_src: "源码和全部版本",
+  cli_win_s: "在 PowerShell 里运行，会安装 vps2cloud 并打开菜单。也可以直接下载程序：",
+  cli_src: "源代码和所有版本",
   lk_cost: "这家多少钱",
   cdn_h: "CDN",
   cdn_edge: "就近节点",
-  cdn_note: "每家 CDN 由离你最近的节点应答",
+  cdn_note: "每家 CDN 都由离你最近的节点应答",
   pl_vendors: "厂商",
   pl_areas: "地区",
-  off: "已停用",
+  off: "已关闭",
   noLoss: "不能丢包",
-  m_quickD: "先快速看个大概",
+  m_quickD: "快速看个大概",
   m_stdD: "推荐",
-  m_preciseD: "最终几个候选再细比",
+  m_preciseD: "给最后几个候选细比",
   startSub: "{n} 个区域 · 约 {t}",
   lastRun: "上次 {d}：测了 {n} 个区域",
   viz_h: "各区域落在哪一档",
   vizSub: "已测 {n} 个",
-  viz_empty: "测完的区域会出现在这里",
+  viz_empty: "测完的区域会显示在这里",
   needLine: "你的上限",
-  picks_sub2: "{n} 个符合需求（{need}）",
-  grp_other: "排队中 / 连不上",
+  picks_sub2: "{n} 个符合要求（{need}）",
+  grp_other: "排队中或连不上",
   jitWarn: "不太稳：抖动 ±{j} ms",
   lossWarn: "丢包 {p}%",
   res_h: "全部区域",
-  rules_note_loon: "粘到 [Rule] 的最前面。",
-  concHint: "少一点更准，多一点更快。每家厂商最多同时测 2 个。",
+  rules_note_loon: "粘贴到 [Rule] 的最前面。",
+  concHint: "同时测得少更准，测得多更快。每家厂商最多同时测 2 个。",
   secTest: "测试",
-  conc: "同时测几个节点",
-  timeout: "单次请求超时",
+  conc: "同时测几个",
+  timeout: "每次请求的超时",
   rtcOpt: "WebRTC 出口检测（STUN）",
   theme: "主题",
   th_system: "跟随系统",
   th_light: "浅色",
   th_dark: "深色",
   secData: "数据",
-  copyLink: "复制当前配置链接",
+  copyLink: "复制当前设置的链接",
   expCsv: "导出结果（CSV）",
   expJson: "导出结果（JSON）",
   imp: "导入结果（JSON）",
@@ -281,17 +282,24 @@ export default {
   checking: "检测中…",
   peakNow: "晚高峰",
   offPeak: "非高峰",
-  peakTip: "现在 {now}，正赶上晚高峰（20:00–23:00）。这时候测出来的就是你这条线最堵的样子，最有参考价值。",
-  offPeakTip: "现在 {now}，线路一般比较空闲。建议晚上 20:00–23:00 再测一次，看看高峰期能扛住多少。",
-  px_okNote: "出口 IP、运营商和时区都对得上。不过路由器上的代理或公司网络也可能藏得很深，确认上面显示的是你真实的运营商就行。",
-  px_unknownNote: "访问 Cloudflare 被拦了。测试照样能跑，只是判断不了有没有开代理。",
-  r_dc: "你的出口网络是 {org}，这是机房网络。家用宽带不会这样，基本可以确定是 VPN、代理或者云服务器。",
-  r_warp: "Cloudflare WARP 开着。", ipHidden: "IP 已被 Safari 隐藏", px_hiddenNote: "Safari 开着「限制 IP 地址跟踪」，把这次网络检测的部分请求当成追踪器，经 Apple 的中继转发了。所以上面的公网 IP、运营商和 Cloudflare 延迟都是中继的，位置按你设备的时区显示。各云厂商的测速地址通常不在追踪器名单上，仍然直连，测试结果不受影响。", pxRelay: "iCloud 专用代理", r_relay: "你的出口是 iCloud 专用代理（{org}），不是你自己的线路。Safari 的请求都会经过它，测出来的是中继节点的延迟，直连规则也改变不了。想测自己的线路，可以只对当前网络关掉它：设置 → 蜂窝网络 → 蜂窝数据选项（Wi-Fi 则点网络名旁边的 ⓘ）→ 关闭「限制 IP 地址跟踪」。或者换 Chrome、Firefox 来测，它们不走专用代理。",
-  r_tz: "你设备的时区在{a}，但出口 IP 在{b}。",
+  peakTip: "现在是 {now}，正赶上晚高峰（20:00–23:00）。这时测出来的是你的线路最堵的样子，最有参考价值。",
+  offPeakTip: "现在是 {now}，线路通常比较空。建议晚上 20:00–23:00 再测一次，看看高峰时还剩多少。",
+  px_okNote: "出口 IP、运营商和时区都对得上，看起来是直连。不过装在路由器上的代理或公司网络不一定查得出来，确认上面显示的是你自己的运营商就行。",
+  px_unknownNote: "Cloudflare 的检测请求被拦截了，所以判断不了你有没有开代理。测试本身不受影响，可以照常进行。",
+  r_dc: "你的出口网络是 {org}，属于机房 IP。家用宽带一般不会这样，多半是开了 VPN 或代理，或者这台设备本身就在云服务器上。",
+  r_warp: "Cloudflare WARP 开着。",
+  ipHidden: "IP 被 Safari 隐藏了",
+  px_hiddenNote: "Safari 开着「限制 IP 地址跟踪」，把这次网络检测的部分请求当成了追踪器，交给 Apple 的中继转发。所以上面的公网 IP、运营商和 Cloudflare 延迟都是中继的，位置按你设备的时区显示。各云厂商的测速地址通常不在追踪器名单里，仍然直连，测试结果不受影响。",
+  pxRelay: "iCloud 专用代理",
+  r_relay: "你的出口是 iCloud 专用代理（{org}），不是你自己的线路。Safari 的请求都经过它，测出来的是中继的延迟，加直连规则也没用。想测自己的线路，可以只对当前网络关掉它：设置 → 蜂窝网络 → 蜂窝数据选项（Wi‑Fi 则点网络名旁边的 ⓘ）→ 关闭「限制 IP 地址跟踪」。或者换 Chrome、Firefox 来测，它们不走专用代理。",
+  r_tz: "你设备的时区在{a}，出口 IP 却在{b}。",
   r_rtc: "WebRTC（UDP）从 {a} 出去，HTTPS 却从 {b} 出去，说明流量被分流了。",
   r_fam: "{f} 检测从 {a} 出去，主出口却是 {b}，说明有一部分请求走了代理。更新直连规则后再检测一次。",
-  chkFail: "检测失败", chkBlocked: "可能被浏览器扩展或网络拦截",
-  chk_net: "读取网络信息", chk_ip: "检测 IPv4 / IPv6", chk_edge: "测到最近 Cloudflare 的延迟 {i}/{n}",
+  chkFail: "检测失败",
+  chkBlocked: "可能被浏览器插件或网络拦截了",
+  chk_net: "读取网络信息",
+  chk_ip: "检测 IPv4 / IPv6",
+  chk_edge: "测到最近 Cloudflare 的延迟 {i}/{n}",
   all: "全选",
   none: "清空",
   custom: "自定义",
@@ -303,7 +311,7 @@ export default {
   ct_me: "中东",
   ct_af: "非洲",
   ct_xx: "自定义",
-  mode: "每个节点测几次",
+  mode: "每个测速点测几次",
   m_quick: "快速",
   m_std: "标准",
   m_precise: "精确",
@@ -329,9 +337,9 @@ export default {
   histCurrent: "最近一次",
   picks_h: "给你挑的",
   picks_closest: "最接近的几个",
-  picks_none: "没有符合的，可以放宽条件或换厂商",
+  picks_none: "没有完全符合的。可以放宽上限，或者换几家厂商试试。",
   anyLat: "延迟不限",
-  search: "搜区域、城市、厂商",
+  search: "搜索区域、城市或厂商",
   onlyPass: "只看符合的",
   g1: "T0 · 夯",
   g2: "T1 · 顶级",
@@ -340,7 +348,7 @@ export default {
   g5: "T4 · 拉完了",
   queued: "排队中",
   chartAria: "每次采样的延迟",
-  noSamples: "还没有采样数据",
+  noSamples: "还没有采样",
   d_med: "中位数",
   d_avg: "平均",
   d_p90: "P90",
@@ -350,31 +358,36 @@ export default {
   d_loss: "丢包",
   d_method: "请求方式",
   d_warm: "预热（不计入）",
-  d_cold: "这个端点没法保持连接，所以每次采样都包含一次重新握手（大约是真实往返的 3 倍）。只适合跟它自己比。",
-  d_verified: "确认真的连到了厂商（CORS 校验通过）",
-  d_notverified: "CORS 校验没通过：可能是中间有设备替厂商回了包。",
+  d_cold: "这个测速点每次都会断开连接，所以每次采样都包含一次重新握手，大约是真实来回时间的 3 倍。只适合拿它跟自己比。",
+  d_verified: "确认连到的是厂商本身（CORS 校验通过）",
+  d_notverified: "CORS 校验没通过：可能是你和厂商之间的某台设备代替厂商回了话。",
   d_review: "注意：这可能是专属区域，普通用户不一定买得到。",
-  retest: "单独精测 20 次",
+  retest: "单独再测 20 次",
   copyUrl: "复制地址",
-  cust_h: "自定义节点",
+  cust_h: "自定义测速点",
   cust_name_ph: "我的 VPS（东京）",
   add: "添加",
   del: "删除",
   cust_err_url: "这不是有效的网址。",
-  cust_err_https: "请用 https:// 开头的地址。https 页面里浏览器会拦掉 http 请求。",
-  cust_err_dup: "已经在列表里了。",
+  cust_err_https: "请用 https:// 开头的地址。在 https 页面里，浏览器会拦下 http 请求。",
+  cust_err_dup: "这个地址已经在列表里了。",
   cust_added: "加好了，下次测试会带上它。",
   cust_group_ph: "新分组名称",
-  cust_geo: "国家在你的浏览器里识别：用 Google 公共 DNS 带上你所在的网段（/24）查出 IP，CDN 会按你的线路作答；再查内置的 IP 库。",
+  cust_geo: "国家在你的浏览器里识别：先通过 Google 公共 DNS 查出这个地址的 IP（带上你所在的网段，CDN 会按你的线路回答），再对照内置的 IP 库。",
   cust_geo_ing: "识别中…",
-  cust_geo_fail: "未识别",
+  cust_geo_fail: "没识别出来",
   cust_cc: "国家/地区",
   cust_auto: "自动",
-  cust_rules: "需单独添加直连规则",
-  ccNames: {CN: "中国大陆", HK: "中国香港", MO: "中国澳门", TW: "中国台湾"},
-  share_customOnly: "分享只包含云厂商的结果，自定义节点不会被分享。测试里加上云厂商才能分享。",
-  cust_empty: "还没有自定义节点。点「＋ 添加」加入你自己的服务器或网站，同一分组就像一个厂商。",
-  cust_err_nx: "找不到 {h} 这个域名。请检查网址，是不是和名称填反了？",
+  cust_rules: "要单独加直连规则",
+  ccNames: {
+    CN: "中国大陆",
+    HK: "中国香港",
+    MO: "中国澳门",
+    TW: "中国台湾"
+  },
+  share_customOnly: "分享只包含云厂商的结果，自定义测速点不会分享出去。测试里加上几家云厂商，就能分享了。",
+  cust_empty: "还没有自定义测速点。点「＋ 添加」放进你自己的服务器或网站；同一个分组会像一家厂商那样显示。",
+  cust_err_nx: "找不到 {h} 这个域名。检查一下网址，是不是和名称填反了？",
   cust_saved: "已保存。",
   cust_cancel: "取消",
   cust_save: "保存",
@@ -383,8 +396,8 @@ export default {
   cust_nogroup: "不分组",
   cust_group: "分组",
   log_h: "请求记录",
-  log_note: "下面每一条请求，都是由这个浏览器直接发往对应的主机。本页没有后端，也不会把你的结果传到任何地方。不放心的话，可以打开浏览器开发者工具的 Network 面板自己核对。",
-  log_empty: "还没有发出任何请求。",
+  log_note: "下面每一条请求，都是这个浏览器直接发给对应主机的。测试结果不会上传；只有你点「分享结果」时，结果才会存成一条短链接。不放心的话，可以打开浏览器开发者工具的 Network（网络）面板自己核对。",
+  log_empty: "还没有发出请求。",
   failed: "失败",
   rules_h: "直连规则：让测试结果更干净",
   copy: "复制",
@@ -393,107 +406,109 @@ export default {
   rules_plain: "纯域名列表",
   rules_note_clash: "把规则粘到 rules: 的最前面；用 fake-ip 的话，把域名也加进 dns.fake-ip-filter。",
   rules_note_surge: "规则放在 [Rule] 的最前面。always-real-ip 能让这些域名拿到真实的 DNS 结果。",
-  rules_note_shadowrocket: "把规则放到配置文件 [Rule] 的最前面，或者在“配置 → 规则”里逐条添加。",
+  rules_note_shadowrocket: "把规则放到配置文件 [Rule] 的最前面，或者在「配置 → 规则」里逐条添加。",
   rules_note_quanx: "粘到 [filter_local] 里，放在其他规则前面。",
   rules_note_singbox: `合并进 route.rules 和 dns.rules；出站 "direct" 和 DNS 服务器 "local" 要跟你配置里的 tag 对上。`,
   rules_note_xray: "合并进 routing.rules；outboundTag \"direct\" 要对应你配置里的 freedom 出站。",
-  rules_note_omega: "粘到 SwitchyOmega 情景模式的“不代理的地址列表”里。",
-  rules_note_plain: "一行一个域名，给其他工具用。",
+  rules_note_omega: "粘贴到 SwitchyOmega 情景模式的「不代理的地址列表」里。",
+  rules_note_plain: "一行一个域名，给其他软件用。",
   imported: "结果已导入",
   importErr: "这不是 Me2Cloud 的结果文件",
-  foot: "所有测试都在你的浏览器里完成 · 节点验证于 {d} · 与任何云厂商无关",
+  foot: "所有测试都在你的浏览器里完成 · 测速点验证于 {d} · 与任何云厂商无关",
   docs: [
     [
-      "为什么从你自己的网络测，比测速网站和 Looking Glass 更靠谱",
-      `<p>大部分“云节点测速”网站，以及厂商自己的 Looking Glass，测试都是从<b>他们的</b>服务器发起的。这些服务器放在机房里，接的是优质线路，测出来的只是“机房到机房”有多快。而你真正感受到的那一段，家里宽带或手机网络、运营商骨干、国际出口，还有今晚堵不堵，它们统统测不到。</p>
-          <p>Me2Cloud 的每个请求都从<b>你的</b>浏览器发出，所以结果把这些全算进去了：Wi‑Fi、路由器、运营商、运营商选的路由，还有晚高峰。</p>
+      "为什么从你自己的网络测，比测速网站和 Looking Glass 更准",
+      `<p>结论：想知道你用起来快不快，就得从你自己的网络测。</p>
+          <p>大部分「云服务器测速」网站，以及厂商自己的 Looking Glass，都是从<b>他们的</b>服务器发起测试。这些服务器在机房里，接的是优质线路，测出来的只是「机房到机房」有多快。你真正感受到的那一段，家里的宽带或手机网络、运营商骨干网、国际出口、今晚堵不堵，它们都测不到。</p>
+          <p>Me2Cloud 的每个请求都从<b>你的</b>浏览器发出，所以 Wi‑Fi、路由器、运营商、运营商选的线路和晚高峰，全都算在结果里。</p>
           <div class="tblwrap"><table class="cmp"><tr><th></th><th>测速网站 / Looking Glass</th><th>电脑上的 ICMP ping</th><th>Me2Cloud</th></tr>
           <tr><td>从哪里发起</td><td class="n">他们的机房</td><td class="y">你的网络</td><td class="y">你的网络</td></tr>
           <tr><td>算上你的运营商和晚高峰</td><td class="n">不算</td><td class="y">算</td><td class="y">算</td></tr>
-          <tr><td>跟网页、应用同一种协议（TCP 443）</td><td class="m">不一定</td><td class="n">不是，ICMP</td><td class="y">是，HTTPS</td></tr>
+          <tr><td>和网页、App 用同一种协议（TCP 443）</td><td class="m">不一定</td><td class="n">不是，用 ICMP</td><td class="y">是，用 HTTPS</td></tr>
           <tr><td>会被网络限速或过滤</td><td class="m">有时</td><td class="n">经常</td><td class="y">很少</td></tr>
-          <tr><td>一键测几百个区域</td><td class="m">部分支持</td><td class="n">不行</td><td class="y">可以</td></tr>
+          <tr><td>一次测几百个区域</td><td class="m">部分可以</td><td class="n">不行</td><td class="y">可以</td></tr>
           <tr><td>要不要装软件</td><td class="y">不用</td><td class="y">不用</td><td class="y">不用</td></tr></table></div>`
     ],
     [
       "每次采样是怎么测的",
-      `<ol><li>先发一次<b>预热</b>请求，把 DNS、TCP、TLS 都建好。这次的时间会显示出来，但不计入结果。</li>
-          <li>然后在<b>同一条连接</b>上，对同一个主机再发 5、10 或 20 次请求。每次只花一个往返，再加上厂商服务器的处理时间。</li>
-          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、华为云、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们的 GET 会断开连接，测出来会翻 3 倍）；Hetzner 用 CORS 方式的 <code>GET</code>，否则浏览器会截断它返回的网页并断开连接。</li>
-          <li>结果给出<b>中位数</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次里有 9 次不超过它）、<b>抖动</b>（相邻两次的平均变化）和<b>丢包</b>（超时没响应的次数）。</li>
-          <li><b>等级</b>按中位数划分：T0 夯 ≤ 30 ms、T1 顶级 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。推荐用的综合分是“中位数 + 2 × 抖动 + 丢包惩罚”，所以稳定的 60 ms 会排在忽高忽低的 45 ms 前面。</li></ol>`
+      `<ol><li>先发一次<b>预热</b>请求，把 DNS 查询、TCP 连接和 TLS 加密都建好。这次的时间会显示出来，但不算进结果。</li>
+          <li>然后在<b>同一条连接</b>上，对同一个主机再发 5、10 或 20 次请求。每次只花一个来回，加上厂商服务器很短的处理时间。</li>
+          <li>每家厂商都用我们实测过、能保持连接的请求方式：AWS、Azure、Google Cloud、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里云、腾讯云、火山引擎、百度智能云、Naver Cloud、华为云、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它们收到 GET 会断开连接，每次采样会变成原来的 3 倍左右）；Hetzner 用 CORS 方式的 <code>GET</code>，否则浏览器会截断它返回的网页并断开连接。</li>
+          <li>结果给出<b>中位数</b>（最典型的那个值）、<b>平均值</b>、<b>P90</b>（10 次里有 9 次不超过它）、<b>抖动</b>（相邻两次相差多少，取平均）和<b>丢包</b>（超时没回应的次数）。</li>
+          <li><b>分档</b>按中位数来：T0 夯 ≤ 30 ms、T1 顶级 ≤ 80 ms、T2 人上人 ≤ 150 ms、T3 NPC ≤ 250 ms，再往上就是 T4 拉完了。「给你挑的」按「中位数 + 2 × 抖动 + 丢包扣分」排序，所以稳定的 60 ms 会排在忽高忽低的 45 ms 前面。</li></ol>`
     ],
     [
-      "为什么 HTTPS 测速比 ICMP ping 更贴近真实体验",
-      `<ul><li><b>跟你的流量走同一条路。</b>网页、API、走 443 的隧道、游戏登录、下载，用的都是 TCP。不少运营商对 ICMP 单独排队、限速，甚至单独选路，所以经常 ping 看着挺好、网页却卡得要死，反过来也有。</li>
-          <li><b>不会被限速吞掉。</b>路由器和云厂商经常限制甚至直接丢弃 ICMP，而访问公共 HTTPS 端点总会有响应。</li>
-          <li><b>算上你的真实环境。</b>DNS、IPv4/IPv6 的选择、代理、加速器，对浏览器流量都会生效，测出来的就是你实际能拿到的效果。</li>
-          <li><b>代价是：</b>每次采样还包含一点很稳定的服务器处理时间。我们实测 AWS 是 0–5 ms，阿里云约 8 ms，华为云 OBS 约 20 ms。延迟上百毫秒的节点完全可以忽略；离你特别近的区域，数字会比 ping 略高一点。</li></ul>`
+      "为什么用 HTTPS 测，比 ICMP ping 更接近真实体验",
+      `<ul><li><b>和你的流量走同一条路。</b>网页、API、走 443 端口的隧道、游戏登录、下载，用的都是 TCP。不少运营商会单独给 ICMP 排队、限速，甚至让它走另一条线路，所以常常 ping 看着挺好，网页却很卡，反过来也有。</li>
+          <li><b>不容易被限速。</b>路由器和云厂商经常限制甚至直接丢掉 ICMP，访问公开的 HTTPS 地址则总会有回应。</li>
+          <li><b>算上你的真实环境。</b>DNS、IPv4 还是 IPv6、代理、加速器，都会作用在浏览器的流量上，测出来的就是你实际能拿到的效果。</li>
+          <li><b>代价是：</b>每次采样还包含一点很稳定的服务器处理时间。我们实测 AWS 是 0–5 ms，阿里云约 8 ms，华为云 OBS 约 20 ms。延迟上百毫秒时完全可以忽略；离你特别近的区域，数字会比 ping 略高一点。</li></ul>`
     ],
     [
       "什么时候测：专挑晚高峰",
-      `<ul><li>家庭宽带在<b>晚上 20:00–23:00</b> 最堵，出国线路更明显。中午还是 T1 顶级的区域，到了晚上可能直接掉到 NPC。</li>
-          <li>建议白天测一次、晚高峰再测一次。保存的结果会打上“晚高峰”标签，在测试结果里可以来回切换对比。</li>
-          <li>测试时先暂停大文件下载、视频和网盘同步。有线比 Wi‑Fi 准；只能用 Wi‑Fi 的话，尽量离路由器近一点。</li>
-          <li>用手机流量测，结果会跟着信号走。最好在你真正要用的地方测。</li></ul>`
+      `<ul><li>家里的宽带在<b>晚上 20:00–23:00</b> 最堵，出国线路更明显。中午还是 T1 顶级的区域，到了晚上可能直接掉到 NPC。</li>
+          <li>建议白天测一次，晚高峰再测一次。晚高峰的结果会打上「晚高峰」标签，在测试结果里可以来回切换对比。</li>
+          <li>测试时先暂停大文件下载、视频和网盘同步。插网线比 Wi‑Fi 准；只能用 Wi‑Fi 的话，尽量离路由器近一点。</li>
+          <li>用手机流量测，结果会随信号变化。最好在你真正要用的地方测。</li></ul>`
     ],
     [
-      "适合用来干什么",
-      `<ul><li>买服务器、游戏服、CDN 回源之前，先把候选区域筛一遍。</li>
-          <li>比较同一家厂商的不同区域，或者同一个城市不同厂商的表现。</li>
-          <li>看稳定性（抖动、丢包）够不够打游戏、开视频会议、远程桌面和 SSH。</li>
-          <li>验证你的代理、加速器或者新办的宽带到底行不行：开着测一次，关掉再测一次。</li>
-          <li>用自定义节点，把你自己的服务器或 CDN 跟大厂放在一起比。</li></ul>`
+      "适合用来做什么",
+      `<ul><li>买云服务器、游戏服务器或 CDN 回源之前，先把候选区域筛一遍。</li>
+          <li>比较同一家厂商的不同区域，或者同一座城市里不同厂商的表现。</li>
+          <li>看看稳定性（抖动、丢包）够不够打游戏、开视频会议、用远程桌面和 SSH。</li>
+          <li>验证你的代理、加速器或新办的宽带到底行不行：开着测一次，关掉再测一次。</li>
+          <li>用自定义测速点，把你自己的服务器或 CDN 和大厂放在一起比。</li></ul>`
     ],
     [
       "它做不到的事",
-      `<ul><li><b>只代表一个位置。</b>测的是你的线路，不是你用户的。可以让几个用户也测一下，导出来对比。</li>
-          <li><b>测的是端点，不是你以后的云主机。</b>我们测的是厂商在该区域的公共 API 或存储端点。同区域的服务器一般共用网络，但精品线路（比如 CN2、BGP 和单线、Lightsail 和 EC2）可能不一样。</li>
-          <li><b>不测带宽、不测 UDP、不做路由追踪。</b>只测往返时间，不测下载速度、UDP 游戏流量，也看不到中间经过哪些节点。<span data-tool="speed" hidden>要测下载速度，可以用<a>网速测试</a>。</span></li>
-          <li><b>浏览器本身的影响。</b>插件、代理、VPN、很忙的标签页都会带来噪声。测试时关掉占资源的标签页，让本页保持在前台。</li>
-          <li>个别端点在某些国家和地区可能访问不到。</li></ul>`
+      `<ul><li><b>只代表你这一个位置。</b>测的是你的线路，不是你用户的。可以请几个用户也测一下，导出来对比。</li>
+          <li><b>测的是厂商的公共地址，不是你以后的云服务器。</b>我们测的是厂商在这个区域的公开 API 或存储地址。同一个区域的服务器一般共用网络，但精品线路（比如 CN2、BGP 和单线、Lightsail 和 EC2）可能不一样。</li>
+          <li><b>不测带宽，不测 UDP，也不做路由追踪。</b>只测来回时间，测不了下载速度和 UDP 游戏流量，也看不到中间经过了哪些节点。<span data-tool="speed" hidden>要测下载速度，可以用<a>网速测试</a>。</span></li>
+          <li><b>浏览器本身会带来误差。</b>插件、代理、VPN、很忙的标签页都会让结果有波动。测试时关掉占资源的标签页，让本页一直在前台。</li>
+          <li>少数测速地址在个别国家和地区可能访问不了。</li></ul>`
     ],
     [
-      "所有请求都从你的浏览器发出",
-      `<ul><li>本页是放在 Cloudflare 上的纯静态文件。没有后端、不用注册、没有统计代码，结果也从不上传。</li>
-          <li>所有测试请求都由你的浏览器直接发给厂商。打开上面的<b>请求记录</b>，或者浏览器开发者工具的 Network 面板，每一条都看得到。</li>
-          <li>网络信息来自 Cloudflare：本站自己的 <code>/_ms/me</code> 先给出结果，再以和测试走同一路径的 <code>speed.cloudflare.com/meta</code> 与 <code>/cdn-cgi/trace</code> 为准。可选的 WebRTC 检测会向 <code>stun.cloudflare.com</code> 询问你的 UDP 出口地址，不想用可以在设置里关掉。</li>
-      <li>IPv4/IPv6 检测会同时询问 Cloudflare 以外的 <code>ipify.org</code> 和 <code>ident.me</code>，某一家被网络阻断时，不会被误判成没有 IPv6。</li>
-          <li>设置、自定义节点和最近几次结果只存在这个浏览器的本地存储里，“清空全部数据”会把它们全删掉。</li></ul>`
+      "隐私：测试请求都从你的浏览器发出，结果不上传",
+      `<ul><li>测试结果不会上传，也不用注册。只有你点「分享结果」时，结果才会存成一条短链接和一张预览图，放在 1ms.dog 上，方便在聊天软件里打开。</li>
+          <li>每个测试请求都由你的浏览器直接发给厂商。打开上面的<b>请求记录</b>，或者浏览器开发者工具的 Network（网络）面板，每一条都看得到。</li>
+          <li>网络信息来自 Cloudflare：本站的 <code>/_ms/me</code> 先给出结果，最终以 <code>speed.cloudflare.com/meta</code> 和 <code>/cdn-cgi/trace</code> 为准，因为它们和测试走同一条路。可选的 WebRTC 检测会向 <code>stun.cloudflare.com</code> 询问你的 UDP 出口地址，不想用可以在设置里关掉。</li>
+      <li>检测 IPv4/IPv6 时，还会问 Cloudflare 以外的 <code>ipify.org</code> 和 <code>ident.me</code>。这样某一家被网络屏蔽时，不会被误判成没有 IPv6。</li>
+          <li>页面出错时，会把错误信息、页面地址和浏览器型号发回本站，用来修问题；用分享功能时会匿名记一次用到了哪一步。这些都不包含你的测试结果。</li>
+          <li>设置、自定义测速点和最近几次结果只存在这个浏览器里。按住「清空测试数据」会删掉结果和历史；想连设置一起删，清除本站的浏览器数据就行。</li></ul>`
     ],
     [
-      "对厂商友好：不触发限流，也不会被封",
-      `<p>对公共端点请求太猛，可能触发厂商的限流或 WAF，结果也就不准了。所以测试节奏刻意压得很低：</p>
+      "对厂商友好：不会触发限流，也不会被封",
+      `<p>对公开地址请求太猛，可能触发厂商的限流或防火墙（WAF），结果也就不准了。所以测试节奏刻意压得很低：</p>
           <ul><li>每个主机同一时间只有一个请求，两次采样之间停 250–370 ms（每个主机每秒最多 2–3 个请求）。</li>
           <li>每家厂商最多同时测 2 个主机，总共最多 8 个（默认 4 个）。</li>
-          <li>每次测试每个主机最多 21 个请求（预热 + 20 次），没有持续轰炸的模式。</li>
+          <li>每次测试，每个主机最多 21 个请求（预热 1 次 + 最多 20 次），没有持续不停的模式。</li>
           <li>连续失败 3 次就放弃这个主机，不会反复重试。</li>
-          <li>全部是匿名、不带 Cookie、不带 Referer 的“简单请求”：没有预检，响应只有几百字节，能用 HEAD 就用 HEAD，不会下载大文件。</li></ul>
-          <p>整个过程的流量比打开一个普通网页还少。每个端点都验证过能正常响应匿名请求（返回 200、403、404 都不影响计时）。</p>`
+          <li>全部是匿名请求：不带 Cookie，不带来源页，也不需要预检；回应只有几百字节，能用 HEAD 就用 HEAD，不下载大文件。</li></ul>
+          <p>整个过程的流量比打开一个普通网页还少。每个测速地址都验证过能正常回应匿名请求（返回 200、403 还是 404 都不影响计时）。</p>`
     ],
     [
       "开着代理或 VPN 怎么办？",
-      `<p>流量走代理的话，浏览器测到的是“你到代理”加上“代理到厂商”，而不是你自己的线路。网络面板会检查几个常见迹象：出口网络属于机房、时区和出口国家对不上、开了 WARP、WebRTC 出口和 HTTPS 出口不一致。</p>
-          <p>点<b>获取直连规则</b>，只把测试域名设成直连（支持 Clash / Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray、SwitchyOmega 和纯域名列表），然后重新检测。如果你想测的正是代理本身，那就开着测，得到的就是代理的真实表现。</p>`
+      `<p>流量走代理时，浏览器测到的是「你到代理」加上「代理到厂商」，不是你自己的线路。网络面板会检查几个常见迹象：出口网络属于机房、时区和出口国家对不上、开着 WARP、WebRTC 出口和 HTTPS 出口不一样。</p>
+          <p>点<b>获取直连规则</b>，只让测试域名直连（支持 Clash / Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray、SwitchyOmega 和纯域名列表），然后重新检测。如果你想测的就是代理本身，那就开着测，得到的就是代理的真实表现。</p>`
     ],
     [
       "怎么看图",
       `<ul><li>每一行的条形图都用同一把尺子（对数刻度，2 ms 到 3 s）。圆点是每次采样，阴影框是中间一半采样所在的范围，竖线是中位数。</li>
-          <li>框越窄越稳；框很宽或者点很散，就是抖得厉害。红色 × 是丢包的次数。</li>
-          <li>点开一行，能看到每次采样的先后变化、全部统计数据和用到的端点。✓ 表示符合你的需求。</li></ul>`
+          <li>框越窄越稳；框很宽或者点很散，就是抖得厉害。红色 × 表示丢包的次数。</li>
+          <li>点开一行，能看到每次采样的先后变化、全部统计数据和用到的测速地址。✓ 表示符合你的要求。</li></ul>`
     ]
   ],
-  homeL: "当前区域节点（{c}）",
+  homeL: "{c}的区域",
   home_all: "包含",
   home_excl: "排除",
-  home_only: "只看",
-  homeTip: "包含{c}的区域、排除它们，或者只测{c}的区域。",
+  home_only: "只测",
+  homeTip: "测试时包含{c}的区域、排除它们，或者只测{c}。",
   lp_title: "{v}延迟测试：从你家网络实测 {n} 个区域｜Me2Cloud",
-  lp_desc: "在你自己的浏览器里实测{v}全部 {n} 个区域的延迟、抖动和丢包，算上你的运营商和晚高峰。免费，无需安装。",
-  lp_h1: "从你家出发，{v}各区域到底有多快？",
-  lp_h2: "我们测试的 {n} 个{v}区域",
-  lp_intro: "{v}通过它的 {k} 端点测速。在上方选好区域点开始，每个请求都从你的浏览器直接发往{v}。",
-  nav_h: "按厂商测试",
+  lp_desc: "免费测{v}全部 {n} 个区域的延迟、抖动和丢包：直接从你的浏览器出发，你的运营商和晚高峰都算在里面。不用安装。",
+  lp_h1: "从你家出发，{v}各区域有多快？",
+  lp_h2: "我们测的 {n} 个{v}区域",
+  lp_intro: "{v}用它的 {k} 地址测速。在上面选好区域，点「开始测试」，每个请求都由你的浏览器直接发给{v}。",
+  nav_h: "按厂商测",
   vendors: {
     aliyun: {
       name: "阿里云",
@@ -508,7 +523,7 @@ export default {
     huawei: {
       name: "华为云",
       kind: "ECS API",
-      note: "OBS 每次匿名请求后都会断开连接，所以改用同区域的 ECS API 地址。它返回的是 JSON，浏览器在 no-cors 请求里会截断并断开连接，所以 HEAD 用 CORS 方式发送，连接得以保持。"
+      note: "OBS 每次匿名请求后都会断开连接，所以改测同区域的 ECS API 地址。它返回 JSON，浏览器在 no-cors 请求里会截断它并断开连接，所以 HEAD 改用 CORS 方式发送，连接就能保持。"
     },
     azure: {
       name: "微软 Azure",
@@ -518,7 +533,7 @@ export default {
     oracle: {
       name: "甲骨文云",
       kind: "对象存储",
-      note: "GET 在每次 404 后都会断开连接（每次采样约 3–4 个往返），HEAD 会复用连接。"
+      note: "GET 在每次返回 404 后都会断开连接（每次采样约 3–4 个来回），HEAD 会复用连接。"
     },
     volcengine: {
       name: "火山引擎",
@@ -532,19 +547,19 @@ export default {
     },
     aws: {
       kind: "DynamoDB /ping",
-      note: "返回内容里带区域名，页面能确认请求真的到了这个区域。"
+      note: "返回内容里带着区域名，页面能确认请求真的到了这个区域。"
     },
     vultr: {
       kind: "Looking Glass",
-      note: "GET 会返回约 12 KB 的页面、多出 50–70 ms，HEAD 不带正文。"
+      note: "GET 会返回约 12 KB 的页面，多花 50–70 ms；HEAD 不带正文。"
     },
     gcp: {
       kind: "Storage 区域端点（rep）",
-      note: "HEAD 会固定多出约 1 秒，只能用 GET。按区域分配 IP（34.1.x），不是全球 Anycast 前端。"
+      note: "HEAD 会固定多出约 1 秒，所以只用 GET。每个区域有自己的 IP（34.1.x），不是全球 Anycast 入口。"
     },
     linode: {
       kind: "对象存储",
-      note: "旧的 speedtest.<机房>.linode.com 已经不响应，只覆盖有对象存储集群的区域。"
+      note: "旧的 speedtest.<机房>.linode.com 已经不再回应，所以只覆盖有对象存储集群的区域。"
     },
     digitalocean: {
       kind: "Spaces",
@@ -552,11 +567,11 @@ export default {
     },
     ovh: {
       kind: "测速服务器（proof）",
-      note: `proof.ovh.net 的主机会跳转到 <站点>.speedtest.network.ovh.net，注册表直接用跳转后的地址。`
+      note: `proof.ovh.net 的地址会跳转到 <站点>.speedtest.network.ovh.net，测速点清单直接用跳转后的地址。`
     },
     hetzner: {
       kind: "测速服务器",
-      note: `服务器会直接断开带查询参数的请求，所以请求不加防缓存参数。它返回的是网页，浏览器在 no-cors 请求里会截断它并断开连接；CORS 方式的 GET 会先收完整个网页再报跨域错误，连接得以保持。`
+      note: "服务器会直接断开带查询参数的请求，所以请求不加防缓存参数。它返回的是网页，浏览器在 no-cors 请求里会截断并断开连接；CORS 方式的 GET 会先收完整个网页再报跨域错误，连接就能保持。"
     },
     ibm: {
       kind: "Cloud Object Storage",
@@ -564,37 +579,52 @@ export default {
     },
     scaleway: {
       kind: "对象存储",
-      note: "GET 和 HEAD 都能保持连接，域名是双栈。"
+      note: "GET 和 HEAD 都能保持连接，域名同时支持 IPv4 和 IPv6。"
     },
-    ionos: { kind: "日志服务 API（区域入口）", note: "每个计算机房一个 API 入口；对象存储覆盖的机房更少，老集群在浏览器里无法保持连接。" },
-    aruba: { kind: "对象存储", note: "HEAD 在所有区域都能复用连接；R3-IT 的 GET 会断开连接。" },
-    leaseweb: { kind: "对象存储", note: "GET 返回 400 会断开连接，HEAD 能复用。官方文档只给出国家，所以按国家标注。" },
-    gcore: { kind: "对象存储", note: "GET 会断开连接，HEAD 能复用。Sines 和 London-2 用的是另一套存储，改用读取响应体的 CORS GET。" },
-    yandex: { kind: "对象存储", note: "GET 和 HEAD 都能保持连接，域名是双栈；每个区域一个入口。" },
+    ionos: {
+      kind: "日志服务 API（区域入口）",
+      note: "每个计算机房有一个 API 入口；对象存储覆盖的机房更少，而且老集群在浏览器里保持不了连接。"
+    },
+    aruba: {
+      kind: "对象存储",
+      note: "HEAD 在所有区域都能复用连接；R3-IT 的 GET 会断开连接。"
+    },
+    leaseweb: {
+      kind: "对象存储",
+      note: "GET 返回 400 后会断开连接，HEAD 能复用。官方文档只写了国家，所以按国家标注。"
+    },
+    gcore: {
+      kind: "对象存储",
+      note: "GET 会断开连接，HEAD 能复用。Sines 和 London-2 用的是另一套存储，改用读取完整回应的 CORS GET。"
+    },
+    yandex: {
+      kind: "对象存储",
+      note: "GET 和 HEAD 都能保持连接，域名同时支持 IPv4 和 IPv6；每个区域一个入口。"
+    },
     naver: {
       kind: "对象存储",
       note: "GET 返回 403 后会断开连接，HEAD 会复用连接。"
     }
   },
-  ipTip: "IPv6 模式下，不支持 IPv6 的区域会单独标出。",
+  ipTip: "IPv6 模式下，不支持 IPv6 的区域会单独标出来。",
   ip_no6: "你的网络没有可用的 IPv6，只能测 IPv4",
   ip_no6short: "无 IPv6",
   nov6: "不支持 IPv6",
   grp_nov6: "不支持 IPv6",
-  d_nov6: "这个区域没有可测试的 IPv6 端点，IPv6 模式下跳过。",
-  d_v6: "通过 IPv6 测试（使用带 IPv6 地址的域名）。",
-  d_dual: "这个端点是双栈域名：如果你的网络有 IPv6，即使在 IPv4 模式下浏览器也可能走 IPv6。",
-  ai_btn: "接入 Agent",
-  ai_h: "在 AI Agent 里使用",
+  d_nov6: "这个区域没有能测的 IPv6 地址，IPv6 模式下跳过。",
+  d_v6: "通过 IPv6 测试（用的是有 IPv6 地址的域名）。",
+  d_dual: "这个测速点的域名同时支持 IPv4 和 IPv6：如果你的网络有 IPv6，即使在 IPv4 模式下，浏览器也可能走 IPv6。",
+  ai_btn: "接入 AI",
+  ai_h: "配合 AI 助手使用",
   ai_sub: "AI 没法替你测线路，但能帮你看懂结果、准备测试。",
   ai_res_h: "让 AI 帮你分析结果",
-  ai_res_p: "把这段摘要粘贴给 ChatGPT、Claude 或任意 AI 助手。里面有你的网络、你的需求和最好的区域，结尾附了一个问题。",
-  ai_res_none: "先测一次，这里会出现你的结果摘要。",
-  ai_q: "问题：根据这些结果，我的使用场景应该选哪些厂商和区域？有什么需要注意的？",
+  ai_res_p: "把这段摘要粘贴给 ChatGPT、Claude 或其他 AI 助手。里面有你的网络、你的要求和表现最好的区域，最后附了一个问题。",
+  ai_res_none: "先测一次，这里会出现结果摘要。",
+  ai_q: "问题：根据这些结果，我这个用途应该选哪些厂商和区域？有什么要注意的？",
   ai_link_h: "让 AI 帮你准备测试",
-  ai_link_p: "把这段提示词连同你的需求发给 AI，它会生成一个选好厂商、地区和上限的 Me2Cloud 链接。",
-  ai_linkPrompt: "请阅读 {u}，然后给我一个 Me2Cloud 链接，测试我应该考虑的区域。我的情况是：（在这里写你的用户在哪、用途和预算）",
-  ai_dev_h: "开发者和 Agent",
-  ai_dev_p: "机器可读的文件：端点注册表、代理规则集，以及写明链接参数和分享链接格式的 llms.txt。",
+  ai_link_p: "把这段提示词和你的需求一起发给 AI，它会生成一个已经选好厂商、地区和上限的 Me2Cloud 链接。",
+  ai_linkPrompt: "请阅读 {u}，然后给我一个 Me2Cloud 链接，用来测我应该考虑的区域。我的情况是：（在这里写你的用户在哪、做什么用、预算多少）",
+  ai_dev_h: "给开发者和 Agent",
+  ai_dev_p: "机器可读的文件：测速点清单、代理规则集，以及写明链接参数和分享链接格式的 llms.txt。",
   ip_h: "IP 协议"
 };
