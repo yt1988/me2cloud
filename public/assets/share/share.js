@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=4");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=5");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -37,7 +37,7 @@
 // Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
 // visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
 //
-//   const { received } = await import("/assets/share/share.js?v=4");
+//   const { received } = await import("/assets/share/share.js?v=5");
 //   const r = received({
 //     lang: "zh-CN",
 //     ts: 1730000000000,            // when the shared result was measured
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 4;
+export const VERSION = 5;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -330,7 +330,8 @@ export function share(o) {
 }
 
 // The banner above someone else's shared result: what it is, and the visitor's own test; with compare mode, the
-// comparison once that test is done. Counted like the dialog: view, test, compare.
+// comparison once that test is done. Counted like the dialog: view, test, compare. "test" is counted once, whichever way
+// the visitor starts their own test: the banner's button, or the tool's own start button (the tool then calls done or remove).
 export function received(o) {
   const lang = R[o.lang] ? o.lang : "en", r = R[lang];
   loadCSS();
@@ -339,18 +340,21 @@ export function received(o) {
   const date = new Date(o.ts || Date.now()).toLocaleDateString(lang);
   const say = document.createElement("span"); say.textContent = r.recv.replace("{date}", date);
   const btn = document.createElement("button"); btn.type = "button"; btn.className = "ms-recv-b"; btn.textContent = r.test;
-  btn.onclick = () => { ev("test", lang); btn.remove(); if (o.test) o.test(); };
+  let tested = false;
+  const test = () => { if (!tested) { tested = true; ev("test", lang); } };
+  btn.onclick = () => { test(); btn.remove(); if (o.test) o.test(); };
   el.append(say, btn);
   if (o.at && o.at.parentNode) o.at.parentNode.insertBefore(el, o.at); else document.body.prepend(el);
   ev("view", lang);
   return {
     done(url) {
+      test();
       if (!url || !el.isConnected) return;
       say.textContent = r.ready;
       const a = document.createElement("a"); a.className = "ms-recv-b"; a.href = url; a.textContent = r.cmp;
       a.onclick = () => ev("compare", lang);
       el.querySelector(".ms-recv-b")?.remove(); el.append(a);
     },
-    remove() { el.remove(); },
+    remove() { test(); el.remove(); },
   };
 }
