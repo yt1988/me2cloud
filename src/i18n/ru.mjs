@@ -29,6 +29,7 @@ export default {
     "Cape Town": "Кейптаун",
     "Hong Kong": "Гонконг",
     Taipei: "Тайбэй",
+    Changhua: "Чжанхуа",
     Tokyo: "Токио",
     Seoul: "Сеул",
     Osaka: "Осака",

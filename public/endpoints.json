@@ -4338,7 +4338,7 @@
    "id": "gcp:asia-east1",
    "vendor": "gcp",
    "region": "asia-east1",
-   "city": "Taiwan",
+   "city": "Changhua",
    "country": "TW",
    "url": "https://storage.asia-east1.rep.googleapis.com/generate_204",
    "method": "GET",

@@ -151,7 +151,7 @@ const GCP = [
   ["europe-west12", "Turin", "IT"], ["europe-west15", "?", "--"], ["europe-central2", "Warsaw", "PL"], ["europe-north1", "Finland", "FI"],
   ["europe-north2", "Stockholm", "SE"], ["europe-southwest1", "Madrid", "ES"],
   ["me-central1", "Doha", "QA"], ["me-central2", "Dammam", "SA"], ["me-west1", "Tel Aviv", "IL"], ["africa-south1", "Johannesburg", "ZA"],
-  ["asia-east1", "Taiwan", "TW"], ["asia-east2", "Hong Kong", "HK"], ["asia-northeast1", "Tokyo", "JP"], ["asia-northeast2", "Osaka", "JP"],
+  ["asia-east1", "Changhua", "TW"], ["asia-east2", "Hong Kong", "HK"], ["asia-northeast1", "Tokyo", "JP"], ["asia-northeast2", "Osaka", "JP"],
   ["asia-northeast3", "Seoul", "KR"], ["asia-south1", "Mumbai", "IN"], ["asia-south2", "Delhi", "IN"], ["asia-southeast1", "Singapore", "SG"],
   ["asia-southeast2", "Jakarta", "ID"], ["asia-southeast3", "Bangkok", "TH"], ["australia-southeast1", "Sydney", "AU"], ["australia-southeast2", "Melbourne", "AU"]
 ];

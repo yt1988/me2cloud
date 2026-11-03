@@ -599,6 +599,7 @@ export default {
     Sydney: "雪梨",
     "São Paulo": "聖保羅",
     Taipei: "台北",
+    Changhua: "彰化",
     "Tel Aviv": "特拉維夫",
     Texas: "德州",
     Tokyo: "東京",
