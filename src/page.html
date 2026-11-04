@@ -890,8 +890,12 @@ footer a { color: var(--muted); }
 
   /* ---------- language ---------- */
   const LANG = document.documentElement.lang || "en";
+  // a count {n} picks the key for its plural category (key_one, key_few …, as Intl.PluralRules names them), else the key itself
+  const plural = {};
+  const pk = (lang, k, v) => v && typeof v.n === "number" ? k + "_" + (plural[lang] = plural[lang] || new Intl.PluralRules(lang)).select(v.n) : null;
   const t = (k, v) => {
-    let s = (I18N[LANG] || {})[k] ?? I18N.en[k] ?? k;
+    const D = I18N[LANG] || {}, p = pk(LANG, k, v), q = pk("en", k, v);
+    let s = (p && D[p]) ?? D[k] ?? (q && I18N.en[q]) ?? I18N.en[k] ?? k;
     if (v) for (const p in v) s = s.split("{" + p + "}").join(v[p]);
     return s;
   };

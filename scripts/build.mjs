@@ -74,7 +74,8 @@ function i18nGaps(tpl, I, E, langs) {
   const cities = new Set(E.endpoints.filter(e => e.city && e.city !== "?" && e.city !== enRegion.of(e.country)).map(e => /^(.*?)( \d)?$/.exec(e.city)[1]).filter(c => c !== "Taiwan"));
   for (const [lang] of langs) {
     if (lang === "en") continue;
-    for (const k of Object.keys(en)) walk(en[k], I[lang][k], k, lang);
+    // plural forms (key_one, key_few …) belong to each language's own grammar, so en having one asks nothing of the others
+    for (const k of Object.keys(en)) if (!/_(zero|one|two|few|many)$/.test(k)) walk(en[k], I[lang][k], k, lang);
     for (const c of cities) if (!I[lang].cities?.[c]) gaps.push(`${lang}: cities.${c}`);
   }
   const used = new Set([...tpl.matchAll(/\bdata-(?:i|ph|al)="(\w+)"/g), ...tpl.matchAll(/\bt\("(\w+)"\s*[,)]/g)].map(m => m[1]));
@@ -105,6 +106,9 @@ export async function build({ check = false } = {}) {
   const pages = [];                                                     // { lang, slug, sub, html }
   for (const [lang, slug, locale] of langs) {
     const d = I[lang], en = I.en, T = k => d[k] ?? en[k] ?? k;
+    // a sentence with a count: key_one, key_few … for the count's plural category when the language has one, as on the page
+    const PR = new Intl.PluralRules(lang), PRen = new Intl.PluralRules("en");
+    const TN = (k, n) => d[k + "_" + PR.select(n)] ?? d[k] ?? en[k + "_" + PRen.select(n)] ?? en[k] ?? k;
     const vn = v => ((d.vendors || {})[v] || {}).name || ((en.vendors || {})[v] || {}).name || E.vendors[v].name;
     const vk = v => ((d.vendors || {})[v] || {}).kind || ((en.vendors || {})[v] || {}).kind || E.vendors[v].kind;
     // a region placed by country only ("Germany") shows that country's name, as on the page
@@ -115,8 +119,8 @@ export async function build({ check = false } = {}) {
     for (const sub of ["", ...vids]) {
       const v = sub || null, n = v ? E.endpoints.filter(e => e.vendor === v).length : E.endpoints.length;
       const url = SITE + path(slug, sub);
-      const title = v ? fill(T("lp_title"), { v: vn(v), n }) : T("seo_title");
-      const desc = v ? fill(T("lp_desc"), { v: vn(v), n }) : T("seo_desc");
+      const title = v ? fill(TN("lp_title", n), { v: vn(v), n }) : T("seo_title");
+      const desc = v ? fill(TN("lp_desc", n), { v: vn(v), n }) : T("seo_desc");
       const alts = langs.map(([l, s]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(s, sub)}">`).join("\n") +
         `\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">`;
       const docs = d.docs || en.docs;
@@ -156,7 +160,7 @@ export async function build({ check = false } = {}) {
       if (v) {
         const eps = E.endpoints.filter(e => e.vendor === v);
         const groups = ["as", "na", "eu", "oc", "sa", "me", "af", "xx"].map(c => [c, eps.filter(e => e.continent === c)]).filter(([, l]) => l.length);
-        landing = `<section class="card lp" id="lpRegions"><h2>${esc(fill(T("lp_h2"), { v: vn(v), n }))}</h2><p>${esc(fill(T("lp_intro"), { v: vn(v), k: vk(v) }))}</p>` +
+        landing = `<section class="card lp" id="lpRegions"><h2>${esc(fill(TN("lp_h2", n), { v: vn(v), n }))}</h2><p>${esc(fill(T("lp_intro"), { v: vn(v), k: vk(v) }))}</p>` +
           groups.map(([c, l]) => `<div class="lp-ct"><h3>${esc(T("ct_" + c))}</h3><ul class="lp-rs">${l.map(e => `<li>${esc(e.city === "?" ? e.region : e.city === enRegion(e.country) ? country(e.country) : city(e.city))}${e.country && e.country !== "--" && e.city !== enRegion(e.country) ? " · " + esc(country(e.country)) : ""}<code>${esc(e.region)}</code></li>`).join("")}</ul></div>`).join("") + `</section>`;
       }
       // a provider's page tests that provider only; the whole comparison is one link away, on the home page in this language
