@@ -71,7 +71,9 @@ async function tokyo(req, ctx) {
     res = new Response(JSON.stringify({ time: j.time, regions }), { headers: { "content-type": "application/json", "cache-control": "public, max-age=300" } });
     ctx.waitUntil(cache.put(TOKYO_KEY, res.clone()));
   }
-  return req.method === "HEAD" ? new Response(null, { headers: res.headers }) : res;
+  // kept 5 minutes here; the browser asks again each time, since the zone raises any short max-age to 4 hours
+  const out = new Response(req.method === "HEAD" ? null : res.body, { headers: { "content-type": "application/json", "cache-control": "public, max-age=0, must-revalidate" } });
+  return out;
 }
 
 // the newest release's version, from the redirect GitHub gives for /releases/latest
