@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=6");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=7");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -37,7 +37,7 @@
 // Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
 // visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
 //
-//   const { received } = await import("/assets/share/share.js?v=6");
+//   const { received } = await import("/assets/share/share.js?v=7");
 //   const r = received({
 //     lang: "zh-CN",
 //     ts: 1730000000000,            // when the shared result was measured
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 6;
+export const VERSION = 7;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -133,11 +133,37 @@ function roundRect(x, a, b, w, h, r) {
   x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r);
   x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath();
 }
+// The last resort: a card must not lose words to "…" (docs/tool-contract.md, "Share card"), so every clip is kept in
+// window.__msShareClips and logged; fit and wrap below are what to use instead.
 function clip(x, s, w) {
   s = String(s);
   if (x.measureText(s).width <= w) return s;
+  const whole = s;
   while (s && x.measureText(s + "…").width > w) s = s.slice(0, -1);
+  try { (window.__msShareClips ||= []).push(whole); console.warn("share card: clipped", JSON.stringify(whole)); } catch (e) {}
   return s + "…";
+}
+// Sets the largest font from `size` down to `min` (2px steps) at which s fits in w, and returns that size.
+function fit(x, s, w, size, min, weight = 700) {
+  let z = size;
+  for (; z > min; z -= 2) { x.font = `${weight} ${z}px ${F}`; if (x.measureText(String(s)).width <= w) return z; }
+  x.font = `${weight} ${min}px ${F}`;
+  return min;
+}
+// s in lines no wider than w with the current font, at most n of them: broken at spaces, or anywhere in CJK text.
+// Only a last line that still can't hold the rest is clipped.
+function wrap(x, s, w, n = 2) {
+  const parts = String(s).match(/[⺀-鿿가-힯豈-﫿＀-￯]|[^\s⺀-鿿가-힯豈-﫿＀-￯]+\s*|\s+/g) || [];
+  const lines = [];
+  let cur = "";
+  for (let i = 0; i < parts.length; i++) {
+    const next = cur + parts[i];
+    if (!cur || x.measureText(next.trimEnd()).width <= w) { cur = next; continue; }
+    if (lines.length === n - 1) { lines.push(clip(x, (cur + parts.slice(i).join("")).trim(), w)); return lines; }
+    lines.push(cur.trim()); cur = parts[i].trimStart();
+  }
+  if (cur.trim()) lines.push(lines.length === n - 1 ? clip(x, cur.trim(), w) : cur.trim());
+  return lines;
 }
 const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
@@ -266,7 +292,7 @@ export function share(o) {
     const css = getComputedStyle(document.documentElement), v = n => css.getPropertyValue("--" + n).trim();
     const dark = css.colorScheme === "dark" || document.documentElement.dataset.theme === "dark";
     const m = document.createElement("canvas").getContext("2d");
-    const kit = { W, P, top: TOP, F, M, v, dark, roundRect, clip, img, show: shown(), lang };
+    const kit = { W, P, top: TOP, F, M, v, dark, roundRect, clip, fit, wrap, img, show: shown(), lang };
     const H = Math.max(TOP + 120, Math.round(typeof o.height === "function" ? await o.height(m, kit) : o.height || 630));
     kit.H = H; kit.bottom = H - 70;
     const c = document.createElement("canvas"); c.width = W; c.height = H;

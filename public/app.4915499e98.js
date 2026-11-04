@@ -1411,7 +1411,7 @@
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
-    const { received } = await import("/assets/share/share.js?v=6");
+    const { received } = await import("/assets/share/share.js?v=7");
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 60000, at: $("#resWrap"), test: testSame });
@@ -1511,7 +1511,7 @@
       let bx = P; counts.forEach((c, i) => { const w = (W - 2 * P) * c / tot; g.fillStyle = C.t[i + 1]; g.fillRect(bx, by, w, 20); bx += w; }); g.restore();
       font(600, 24); counts.forEach((c, i) => text(fit(`${tierCode(i + 1)} ${tierName(i + 1)} ${c}`, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]));
     };
-    const { share } = await import("/assets/share/share.js?v=6");
+    const { share } = await import("/assets/share/share.js?v=7");
     share({
       lang: LANG, name: "Me2Cloud", file: "me2cloud-" + stamp(),
       show: ["city", "isp"], never: ["ip"], canShow: !!where,
