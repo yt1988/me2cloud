@@ -8,7 +8,7 @@ and the user are assigned in 1ms-shell `docs/processes.md` ("专用服务器"); 
   The endpoint list is `https://m2c.1ms.dog/endpoints.json`, fetched at most every 6 hours.
 - **What it publishes**: files in `/srv/1ms-data/me2cloud/`, served read-only at `https://data.1ms.dog:2083/me2cloud/`, which the Worker fetches.
   Each file is written to a temporary file and renamed, so a reader never sees half a file.
-  - `latest.json`: the last run, with median, p90, jitter, loss and error per region and IP family.
+  - `latest.json`: the last run, with median, p90, jitter, timeout rate (field `loss`, a share of the handshakes) and error per region and IP family.
   - `summary.json`: for each region and family (`v4`, `v6`), these fields:
     - `med`: the last median.
     - `med24` and `med7`: the 24-hour and 7-day medians.

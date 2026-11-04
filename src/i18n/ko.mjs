@@ -160,7 +160,7 @@ export default {
     Sines: "시니스"
   },
   seo_title: "클라우드 지연 시간 테스트: 우리 집 인터넷에서 AWS·Azure·Google Cloud 등 360개+ 리전 실측 | Me2Cloud",
-  seo_desc: "무료 클라우드 지연 시간(핑) 테스트. 브라우저에서 바로 AWS, Azure, Google Cloud, Oracle, Naver Cloud, Alibaba Cloud, Vultr, Linode, DigitalOcean, Hetzner 등 22개 업체, 360개 이상 리전의 지연 시간·지터·패킷 손실을 측정합니다. 통신사, Wi-Fi, 저녁 피크 시간의 영향까지 그대로 반영되고, 결과는 업로드하지 않아요.",
+  seo_desc: "무료 클라우드 지연 시간(핑) 테스트. 브라우저에서 바로 AWS, Azure, Google Cloud, Oracle, Naver Cloud, Alibaba Cloud, Vultr, Linode, DigitalOcean, Hetzner 등 22개 업체, 360개 이상 리전의 지연 시간·지터·타임아웃 비율을 측정합니다. 통신사, Wi-Fi, 저녁 피크 시간의 영향까지 그대로 반영되고, 결과는 업로드하지 않아요.",
   seo_kw: "클라우드 핑 테스트, 클라우드 지연 시간, 리전 핑, AWS 핑, Azure 지연, Google Cloud 핑, 네이버 클라우드 핑, 가장 가까운 리전",
   og_sub: "22개 업체 · 360개+ 리전 · 브라우저에서 직접 측정",
   unlisted: "비공개 리전",
@@ -242,7 +242,7 @@ export default {
   pl_vendors: "업체",
   pl_areas: "지역",
   off: "꺼짐",
-  noLoss: "손실 없음",
+  noLoss: "타임아웃 없음",
   m_quickD: "빠르게 한번 훑어보기",
   m_stdD: "추천",
   m_preciseD: "마지막 후보를 꼼꼼히 비교",
@@ -255,7 +255,7 @@ export default {
   picks_sub2: "조건에 맞는 곳 {n}개 ({need})",
   grp_other: "대기 중 · 연결 안 됨",
   jitWarn: "불안정: 지터 ±{j} ms",
-  lossWarn: "패킷 손실 {p}%",
+  lossWarn: "타임아웃 비율 {p}%",
   res_h: "전체 리전",
   rules_note_loon: "[Rule]의 맨 위에 붙여넣으세요.",
   concHint: "적게 하면 더 정확하고, 많이 하면 더 빨라요. 업체당 동시에 최대 2개까지 측정해요.",
@@ -321,7 +321,7 @@ export default {
   noLimit: "제한 없음",
   maxLat: "최대 지연 시간",
   maxJit: "최대 지터",
-  maxLoss: "최대 손실",
+  maxLoss: "타임아웃 상한",
   p_game: "게임",
   p_call: "화상 회의",
   p_ssh: "SSH / 원격 데스크톱",
@@ -356,7 +356,7 @@ export default {
   d_min: "최소",
   d_max: "최대",
   d_jit: "지터",
-  d_loss: "손실",
+  d_loss: "타임아웃 비율",
   d_method: "요청 방식",
   d_warm: "워밍업(집계 제외)",
   d_cold: "이 측정 지점은 연결을 유지하지 못해서, 매번 핸드셰이크를 새로 해요(실제 왕복의 약 3배). 이 지점끼리만 비교하세요.",
@@ -416,7 +416,7 @@ export default {
   home_only: "이것만",
   homeTip: "{c}의 리전을 포함하거나, 빼거나, {c}만 측정할 수 있어요.",
   lp_title: "{v} 지연 시간 테스트: 우리 집 인터넷에서 리전 {n}곳 실측 | Me2Cloud",
-  lp_desc: "{v}의 모든 리전 {n}곳에 대한 지연 시간·지터·패킷 손실을 내 브라우저에서 무료로 측정하세요. 통신사와 저녁 피크의 영향까지 반영되고, 설치는 필요 없어요.",
+  lp_desc: "{v}의 모든 리전 {n}곳에 대한 지연 시간·지터·타임아웃 비율을 내 브라우저에서 무료로 측정하세요. 통신사와 저녁 피크의 영향까지 반영되고, 설치는 필요 없어요.",
   lp_h1: "우리 집에서 {v}까지, 얼마나 빠를까요?",
   lp_h2: "측정하는 {v} 리전 {n}곳",
   lp_intro: "{v}는 {k} 측정 지점으로 측정해요. 위에서 리전을 고르고 '테스트 시작'을 누르면, 모든 요청이 브라우저에서 {v}로 바로 가요.",
@@ -555,8 +555,8 @@ export default {
       `<ol><li>먼저 <b>워밍업</b> 요청을 한 번 보내 DNS 조회, TCP 연결, TLS 암호화를 마쳐요. 이 시간은 보여 주지만 결과에는 넣지 않아요.</li>
           <li>그다음 <b>같은 연결</b>로 같은 호스트에 5회, 10회, 또는 20회 요청을 더 보내요. 한 번에 드는 건 왕복 1번과 업체 서버의 짧은 처리 시간뿐이에요.</li>
           <li>업체마다 연결이 유지되는 걸 확인한 요청 방식을 써요. AWS, Azure, Google Cloud, DigitalOcean, Scaleway는 <code>GET</code>, Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 <code>HEAD</code>(GET을 받으면 연결을 끊어서 값이 약 3배가 되기 때문), Hetzner는 CORS 모드의 <code>GET</code>이에요(그렇지 않으면 브라우저가 응답 페이지를 중간에 자르고 연결도 끊겨요).</li>
-          <li>결과에는 <b>중앙값</b>(가장 전형적인 값), <b>평균</b>, <b>P90</b>(10번 중 9번은 이 값 이하), <b>지터</b>(연속된 두 측정값의 평균 차이), <b>패킷 손실</b>(제한 시간 안에 응답이 없던 횟수)이 나와요.</li>
-          <li><b>등급</b>은 중앙값으로 정해요: T0 갓 ≤ 30 ms, T1 최상급 ≤ 80 ms, T2 상위권 ≤ 150 ms, T3 NPC ≤ 250 ms, 그보다 크면 T4 망함. '추천 리전'은 '중앙값 + 2 × 지터 + 손실 감점' 순으로 정렬해서, 안정적인 60 ms가 들쭉날쭉한 45 ms보다 앞에 와요.</li></ol>`
+          <li>결과에는 <b>중앙값</b>(가장 전형적인 값), <b>평균</b>, <b>P90</b>(10번 중 9번은 이 값 이하), <b>지터</b>(연속된 두 측정값의 평균 차이), <b>타임아웃 비율</b>(제한 시간 안에 응답이 없던 비율)이 나와요.</li>
+          <li><b>등급</b>은 중앙값으로 정해요: T0 갓 ≤ 30 ms, T1 최상급 ≤ 80 ms, T2 상위권 ≤ 150 ms, T3 NPC ≤ 250 ms, 그보다 크면 T4 망함. '추천 리전'은 '중앙값 + 2 × 지터 + 타임아웃 감점' 순으로 정렬해서, 안정적인 60 ms가 들쭉날쭉한 45 ms보다 앞에 와요.</li></ol>`
     ],
     [
       "HTTPS로 재는 게 ICMP ping보다 실제 체감에 가까운 이유",
@@ -576,7 +576,7 @@ export default {
       "이럴 때 쓰면 좋아요",
       `<ul><li>서버, 게임 서버, CDN 오리진을 계약하기 전에 후보 리전을 추리기.</li>
           <li>한 업체의 리전끼리, 또는 같은 도시의 업체끼리 비교하기.</li>
-          <li>지터와 패킷 손실이 게임, 화상 회의, 원격 데스크톱, SSH에 충분한지 확인하기.</li>
+          <li>지터와 타임아웃 비율이 게임, 화상 회의, 원격 데스크톱, SSH에 충분한지 확인하기.</li>
           <li>프록시, 가속기, 새로 바꾼 인터넷이 정말 좋은지, 켜고 한 번, 끄고 한 번 재서 확인하기.</li>
           <li>직접 추가한 측정 지점으로 내 서버나 CDN을 대형 업체와 나란히 비교하기.</li></ul>`
     ],
@@ -615,7 +615,7 @@ export default {
     [
       "그래프 읽는 법",
       `<ul><li>모든 줄의 막대는 같은 눈금(로그 눈금, 2 ms~3 s)을 써요. 점은 측정값 하나하나, 음영 상자는 가운데 절반의 범위, 세로선은 중앙값이에요.</li>
-          <li>상자가 좁을수록 안정적이에요. 상자가 넓거나 점이 흩어져 있으면 흔들림(지터)이 크다는 뜻이에요. 빨간 ×는 손실된 횟수예요.</li>
+          <li>상자가 좁을수록 안정적이에요. 상자가 넓거나 점이 흩어져 있으면 흔들림(지터)이 크다는 뜻이에요. 빨간 ×는 타임아웃된 횟수예요.</li>
           <li>줄을 누르면 측정값의 순서별 변화, 모든 통계, 사용한 측정 지점을 볼 수 있어요. ✓는 조건에 맞는 리전이에요.</li></ul>`
     ]
   ]

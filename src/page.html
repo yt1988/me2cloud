@@ -2380,12 +2380,12 @@ footer a { color: var(--muted); }
   // plain-text summary of the current results, structured so any AI assistant can reason about it
   function aiSummary() {
     const list = rankList().filter(x => x.st.ok), L = shareLoc(), N = NEED();
-    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${x.e.country ? ", " + x.e.country : ""}): median ${fmt(x.st.med)} ms, jitter ±${fmt(x.st.jit)} ms, loss ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
+    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${x.e.country ? ", " + x.e.country : ""}): median ${fmt(x.st.med)} ms, jitter ±${fmt(x.st.jit)} ms, timeout rate ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
     const best = [...new Set(list.map(x => x.e.vendor))].map(v => list.filter(x => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
     return [
       "Me2Cloud latency results (HTTPS round trips measured in my own browser; median of " + (VIEW.mode || MODES[S.mode]) + " samples per region)",
       "Network: " + [L.city, L.cc, L.org].filter(Boolean).join(", ") + (L.proxy ? " (through a proxy)" : " (direct)") + " · " + (VIEW.ip === "v6" ? "IPv6" : "IPv4") + " · " + new Date(VIEW.ts || Date.now()).toISOString().slice(0, 16).replace("T", " ") + " UTC" + (VIEW.peak ? " (evening peak)" : ""),
-      "My requirements: median ≤ " + (N.lat || "any") + " ms, jitter ≤ " + (N.jit || "any") + " ms, loss ≤ " + (N.loss || 0) + "%",
+      "My requirements: median ≤ " + (N.lat || "any") + " ms, jitter ≤ " + (N.jit || "any") + " ms, timeout rate ≤ " + (N.loss || 0) + "%",
       "Tiers: T0 ≤ 30 ms, T1 ≤ 80, T2 ≤ 150, T3 ≤ 250, T4 above",
       "", "Best regions (" + list.length + " measured):", ...list.slice().sort(byScore).slice(0, 15).map(line),
       "", "Best region of each provider:", ...best.map(line),

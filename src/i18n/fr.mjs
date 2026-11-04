@@ -160,7 +160,7 @@ export default {
     Sines: "Sines"
   },
   seo_title: "Test de latence cloud depuis votre propre réseau : AWS, Azure, Google Cloud et plus de 360 régions | Me2Cloud",
-  seo_desc: "Test de latence cloud gratuit, dans votre navigateur. Mesurez le ping vers plus de 360 régions de 22 fournisseurs, dont AWS, Azure, Google Cloud, Oracle, OVHcloud, Scaleway, Hetzner, Vultr, Linode et DigitalOcean : latence médiane, gigue et perte de paquets avec votre vrai fournisseur d'accès, votre Wi-Fi et les heures de pointe. Vos résultats ne sont pas envoyés.",
+  seo_desc: "Test de latence cloud gratuit, dans votre navigateur. Mesurez le ping vers plus de 360 régions de 22 fournisseurs, dont AWS, Azure, Google Cloud, Oracle, OVHcloud, Scaleway, Hetzner, Vultr, Linode et DigitalOcean : latence médiane, gigue et taux d'expiration avec votre vrai fournisseur d'accès, votre Wi-Fi et les heures de pointe. Vos résultats ne sont pas envoyés.",
   seo_kw: "test de latence cloud, ping cloud, latence par région, ping AWS, latence Azure, ping Google Cloud, ping OVHcloud, ping Scaleway, région cloud la plus proche",
   og_sub: "22 fournisseurs · plus de 360 régions · mesuré dans votre navigateur",
   unlisted: "région non publiée",
@@ -243,7 +243,7 @@ export default {
   pl_vendors: "Fournisseurs",
   pl_areas: "Zones",
   off: "Désactivé",
-  noLoss: "aucune perte",
+  noLoss: "aucune expiration",
   m_quickD: "Un premier aperçu rapide",
   m_stdD: "Recommandé",
   m_preciseD: "Pour votre sélection finale",
@@ -258,7 +258,7 @@ export default {
   picks_sub2: "{n} dans vos limites ({need})",
   grp_other: "En attente ou injoignables",
   jitWarn: "Instable : gigue ±{j} ms",
-  lossWarn: "{p} % de perte de paquets",
+  lossWarn: "taux d'expiration de {p} %",
   res_h: "Toutes les régions",
   rules_note_loon: "Collez-les tout en haut de [Rule].",
   concHint: "Moins à la fois, c'est plus précis ; plus, c'est plus rapide. Chaque fournisseur en a 2 au maximum en même temps.",
@@ -324,7 +324,7 @@ export default {
   noLimit: "sans limite",
   maxLat: "Latence max",
   maxJit: "Gigue max",
-  maxLoss: "Perte max",
+  maxLoss: "Expiration max",
   p_game: "Jeu en ligne",
   p_call: "Visio",
   p_ssh: "SSH / bureau à distance",
@@ -359,7 +359,7 @@ export default {
   d_min: "Min",
   d_max: "Max",
   d_jit: "Gigue",
-  d_loss: "Perte",
+  d_loss: "Expirations",
   d_method: "Méthode",
   d_warm: "préchauffage (non compté)",
   d_cold: "Ce point ne peut pas garder la connexion ouverte : chaque mesure inclut une nouvelle poignée de main (environ 3 fois l'aller-retour réel). Ne le comparez qu'à lui-même.",
@@ -420,8 +420,8 @@ export default {
   homeTip: "Incluez les régions de votre pays ({c}), excluez-les ou ne testez que celles-ci.",
   lp_title: "Test de latence {v} : {n} régions depuis votre propre réseau | Me2Cloud",
   lp_title_one: "Test de latence {v} : {n} région depuis votre propre réseau | Me2Cloud",
-  lp_desc: "Mesurez la latence, la gigue et la perte de paquets vers les {n} régions {v} depuis votre navigateur, avec votre vrai fournisseur d'accès et aux heures de pointe. Gratuit, rien à installer.",
-  lp_desc_one: "Mesurez la latence, la gigue et la perte de paquets vers la {n} région {v} depuis votre navigateur, avec votre vrai fournisseur d'accès et aux heures de pointe. Gratuit, rien à installer.",
+  lp_desc: "Mesurez la latence, la gigue et le taux d'expiration vers les {n} régions {v} depuis votre navigateur, avec votre vrai fournisseur d'accès et aux heures de pointe. Gratuit, rien à installer.",
+  lp_desc_one: "Mesurez la latence, la gigue et le taux d'expiration vers la {n} région {v} depuis votre navigateur, avec votre vrai fournisseur d'accès et aux heures de pointe. Gratuit, rien à installer.",
   lp_h1: "{v} est-il rapide depuis chez vous ?",
   lp_h2: "Les {n} régions {v} que nous testons",
   lp_h2_one: "La {n} région {v} que nous testons",
@@ -561,8 +561,8 @@ export default {
       `<ol><li>Une requête de <b>préchauffage</b> établit le DNS, la connexion TCP et le chiffrement TLS. Son temps est affiché mais jamais compté.</li>
           <li>Le navigateur envoie ensuite 5, 10 ou 20 requêtes au même hôte sur la <b>même connexion</b>. Chacune coûte un seul aller-retour, plus un court temps de traitement sur le serveur du fournisseur.</li>
           <li>Chaque fournisseur reçoit le type de requête dont nous avons vérifié qu'il garde la connexion ouverte : <code>GET</code> pour AWS, Azure, Google Cloud, DigitalOcean et Scaleway ; <code>HEAD</code> pour Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore et Yandex Cloud (un GET leur fait fermer la connexion, ce qui triplerait chaque mesure) ; et un <code>GET</code> en mode CORS pour Hetzner, dont le navigateur couperait sinon la page, en fermant la connexion.</li>
-          <li>Vous obtenez la <b>médiane</b> (la valeur typique), la <b>moyenne</b>, le <b>P90</b> (9 mesures sur 10 sont égales ou inférieures), la <b>gigue</b> (l'écart moyen entre deux mesures successives) et la <b>perte de paquets</b> (mesures sans réponse avant le délai).</li>
-          <li>Le <b>niveau</b> dépend de la médiane : T0 Le feu ≤ 30 ms, T1 Top ≤ 80 ms, T2 Ça passe ≤ 150 ms, T3 PNJ ≤ 250 ms, et T4 À la ramasse au-delà. « Notre sélection » est classée selon médiane + 2 × gigue + une pénalité de perte : 60 ms stables passent donc devant 45 ms en dents de scie.</li></ol>`
+          <li>Vous obtenez la <b>médiane</b> (la valeur typique), la <b>moyenne</b>, le <b>P90</b> (9 mesures sur 10 sont égales ou inférieures), la <b>gigue</b> (l'écart moyen entre deux mesures successives) et le <b>taux d'expiration</b> (la part des mesures sans réponse avant le délai).</li>
+          <li>Le <b>niveau</b> dépend de la médiane : T0 Le feu ≤ 30 ms, T1 Top ≤ 80 ms, T2 Ça passe ≤ 150 ms, T3 PNJ ≤ 250 ms, et T4 À la ramasse au-delà. « Notre sélection » est classée selon médiane + 2 × gigue + une pénalité d'expiration : 60 ms stables passent donc devant 45 ms en dents de scie.</li></ol>`
     ],
     [
       "Pourquoi mesurer en HTTPS reflète mieux l'usage réel que l'ICMP ping",
@@ -582,7 +582,7 @@ export default {
       "À quoi ça sert",
       `<ul><li>Présélectionner des régions avant de louer un serveur, un serveur de jeu ou une origine CDN.</li>
           <li>Comparer les régions d'un fournisseur, ou plusieurs fournisseurs dans la même ville.</li>
-          <li>Vérifier que la stabilité (gigue, perte de paquets) suffit pour le jeu, la visio, le bureau à distance et SSH.</li>
+          <li>Vérifier que la stabilité (gigue, taux d'expiration) suffit pour le jeu, la visio, le bureau à distance et SSH.</li>
           <li>Voir ce que valent vraiment votre proxy, votre accélérateur ou votre nouvel abonnement : un test avec, un test sans.</li>
           <li>Placer votre propre serveur ou CDN à côté des grands noms grâce à un point de mesure perso.</li></ul>`
     ],
@@ -621,7 +621,7 @@ export default {
     [
       "Lire le graphique",
       `<ul><li>Toutes les lignes utilisent la même échelle (logarithmique, de 2 ms à 3 s). Les points sont les mesures, la boîte ombrée couvre la moitié centrale et le trait est la médiane.</li>
-          <li>Une boîte étroite signifie stable ; une boîte large ou des points dispersés signifient de la gigue. Une × rouge compte les mesures perdues.</li>
+          <li>Une boîte étroite signifie stable ; une boîte large ou des points dispersés signifient de la gigue. Une × rouge compte les mesures expirées.</li>
           <li>Cliquez sur une ligne pour voir chaque mesure dans l'ordre, toutes les statistiques et le point utilisé. ✓ marque une région dans vos limites.</li></ul>`
     ]
   ]

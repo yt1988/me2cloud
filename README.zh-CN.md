@@ -2,7 +2,7 @@
 
 [English](README.md) · **简体中文**
 
-从你自己的网络出发，各家云的每个区域到底有多快？Me2Cloud 在你的浏览器里测量到 22 家云厂商、392 个区域的延迟、抖动和丢包，算上你真实的运营商、Wi‑Fi 和晚高峰。纯静态站点，没有后端。
+从你自己的网络出发，各家云的每个区域到底有多快？Me2Cloud 在你的浏览器里测量到 22 家云厂商、392 个区域的延迟、抖动和超时率，算上你真实的运营商、Wi‑Fi 和晚高峰。纯静态站点，没有后端。
 
 **线上地址：** https://m2c.1ms.dog
 
@@ -29,8 +29,8 @@
 - **在你的浏览器里测**：每个请求都从访问者的浏览器直接发给厂商，中间没有服务器，不用登录，代码里也没有统计和追踪。
 - **22 家厂商、392 个验证过的端点**：AWS、Azure、Google Cloud、Oracle Cloud、IBM Cloud、阿里云、腾讯云、华为云、火山引擎、百度智能云、Naver Cloud、Vultr、Akamai（Linode）、DigitalOcean、Scaleway、OVHcloud、Hetzner、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud。IONOS Cloud 测的是各机房的日志服务 API 入口；Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 测的是 S3 对象存储入口。
 - **复用连接的真实 HTTPS 请求**：第一个请求只用来建连接，不计入；之后每个样本都复用这条连接。每家厂商用的是实测能保持连接的请求方式（GET、HEAD，Hetzner 用 `<img>`）。
-- **每个区域给出中位数、平均、P90、抖动和丢包**，测试时图表实时刷新，点开能看每一次采样。按中位数分五档：T0 夯 ≤30 ms、T1 顶级 ≤80 ms、T2 人上人 ≤150 ms、T3 NPC ≤250 ms、T4 拉完了。
-- **按用途推荐**：游戏、视频会议、SSH、建站各有一套延迟、抖动、丢包要求。本国的区域可以选择包含、排除或只看。
+- **每个区域给出中位数、平均、P90、抖动和超时率**，测试时图表实时刷新，点开能看每一次采样。按中位数分五档：T0 夯 ≤30 ms、T1 顶级 ≤80 ms、T2 人上人 ≤150 ms、T3 NPC ≤250 ms、T4 拉完了。
+- **按用途推荐**：游戏、视频会议、SSH、建站各有一套延迟、抖动、超时率要求。本国的区域可以选择包含、排除或只看。
 - **IPv4 或 IPv6**：IPv6 模式改用各厂商带 AAAA 记录的主机，没有 IPv6 端点的区域单独列出。
 - **代理检测和直连规则**：出口是机房网络、时区和出口国家对不上、开着 WARP、WebRTC 或 IPv4/IPv6 出口和 HTTPS 出口不一致时会提示。然后给出 Clash/Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray、SwitchyOmega 的直连规则，有远程规则集也有直接粘贴的版本。规则只包含测试用到的 413 个精确域名。
 - **自定义端点**：加任意 HTTPS 地址，比如你自己的 VPS，和各家厂商放在一起比。
@@ -41,7 +41,7 @@
 
 | 单个区域的每一次采样 | 代理工具的直连规则 |
 |---|---|
-| ![单个区域详情：采样、中位数、抖动、丢包和使用的端点](docs/screenshots/results-zh.png) | ![直连规则对话框，显示 Clash 远程规则集](docs/screenshots/rules-zh.png) |
+| ![单个区域详情：采样、中位数、抖动、超时率和使用的端点](docs/screenshots/results-zh.png) | ![直连规则对话框，显示 Clash 远程规则集](docs/screenshots/rules-zh.png) |
 
 | 分享图 | 手机上 | English |
 |---|---|---|

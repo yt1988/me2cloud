@@ -2,7 +2,7 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
-How fast is each cloud region from your own connection? Me2Cloud measures latency, jitter and packet loss from your browser to 392 regions of 22 cloud providers, over your real ISP, Wi‑Fi and peak hour. It's a static site with no backend.
+How fast is each cloud region from your own connection? Me2Cloud measures latency, jitter and timeout rate from your browser to 392 regions of 22 cloud providers, over your real ISP, Wi‑Fi and peak hour. It's a static site with no backend.
 
 **Live:** https://m2c.1ms.dog
 
@@ -29,8 +29,8 @@ Latency maps and provider looking glasses measure from datacenters with premium 
 - **Measured in your browser.** Every request goes straight from the visitor's browser to the provider. No server in between, no account, and the code has no analytics or tracking.
 - **392 verified endpoints across 22 providers:** AWS, Azure, Google Cloud, Oracle Cloud, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Vultr, Akamai (Linode), DigitalOcean, Scaleway, OVHcloud, Hetzner, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud. IONOS Cloud is measured at its regional Logging API hosts; Aruba Cloud, Leaseweb, Gcore and Yandex Cloud at their S3 object storage endpoints.
 - **Real HTTPS on a warm connection.** The first request opens the connection and isn't counted; every sample after it reuses the connection. Each provider uses the request type verified to keep the connection alive (GET, HEAD, or `<img>` for Hetzner).
-- **Median, average, P90, jitter and loss** per region, with a live chart while it runs and every sample on click. Five tiers by median: T0 GOATed ≤30 ms, T1 Top tier ≤80 ms, T2 Solid ≤150 ms, T3 NPC ≤250 ms, T4 Cooked.
-- **Picks for your use case:** gaming, video calls, SSH or a website, each with its own latency, jitter and loss limits. Regions in your own country can be included, excluded or tested alone.
+- **Median, average, P90, jitter and timeout rate** per region, with a live chart while it runs and every sample on click. Five tiers by median: T0 GOATed ≤30 ms, T1 Top tier ≤80 ms, T2 Solid ≤150 ms, T3 NPC ≤250 ms, T4 Cooked.
+- **Picks for your use case:** gaming, video calls, SSH or a website, each with its own latency, jitter and timeout-rate limits. Regions in your own country can be included, excluded or tested alone.
 - **IPv4 or IPv6.** IPv6 mode switches to each provider's AAAA hosts and lists regions without one separately.
 - **Proxy detection and direct rules.** It flags datacenter exits, timezone mismatches, WARP, and WebRTC or IPv4/IPv6 exits that differ from the HTTPS exit. It then generates direct rules for Clash/Mihomo, Surge, Shadowrocket, Quantumult X, Loon, sing-box, Xray and SwitchyOmega, as remote rule sets or inline. The rules list only the 413 exact hostnames the test uses.
 - **Custom endpoints.** Add any HTTPS URL, such as your own VPS, and compare it with the providers.
@@ -41,7 +41,7 @@ Latency maps and provider looking glasses measure from datacenters with premium 
 
 | Every sample of a region | Direct rules for your proxy tool |
 |---|---|
-| ![Detail of one region: samples, median, jitter, loss and the endpoint used](docs/screenshots/results-en.png) | ![Direct-connection rules dialog with the Clash remote rule set](docs/screenshots/rules-en.png) |
+| ![Detail of one region: samples, median, jitter, timeout rate and the endpoint used](docs/screenshots/results-en.png) | ![Direct-connection rules dialog with the Clash remote rule set](docs/screenshots/rules-en.png) |
 
 | Share image | On a phone | 简体中文 |
 |---|---|---|

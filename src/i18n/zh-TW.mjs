@@ -8,7 +8,7 @@ export default {
   a_prev: "上一個",
   a_next: "下一個",
   seo_title: "雲端伺服器延遲測試：從你家網路實測 AWS、Azure、Google Cloud 等 360+ 個區域｜Me2Cloud",
-  seo_desc: "免費的雲端伺服器延遲測試。直接從你的瀏覽器出發，實測 AWS、Azure、Google Cloud、Oracle、阿里雲、騰訊雲、華為雲、Vultr、Linode、DigitalOcean、Hetzner、OVH 等 22 家業者、360+ 個區域的延遲、抖動和封包遺失，你的電信業者、Wi‑Fi 和晚間尖峰都算在內。測試結果不會上傳。",
+  seo_desc: "免費的雲端伺服器延遲測試。直接從你的瀏覽器出發，實測 AWS、Azure、Google Cloud、Oracle、阿里雲、騰訊雲、華為雲、Vultr、Linode、DigitalOcean、Hetzner、OVH 等 22 家業者、360+ 個區域的延遲、抖動和逾時率，你的電信業者、Wi‑Fi 和晚間尖峰都算在內。測試結果不會上傳。",
   seo_kw: "雲端伺服器延遲測試, 雲端 ping, 機房測速, AWS 延遲, Azure 延遲, Google Cloud ping, Vultr 測速, 哪個區域最快",
   og_sub: "22 家雲端業者 · 360+ 個區域 · 在你的瀏覽器裡實測",
   unlisted: "未公開區域",
@@ -85,7 +85,7 @@ export default {
   pl_vendors: "業者",
   pl_areas: "地區",
   off: "已關閉",
-  noLoss: "不能掉封包",
+  noLoss: "無逾時",
   m_quickD: "快速看個大概",
   m_stdD: "推薦",
   m_preciseD: "最後幾個候選再細比",
@@ -98,7 +98,7 @@ export default {
   picks_sub2: "{n} 個符合條件（{need}）",
   grp_other: "排隊中或連不上",
   jitWarn: "不太穩：抖動 ±{j} ms",
-  lossWarn: "封包遺失 {p}%",
+  lossWarn: "逾時率 {p}%",
   res_h: "全部區域",
   rules_note_loon: "貼到 [Rule] 的最前面。",
   concHint: "同時測得少比較準，測得多比較快。每家業者最多同時測 2 個。",
@@ -164,7 +164,7 @@ export default {
   noLimit: "不限",
   maxLat: "延遲上限",
   maxJit: "抖動上限",
-  maxLoss: "封包遺失上限",
+  maxLoss: "逾時率上限",
   p_game: "玩遊戲",
   p_call: "視訊會議",
   p_ssh: "SSH / 遠端桌面",
@@ -199,7 +199,7 @@ export default {
   d_min: "最低",
   d_max: "最高",
   d_jit: "抖動",
-  d_loss: "封包遺失",
+  d_loss: "逾時率",
   d_method: "請求方式",
   d_warm: "暖機（不計入）",
   d_cold: "這個測速點每次都會中斷連線，所以每次取樣都包含一次重新交握，大約是實際來回時間的 3 倍。只適合拿它跟自己比。",
@@ -272,8 +272,8 @@ export default {
       `<ol><li>先送一次<b>暖機</b>請求，把 DNS 查詢、TCP 連線和 TLS 加密都建立好。這次的時間會顯示，但不算進結果。</li>
           <li>接著在<b>同一條連線</b>上，對同一台主機再送 5、10 或 20 次請求。每次只花一個來回，再加上業者伺服器很短的處理時間。</li>
           <li>每家業者都用我們實測過、能維持連線的請求方式：AWS、Azure、Google Cloud、DigitalOcean、Scaleway 用 <code>GET</code>；Oracle、IBM Cloud、阿里雲、騰訊雲、火山引擎、百度智能雲、Naver Cloud、華為雲、Linode、Vultr、OVHcloud、IONOS Cloud、Aruba Cloud、Leaseweb、Gcore、Yandex Cloud 用 <code>HEAD</code>（它們收到 GET 會中斷連線，每次取樣會變成大約 3 倍）；Hetzner 用 CORS 模式的 <code>GET</code>，否則瀏覽器會截斷它回傳的網頁並中斷連線。</li>
-          <li>結果會列出<b>中位數</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次裡有 9 次不超過它）、<b>抖動</b>（相鄰兩次差多少，取平均）和<b>封包遺失</b>（逾時沒有回應的次數）。</li>
-          <li><b>分級</b>依中位數：T0 神 ≤ 30 ms、T1 頂級 ≤ 80 ms、T2 很可以 ≤ 150 ms、T3 路人 ≤ 250 ms，再往上就是 T4 爛掉了。「幫你挑的」依「中位數 + 2 × 抖動 + 封包遺失扣分」排序，所以穩定的 60 ms 會排在忽高忽低的 45 ms 前面。</li></ol>`
+          <li>結果會列出<b>中位數</b>（最典型的值）、<b>平均值</b>、<b>P90</b>（10 次裡有 9 次不超過它）、<b>抖動</b>（相鄰兩次差多少，取平均）和<b>逾時率</b>（在時限內沒有回應的比例）。</li>
+          <li><b>分級</b>依中位數：T0 神 ≤ 30 ms、T1 頂級 ≤ 80 ms、T2 很可以 ≤ 150 ms、T3 路人 ≤ 250 ms，再往上就是 T4 爛掉了。「幫你挑的」依「中位數 + 2 × 抖動 + 逾時扣分」排序，所以穩定的 60 ms 會排在忽高忽低的 45 ms 前面。</li></ol>`
     ],
     [
       "為什麼用 HTTPS 測，比 ICMP ping 更接近實際體驗",
@@ -293,7 +293,7 @@ export default {
       "適合用來做什麼",
       `<ul><li>買雲端伺服器、遊戲伺服器或 CDN 來源站之前，先把候選區域篩過一輪。</li>
           <li>比較同一家業者的不同區域，或同一座城市裡不同業者的表現。</li>
-          <li>看看穩定度（抖動、封包遺失）夠不夠玩遊戲、開視訊會議、用遠端桌面和 SSH。</li>
+          <li>看看穩定度（抖動、逾時率）夠不夠玩遊戲、開視訊會議、用遠端桌面和 SSH。</li>
           <li>驗證你的代理、加速器或新申辦的寬頻到底好不好：開著測一次，關掉再測一次。</li>
           <li>用自訂測速點，把你自己的伺服器或 CDN 和大廠放在一起比。</li></ul>`
     ],
@@ -332,7 +332,7 @@ export default {
     [
       "怎麼看圖",
       `<ul><li>每一列的長條圖都用同一把尺（對數刻度，2 ms 到 3 s）。圓點是每次取樣，陰影框是中間一半取樣所在的範圍，直線是中位數。</li>
-          <li>框越窄越穩；框很寬或點很分散，就是抖得厲害。紅色 × 代表掉封包的次數。</li>
+          <li>框越窄越穩；框很寬或點很分散，就是抖得厲害。紅色 × 代表逾時的次數。</li>
           <li>點開一列，可以看到每次取樣的前後變化、全部統計數據和用到的測速網址。✓ 表示符合你的條件。</li></ul>`
     ]
   ],
@@ -342,7 +342,7 @@ export default {
   home_only: "只測",
   homeTip: "測試時包含{c}的區域、排除它們，或只測{c}。",
   lp_title: "{v}延遲測試：從你家網路實測 {n} 個區域｜Me2Cloud",
-  lp_desc: "免費測{v}全部 {n} 個區域的延遲、抖動和封包遺失：直接從你的瀏覽器出發，你的電信業者和晚間尖峰都算在內。不用安裝。",
+  lp_desc: "免費測{v}全部 {n} 個區域的延遲、抖動和逾時率：直接從你的瀏覽器出發，你的電信業者和晚間尖峰都算在內。不用安裝。",
   lp_h1: "從你家出發，{v}各區域有多快？",
   lp_h2: "我們測的 {n} 個{v}區域",
   lp_intro: "{v}透過它的 {k} 網址測速。在上方選好區域，按「開始測試」，每個請求都由你的瀏覽器直接送到{v}。",

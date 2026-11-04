@@ -2,7 +2,7 @@
 // 15 minutes. It measures with vps2cloud itself (TCP handshakes only, IPv4 and IPv6), keeps 7 days of medians in
 // its state directory, and writes two files into the published directory, each by an atomic rename:
 //
-//	latest.json   this run: median, p90, jitter and loss per region and IP family
+//	latest.json   this run: median, p90, jitter and timeout rate (field "loss") per region and IP family
 //	summary.json  per region and family: the last median, the 24 h and 7 d medians, the share of runs that got
 //	              an answer, and since when it has been unreachable when that has lasted an hour or more
 //

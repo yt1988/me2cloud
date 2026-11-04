@@ -160,7 +160,7 @@ export default {
     Sines: "Sines"
   },
   seo_title: "Cloud-Latenztest aus deinem eigenen Netz: AWS, Azure, Google Cloud und über 360 Regionen | Me2Cloud",
-  seo_desc: "Kostenloser Cloud-Latenztest direkt im Browser. Miss den Ping zu über 360 Regionen von 22 Anbietern, darunter AWS, Azure, Google Cloud, Hetzner, IONOS, OVHcloud, Scaleway, Oracle, Vultr und DigitalOcean: Median-Latenz, Jitter und Paketverlust über deinen echten Internetanbieter, dein WLAN und zur Hauptzeit am Abend. Deine Ergebnisse werden nicht hochgeladen.",
+  seo_desc: "Kostenloser Cloud-Latenztest direkt im Browser. Miss den Ping zu über 360 Regionen von 22 Anbietern, darunter AWS, Azure, Google Cloud, Hetzner, IONOS, OVHcloud, Scaleway, Oracle, Vultr und DigitalOcean: Median-Latenz, Jitter und Timeout-Rate über deinen echten Internetanbieter, dein WLAN und zur Hauptzeit am Abend. Deine Ergebnisse werden nicht hochgeladen.",
   seo_kw: "Cloud Latenztest, Cloud Ping Test, Latenz Region, AWS Ping, Azure Latenz, Google Cloud Ping, Hetzner Ping, IONOS Ping, nächste Cloud-Region",
   og_sub: "22 Anbieter · über 360 Regionen · gemessen in deinem Browser",
   unlisted: "nicht öffentliche Region",
@@ -243,7 +243,7 @@ export default {
   pl_vendors: "Anbieter",
   pl_areas: "Gebiete",
   off: "Aus",
-  noLoss: "kein Verlust",
+  noLoss: "keine Timeouts",
   m_quickD: "Ein schneller erster Blick",
   m_stdD: "Empfohlen",
   m_preciseD: "Für die engere Wahl",
@@ -257,7 +257,7 @@ export default {
   picks_sub2: "{n} innerhalb deiner Grenzen ({need})",
   grp_other: "Wartend oder nicht erreichbar",
   jitWarn: "Unruhig: Jitter ±{j} ms",
-  lossWarn: "{p} % Paketverlust",
+  lossWarn: "{p} % Timeout-Rate",
   res_h: "Alle Regionen",
   rules_note_loon: "Ganz oben in [Rule] einfügen.",
   concHint: "Weniger gleichzeitig ist genauer, mehr ist schneller. Pro Anbieter höchstens 2 gleichzeitig.",
@@ -323,7 +323,7 @@ export default {
   noLimit: "egal",
   maxLat: "Max. Latenz",
   maxJit: "Max. Jitter",
-  maxLoss: "Max. Verlust",
+  maxLoss: "Max. Timeouts",
   p_game: "Gaming",
   p_call: "Videocalls",
   p_ssh: "SSH / Remote-Desktop",
@@ -358,7 +358,7 @@ export default {
   d_min: "Min",
   d_max: "Max",
   d_jit: "Jitter",
-  d_loss: "Verlust",
+  d_loss: "Timeout-Rate",
   d_method: "Methode",
   d_warm: "Aufwärmen (zählt nicht)",
   d_cold: "Dieser Messpunkt kann die Verbindung nicht offen halten, daher enthält jede Messung einen neuen Handshake (etwa das 3-Fache der echten Umlaufzeit). Vergleich ihn nur mit sich selbst.",
@@ -419,8 +419,8 @@ export default {
   homeTip: "Nimm die Regionen deines Landes ({c}) mit, lass sie weg oder teste nur diese.",
   lp_title: "{v}-Latenztest: {n} Regionen aus deinem eigenen Netz | Me2Cloud",
   lp_title_one: "{v}-Latenztest: {n} Region aus deinem eigenen Netz | Me2Cloud",
-  lp_desc: "Miss Latenz, Jitter und Paketverlust zu allen {n} Regionen von {v} direkt aus deinem Browser, über deinen echten Internetanbieter und zur Hauptzeit. Kostenlos, ohne Installation.",
-  lp_desc_one: "Miss Latenz, Jitter und Paketverlust zur {n} Region von {v} direkt aus deinem Browser, über deinen echten Internetanbieter und zur Hauptzeit. Kostenlos, ohne Installation.",
+  lp_desc: "Miss Latenz, Jitter und Timeout-Rate zu allen {n} Regionen von {v} direkt aus deinem Browser, über deinen echten Internetanbieter und zur Hauptzeit. Kostenlos, ohne Installation.",
+  lp_desc_one: "Miss Latenz, Jitter und Timeout-Rate zur {n} Region von {v} direkt aus deinem Browser, über deinen echten Internetanbieter und zur Hauptzeit. Kostenlos, ohne Installation.",
   lp_h1: "Wie schnell ist {v} bei dir zu Hause?",
   lp_h2: "Die {n} Regionen von {v}, die wir testen",
   lp_h2_one: "Die {n} Region von {v}, die wir testen",
@@ -560,8 +560,8 @@ export default {
       `<ol><li>Eine <b>Aufwärm</b>-Anfrage erledigt DNS, den TCP-Verbindungsaufbau und die TLS-Verschlüsselung. Ihre Zeit wird angezeigt, aber nicht gezählt.</li>
           <li>Danach schickt der Browser 5, 10 oder 20 weitere Anfragen an denselben Host über <b>dieselbe Verbindung</b>. Jede kostet genau eine Umlaufzeit plus ein wenig Bearbeitungszeit auf dem Server des Anbieters.</li>
           <li>Jeder Anbieter bekommt die Anfrageart, bei der wir geprüft haben, dass die Verbindung offen bleibt: <code>GET</code> für AWS, Azure, Google Cloud, DigitalOcean und Scaleway; <code>HEAD</code> für Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore und Yandex Cloud (bei GET schließen sie die Verbindung, und jede Messung würde sich verdreifachen); und ein <code>GET</code> im CORS-Modus für Hetzner, dessen Seite der Browser sonst abschneiden und dabei die Verbindung schließen würde.</li>
-          <li>Du bekommst den <b>Median</b> (den typischen Wert), den <b>Mittelwert</b>, <b>P90</b> (9 von 10 Messungen liegen darunter oder gleichauf), den <b>Jitter</b> (wie stark zwei aufeinanderfolgende Messungen im Schnitt abweichen) und den <b>Paketverlust</b> (Messungen ohne Antwort vor dem Timeout).</li>
-          <li>Die <b>Stufe</b> ergibt sich aus dem Median: T0 Krass ≤ 30 ms, T1 Top ≤ 80 ms, T2 Läuft ≤ 150 ms, T3 NPC ≤ 250 ms, darüber T4 Lost. „Unsere Empfehlung“ sortiert nach Median + 2 × Jitter + Abzug für Verlust, deshalb schlagen stabile 60 ms sprunghafte 45 ms.</li></ol>`
+          <li>Du bekommst den <b>Median</b> (den typischen Wert), den <b>Mittelwert</b>, <b>P90</b> (9 von 10 Messungen liegen darunter oder gleichauf), den <b>Jitter</b> (wie stark zwei aufeinanderfolgende Messungen im Schnitt abweichen) und die <b>Timeout-Rate</b> (der Anteil der Messungen ohne Antwort vor dem Zeitlimit).</li>
+          <li>Die <b>Stufe</b> ergibt sich aus dem Median: T0 Krass ≤ 30 ms, T1 Top ≤ 80 ms, T2 Läuft ≤ 150 ms, T3 NPC ≤ 250 ms, darüber T4 Lost. „Unsere Empfehlung“ sortiert nach Median + 2 × Jitter + Abzug für Timeouts, deshalb schlagen stabile 60 ms sprunghafte 45 ms.</li></ol>`
     ],
     [
       "Warum HTTPS-Messungen näher am echten Alltag sind als ICMP-Ping",
@@ -581,7 +581,7 @@ export default {
       "Wofür es gut ist",
       `<ul><li>Regionen eingrenzen, bevor du einen Server, einen Gameserver oder einen CDN-Origin buchst.</li>
           <li>Regionen eines Anbieters vergleichen oder verschiedene Anbieter in derselben Stadt.</li>
-          <li>Prüfen, ob die Stabilität (Jitter, Paketverlust) für Gaming, Videocalls, Remote-Desktop und SSH reicht.</li>
+          <li>Prüfen, ob die Stabilität (Jitter, Timeout-Rate) für Gaming, Videocalls, Remote-Desktop und SSH reicht.</li>
           <li>Sehen, was dein Proxy, Beschleuniger oder neuer Internettarif wirklich bringt: einmal mit, einmal ohne testen.</li>
           <li>Deinen eigenen Server oder dein CDN mit einem eigenen Messpunkt neben die großen Namen stellen.</li></ul>`
     ],
@@ -620,7 +620,7 @@ export default {
     [
       "Das Diagramm lesen",
       `<ul><li>Alle Zeilen nutzen dieselbe Skala (logarithmisch, 2 ms bis 3 s). Punkte sind Messungen, der schattierte Kasten deckt die mittlere Hälfte ab, der Strich ist der Median.</li>
-          <li>Ein schmaler Kasten heißt stabil; ein breiter Kasten oder verstreute Punkte heißen Jitter. Ein rotes × zählt verlorene Messungen.</li>
+          <li>Ein schmaler Kasten heißt stabil; ein breiter Kasten oder verstreute Punkte heißen Jitter. Ein rotes × zählt Messungen mit Timeout.</li>
           <li>Tippe auf eine Zeile, um jede Messung der Reihe nach, alle Statistiken und den verwendeten Messpunkt zu sehen. ✓ markiert eine Region innerhalb deiner Grenzen.</li></ul>`
     ]
   ]

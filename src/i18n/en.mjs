@@ -8,7 +8,7 @@ export default {
   a_prev: "Previous",
   a_next: "Next",
   seo_title: "Cloud latency test from your own network: AWS, Azure, Google Cloud and 360+ regions | Me2Cloud",
-  seo_desc: "Free cloud latency test that runs in your browser. Ping 360+ regions of 22 providers, including AWS, Azure, Google Cloud, Oracle, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Vultr, Linode, DigitalOcean, Hetzner and OVHcloud, and see median latency, jitter and packet loss over your real ISP, Wi-Fi and peak hours. Your results are not uploaded.",
+  seo_desc: "Free cloud latency test that runs in your browser. Ping 360+ regions of 22 providers, including AWS, Azure, Google Cloud, Oracle, Alibaba Cloud, Tencent Cloud, Huawei Cloud, Vultr, Linode, DigitalOcean, Hetzner and OVHcloud, and see median latency, jitter and timeout rate over your real ISP, Wi-Fi and peak hours. Your results are not uploaded.",
   seo_kw: "cloud latency test, cloud ping test, cloud region ping, AWS ping, Azure latency, Google Cloud ping, Alibaba Cloud ping, Vultr ping, closest cloud region",
   og_sub: "22 providers · 360+ regions · measured in your own browser",
   unlisted: "unlisted region",
@@ -91,7 +91,7 @@ export default {
   pl_vendors: "Providers",
   pl_areas: "Areas",
   off: "Off",
-  noLoss: "no loss",
+  noLoss: "no timeouts",
   m_quickD: "A quick first look",
   m_stdD: "Recommended",
   m_preciseD: "For your final shortlist",
@@ -106,7 +106,7 @@ export default {
   picks_sub2_one: "{n} meets your limits ({need})",
   grp_other: "Waiting or unreachable",
   jitWarn: "Unsteady: jitter ±{j} ms",
-  lossWarn: "{p}% packet loss",
+  lossWarn: "{p}% timeout rate",
   res_h: "All regions",
   rules_note_loon: "Paste at the top of [Rule].",
   concHint: "Fewer at once is more accurate; more is faster. Each provider gets at most 2 at a time.",
@@ -172,7 +172,7 @@ export default {
   noLimit: "any",
   maxLat: "Max latency",
   maxJit: "Max jitter",
-  maxLoss: "Max loss",
+  maxLoss: "Max timeouts",
   p_game: "Gaming",
   p_call: "Video calls",
   p_ssh: "SSH / remote desktop",
@@ -207,7 +207,7 @@ export default {
   d_min: "Min",
   d_max: "Max",
   d_jit: "Jitter",
-  d_loss: "Loss",
+  d_loss: "Timeout rate",
   d_method: "Method",
   d_warm: "warm-up (not counted)",
   d_cold: "This endpoint can't keep the connection open, so every sample includes a new handshake (about 3 × the real round trip). Compare it only with itself.",
@@ -280,8 +280,8 @@ export default {
       `<ol><li>A <b>warm-up</b> request sets up DNS, the TCP connection and TLS encryption. Its time is shown but not counted.</li>
           <li>The browser then sends 5, 10 or 20 more requests to the same host over the <b>same connection</b>. Each one costs a single round trip, plus a little processing time on the provider's server.</li>
           <li>Each provider gets the request type we confirmed keeps the connection open: <code>GET</code> for AWS, Azure, Google Cloud, DigitalOcean and Scaleway; <code>HEAD</code> for Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore and Yandex Cloud (they close the connection after a GET, which would triple every sample); and a CORS <code>GET</code> for Hetzner, whose page the browser would otherwise cut off, dropping the connection.</li>
-          <li>You get the <b>median</b> (the typical value), the <b>average</b>, <b>P90</b> (9 in 10 samples are at or below it), <b>jitter</b> (how much consecutive samples differ, on average) and <b>packet loss</b> (samples with no answer before the timeout).</li>
-          <li>The <b>tier</b> comes from the median: T0 GOATed ≤ 30 ms, T1 Top tier ≤ 80 ms, T2 Solid ≤ 150 ms, T3 NPC ≤ 250 ms, and T4 Cooked above that. "Our picks" are ranked by median + 2 × jitter + a loss penalty, so a steady 60 ms beats a jumpy 45 ms.</li></ol>`
+          <li>You get the <b>median</b> (the typical value), the <b>average</b>, <b>P90</b> (9 in 10 samples are at or below it), <b>jitter</b> (how much consecutive samples differ, on average) and <b>timeout rate</b> (the share of samples with no answer before the time limit).</li>
+          <li>The <b>tier</b> comes from the median: T0 GOATed ≤ 30 ms, T1 Top tier ≤ 80 ms, T2 Solid ≤ 150 ms, T3 NPC ≤ 250 ms, and T4 Cooked above that. "Our picks" are ranked by median + 2 × jitter + a timeout penalty, so a steady 60 ms beats a jumpy 45 ms.</li></ol>`
     ],
     [
       "Why HTTPS timing is closer to real use than ICMP ping",
@@ -301,7 +301,7 @@ export default {
       "What it's good for",
       `<ul><li>Shortlisting regions before you buy a server, a game server or a CDN origin.</li>
           <li>Comparing regions of one provider, or different providers in the same city.</li>
-          <li>Checking whether stability (jitter, packet loss) is good enough for gaming, video calls, remote desktop and SSH.</li>
+          <li>Checking whether stability (jitter, timeout rate) is good enough for gaming, video calls, remote desktop and SSH.</li>
           <li>Seeing how your proxy, accelerator or new internet plan really performs: test once with it, once without.</li>
           <li>Putting your own server or CDN next to the big names with a custom endpoint.</li></ul>`
     ],
@@ -340,7 +340,7 @@ export default {
     [
       "Reading the chart",
       `<ul><li>Every row uses the same scale (logarithmic, 2 ms to 3 s). Dots are samples, the shaded box covers the middle half of them, and the line is the median.</li>
-          <li>A narrow box means steady; a wide box or scattered dots mean jitter. A red × counts lost samples.</li>
+          <li>A narrow box means steady; a wide box or scattered dots mean jitter. A red × counts samples that timed out.</li>
           <li>Click a row to see each sample in order, all the stats and the endpoint used. ✓ marks a region that meets your limits.</li></ul>`
     ]
   ],
@@ -351,8 +351,8 @@ export default {
   homeTip: "Include the regions in {c}, leave them out, or test only those.",
   lp_title: "{v} latency test: {n} regions from your own network | Me2Cloud",
   lp_title_one: "{v} latency test: {n} region from your own network | Me2Cloud",
-  lp_desc: "Test latency, jitter and packet loss to all {n} {v} regions from your own browser, over your real ISP and at peak hours. Free, nothing to install.",
-  lp_desc_one: "Test latency, jitter and packet loss to the {n} {v} region from your own browser, over your real ISP and at peak hours. Free, nothing to install.",
+  lp_desc: "Test latency, jitter and timeout rate to all {n} {v} regions from your own browser, over your real ISP and at peak hours. Free, nothing to install.",
+  lp_desc_one: "Test latency, jitter and timeout rate to the {n} {v} region from your own browser, over your real ISP and at peak hours. Free, nothing to install.",
   lp_h1: "How fast is {v} from your place?",
   lp_h2: "The {n} {v} regions we test",
   lp_h2_one: "The {n} {v} region we test",
