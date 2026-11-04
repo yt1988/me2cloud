@@ -1122,7 +1122,7 @@
   let TOKYO = null, tokyoAsked = false;
   function tokyo() {
     if (tokyoAsked) return; tokyoAsked = true;
-    fetch("/tokyo.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { if (j && j.regions) { TOKYO = j; renderAll(); } });
+    fetch("/tokyo.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null).then(j => { if (j && j.regions) { TOKYO = j; renderAll(); } });
   }
   const tokyoOf = (e, r) => { const x = TOKYO && TOKYO.regions[e.id]; return x && x[r && r.ip === "v6" ? "v6" : "v4"]; };
   const rowEls = new Map();
