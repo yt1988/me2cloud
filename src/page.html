@@ -2274,15 +2274,22 @@ footer a { color: var(--muted); }
     const vs = [...new Set(list.map(x => x.e.vendor))].map(v => ({ v, best: list.filter(x => x.e.vendor === v).sort(byScore)[0] })).sort((a, b) => byScore(a.best, b.best));
     const lanes = vs.slice(0, 6), more = vs.length - lanes.length, LH = 56, ph = LH * Math.max(1, lanes.length);
     const links = [await shareLink(false), await shareLink(true)];
+    // the title and, beside it, what was measured (the network, when the visitor shows it) and how: wrapped, never cut short
+    const head = (g, kit) => {
+      g.font = `700 46px ${kit.F}`; const title = kit.wrap(g, t("card_title"), kit.W - 2 * kit.P);
+      g.font = `500 26px ${kit.F}`; const sub = kit.wrap(g, [kit.show ? where : "", how].filter(Boolean).join("  ·  "), kit.W - 2 * kit.P);
+      return { title, sub, dy: (title.length - 1) * 54 + (sub.length - 1) * 36 };
+    };
     const draw = (g, kit) => {
-      const { W, P, F, M, v, clip, roundRect } = kit, y = kit.top;
+      const { W, P, F, M, v, clip, roundRect } = kit, hd = head(g, kit), y = kit.top + hd.dy;
       const C = { bg: v("bg"), fg: v("fg"), mu: v("muted"), line: v("line"), t: [0, 1, 2, 3, 4, 5].map(i => v(i ? "g" + i : "muted")) };
       const font = (w, sz, mono) => { g.font = `${w} ${sz}px ${mono ? M : F}`; };
       const text = (str, x, yy, color, align) => { g.fillStyle = color; g.textAlign = align || "left"; g.fillText(str, x, yy); };
       const fit = (str, max) => clip(g, str, max);
       g.textBaseline = "alphabetic";
-      font(700, 46); text(fit(t("card_title"), W - 2 * P), P, y + 30, C.fg);
-      font(500, 26); text(fit(how, W - 2 * P), P, y + 76, C.mu);
+      const ty = kit.top;
+      font(700, 46); hd.title.forEach((l, i) => text(l, P, ty + 30 + i * 54, C.fg));
+      font(500, 26); hd.sub.forEach((l, i) => text(l, P, ty + 76 + (hd.title.length - 1) * 54 + i * 36, C.mu));
       // the three picks
       const cw = (W - 2 * P - 48) / 3, cy = y + 110, ch = 228;
       top.forEach((x, i) => {
@@ -2294,7 +2301,7 @@ footer a { color: var(--muted); }
         font(700, 76, true); text(fmt(x.st.med), cx + 24, cy + 128, col);
         const mw = g.measureText(fmt(x.st.med)).width;
         font(500, 28, true); text("ms", cx + 30 + mw, cy + 128, C.mu);
-        font(700, 32); text(fit(x.e.city, cw - 48), cx + 26, cy + 172, C.fg);
+        kit.fit(g, x.e.city, cw - 48, 32, 22); text(fit(x.e.city, cw - 48), cx + 26, cy + 172, C.fg);
         // the jitter too, as on the page: the picks are ranked by median + 2 × jitter, so a steadier region can lead a faster one
         font(500, 24); const jt = "±" + fmt(x.st.jit), jw = (font(500, 24, true), g.measureText(jt).width);
         font(500, 24); text(fit(x.e.vname, cw - 64 - jw), cx + 26, cy + 204, C.mu);
@@ -2328,7 +2335,7 @@ footer a { color: var(--muted); }
       const by = y0 + ph + 70, counts = [1, 2, 3, 4, 5].map(k => list.filter(x => grade(x.st.med) === k).length), tot = list.length || 1;
       g.save(); roundRect(g, P, by, W - 2 * P, 20, 10); g.clip(); g.fillStyle = C.line; g.fillRect(P, by, W - 2 * P, 20);
       let bx = P; counts.forEach((c, i) => { const w = (W - 2 * P) * c / tot; g.fillStyle = C.t[i + 1]; g.fillRect(bx, by, w, 20); bx += w; }); g.restore();
-      font(600, 24); counts.forEach((c, i) => text(fit(`${tierCode(i + 1)} ${tierName(i + 1)} ${c}`, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]));
+      counts.forEach((c, i) => { const s = `${tierCode(i + 1)} ${tierName(i + 1)} ${c}`; kit.fit(g, s, (W - 2 * P) / 5 - 8, 24, 16, 600); text(fit(s, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]); });
     };
     const { share } = await import("/assets/share/share.js?v=7");
     share({
@@ -2336,8 +2343,8 @@ footer a { color: var(--muted); }
       show: ["city", "isp"], never: ["ip"], canShow: !!where,
       link: on => links[on ? 1 : 0], home: SITE + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/"),
       text: () => t("card_cta"),
-      height: 200 + 110 + 228 + 56 + ph + 70 + 84 + 70, draw,
-      foot: on => [on ? where : "", t("card_local")],
+      height: (g, kit) => 200 + head(g, kit).dy + 110 + 228 + 56 + ph + 70 + 84 + 70, draw,
+      foot: () => [t("card_local")],
       ts: VIEW.ts || Date.now(),
     }).open();
   }

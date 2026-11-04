@@ -18,6 +18,7 @@ async function rules() {
   for (const line of text.split("\n")) {
     if (!line.trim() || line.trim().startsWith("#")) continue;
     if (!/^\s/.test(line)) { cur = { re: new RegExp("^" + line.trim().replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*") + "$"), h: {} }; out.push(cur); }
+    else if (cur && line.trim().startsWith("!")) cur.h[line.trim().slice(1).trim()] = null;   // "! Name" drops a header set by an earlier rule
     else if (cur) { const i = line.indexOf(":"); cur.h[line.slice(0, i).trim()] = line.slice(i + 1).trim(); }
   }
   return out;
@@ -32,7 +33,7 @@ createServer(async (req, res) => {
   try {
     const body = await readFile(file);
     const headers = { "Content-Type": TYPES[extname(file)] || "application/octet-stream", "Cache-Control": "no-cache" };
-    for (const r of await rules()) if (r.re.test(urlPath)) Object.assign(headers, r.h);
+    for (const r of await rules()) if (r.re.test(urlPath)) for (const [k, v] of Object.entries(r.h)) if (v === null) delete headers[k]; else headers[k] = v;
     headers["Cache-Control"] = "no-cache";
     res.writeHead(200, headers).end(body);
   } catch { res.writeHead(404, { "Content-Type": "text/plain" }).end("not found"); }
