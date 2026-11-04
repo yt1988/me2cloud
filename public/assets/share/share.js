@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=5");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=6");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -37,7 +37,7 @@
 // Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
 // visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
 //
-//   const { received } = await import("/assets/share/share.js?v=5");
+//   const { received } = await import("/assets/share/share.js?v=6");
 //   const r = received({
 //     lang: "zh-CN",
 //     ts: 1730000000000,            // when the shared result was measured
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 5;
+export const VERSION = 6;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -188,12 +188,13 @@ async function storePreview(s, card, bg) {
   const x = o.getContext("2d"), k = Math.min(OG_W / card.width, OG_H / card.height);
   x.fillStyle = bg; x.fillRect(0, 0, OG_W, OG_H);
   x.drawImage(card, (OG_W - card.width * k) / 2, (OG_H - card.height * k) / 2, card.width * k, card.height * k);
-  const png = await new Promise(r => o.toBlob(r, "image/png"));
-  if (!png) return;
-  try {
-    await fetch(new URL(`/api/og/${s.code}`, shortener()), { method: "PUT", headers: { "content-type": "image/png" }, body: png,
+  // JPEG: a third to a fifth of the PNG's size, and every chat app takes it; PNG while the shortener only takes PNG (415)
+  const put = async type => {
+    const b = await new Promise(r => o.toBlob(r, type, 0.85));
+    return b && fetch(new URL(`/api/og/${s.code}`, shortener()), { method: "PUT", headers: { "content-type": type }, body: b,
       signal: AbortSignal.timeout(10000) });
-  } catch (e) {}
+  };
+  try { const r = await put("image/jpeg"); if (r && r.status === 415) await put("image/png"); } catch (e) {}
 }
 
 let cssP = null;
@@ -212,7 +213,9 @@ export function share(o) {
   const space = s => lang.startsWith("zh") ? s.replace(/([一-鿿])([A-Za-z0-9])/g, "$1 $2").replace(/([A-Za-z0-9])([一-鿿])/g, "$1 $2") : s;
   const list = keys => new Intl.ListFormat(lang, { type: "conjunction" }).format(keys.filter(k => t[k]).map(k => t[k]));
   const show = (o.show || []).filter(k => WHAT.includes(k)), never = (o.never || []).filter(k => WHAT.includes(k));
-  let dlg = null, run = 0, blob = null;
+  let dlg = null, run = 0, blob = null, pending = null, wanted = false;
+  // the visitor shares this link (copies it or the image, saves the image, or opens the system share sheet)
+  const publish = () => { wanted = true; if (pending) storePreview(pending.sl, pending.c, pending.bg).catch(() => {}); };   // shared before the card was drawn: refresh stores it once ready
 
   function build() {
     dlg = document.createElement("dialog");
@@ -236,23 +239,24 @@ export function share(o) {
     const flash = (b, ok) => { const was = b.textContent; b.textContent = ok ? t.copied : t.failed; setTimeout(() => { b.textContent = was; }, 1500); };
     $('[data-a="link"]').onclick = async e => {
       const b = e.currentTarget, inp = $(".ms-share-link input");
-      ev("link", lang);
+      ev("link", lang); publish();
       try { await navigator.clipboard.writeText(inp.value); flash(b, true); } catch (x) { inp.select(); }
     };
     $('[data-a="img"]').onclick = async e => {
       const b = e.currentTarget;
-      ev("img", lang);
+      ev("img", lang); publish();
       try { await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]); flash(b, true); } catch (x) { flash(b, false); }
     };
+    $(".ms-share-link input").addEventListener("copy", publish);   // copied by hand from the box
     $('[data-a="dl"]').onclick = () => {
-      ev("dl", lang);
+      ev("dl", lang); publish();
       const a = document.createElement("a"); a.href = $(".ms-share-img").src; a.download = (o.file || "1ms") + ".png"; a.click();
     };
     $('[data-a="more"]').onclick = async () => {
       const s = shown(), url = $(".ms-share-link input").value, text = o.text ? o.text(s) : document.title;
       const file = blob && new File([blob], (o.file || "1ms") + ".png", { type: "image/png" });
       const data = file && navigator.canShare && navigator.canShare({ files: [file] }) ? { text, url, files: [file] } : { text, url };
-      ev("more", lang);
+      ev("more", lang); publish();
       try { await navigator.share(data); } catch (e) {}
     };
   }
@@ -288,7 +292,7 @@ export function share(o) {
 
   async function refresh() {
     const me = ++run, $ = s => dlg.querySelector(s), long = o.link(shown()), im = $(".ms-share-img");
-    $(".ms-share-link input").value = long; im.removeAttribute("src"); blob = null;
+    $(".ms-share-link input").value = long; im.removeAttribute("src"); blob = null; pending = null; wanted = false;
     $('[data-a="img"]').disabled = $('[data-a="dl"]').disabled = true;
     loadQR().catch(() => {});
     const sl = await shorten(long), url = sl.url;
@@ -298,7 +302,10 @@ export function share(o) {
     const c = await card(url.length <= 300 ? url : o.home || location.origin + "/").catch(() => null);
     if (!c || me !== run) return;
     im.height = c.height; im.src = c.toDataURL("image/png");
-    storePreview(sl, c, getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#fff").catch(() => {});
+    // the preview image is stored only once the visitor shares (publish below): opening the dialog to look, or ticking
+    // the box back and forth, leaves nothing behind
+    pending = { sl, c, bg: getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#fff" };
+    if (wanted) publish();
     c.toBlob(b => { if (me === run) { blob = b; $('[data-a="img"]').disabled = false; } }, "image/png");
     $('[data-a="dl"]').disabled = false;
   }
