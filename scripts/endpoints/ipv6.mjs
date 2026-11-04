@@ -13,12 +13,18 @@ const ALT6 = {
 };
 
 const E = JSON.parse(await readFile(new URL("../../public/endpoints.json", import.meta.url), "utf8"));
+// An AAAA record is not proof: some hosts publish one and refuse port 443 on it. The Tokyo watch (server/watch)
+// connects to every host over IPv6; a refused connection there takes the family away. A timeout is not counted.
+const REFUSED6 = await fetch("https://data.1ms.dog:2083/me2cloud/latest.json", { signal: AbortSignal.timeout(15000) })
+  .then(r => r.json()).then(j => new Set(j.regions.filter(x => x.fam === 6 && x.med == null && /refused/i.test(x.error || "")).map(x => x.id)))
+  .catch(e => { console.warn("Tokyo watch not reachable, AAAA records taken as they are:", e.message); return new Set(); });
 const out = {};
 let i = 0;
 await Promise.all(Array.from({ length: 10 }, async () => {
   while (i < E.endpoints.length) {
     const e = E.endpoints[i++];
     const f = await families(new URL(e.url).hostname);
+    if (f.v6 && REFUSED6.has(e.id)) { console.log(e.id + ": AAAA but IPv6 port 443 refused in Tokyo, IPv4 only"); f.v6 = false; }
     const r = { fam: (f.v4 ? "4" : "") + (f.v6 ? "6" : "") };
     if (!f.v6 && ALT6[e.vendor] && !e.url.includes(".com.cn/")) {
       const u = ALT6[e.vendor](e), g = await families(new URL(u).hostname);

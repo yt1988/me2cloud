@@ -1783,7 +1783,7 @@
    "method": "HEAD",
    "cors": true,
    "tier": "A",
-   "fam": "46",
+   "fam": "4",
    "continent": "sa"
   },
   {
@@ -1888,7 +1888,7 @@
    "method": "HEAD",
    "cors": true,
    "tier": "A",
-   "fam": "46",
+   "fam": "4",
    "continent": "eu"
   },
   {

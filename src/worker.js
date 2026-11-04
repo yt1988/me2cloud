@@ -5,6 +5,8 @@
 //   /v                    the latest vps2cloud release, "0.6.0", asked of GitHub and kept for 10 minutes
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
+//   /tokyo.json           the Tokyo health check of every region (server/watch, on the 1ms.dog server), cut down to
+//                         what the page shows and kept for 5 minutes; the server runs every 15
 //   /r                    where its share links open (/r#s=…): the home page, which reads the result from the fragment
 //   anything else         a bare 404; 1ms-shell puts the shared 1ms.dog 404 page in front of it
 // The tool and its installers try these before GitHub, which is often slow or blocked in mainland China.
@@ -39,12 +41,38 @@ export default {
       return release(m[1], m[2], req, ctx);
     }
 
+    if (url.pathname === "/tokyo.json") return tokyo(req, ctx);
+
     return new Response(req.method === "HEAD" ? null : "Not found\n", {
       status: 404,
       headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=0, must-revalidate" },
     });
   },
 };
+
+// per region and IP family: the 24-hour median and share of runs answered, and since when it has been unreachable
+const TOKYO = "https://data.1ms.dog:2083/me2cloud/summary.json";
+const TOKYO_KEY = "https://m2c.1ms.dog/__tokyo";
+async function tokyo(req, ctx) {
+  const cache = caches.default;
+  let res = await cache.match(TOKYO_KEY);
+  if (!res) {
+    let j = null;
+    try {
+      const up = await fetch(TOKYO, { signal: AbortSignal.timeout(5000) });
+      if (up.ok) j = await up.json();
+    } catch {}
+    if (!j || !j.regions) return new Response("{}", { status: 502, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+    const regions = {};
+    for (const [id, fams] of Object.entries(j.regions)) {
+      regions[id] = {};
+      for (const [f, x] of Object.entries(fams)) regions[id][f] = { m: x.med24 ?? null, u: x.up24 ?? null, ...(x.down ? { d: x.down } : {}) };
+    }
+    res = new Response(JSON.stringify({ time: j.time, regions }), { headers: { "content-type": "application/json", "cache-control": "public, max-age=300" } });
+    ctx.waitUntil(cache.put(TOKYO_KEY, res.clone()));
+  }
+  return req.method === "HEAD" ? new Response(null, { headers: res.headers }) : res;
+}
 
 // the newest release's version, from the redirect GitHub gives for /releases/latest
 async function latest(ctx) {
