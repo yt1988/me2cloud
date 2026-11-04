@@ -1,0 +1,10 @@
+[Unit]
+Description=Me2Cloud: Tokyo check every 15 minutes, from minute 7
+
+[Timer]
+OnCalendar=*-*-* *:07/15:00
+AccuracySec=1s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

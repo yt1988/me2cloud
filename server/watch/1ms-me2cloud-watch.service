@@ -1,0 +1,36 @@
+[Unit]
+Description=Me2Cloud: Tokyo TCP handshake check of every cloud region (one run)
+Documentation=https://github.com/yt1988/me2cloud/tree/main/server/watch
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=1ms-me2cloud
+Group=1ms-me2cloud
+ExecStart=/opt/1ms/me2cloud/me2cloud-watch
+StateDirectory=1ms-me2cloud
+WorkingDirectory=/var/lib/1ms-me2cloud
+Environment=HOME=/var/lib/1ms-me2cloud
+TimeoutStartSec=10min
+MemoryMax=128M
+# per-run traffic shows in systemctl show -p IPIngressBytes -p IPEgressBytes
+IPAccounting=yes
+# the program prints only errors; stdout carries nothing
+StandardOutput=null
+StandardError=journal
+UMask=0022
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/srv/1ms-data/me2cloud
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
