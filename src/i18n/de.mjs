@@ -420,6 +420,7 @@ export default {
   lp_h1: "Wie schnell ist {v} bei dir zu Hause?",
   lp_h2: "Die {n} Regionen von {v}, die wir testen",
   lp_intro: "{v} wird über seine {k}-Messpunkte gemessen. Wähl oben die Regionen und tippe auf „Test starten“; jede Anfrage geht von deinem Browser direkt an {v}.",
+  lp_all: "Alle {v} Clouds und {n} Regionen testen und sehen, welche dir am nächsten ist",
   nav_h: "Einen Anbieter testen",
   ipTip: "Im IPv6-Modus sind Regionen ohne IPv6 markiert.",
   ip_no6: "Dein Netz hat kein funktionierendes IPv6, daher kann nur IPv4 getestet werden",

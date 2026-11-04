@@ -128,8 +128,10 @@
     return o;
   }
   function load() { try { return sanitize(JSON.parse(localStorage.getItem(KEY))); } catch (e) { return defaults(); } }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  // a provider's own page tests that provider only; the picks saved for the home page are kept as they were
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(ONE ? Object.assign({}, S, HOME_PICKS) : S)); } catch (e) {} }
   let S = load();
+  const ONE = PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] ? PAGE.vendor : null, HOME_PICKS = { vendors: S.vendors, cts: S.cts };
 
   // setup link: ?vendors=aws,vultr&areas=as,na&mode=quick&need=60,10,0
   (function parseLink() {
@@ -445,7 +447,8 @@
   const coveredCts = () => CT_ORDER.filter(c => ENDPOINTS.endpoints.some(e => S.vendors.includes(e.vendor) && e.continent === c)
     || S.custom.some(x => S.vendors.includes("c:" + x.g) && CC_CT[x.cc] === c));
   // picking from "everything selected" narrows to the one clicked; after that, clicks add or remove
-  if (PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] && !/[?&]vendors=/.test(location.search)) { S.vendors = [PAGE.vendor].concat(S.vendors.filter(isCdn)); S.cts = coveredCts(); }
+  // a provider's page (/gcp/ …) tests only that provider, whatever a link or the home page picked: no CDNs, no others
+  if (ONE) { S.vendors = [ONE]; S.cts = coveredCts(); }
   // from "all", a tap picks just that one; tapping the only pick goes back to all (emptying is the Clear link's job)
   const pickToggle = (list, all, x) => all.length < 2 ? (list.includes(x) ? [] : [x])
     : list.length === all.length ? [x]
@@ -636,7 +639,7 @@
   addEventListener("pagehide", () => { if (RUN) saveResults(); });
   // the last run, restored on load. A provider's own page (/vultr/ …) picks only that provider, so it shows only the
   // restored results of what is picked, not the rest of a full run made on the home page (which stays saved)
-  const scoped = PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] && !/[?&]vendors=/.test(location.search);
+  const scoped = !!ONE;
   function restoreLast() {
     try {
       const last = JSON.parse(localStorage.getItem(RES_KEY));
@@ -942,7 +945,7 @@
     // providers and custom groups share one list; a star marks the groups
     // the providers and groups by name; picked CDNs (on by default) add one "+ CDN" rather than six names
     const vLabel = sumList(S.vendors.filter(v => !isCdn(v)).map(v => (isCustom(v) ? "★ " : "") + vnm(v)), allVids().length, t("allVendors")) + (S.vendors.some(isCdn) ? " + " + t("cdn_h") : "");
-    $("#plV").classList.toggle("ask", noV);
+    $("#plV").classList.toggle("ask", noV); $("#plV").hidden = !!ONE;
     $("#plV > summary").innerHTML = `${SVG_V}${noV ? `<span>${t("pickVendor")}</span>` : `<span class="pl-k">${t("pl_vendors")}</span><b>${esc(vLabel)}</b>`}${caret}`;
     // areas are the second step: they only open once a provider is chosen, and only list the areas it covers
     const aOff = noV;
@@ -1017,7 +1020,7 @@
   /* ---------- results: podium, distribution, tier groups ---------- */
   const pos = v => clamp((Math.log(v) - Math.log(AX_MIN)) / (Math.log(AX_MAX) - Math.log(AX_MIN)), 0, 1) * 100;
   // results are what the last test measured, whatever the pickers say now; before any test, the picks preview what will run
-  const rankList = () => (VIEW.shared || R.size ? ALL.filter(e => R.has(e.id)) : selected()).map(e => { const r = R.get(e.id), st = stats(r); return { e, r, st, pass: meets(st) }; });
+  const rankList = () => (VIEW.shared || R.size ? ALL.filter(e => R.has(e.id) && (!ONE || e.vendor === ONE)) : selected()).map(e => { const r = R.get(e.id), st = stats(r); return { e, r, st, pass: meets(st) }; });
   const byScore = (a, b) => a.st.score - b.st.score;
   const dirty = new Set(), fresh = new Set(); let openId = null, dirtyAll = true;
   function markDirty(id, isNew) { dirty.add(id); if (isNew) fresh.add(id); schedule(); }

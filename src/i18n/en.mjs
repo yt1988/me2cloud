@@ -351,6 +351,7 @@ export default {
   lp_h1: "How fast is {v} from your place?",
   lp_h2: "The {n} {v} regions we test",
   lp_intro: "{v} is measured through its {k} endpoints. Choose regions above and press Start test; every request goes from your browser straight to {v}.",
+  lp_all: "Test all {v} clouds and {n} regions to see which is closest to you",
   nav_h: "Test a single provider",
   ipTip: "In IPv6 mode, regions without IPv6 are marked.",
   ip_no6: "Your network has no working IPv6, so only IPv4 can be tested",

@@ -420,6 +420,7 @@ export default {
   lp_h1: "Quão rápida é a nuvem {v} aí da sua casa?",
   lp_h2: "As {n} regiões da nuvem {v} que testamos",
   lp_intro: "{v}: a medição usa os pontos de {k}. Escolha as regiões acima e toque em Começar teste; cada requisição vai do seu navegador direto para {v}.",
+  lp_all: "Teste as {v} nuvens e as {n} regiões para ver qual fica mais perto",
   nav_h: "Testar um provedor só",
   ipTip: "No modo IPv6, as regiões sem IPv6 aparecem marcadas.",
   ip_no6: "Sua rede não tem IPv6 funcionando, então só dá para testar IPv4",

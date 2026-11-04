@@ -159,6 +159,8 @@ export async function build({ check = false } = {}) {
         landing = `<section class="card lp" id="lpRegions"><h2>${esc(fill(T("lp_h2"), { v: vn(v), n }))}</h2><p>${esc(fill(T("lp_intro"), { v: vn(v), k: vk(v) }))}</p>` +
           groups.map(([c, l]) => `<div class="lp-ct"><h3>${esc(T("ct_" + c))}</h3><ul class="lp-rs">${l.map(e => `<li>${esc(e.city === "?" ? e.region : e.city === enRegion(e.country) ? country(e.country) : city(e.city))}${e.country && e.country !== "--" && e.city !== enRegion(e.country) ? " · " + esc(country(e.country)) : ""}<code>${esc(e.region)}</code></li>`).join("")}</ul></div>`).join("") + `</section>`;
       }
+      // a provider's page tests that provider only; the whole comparison is one link away, on the home page in this language
+      const allCta = v ? `<p class="all-cta"><a class="btn" href="${path(slug, "")}">${esc(fill(T("lp_all"), { v: vids.length, n: E.endpoints.length }))} →</a></p>` : "";
       const vendorNav = `<nav class="vlinks" aria-label="${esc(T("nav_h"))}"><b>${esc(T("nav_h"))}</b>${vids.map(x => `<a href="${path(slug, x)}"${x === v ? ' aria-current="page"' : ""}>${esc(vn(x))}</a>`).join("")}</nav>`;
       const paths = Object.fromEntries(langs.map(([l, s]) => [l, path(s, sub)]));
       const data = { lang, paths, page: v ? { vendor: v } : {}, i18n: lang === "en" ? { en } : { [lang]: d, en } };
@@ -166,7 +168,7 @@ export async function build({ check = false } = {}) {
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
         .replace("{{head}}", head).replace("{{helpNav}}", helpNav).replace("{{helpSel}}", helpSel).replace("{{helpC}}", helpC)
         .replace("{{homeHref}}", path(slug, "")).replace("{{homeCur}}", sub ? "" : ' aria-current="page"')
-        .replace("{{landing}}", landing).replace("{{vendorNav}}", vendorNav)
+        .replace("{{landing}}", landing).replace("{{allCta}}", allCta).replace("{{vendorNav}}", vendorNav)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
       pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, lang, slug, sub, html });

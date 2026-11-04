@@ -420,6 +420,7 @@ export default {
   lp_h1: "¿Qué tan rápido va {v} desde tu casa?",
   lp_h2: "Las {n} regiones de {v} que medimos",
   lp_intro: "{v} se mide con sus puntos de {k}. Elige las regiones arriba y pulsa Empezar prueba; cada solicitud va desde tu navegador directamente a {v}.",
+  lp_all: "Mide las {v} nubes y sus {n} regiones para ver cuál te queda más cerca",
   nav_h: "Medir un solo proveedor",
   ipTip: "En modo IPv6, las regiones sin IPv6 aparecen marcadas.",
   ip_no6: "Tu red no tiene IPv6 que funcione, así que solo se puede medir IPv4",
