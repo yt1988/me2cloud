@@ -482,6 +482,8 @@
   const grade = v => v == null ? 0 : (GRADES.findIndex(g => v <= g) + 1) || 5;
   // results are judged by the requirement they were tested under (VIEW.need); the picker only sets up the next test
   const NEED = () => VIEW.need || S.need;
+  // a CLI result measured with ICMP: an echo with no reply is a lost packet; anything else that got no answer in time is a timeout
+  const pkt = () => !!(VIEW.shared && VIEW.shared.m === "icmp");
   const meets = st => {
     if (!st || !st.ok) return false;
     const N = NEED();
@@ -1137,7 +1139,7 @@
       sp += r.s.map(v => v == null ? "" : `<i class="d" style="left:${pos(v)}%"></i>`).join("");
     }
     if (st.n && st.ok < st.n) sp += `<span class="x">×${st.n - st.ok}</span>`;
-    const flag = st.ok && shaky(st) ? `<span class="r-f" title="${esc(st.loss ? t("lossWarn", { p: Math.round(st.loss * 100) }) : t("jitWarn", { j: fmt(st.jit) }))}">⚠</span>` : `<span></span>`;
+    const flag = st.ok && shaky(st) ? `<span class="r-f" title="${esc(st.loss ? t(pkt() ? "pktWarn" : "lossWarn", { p: Math.round(st.loss * 100) }) : t("jitWarn", { j: fmt(st.jit) }))}">⚠</span>` : `<span></span>`;
     return `<div class="r rg" role="button" tabindex="0" aria-expanded="${openId === e.id}">
       <span class="vb">${isCustom(e.vendor) ? favOf(e.url) : vshort[e.vendor] || ""}</span>
       <span class="r-nm"><b>${esc(e.city)}${tk && tk.d ? ` <span class="tkd">${esc(t("tk_tag"))}</span>` : ""}</b><span>${isCustom(e.vendor) ? esc(vnm(e.vendor)) + " · " : ""}${esc(e.region)}${e.country && e.cityEn !== EN_REGION(e.country) ? " · " + esc(country(e.country)) : ""}</span></span>
@@ -1222,7 +1224,7 @@
     if (!isCustom(e.vendor)) lines.push(`<span>${esc(vtext(e.vendor, "kind"))} · ${esc(vtext(e.vendor, "note"))}</span>`);
     return `<div class="det">
       <div>${r && r.s.length ? chartSVG(r, st) : `<div class="empty">${t(r && r.sum ? "sharedNoRaw" : "noSamples")}</div>`}</div>
-      <div class="dstats">${kv("d_med", ms(st.med))}${kv("d_jit", st.ok > 1 ? "±" + ms(st.jit) : "–")}${kv("d_loss", st.n ? Math.round(st.loss * 100) + "%" : "–")}${kv("d_min", ms(st.min))}${kv("d_avg", ms(st.avg))}${kv("d_p90", ms(st.p90))}</div>
+      <div class="dstats">${kv("d_med", ms(st.med))}${kv("d_jit", st.ok > 1 ? "±" + ms(st.jit) : "–")}${kv(pkt() ? "d_pkt" : "d_loss", st.n ? Math.round(st.loss * 100) + "%" : "–")}${kv("d_min", ms(st.min))}${kv("d_avg", ms(st.avg))}${kv("d_p90", ms(st.p90))}</div>
       <div class="dmeta">${lines.join("")}<div class="dbtns"><button class="btn sm" type="button" data-retest="${esc(e.id)}" ${RUN ? "disabled" : ""}>${t("retest")}</button><button class="btn sm" type="button" data-copy="${esc(e.url)}">${t("copyUrl")}</button>${costLink(e.vendor)}</div></div>
     </div>`;
   }
@@ -1557,7 +1559,7 @@
   // plain-text summary of the current results, structured so any AI assistant can reason about it
   function aiSummary() {
     const list = rankList().filter(x => x.st.ok), L = shareLoc(), N = NEED();
-    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${x.e.country ? ", " + x.e.country : ""}): median ${fmt(x.st.med)} ms, jitter ±${fmt(x.st.jit)} ms, timeout rate ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
+    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${x.e.country ? ", " + x.e.country : ""}): median ${fmt(x.st.med)} ms, jitter ±${fmt(x.st.jit)} ms, ${pkt() ? "packet loss" : "timeout rate"} ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
     const best = [...new Set(list.map(x => x.e.vendor))].map(v => list.filter(x => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
     return [
       "Me2Cloud latency results (HTTPS round trips measured in my own browser; median of " + (VIEW.mode || MODES[S.mode]) + " samples per region)",
@@ -1789,7 +1791,7 @@
     const ep = ALL.find(x => x.id === el.dataset.tipid), st = stats(R.get(el.dataset.tipid));
     if (!ep || !st.ok) { tip.hidden = true; return; }
     const g = grade(st.med);
-    tip.innerHTML = `<b>${esc(ep.vname)} · ${esc(ep.city)} <span class="c${g}">${tierCode(g)} ${esc(tierName(g))}</span></b><span>${t("d_med")}</span><span class="num">${fmt(st.med)} ms</span><span>${t("d_jit")}</span><span class="num">±${fmt(st.jit)} ms</span><span>${t("d_loss")}</span><span class="num">${Math.round(st.loss * 100)}%</span><span>${t("d_min")} – ${t("d_max")}</span><span class="num">${fmt(st.min)} – ${fmt(st.max)}</span>`;
+    tip.innerHTML = `<b>${esc(ep.vname)} · ${esc(ep.city)} <span class="c${g}">${tierCode(g)} ${esc(tierName(g))}</span></b><span>${t("d_med")}</span><span class="num">${fmt(st.med)} ms</span><span>${t("d_jit")}</span><span class="num">±${fmt(st.jit)} ms</span><span>${t(pkt() ? "d_pkt" : "d_loss")}</span><span class="num">${Math.round(st.loss * 100)}%</span><span>${t("d_min")} – ${t("d_max")}</span><span class="num">${fmt(st.min)} – ${fmt(st.max)}</span>`;
     tip.hidden = false;
     tip.style.left = clamp(e.clientX + 14, 8, innerWidth - tip.offsetWidth - 8) + "px"; tip.style.top = clamp(e.clientY + 14, 8, innerHeight - tip.offsetHeight - 8) + "px";
   });
