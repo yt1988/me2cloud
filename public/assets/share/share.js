@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=7");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=8");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -37,7 +37,7 @@
 // Someone else's shared result: put the banner above it, which says it is a shared result and offers to run the
 // visitor's own test; a tool with compare mode hands it the comparison link once that test is done.
 //
-//   const { received } = await import("/assets/share/share.js?v=7");
+//   const { received } = await import("/assets/share/share.js?v=8");
 //   const r = received({
 //     lang: "zh-CN",
 //     ts: 1730000000000,            // when the shared result was measured
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 7;
+export const VERSION = 8;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -99,25 +99,25 @@ const T = {
 };
 // the dialog's note on 1ms.dog, where the short link keeps the preview image; and the shared-result banner
 const R = {
-  en: { stored: "The image and link are made in your browser. The short link and its preview image are kept at {host} so chat apps can show this result.",
+  en: { stored: "The image and link are made in your browser. The short link is kept at {host}, with the preview image once you share, so chat apps can show this result. A link nobody opens for a year is deleted, an image nobody loads for 90 days too.",
     recv: "A result shared on {date}.", test: "Test mine", ready: "Your result is ready.", cmp: "Compare with theirs", send: "Send to a friend" },
-  "zh-CN": { stored: "图片和链接在你的浏览器里生成。短链和预览图保存在 {host}，聊天软件里才能显示这次结果。",
+  "zh-CN": { stored: "图片和链接在你的浏览器里生成。短链保存在 {host}，你分享时再存一张预览图，聊天软件里才能显示这次结果。短链 1 年没人打开、预览图 90 天没人取用，就会自动删除。",
     recv: "这是 {date} 分享的测试结果。", test: "测测我的", ready: "你的结果出来了。", cmp: "和对方比一比", send: "发送给朋友" },
-  "zh-TW": { stored: "圖片和連結在你的瀏覽器裡產生。短網址和預覽圖保存在 {host}，聊天軟體裡才能顯示這次結果。",
+  "zh-TW": { stored: "圖片和連結在你的瀏覽器裡產生。短網址保存在 {host}，你分享時再存一張預覽圖，聊天軟體裡才能顯示這次結果。短網址 1 年沒人開啟、預覽圖 90 天沒人讀取，就會自動刪除。",
     recv: "這是 {date} 分享的測試結果。", test: "測測我的", ready: "你的結果出來了。", cmp: "和對方比一比", send: "傳給朋友" },
-  ja: { stored: "画像とリンクはブラウザ内で作られます。チャットでこの結果を表示できるよう、短縮リンクとプレビュー画像は {host} に保存されます。",
+  ja: { stored: "画像とリンクはブラウザ内で作られます。チャットでこの結果を表示できるよう、短縮リンクは {host} に保存され、共有したときにプレビュー画像も保存されます。1 年間開かれなかったリンクと、90 日間読み込まれなかった画像は自動で削除されます。",
     recv: "{date} に共有された結果です。", test: "自分も測る", ready: "結果が出ました。", cmp: "相手と比べる", send: "友だちに送る" },
-  ko: { stored: "이미지와 링크는 브라우저에서 만들어집니다. 채팅 앱에서 이 결과가 보이도록 짧은 링크와 미리보기 이미지는 {host}에 저장됩니다.",
+  ko: { stored: "이미지와 링크는 브라우저에서 만들어집니다. 채팅 앱에서 이 결과가 보이도록 짧은 링크는 {host}에 저장되고, 공유할 때 미리보기 이미지도 저장됩니다. 1년 동안 아무도 열지 않은 링크와 90일 동안 불러오지 않은 이미지는 자동으로 삭제됩니다.",
     recv: "{date}에 공유된 결과입니다.", test: "내 것도 측정", ready: "결과가 나왔습니다.", cmp: "상대와 비교", send: "친구에게 보내기" },
-  es: { stored: "La imagen y el enlace se crean en tu navegador. El enlace corto y su imagen de vista previa se guardan en {host} para que los chats muestren este resultado.",
+  es: { stored: "La imagen y el enlace se crean en tu navegador. El enlace corto se guarda en {host}, y la imagen de vista previa cuando lo compartes, para que los chats muestren este resultado. Un enlace que nadie abre en un año se borra, y una imagen que nadie carga en 90 días, también.",
     recv: "Un resultado compartido el {date}.", test: "Probar el mío", ready: "Tu resultado está listo.", cmp: "Comparar con el suyo", send: "Enviar a un amigo" },
-  fr: { stored: "L’image et le lien sont créés dans votre navigateur. Le lien court et son image d’aperçu sont conservés sur {host} pour que les messageries affichent ce résultat.",
+  fr: { stored: "L’image et le lien sont créés dans votre navigateur. Le lien court est conservé sur {host}, et son image d’aperçu quand vous partagez, pour que les messageries affichent ce résultat. Un lien que personne n’ouvre pendant un an est supprimé, une image que personne ne charge pendant 90 jours aussi.",
     recv: "Un résultat partagé le {date}.", test: "Tester le mien", ready: "Votre résultat est prêt.", cmp: "Comparer avec le sien", send: "Envoyer à un ami" },
-  de: { stored: "Bild und Link entstehen in deinem Browser. Kurzlink und Vorschaubild werden auf {host} gespeichert, damit Chat-Apps dieses Ergebnis anzeigen.",
+  de: { stored: "Bild und Link entstehen in deinem Browser. Der Kurzlink wird auf {host} gespeichert, das Vorschaubild erst, wenn du teilst, damit Chat-Apps dieses Ergebnis anzeigen. Ein Link, den ein Jahr lang niemand öffnet, wird gelöscht, ein Bild, das 90 Tage niemand lädt, ebenso.",
     recv: "Ein am {date} geteiltes Ergebnis.", test: "Meins testen", ready: "Dein Ergebnis ist da.", cmp: "Mit dem anderen vergleichen", send: "An Freunde senden" },
-  pt: { stored: "A imagem e o link são criados no seu navegador. O link curto e a imagem de prévia ficam guardados em {host} para que os apps de conversa mostrem este resultado.",
+  pt: { stored: "A imagem e o link são criados no seu navegador. O link curto fica guardado em {host}, e a imagem de prévia quando você compartilha, para que os apps de conversa mostrem este resultado. Um link que ninguém abre em um ano é apagado, e uma imagem que ninguém carrega em 90 dias também.",
     recv: "Um resultado compartilhado em {date}.", test: "Testar o meu", ready: "Seu resultado está pronto.", cmp: "Comparar com o dele", send: "Enviar a um amigo" },
-  ru: { stored: "Картинка и ссылка создаются в вашем браузере. Короткая ссылка и картинка для превью хранятся на {host}, чтобы мессенджеры показывали этот результат.",
+  ru: { stored: "Картинка и ссылка создаются в вашем браузере. Короткая ссылка хранится на {host}, а картинка для превью — когда вы делитесь, чтобы мессенджеры показывали этот результат. Ссылка, которую никто не открывал год, удаляется, картинка, которую никто не загружал 90 дней, — тоже.",
     recv: "Результат, которым поделились {date}.", test: "Проверить мой", ready: "Ваш результат готов.", cmp: "Сравнить с чужим", send: "Отправить другу" },
 };
 
