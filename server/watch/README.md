@@ -23,7 +23,16 @@ and the user are assigned in 1ms-shell `docs/processes.md` ("专用服务器"); 
 
 ## Deploy
 
-Build on another machine and upload the binaries over SFTP. Nothing is compiled on the server.
+Nothing is compiled on the server. When this directory changes on `main`, `.github/workflows/watch.yml` publishes a
+static linux/amd64 build as a release tagged `watch-<short commit>`, marked latest, with `SHA256SUMS`:
+
+```bash
+base=https://github.com/yt1988/me2cloud/releases/latest/download
+for f in me2cloud-watch 1ms-me2cloud-watch.service 1ms-me2cloud-watch.timer SHA256SUMS; do curl -fsSLO "$base/$f"; done
+sha256sum -c SHA256SUMS
+```
+
+Or build it on another machine and upload it over SFTP:
 
 ```bash
 cd server/watch && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o me2cloud-watch .

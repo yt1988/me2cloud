@@ -1,0 +1,47 @@
+name: Watcher release
+
+# When server/watch/ changes on main: build the watcher for linux/amd64 (static, no Go needed on the server) and
+# publish it as a release tagged watch-<short commit>, marked latest, with SHA256SUMS. The newest is always at
+#   https://github.com/<repo>/releases/latest/download/me2cloud-watch
+# The page itself is deployed by deploy.yml and has no releases of its own.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/watch/**"
+      - ".github/workflows/watch.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: watch-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/watch/go.mod
+          cache: false
+      - name: Build
+        working-directory: server/watch
+        run: |
+          go vet ./...
+          mkdir -p ../../dist
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o ../../dist/me2cloud-watch .
+          cp 1ms-me2cloud-watch.service 1ms-me2cloud-watch.timer ../../dist/
+          cd ../../dist && sha256sum me2cloud-watch 1ms-me2cloud-watch.service 1ms-me2cloud-watch.timer > SHA256SUMS && cat SHA256SUMS
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="watch-${GITHUB_SHA::7}"
+          gh release view "$tag" >/dev/null 2>&1 && { echo "$tag exists"; exit 0; }
+          gh release create "$tag" dist/* --target "$GITHUB_SHA" --latest --title "$tag" \
+            --notes "me2cloud-watch (server/watch) built from ${GITHUB_SHA} for linux/amd64, static. Check with: sha256sum -c SHA256SUMS"

@@ -57,6 +57,9 @@ the Worker), then purges `m2c.1ms.dog` from the edge cache, since a zone cache r
 repository secrets `CLOUDFLARE_API_TOKEN` (Workers edit and Zone Cache Purge) and `CLOUDFLARE_ACCOUNT_ID`. Forks skip
 the job. Watch it with `gh run watch`, then check the live page serves the new `app.<hash>.js`.
 
+Changes to `server/watch/` on `main` also publish a watcher release (`.github/workflows/watch.yml`, see below).
+The page has no releases.
+
 There is no staging. Build and check locally first.
 
 ## Endpoints
@@ -102,8 +105,17 @@ not appear.
 
 ### From nothing
 
-1. Build on another machine:
+1. Download the watcher; no Go is needed on the server. When `server/watch/` changes on `main`,
+   `.github/workflows/watch.yml` builds it for linux/amd64 (static) and publishes a release tagged
+   `watch-<short commit>`, marked latest, with the unit files and `SHA256SUMS`:
+   ```sh
+   base=https://github.com/yt1988/me2cloud/releases/latest/download
+   for f in me2cloud-watch 1ms-me2cloud-watch.service 1ms-me2cloud-watch.timer SHA256SUMS; do curl -fsSLO "$base/$f"; done
+   sha256sum -c SHA256SUMS
+   ```
+   A fork that changes `server/watch/` gets the same releases in its own repository. To build it yourself instead:
    `cd server/watch && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o me2cloud-watch .`
+   (Go version from `server/watch/go.mod`).
 2. Download `vps2cloud-linux-<arch>` from the latest vps2cloud release and check it against that release's
    `checksums.txt`.
 3. On the server, as root:
