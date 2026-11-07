@@ -236,6 +236,7 @@ export default {
   cli_win_s: "PowerShell에서 실행하면 vps2cloud를 설치하고 메뉴를 열어요. 프로그램을 직접 내려받을 수도 있어요:",
   cli_src: "소스 코드와 전체 버전",
   lk_cost: "요금 보기",
+  lk_trace: "경로 추적",
   cdn_h: "CDN",
   cdn_edge: "가장 가까운 거점",
   cdn_note: "각 CDN은 가장 가까운 거점에서 응답해요",

@@ -85,6 +85,7 @@ export default {
   cli_win_s: "Run in PowerShell: it installs vps2cloud and opens the menu. Or download the program:",
   cli_src: "Source code and all builds",
   lk_cost: "What it costs",
+  lk_trace: "Route Trace",
   cdn_h: "CDN",
   cdn_edge: "Nearest edge",
   cdn_note: "Each CDN answers from the edge closest to you.",

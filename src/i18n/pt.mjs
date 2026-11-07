@@ -237,6 +237,7 @@ export default {
   cli_win_s: "Rode no PowerShell: instala o vps2cloud e abre o menu. Ou baixe o programa:",
   cli_src: "Código-fonte e todas as versões",
   lk_cost: "Quanto custa",
+  lk_trace: "Rastreio de rota",
   cdn_h: "CDN",
   cdn_edge: "Nó mais próximo",
   cdn_note: "Cada CDN responde do nó mais próximo de você.",

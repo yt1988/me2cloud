@@ -79,6 +79,7 @@ export default {
   cli_win_s: "在 PowerShell 裡執行，會安裝 vps2cloud 並開啟選單。也可以直接下載程式：",
   cli_src: "原始碼和所有版本",
   lk_cost: "這家多少錢",
+  lk_trace: "路由追蹤",
   cdn_h: "CDN",
   cdn_edge: "最近節點",
   cdn_note: "每家 CDN 都由離你最近的節點回應",

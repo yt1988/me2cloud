@@ -854,6 +854,8 @@
   const costLink = v => { if (!COST_V.has(v)) return "";
     const c = NET.cc === "CN" ? "cn" : { na: "na", eu: "eu", as: "ap", oc: "ap" }[CC_CT[NET.cc]];
     return toolLink("cost", t("lk_cost"), c ? `r/1_-_1_2_20_1_1024_0_0_${c}_1_500` : "", "tl dc"); };
+  // Route Trace with this region's endpoint filled in; it only starts when the visitor presses start there (the target goes to Globalping)
+  const traceLink = e => { if (isCustom(e.vendor)) return ""; let h = ""; try { h = new URL(e.url).hostname.replace(/^[|]$/g, ""); } catch {} return h ? toolLink("trace", t("lk_trace"), "?t=" + encodeURIComponent(h), "tl dc") : ""; };
   function renderNet() {
     const N = NET, ck = N.state === "checking", warn = N.verdict === "warn";
     const bar = $("#netbar");
@@ -1225,7 +1227,7 @@
     return `<div class="det">
       <div>${r && r.s.length ? chartSVG(r, st) : `<div class="empty">${t(r && r.sum ? "sharedNoRaw" : "noSamples")}</div>`}</div>
       <div class="dstats">${kv("d_med", ms(st.med))}${kv("d_jit", st.ok > 1 ? "±" + ms(st.jit) : "–")}${kv(pkt() ? "d_pkt" : "d_loss", st.n ? Math.round(st.loss * 100) + "%" : "–")}${kv("d_min", ms(st.min))}${kv("d_avg", ms(st.avg))}${kv("d_p90", ms(st.p90))}</div>
-      <div class="dmeta">${lines.join("")}<div class="dbtns"><button class="btn sm" type="button" data-retest="${esc(e.id)}" ${RUN ? "disabled" : ""}>${t("retest")}</button><button class="btn sm" type="button" data-copy="${esc(e.url)}">${t("copyUrl")}</button>${costLink(e.vendor)}</div></div>
+      <div class="dmeta">${lines.join("")}<div class="dbtns"><button class="btn sm" type="button" data-retest="${esc(e.id)}" ${RUN ? "disabled" : ""}>${t("retest")}</button><button class="btn sm" type="button" data-copy="${esc(e.url)}">${t("copyUrl")}</button>${costLink(e.vendor)}${traceLink(e)}</div></div>
     </div>`;
   }
 
