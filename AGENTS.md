@@ -16,7 +16,7 @@ Me2Cloud (https://m2c.1ms.dog) measures latency, jitter and timeout rate from th
 - `src/worker.js`: sees only paths that are not files in `public/`. It serves the command-line version
   ([vps2cloud](https://github.com/yt1988/vps2cloud)): its installers (`/i`, `/i.ps1`), its release files (`/dl/…`),
   the latest version (`/v`), share-link entry (`/r`) and `/tokyo.json` (below).
-- `server/watch/`: a Go program on the 1ms.dog server that checks every region from Tokyo every 15 minutes (below).
+- `server/watch/`: a Go program for a server of your own that checks every region every 15 minutes (below).
 - `scripts/endpoints/`: how the endpoint registry is made and checked.
 
 `public/` is generated and committed: what is in it is what gets deployed.
@@ -50,9 +50,6 @@ Pick by what you changed:
 - **Worker**: there is no local Worker runtime here. Deploy, then check the route with `curl -I`.
 - **Watcher** (`server/watch/`): `go vet ./...` and a cross-compile there; run it once on the server after deploying.
 
-On 1ms.dog there is also a site-wide check in 1ms-shell (`npm run check -- m2c`), run against the live site after
-a deploy.
-
 ## Deploy
 
 Every push to `main` deploys: `.github/workflows/deploy.yml` runs `npm test`, `wrangler deploy` (uploads `public/` and
@@ -72,7 +69,7 @@ node scripts/build.mjs
 ```
 
 - DNS goes through DoH because a local fake-ip resolver (a proxy client) answers for any name.
-- `ipv6.mjs` also reads the Tokyo watcher's `latest.json`. A host whose IPv6 is refused from Tokyo loses its IPv6 entry;
+- `ipv6.mjs` also reads the watcher's `latest.json`. A host whose IPv6 the watcher finds refused loses its IPv6 entry;
   a timeout does not count.
 - Per-provider request methods, tiers and notes are in `VENDORS` in `build-registry.mjs`. They come from tests in a
   real browser.
@@ -92,57 +89,55 @@ node scripts/build.mjs
 - **Words.** "Packet loss" is used only for ICMP results from vps2cloud. A request or handshake that did not finish in
   time is a timeout. See `docs/notes.md`.
 
-## The Tokyo watcher (server/watch, 1ms-me2cloud-watch)
+## The watcher (server/watch)
 
-It runs on the 1ms.dog server (AWS Lightsail, Tokyo, Debian, x86_64) as a systemd timer. Every 15 minutes, from minute 7,
-it runs vps2cloud in TCP mode: 3 handshakes per region over IPv4 and IPv6, no ICMP. It publishes
-`latest.json` and `summary.json` to `/srv/1ms-data/me2cloud/`. The server publishes that directory read-only at
-`https://data.1ms.dog:2083/me2cloud/`; that web server is part of the 1ms.dog server setup, not of this repository. The Worker's
-`/tokyo.json` fetches `summary.json`, keeps it 5 minutes and cuts it down to what the page shows: the Tokyo reference
-line in each region's details and the mark on regions Tokyo cannot reach either. Details of the files are in
-`server/watch/README.md`.
+A small Go program, run by a systemd timer on a server of your own, that checks every region with
+[vps2cloud](https://github.com/yt1988/vps2cloud) every 15 minutes. It runs in TCP mode: 3 handshakes per region over
+IPv4 and IPv6, with no TLS and no ICMP. It keeps 7 days of medians in its state directory and writes `latest.json`
+and `summary.json` into a directory that a web server publishes read-only. The Worker's `/tokyo.json` fetches
+`summary.json` (the `TOKYO` address in `src/worker.js`) and keeps it 5 minutes. It cuts the file down to what the
+page shows: a reference line in each region's details, and a mark on regions the server cannot reach either. The
+file formats are in `server/watch/README.md`. The page works without the watcher; the reference line simply does
+not appear.
 
 ### From nothing
 
-1. Build on another machine; nothing is compiled on the server:
+1. Build on another machine:
    `cd server/watch && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o me2cloud-watch .`
-2. Download `vps2cloud-linux-amd64` from the latest vps2cloud release and check it against that release's
+2. Download `vps2cloud-linux-<arch>` from the latest vps2cloud release and check it against that release's
    `checksums.txt`.
 3. On the server, as root:
-   - Create a system user and group `1ms-me2cloud` with no login shell and no home directory.
-   - Create `/opt/1ms/me2cloud/` (root-owned). Create `/srv/1ms-data/me2cloud/`, owned by `1ms-me2cloud`.
-4. Upload by SFTP:
-   - `me2cloud-watch` and `vps2cloud` (renamed) to `/opt/1ms/me2cloud/`, mode 755.
-   - `1ms-me2cloud-watch.service` and `.timer` to `/etc/systemd/system/`.
-5. `systemctl daemon-reload && systemctl enable --now 1ms-me2cloud-watch.timer`. systemd creates the state directory
-   `/var/lib/1ms-me2cloud/` (`StateDirectory=`).
+   - Create a system user for it with no login shell.
+   - Make a program directory (`/opt/<app>/`, root-owned) and a published directory (`/srv/<data>/me2cloud/`,
+     owned by that user). Serve the published directory read-only over HTTPS (`https://<data-host>/me2cloud/`).
+4. Copy in the two binaries (`me2cloud-watch`, and `vps2cloud` renamed), mode 755, and the unit files from
+   `server/watch/` into `/etc/systemd/system/`. Change their paths and user to yours with `-bin`, `-out` and `-state`
+   (see `main.go`), and keep `ReadWritePaths=` in step.
+5. `systemctl daemon-reload && systemctl enable --now <unit>.timer`. systemd creates the state directory
+   (`StateDirectory=`).
 6. Verify:
-   - `systemctl start 1ms-me2cloud-watch` and `journalctl -u 1ms-me2cloud-watch -n 20`. A run takes about 25 s and
-     peaks near 25 MB.
-   - `curl -s https://data.1ms.dog:2083/me2cloud/summary.json | head -c 300`.
-   - `curl -s https://m2c.1ms.dog/tokyo.json | head -c 300`.
+   - `systemctl start <unit>` and `journalctl -u <unit> -n 20`. A run takes about 25 s and peaks near 25 MB.
+   - `curl -s https://<data-host>/me2cloud/summary.json | head -c 300`.
+   - Point `TOKYO` in `src/worker.js` at that address, deploy, and check `/tokyo.json`.
 
-It needs no certificates or keys of its own: no Cloudflare token, nothing secret. The HTTPS certificate of
-`data.1ms.dog` belongs to the server's web server setup. Limits in the unit:
+It needs no keys or certificates of its own; the HTTPS certificate belongs to the web server in front. The unit sets
+these limits:
 
-- Runs as `1ms-me2cloud` with no capabilities. ICMP would need NET_RAW, which the resident service is never given.
-- `MemoryMax=128M`; writes only its state directory and the published directory.
-- `StandardOutput=null`; no access log.
+- It runs with no capabilities. ICMP would need NET_RAW, which a resident service should not have.
+- `MemoryMax=128M`. It writes only its state directory and the published directory.
+- `StandardOutput=null`, and it keeps no access log.
 
-What is lost if the server is lost:
+What a lost server takes with it:
 
-- `/var/lib/1ms-me2cloud/history.json` is 7 days of medians and cannot be recovered. Without it the 24-hour and 7-day
-  figures start over and fill in again within a day and a week. The "unreachable since" times are lost too.
-- The endpoint list in the state directory is fetched again from `https://m2c.1ms.dog/endpoints.json`.
-- The binaries and units come from this repository and the vps2cloud releases.
+- `history.json` in the state directory, 7 days of medians. Without it the 24-hour and 7-day figures start over and
+  fill in within a day and a week.
+- Everything else comes back on its own. The endpoint list is fetched again from the site's `/endpoints.json`, and the
+  published files come back after one run.
 
-Rules for the 1ms.dog server (which directories and unit names this tool may use, no global changes) are in 1ms-shell.
-
-### Before a vps2cloud release
-
-Run the candidate once on the server by hand and compare it with `summary.json` (`server/watch/README.md`, last section).
+The unit files in `server/watch/` carry the paths used on 1ms.dog. How it runs there is in the private 1ms-shell
+repository.
 
 ## Commits
 
-Small commits, with a message that says what changed for the visitor. Decisions and plans that the code does not
-show go in `docs/notes.md`.
+Small commits, with a message that says what changed for the visitor. Technical reasons the code does not show go in
+`docs/notes.md`.
