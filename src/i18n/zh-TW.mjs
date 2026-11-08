@@ -18,6 +18,7 @@ export default {
   mm_https: "HTTPS",
   mm_icmp: "ICMP ping",
   share_bad: "這個結果連結讀不出來",
+  share_old: "這個瀏覽器太舊，打不開這筆結果。請改用新版瀏覽器開啟連結，或測測你自己的。",
   share_test: "我也來測",
   share_none: "先測一次再分享",
   sharedNoRaw: "分享的結果只有統計數字，看不到每一次的取樣。",

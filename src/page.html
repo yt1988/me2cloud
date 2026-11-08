@@ -1078,6 +1078,8 @@ footer a { color: var(--muted); }
   let IPDB = null;
   function ipdb() {
     return IPDB || (IPDB = (async () => {
+      // the table is gzip; a browser without DecompressionStream (Safari before 16.4) places custom endpoints by name only
+      if (typeof DecompressionStream !== "function") throw new Error("no DecompressionStream");
       let b = new Uint8Array(await (await fetch("/ipdb/v4.bin.gz")).arrayBuffer());
       // served as-is; a server that already gzip-decoded it hands over the raw table
       if (b[0] === 0x1f && b[1] === 0x8b) b = new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
@@ -1086,7 +1088,7 @@ footer a { color: var(--muted); }
       const head = 9 + nc * 2, starts = new Uint32Array(n);
       for (let i = 0, s = 0; i < n; i++) { s = (s + dv.getUint32(head + i * 4, true)) >>> 0; starts[i] = s; }
       return { starts, idx: b.subarray(head + n * 4, head + n * 5), codes };
-    })().catch(e => { IPDB = null; throw e; }));
+    })().catch(e => { if (typeof DecompressionStream === "function") IPDB = null; throw e; }));
   }
   async function ipCountry(ip) {
     const { starts, idx, codes } = await ipdb(), x = ip.split(".").reduce((a, p) => a * 256 + +p, 0);
@@ -1535,6 +1537,8 @@ footer a { color: var(--muted); }
     // follows if every provider fails, since lossy routes drop a request now and then. The request log keeps each
     // provider's result, which shows which one a network blocks.
     const RX_IP = /"ip"\s*:\s*"([^"]+)"/, RX_RADAR = /"ip_address"\s*:\s*"([^"]+)"/, RX_TRACE = /^ip=(.*)$/m;
+  // the first promise that resolves (Promise.any is Chrome 85 and Safari 14)
+  const firstOk = ps => new Promise((ok, no) => { let left = ps.length; if (!left) no(new Error("none")); for (const p of ps) Promise.resolve(p).then(ok, () => { if (--left === 0) no(new Error("all failed")); }); });
     const IP_SRC = {
       4: [["https://ipv4-check-perf.radar.cloudflare.com/", RX_RADAR], ["https://ipv4-check-perf.radar.cloudflare.com/cdn-cgi/trace", RX_TRACE],
           ["https://api4.ipify.org/?format=json", RX_IP], ["https://v4.ident.me/json", RX_IP]],
@@ -1556,7 +1560,7 @@ footer a { color: var(--muted); }
     };
     const ipOf = async f => {
       for (let round = 0; round < 2; round++) {
-        try { return await Promise.any(IP_SRC[f].map(([u, rx]) => ipOne(f, u, rx))); } catch (e) {}
+        try { return await firstOk(IP_SRC[f].map(([u, rx]) => ipOne(f, u, rx))); } catch (e) {}
       }
       return { ip: "", src: "" };
     };
@@ -1649,7 +1653,7 @@ footer a { color: var(--muted); }
     const viaRelay = !N.self && N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
     const direct = () => [...ipSeen, selfIp].filter(x => x && !RELAY_IP.test(x));
     // the first IP answer per family may well be a relayed one: before calling it Private Relay, wait for the rest
-    if (viaRelay && !direct().length) { await Promise.allSettled(ipAll); if (run !== netRun) return; }
+    if (viaRelay && !direct().length) { await Promise.all(ipAll.map(p => Promise.resolve(p).catch(() => {}))); if (run !== netRun) return; }
     const outside = direct().length > 0;
     N.relay = viaRelay && !outside;
     if (viaRelay && outside) {
@@ -2167,7 +2171,9 @@ footer a { color: var(--muted); }
   /* ---------- share: a link (results packed into the URL) and an image card, both made in this browser ---------- */
   const b64u = bytes => { let s = ""; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
   const b64d = str => { const s = atob(str.replace(/-/g, "+").replace(/_/g, "/")); const b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; };
-  const zip = async text => new Uint8Array(await new Response(new Blob([text]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());
+  // Links from this page are "2~" + 1ms.dog's codec (/assets/share/codec.js: compressed where the browser can, plain
+  // where it cannot, marked by its first letter). Links from before, and every vps2cloud link, are bare deflate-raw.
+  const codec = () => import("/assets/share/codec.js?v=1");
   const unzipBytes = async bytes => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
   // whose line it was: the sharer's in a shared view, otherwise this visitor's network check
   function shareLoc() {
@@ -2184,7 +2190,7 @@ footer a { color: var(--muted); }
     }
     return { v: 1, t: Math.round((VIEW.ts || Date.now()) / 60000), p: VIEW.peak ? 1 : 0, k: VIEW.mode || MODES[S.mode], f: VIEW.ip === "v6" ? 6 : 4, x: L.proxy ? 1 : 0, l: withLoc && (L.city || L.org) ? [L.city, L.cc, L.org] : 0, r };
   }
-  const shareLink = async withLoc => location.origin + location.pathname + "#s=" + b64u(await zip(JSON.stringify(sharePayload(withLoc))));
+  const shareLink = async withLoc => location.origin + location.pathname + "#s=2~" + await (await codec()).pack(JSON.stringify(sharePayload(withLoc)));
   // The command-line version (vps2cloud) writes formats 2 and 3, binary, as docs/share-format.md in yt1988/vps2cloud
   // describes them: regions are bits over the endpoint list the run used, named by a fingerprint of its region ids;
   // format 3 adds each family's CDNs by id. This page's list, or an archived one under /e/, resolves them.
@@ -2219,10 +2225,13 @@ footer a { color: var(--muted); }
     P.fi = i; P.f = P.fams[i]; R = P.maps[i]; VIEW.ip = P.f === 6 ? "v6" : "v4"; openId = null;
   }
   async function loadShared() {
-    const m = /(?:^#|&)s=([A-Za-z0-9_-]+)/.exec(location.hash);
+    const m = /(?:^#|&)s=((?:2~)?[A-Za-z0-9_-]+)/.exec(location.hash);
     if (!m) return false;
     try {
-      const bytes = await unzipBytes(b64d(m[1]));
+      const C = await codec();
+      // an older browser can open a link it made itself ("u"), but not a compressed one: it says so instead of a blank result
+      const bytes = m[1].startsWith("2~") ? new TextEncoder().encode(await C.unpack(m[1].slice(2)))
+        : C.canInflate() ? await unzipBytes(b64d(m[1])) : (() => { throw new C.CodecError("inflate"); })();
       if (bytes[0] === 2 || bytes[0] === 3) {
         // a CDN-only run has no regions, so it needs no list
         const D = decodeCLI(bytes), ids = D.blocks.some(bl => bl.rows.length) ? await listIds(D.fp) : [];
@@ -2253,7 +2262,10 @@ footer a { color: var(--muted); }
       }
       R = next; VIEW = { ts: P.t * 60000, live: false, peak: !!P.p, mode: P.k, ip: P.f === 6 ? "v6" : "v4", shared: P }; openId = null;
       return true;
-    } catch (e) { $("#shareBad").hidden = false; return false; }
+    } catch (e) {
+      $("#shareBad span").textContent = t(e && e.reason === "inflate" ? "share_old" : "share_bad");
+      $("#shareBad").hidden = false; return false;
+    }
   }
   // someone else's result: the shared component's banner above the picks (it says when the result is from and offers this
   // visitor's own test), and a line with whose line it was and how it was measured

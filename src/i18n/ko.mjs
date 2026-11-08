@@ -170,6 +170,7 @@ export default {
   mm_https: "HTTPS",
   mm_icmp: "ICMP ping",
   share_bad: "이 결과 링크를 읽을 수 없어요",
+  share_old: "이 브라우저가 너무 오래돼서 이 결과를 열 수 없어요. 최신 브라우저로 링크를 열거나 내 결과를 측정해 보세요.",
   share_test: "나도 측정하기",
   share_none: "먼저 한 번 측정해 주세요",
   sharedNoRaw: "공유된 결과에는 통계 값만 있고, 측정 하나하나의 값은 없어요.",

@@ -23,7 +23,7 @@ Me2Cloud (https://m2c.1ms.dog) measures latency, jitter and timeout rate from th
 
 ## Run it locally
 
-Node 22. The build has no dependencies.
+Node 22. Run `npm ci` once: the build uses esbuild to bring the app script down to ES2019 (old in-app browsers can't parse `?.` or `??`).
 
 ```bash
 node scripts/build.mjs        # regenerate public/ after any change in src/ or scripts/

@@ -10,6 +10,7 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { transform } from "esbuild";
 
 // canonical address for SEO tags, sitemap and rule-set headers; self-hosters set SITE_URL=https://your.domain
 const SITE = (process.env.SITE_URL || "https://m2c.1ms.dog").replace(/\/+$/, "");
@@ -97,8 +98,13 @@ export async function build({ check = false } = {}) {
   // app code: the big inline script becomes a shared, content-hashed file
   const scripts = [...tpl.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   if (scripts.length !== 2) throw new Error("expected the pre-paint script and the app script in src/page.html");
-  const prepaint = scripts[0][1], app = scripts[1][1];
-  new Function(app);                                                    // must parse
+  const prepaint = scripts[0][1], source = scripts[1][1];
+  new Function(source);                                                 // must parse
+  // down to ES2019 (old in-app browsers, Chrome 70 and Safari 12 era, can not parse ?. or ??: one unparsable token and
+  // the whole script does nothing). Not minified, so the shipped code reads like the source.
+  const app = (await transform(source, { loader: "js", target: ["es2019", "chrome70", "safari12", "firefox68", "edge79"], legalComments: "inline" })).code;
+  // (a crude check, strings and regular expressions included: rewrite any text that trips it)
+  if (/\?\.(?![0-9])|\?\?/.test(app)) throw new Error("the app script still has ?. or ?? after the ES2019 transform");
   const appName = `app.${createHash("sha256").update(app).digest("hex").slice(0, 10)}.js`;
   const shell = tpl.replace(scripts[1][0], `<script type="application/json" id="me2-data">{{data}}</script>\n<script src="/${appName}"></script>`);
 

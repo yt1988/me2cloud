@@ -126,7 +126,7 @@ public/                    the deployable site
 .github/workflows/         check.yml (build up to date), health.yml (weekly endpoint check)
 ```
 
-The build script has no dependencies. Only `scripts/assets.mjs` needs `npm install` (resvg for the images).
+Run `npm ci` first: the build uses esbuild to bring the app script down to ES2019, and `scripts/assets.mjs` uses resvg for the images.
 
 ### Updating endpoints
 

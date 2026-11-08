@@ -170,6 +170,7 @@ export default {
   mm_https: "HTTPS",
   mm_icmp: "Ping ICMP",
   share_bad: "Impossible de lire ce lien du résultat",
+  share_old: "Ce navigateur est trop ancien pour ouvrir ce résultat. Ouvrez le lien dans un navigateur récent, ou testez votre propre connexion.",
   share_test: "Tester le mien",
   share_none: "Lancez d'abord un test, puis partagez-le",
   sharedNoRaw: "Les résultats partagés contiennent les statistiques, pas chaque mesure.",

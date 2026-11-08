@@ -1,0 +1,2617 @@
+(function() {
+  "use strict";
+  const ENDPOINTS = { "verified": "2026-10-27", "vendors": { "aws": { "name": "AWS", "method": "GET", "cors": true, "tier": "A", "kind": "DynamoDB /ping", "note": "Body is 'healthy: dynamodb.<region>\u2026', so the page can confirm the region.", "regions": 37 }, "oracle": { "name": "Oracle Cloud", "method": "HEAD", "cors": true, "tier": "A", "kind": "Object Storage", "note": "GET closes the connection after every 404 (each sample \u2248 3\u20134 RTT); HEAD reuses it.", "regions": 54 }, "vultr": { "name": "Vultr", "method": "HEAD", "cors": true, "tier": "A", "kind": "Looking glass (favicon)", "note": "The looking-glass page is PHP and adds ~100 ms even to HEAD; its static favicon.ico is answered by nginx at once.", "regions": 33 }, "azure": { "name": "Microsoft Azure", "method": "GET", "cors": false, "tier": "B", "kind": "Cognitive Services", "note": "CNAME chain ends at <region>.cloudapp.azure.com. Very stable samples.", "regions": 41 }, "gcp": { "name": "Google Cloud", "method": "GET", "cors": false, "tier": "B", "kind": "Storage regional endpoint (rep)", "note": "HEAD adds a fixed ~1 s, never use it. Over HTTP/1.1 every 400 on a reused connection also adds ~1 s, so the URL is /generate_204 (a fast 404). Per-region IPs (34.1.x), not the global anycast front end.", "regions": 45 }, "aliyun": { "name": "Alibaba Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "OSS", "note": "GET 403 closes the connection; HEAD reuses it.", "regions": 29 }, "tencent": { "name": "Tencent Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "COS", "note": "GET 403 closes the connection; HEAD reuses it.", "regions": 16 }, "huawei": { "name": "Huawei Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "ECS API", "noacao": true, "note": "OBS closes the connection after every anonymous request, so the regional ECS API host is used: HEAD in CORS mode keeps the connection (the browser cuts off its JSON answer on a no-cors request).", "regions": 23 }, "linode": { "name": "Akamai (Linode)", "method": "HEAD", "cors": false, "tier": "B", "kind": "Object Storage", "note": "Legacy speedtest.<dc>.linode.com hosts no longer answer; only regions with an Object Storage cluster are covered.", "regions": 25 }, "digitalocean": { "name": "DigitalOcean", "method": "GET", "cors": false, "tier": "B", "kind": "Spaces", "note": "speedtest-<dc>.digitalocean.com is gone; NYC1/NYC2 have no Spaces (use nyc3 for New York).", "regions": 12 }, "ovh": { "name": "OVHcloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "Speed test (proof)", "note": "proof.ovh.net hosts redirect to <site>.speedtest.network.ovh.net; the registry uses the targets.", "regions": 9 }, "hetzner": { "name": "Hetzner", "method": "GET", "cors": false, "tier": "B", "kind": "Speed test", "nobust": true, "noacao": true, "note": "The server drops any request with a query string, so the URL is sent as is (cache: no-store instead). The page is HTML, which the browser cuts off on a no-cors request, closing the connection; a CORS GET receives the whole page before the CORS check fails, so the connection is kept and that failure counts as the answer.", "regions": 6 }, "ibm": { "name": "IBM Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "Cloud Object Storage", "note": "GET 403 closes the connection; HEAD reuses it.", "regions": 10 }, "scaleway": { "name": "Scaleway", "method": "GET", "cors": false, "tier": "B", "kind": "Object Storage", "note": "GET and HEAD both keep the connection alive. Dual-stack hosts.", "regions": 4 }, "volcengine": { "name": "Volcengine", "method": "HEAD", "cors": false, "tier": "B", "kind": "TOS", "note": "GET 403 closes the connection; HEAD reuses it.", "regions": 6 }, "baidu": { "name": "Baidu AI Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "BOS", "note": "GET 403 closes the connection; HEAD reuses it.", "regions": 6 }, "naver": { "name": "Naver Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "Object Storage", "note": "GET 403 closes the connection; HEAD reuses it.", "regions": 5 }, "ionos": { "name": "IONOS Cloud", "method": "HEAD", "cors": true, "tier": "A", "kind": "Logging API (regional)", "note": "One API host per compute location; Object Storage covers fewer and its older clusters can't keep a connection open.", "regions": 9 }, "aruba": { "name": "Aruba Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "Object Storage", "note": "HEAD reuses the connection everywhere; GET closes it in R3-IT.", "regions": 7 }, "leaseweb": { "name": "Leaseweb", "method": "HEAD", "cors": false, "tier": "B", "kind": "Object Storage", "note": "GET 400 closes the connection; HEAD reuses it. Located by country, as the docs give no cities.", "regions": 6 }, "gcore": { "name": "Gcore", "method": "HEAD", "cors": false, "tier": "B", "kind": "Object Storage", "note": "GET closes the connection; HEAD reuses it. Sines and London-2 run on another storage system and use a CORS GET that reads the body.", "regions": 7 }, "yandex": { "name": "Yandex Cloud", "method": "HEAD", "cors": false, "tier": "B", "kind": "Object Storage", "note": "GET and HEAD both keep the connection alive. Dual-stack hosts; one endpoint per region.", "regions": 2 } }, "endpoints": [{ "id": "aws:us-east-1", "vendor": "aws", "region": "us-east-1", "city": "N. Virginia", "country": "US", "url": "https://dynamodb.us-east-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.us-east-1.api.aws/ping", "continent": "na" }, { "id": "aws:us-east-2", "vendor": "aws", "region": "us-east-2", "city": "Ohio", "country": "US", "url": "https://dynamodb.us-east-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.us-east-2.api.aws/ping", "continent": "na" }, { "id": "aws:us-west-1", "vendor": "aws", "region": "us-west-1", "city": "N. California", "country": "US", "url": "https://dynamodb.us-west-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.us-west-1.api.aws/ping", "continent": "na" }, { "id": "aws:us-west-2", "vendor": "aws", "region": "us-west-2", "city": "Oregon", "country": "US", "url": "https://dynamodb.us-west-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.us-west-2.api.aws/ping", "continent": "na" }, { "id": "aws:ca-central-1", "vendor": "aws", "region": "ca-central-1", "city": "Montreal", "country": "CA", "url": "https://dynamodb.ca-central-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ca-central-1.api.aws/ping", "continent": "na" }, { "id": "aws:ca-west-1", "vendor": "aws", "region": "ca-west-1", "city": "Calgary", "country": "CA", "url": "https://dynamodb.ca-west-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ca-west-1.api.aws/ping", "continent": "na" }, { "id": "aws:mx-central-1", "vendor": "aws", "region": "mx-central-1", "city": "Quer\xE9taro", "country": "MX", "url": "https://dynamodb.mx-central-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.mx-central-1.api.aws/ping", "continent": "na" }, { "id": "aws:sa-east-1", "vendor": "aws", "region": "sa-east-1", "city": "S\xE3o Paulo", "country": "BR", "url": "https://dynamodb.sa-east-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.sa-east-1.api.aws/ping", "continent": "sa" }, { "id": "aws:eu-central-1", "vendor": "aws", "region": "eu-central-1", "city": "Frankfurt", "country": "DE", "url": "https://dynamodb.eu-central-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-central-1.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-central-2", "vendor": "aws", "region": "eu-central-2", "city": "Zurich", "country": "CH", "url": "https://dynamodb.eu-central-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-central-2.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-west-1", "vendor": "aws", "region": "eu-west-1", "city": "Dublin", "country": "IE", "url": "https://dynamodb.eu-west-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-west-1.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-west-2", "vendor": "aws", "region": "eu-west-2", "city": "London", "country": "GB", "url": "https://dynamodb.eu-west-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-west-2.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-west-3", "vendor": "aws", "region": "eu-west-3", "city": "Paris", "country": "FR", "url": "https://dynamodb.eu-west-3.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-west-3.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-north-1", "vendor": "aws", "region": "eu-north-1", "city": "Stockholm", "country": "SE", "url": "https://dynamodb.eu-north-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-north-1.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-south-1", "vendor": "aws", "region": "eu-south-1", "city": "Milan", "country": "IT", "url": "https://dynamodb.eu-south-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-south-1.api.aws/ping", "continent": "eu" }, { "id": "aws:eu-south-2", "vendor": "aws", "region": "eu-south-2", "city": "Madrid", "country": "ES", "url": "https://dynamodb.eu-south-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.eu-south-2.api.aws/ping", "continent": "eu" }, { "id": "aws:il-central-1", "vendor": "aws", "region": "il-central-1", "city": "Tel Aviv", "country": "IL", "url": "https://dynamodb.il-central-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.il-central-1.api.aws/ping", "continent": "me" }, { "id": "aws:me-central-1", "vendor": "aws", "region": "me-central-1", "city": "UAE", "country": "AE", "url": "https://dynamodb.me-central-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "continent": "me" }, { "id": "aws:af-south-1", "vendor": "aws", "region": "af-south-1", "city": "Cape Town", "country": "ZA", "url": "https://dynamodb.af-south-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.af-south-1.api.aws/ping", "continent": "af" }, { "id": "aws:ap-east-1", "vendor": "aws", "region": "ap-east-1", "city": "Hong Kong", "country": "HK", "url": "https://dynamodb.ap-east-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-east-1.api.aws/ping", "continent": "as" }, { "id": "aws:ap-east-2", "vendor": "aws", "region": "ap-east-2", "city": "Taipei", "country": "TW", "url": "https://dynamodb.ap-east-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-east-2.api.aws/ping", "continent": "as" }, { "id": "aws:ap-northeast-1", "vendor": "aws", "region": "ap-northeast-1", "city": "Tokyo", "country": "JP", "url": "https://dynamodb.ap-northeast-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-northeast-1.api.aws/ping", "continent": "as" }, { "id": "aws:ap-northeast-2", "vendor": "aws", "region": "ap-northeast-2", "city": "Seoul", "country": "KR", "url": "https://dynamodb.ap-northeast-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-northeast-2.api.aws/ping", "continent": "as" }, { "id": "aws:ap-northeast-3", "vendor": "aws", "region": "ap-northeast-3", "city": "Osaka", "country": "JP", "url": "https://dynamodb.ap-northeast-3.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-northeast-3.api.aws/ping", "continent": "as" }, { "id": "aws:ap-south-1", "vendor": "aws", "region": "ap-south-1", "city": "Mumbai", "country": "IN", "url": "https://dynamodb.ap-south-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-south-1.api.aws/ping", "continent": "as" }, { "id": "aws:ap-south-2", "vendor": "aws", "region": "ap-south-2", "city": "Hyderabad", "country": "IN", "url": "https://dynamodb.ap-south-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-south-2.api.aws/ping", "continent": "as" }, { "id": "aws:ap-southeast-1", "vendor": "aws", "region": "ap-southeast-1", "city": "Singapore", "country": "SG", "url": "https://dynamodb.ap-southeast-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-1.api.aws/ping", "continent": "as" }, { "id": "aws:ap-southeast-2", "vendor": "aws", "region": "ap-southeast-2", "city": "Sydney", "country": "AU", "url": "https://dynamodb.ap-southeast-2.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-2.api.aws/ping", "continent": "oc" }, { "id": "aws:ap-southeast-3", "vendor": "aws", "region": "ap-southeast-3", "city": "Jakarta", "country": "ID", "url": "https://dynamodb.ap-southeast-3.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-3.api.aws/ping", "continent": "as" }, { "id": "aws:ap-southeast-4", "vendor": "aws", "region": "ap-southeast-4", "city": "Melbourne", "country": "AU", "url": "https://dynamodb.ap-southeast-4.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-4.api.aws/ping", "continent": "oc" }, { "id": "aws:ap-southeast-5", "vendor": "aws", "region": "ap-southeast-5", "city": "Kuala Lumpur", "country": "MY", "url": "https://dynamodb.ap-southeast-5.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-5.api.aws/ping", "continent": "as" }, { "id": "aws:ap-southeast-6", "vendor": "aws", "region": "ap-southeast-6", "city": "Auckland", "country": "NZ", "url": "https://dynamodb.ap-southeast-6.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-6.api.aws/ping", "continent": "oc" }, { "id": "aws:ap-southeast-7", "vendor": "aws", "region": "ap-southeast-7", "city": "Bangkok", "country": "TH", "url": "https://dynamodb.ap-southeast-7.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "url6": "https://dynamodb.ap-southeast-7.api.aws/ping", "continent": "as" }, { "id": "aws:cn-north-1", "vendor": "aws", "region": "cn-north-1", "city": "Beijing", "country": "CN", "url": "https://dynamodb.cn-north-1.amazonaws.com.cn/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "continent": "as" }, { "id": "aws:cn-northwest-1", "vendor": "aws", "region": "cn-northwest-1", "city": "Ningxia", "country": "CN", "url": "https://dynamodb.cn-northwest-1.amazonaws.com.cn/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "continent": "as" }, { "id": "aws:me-west-1", "vendor": "aws", "region": "me-west-1", "city": "?", "country": "--", "url": "https://dynamodb.me-west-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "review": "Not in AWS's public region list yet, but the endpoint answers.", "continent": "xx" }, { "id": "aws:sa-west-1", "vendor": "aws", "region": "sa-west-1", "city": "?", "country": "--", "url": "https://dynamodb.sa-west-1.amazonaws.com/ping", "method": "GET", "cors": true, "expect": "healthy: dynamodb", "tier": "A", "fam": "4", "review": "Not in AWS's public region list yet, but the endpoint answers.", "continent": "xx" }, { "id": "oracle:mx-monterrey-1", "vendor": "oracle", "region": "mx-monterrey-1", "city": "Monterrey", "country": "MX", "url": "https://objectstorage.mx-monterrey-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:ca-toronto-1", "vendor": "oracle", "region": "ca-toronto-1", "city": "Toronto", "country": "CA", "url": "https://objectstorage.ca-toronto-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:eu-madrid-1", "vendor": "oracle", "region": "eu-madrid-1", "city": "Madrid", "country": "ES", "url": "https://objectstorage.eu-madrid-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:me-abudhabi-1", "vendor": "oracle", "region": "me-abudhabi-1", "city": "Abu Dhabi", "country": "AE", "url": "https://objectstorage.me-abudhabi-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "me" }, { "id": "oracle:af-casablanca-1", "vendor": "oracle", "region": "af-casablanca-1", "city": "Casablanca", "country": "MA", "url": "https://objectstorage.af-casablanca-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "af" }, { "id": "oracle:ap-seoul-1", "vendor": "oracle", "region": "ap-seoul-1", "city": "Seoul", "country": "KR", "url": "https://objectstorage.ap-seoul-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:ap-osaka-1", "vendor": "oracle", "region": "ap-osaka-1", "city": "Osaka", "country": "JP", "url": "https://objectstorage.ap-osaka-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:sa-saopaulo-1", "vendor": "oracle", "region": "sa-saopaulo-1", "city": "S\xE3o Paulo", "country": "BR", "url": "https://objectstorage.sa-saopaulo-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "sa" }, { "id": "oracle:us-chicago-1", "vendor": "oracle", "region": "us-chicago-1", "city": "Chicago", "country": "US", "url": "https://objectstorage.us-chicago-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:us-sanjose-1", "vendor": "oracle", "region": "us-sanjose-1", "city": "San Jose", "country": "US", "url": "https://objectstorage.us-sanjose-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:ap-hyderabad-1", "vendor": "oracle", "region": "ap-hyderabad-1", "city": "Hyderabad", "country": "IN", "url": "https://objectstorage.ap-hyderabad-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:ca-montreal-1", "vendor": "oracle", "region": "ca-montreal-1", "city": "Montreal", "country": "CA", "url": "https://objectstorage.ca-montreal-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:me-jeddah-1", "vendor": "oracle", "region": "me-jeddah-1", "city": "Jeddah", "country": "SA", "url": "https://objectstorage.me-jeddah-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "me" }, { "id": "oracle:eu-stockholm-1", "vendor": "oracle", "region": "eu-stockholm-1", "city": "Stockholm", "country": "SE", "url": "https://objectstorage.eu-stockholm-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:eu-marseille-1", "vendor": "oracle", "region": "eu-marseille-1", "city": "Marseille", "country": "FR", "url": "https://objectstorage.eu-marseille-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:eu-milan-1", "vendor": "oracle", "region": "eu-milan-1", "city": "Milan", "country": "IT", "url": "https://objectstorage.eu-milan-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:uk-london-1", "vendor": "oracle", "region": "uk-london-1", "city": "London", "country": "GB", "url": "https://objectstorage.uk-london-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:eu-frankfurt-1", "vendor": "oracle", "region": "eu-frankfurt-1", "city": "Frankfurt", "country": "DE", "url": "https://objectstorage.eu-frankfurt-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:eu-madrid-3", "vendor": "oracle", "region": "eu-madrid-3", "city": "Madrid", "country": "ES", "url": "https://objectstorage.eu-madrid-3.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "eu" }, { "id": "oracle:ap-mumbai-1", "vendor": "oracle", "region": "ap-mumbai-1", "city": "Mumbai", "country": "IN", "url": "https://objectstorage.ap-mumbai-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:il-jerusalem-1", "vendor": "oracle", "region": "il-jerusalem-1", "city": "Jerusalem", "country": "IL", "url": "https://objectstorage.il-jerusalem-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "me" }, { "id": "oracle:me-riyadh-1", "vendor": "oracle", "region": "me-riyadh-1", "city": "Riyadh", "country": "SA", "url": "https://objectstorage.me-riyadh-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "me" }, { "id": "oracle:af-johannesburg-1", "vendor": "oracle", "region": "af-johannesburg-1", "city": "Johannesburg", "country": "ZA", "url": "https://objectstorage.af-johannesburg-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "af" }, { "id": "oracle:eu-amsterdam-1", "vendor": "oracle", "region": "eu-amsterdam-1", "city": "Amsterdam", "country": "NL", "url": "https://objectstorage.eu-amsterdam-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:me-dubai-1", "vendor": "oracle", "region": "me-dubai-1", "city": "Dubai", "country": "AE", "url": "https://objectstorage.me-dubai-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "me" }, { "id": "oracle:uk-cardiff-1", "vendor": "oracle", "region": "uk-cardiff-1", "city": "Cardiff", "country": "GB", "url": "https://objectstorage.uk-cardiff-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:eu-paris-1", "vendor": "oracle", "region": "eu-paris-1", "city": "Paris", "country": "FR", "url": "https://objectstorage.eu-paris-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:us-ashburn-1", "vendor": "oracle", "region": "us-ashburn-1", "city": "Ashburn", "country": "US", "url": "https://objectstorage.us-ashburn-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:ap-sydney-1", "vendor": "oracle", "region": "ap-sydney-1", "city": "Sydney", "country": "AU", "url": "https://objectstorage.ap-sydney-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "oc" }, { "id": "oracle:us-phoenix-1", "vendor": "oracle", "region": "us-phoenix-1", "city": "Phoenix", "country": "US", "url": "https://objectstorage.us-phoenix-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:ap-singapore-1", "vendor": "oracle", "region": "ap-singapore-1", "city": "Singapore", "country": "SG", "url": "https://objectstorage.ap-singapore-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:ap-chuncheon-1", "vendor": "oracle", "region": "ap-chuncheon-1", "city": "Chuncheon", "country": "KR", "url": "https://objectstorage.ap-chuncheon-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:ap-batam-1", "vendor": "oracle", "region": "ap-batam-1", "city": "Batam", "country": "ID", "url": "https://objectstorage.ap-batam-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "as" }, { "id": "oracle:ap-melbourne-1", "vendor": "oracle", "region": "ap-melbourne-1", "city": "Melbourne", "country": "AU", "url": "https://objectstorage.ap-melbourne-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "oc" }, { "id": "oracle:ap-tokyo-1", "vendor": "oracle", "region": "ap-tokyo-1", "city": "Tokyo", "country": "JP", "url": "https://objectstorage.ap-tokyo-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:eu-zurich-1", "vendor": "oracle", "region": "eu-zurich-1", "city": "Zurich", "country": "CH", "url": "https://objectstorage.eu-zurich-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "oracle:sa-vinhedo-1", "vendor": "oracle", "region": "sa-vinhedo-1", "city": "Vinhedo", "country": "BR", "url": "https://objectstorage.sa-vinhedo-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "sa" }, { "id": "oracle:eu-dublin-3", "vendor": "oracle", "region": "eu-dublin-3", "city": "Dublin", "country": "IE", "url": "https://objectstorage.eu-dublin-3.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "eu" }, { "id": "oracle:us-dallas-1", "vendor": "oracle", "region": "us-dallas-1", "city": "Dallas", "country": "US", "url": "https://objectstorage.us-dallas-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:mx-queretaro-1", "vendor": "oracle", "region": "mx-queretaro-1", "city": "Quer\xE9taro", "country": "MX", "url": "https://objectstorage.mx-queretaro-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "oracle:ap-singapore-2", "vendor": "oracle", "region": "ap-singapore-2", "city": "Singapore", "country": "SG", "url": "https://objectstorage.ap-singapore-2.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:sa-valparaiso-1", "vendor": "oracle", "region": "sa-valparaiso-1", "city": "Valparaiso", "country": "CL", "url": "https://objectstorage.sa-valparaiso-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "sa" }, { "id": "oracle:us-sanantonio-1", "vendor": "oracle", "region": "us-sanantonio-1", "city": "San Antonio", "country": "US", "url": "https://objectstorage.us-sanantonio-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:sa-bogota-1", "vendor": "oracle", "region": "sa-bogota-1", "city": "Bogota", "country": "CO", "url": "https://objectstorage.sa-bogota-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "sa" }, { "id": "oracle:us-saltlake-2", "vendor": "oracle", "region": "us-saltlake-2", "city": "Salt Lake City", "country": "US", "url": "https://objectstorage.us-saltlake-2.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:us-lenexa-1", "vendor": "oracle", "region": "us-lenexa-1", "city": "Lenexa", "country": "US", "url": "https://objectstorage.us-lenexa-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:ap-delhi-1", "vendor": "oracle", "region": "ap-delhi-1", "city": "Delhi", "country": "IN", "url": "https://objectstorage.ap-delhi-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "oracle:us-desmoines-1", "vendor": "oracle", "region": "us-desmoines-1", "city": "Des Moines", "country": "US", "url": "https://objectstorage.us-desmoines-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:us-abilene-1", "vendor": "oracle", "region": "us-abilene-1", "city": "Abilene", "country": "US", "url": "https://objectstorage.us-abilene-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:ap-kulai-1", "vendor": "oracle", "region": "ap-kulai-1", "city": "Kulai", "country": "MY", "url": "https://objectstorage.ap-kulai-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "as" }, { "id": "oracle:us-shawnee-1", "vendor": "oracle", "region": "us-shawnee-1", "city": "Shawnee", "country": "US", "url": "https://objectstorage.us-shawnee-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:us-boardman-1", "vendor": "oracle", "region": "us-boardman-1", "city": "Boardman", "country": "US", "url": "https://objectstorage.us-boardman-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:us-quincy-1", "vendor": "oracle", "region": "us-quincy-1", "city": "Quincy", "country": "US", "url": "https://objectstorage.us-quincy-1.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "na" }, { "id": "oracle:sa-riodejaneiro-2", "vendor": "oracle", "region": "sa-riodejaneiro-2", "city": "Rio de Janeiro", "country": "BR", "url": "https://objectstorage.sa-riodejaneiro-2.oraclecloud.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "review": "May be a dedicated region; confirm it is publicly orderable.", "continent": "sa" }, { "id": "vultr:ams", "vendor": "vultr", "region": "ams", "city": "Amsterdam", "country": "NL", "url": "https://ams-nl-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:atl", "vendor": "vultr", "region": "atl", "city": "Atlanta", "country": "US", "url": "https://ga-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:blr", "vendor": "vultr", "region": "blr", "city": "Bangalore", "country": "IN", "url": "https://blr-in-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:bom", "vendor": "vultr", "region": "bom", "city": "Mumbai", "country": "IN", "url": "https://bom-in-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:cdg", "vendor": "vultr", "region": "cdg", "city": "Paris", "country": "FR", "url": "https://par-fr-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:del", "vendor": "vultr", "region": "del", "city": "Delhi NCR", "country": "IN", "url": "https://del-in-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:dfw", "vendor": "vultr", "region": "dfw", "city": "Dallas", "country": "US", "url": "https://tx-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:ewr", "vendor": "vultr", "region": "ewr", "city": "New Jersey", "country": "US", "url": "https://nj-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:fra", "vendor": "vultr", "region": "fra", "city": "Frankfurt", "country": "DE", "url": "https://fra-de-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:hnl", "vendor": "vultr", "region": "hnl", "city": "Honolulu", "country": "US", "url": "https://hon-hi-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:icn", "vendor": "vultr", "region": "icn", "city": "Seoul", "country": "KR", "url": "https://sel-kor-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:itm", "vendor": "vultr", "region": "itm", "city": "Osaka", "country": "JP", "url": "https://osk-jp-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:jnb", "vendor": "vultr", "region": "jnb", "city": "Johannesburg", "country": "ZA", "url": "https://jnb-za-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "af" }, { "id": "vultr:lax", "vendor": "vultr", "region": "lax", "city": "Los Angeles", "country": "US", "url": "https://lax-ca-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:lhr", "vendor": "vultr", "region": "lhr", "city": "London", "country": "GB", "url": "https://lon-gb-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:mad", "vendor": "vultr", "region": "mad", "city": "Madrid", "country": "ES", "url": "https://mad-es-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:man", "vendor": "vultr", "region": "man", "city": "Manchester", "country": "GB", "url": "https://man-uk-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:mel", "vendor": "vultr", "region": "mel", "city": "Melbourne", "country": "AU", "url": "https://mel-au-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "oc" }, { "id": "vultr:mex", "vendor": "vultr", "region": "mex", "city": "Mexico City", "country": "MX", "url": "https://mex-mx-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:mia", "vendor": "vultr", "region": "mia", "city": "Miami", "country": "US", "url": "https://fl-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:mxp", "vendor": "vultr", "region": "mxp", "city": "Milan", "country": "IT", "url": "https://mxp-it-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:nrt", "vendor": "vultr", "region": "nrt", "city": "Tokyo", "country": "JP", "url": "https://hnd-jp-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:ord", "vendor": "vultr", "region": "ord", "city": "Chicago", "country": "US", "url": "https://il-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:sao", "vendor": "vultr", "region": "sao", "city": "S\xE3o Paulo", "country": "BR", "url": "https://sao-br-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "sa" }, { "id": "vultr:scl", "vendor": "vultr", "region": "scl", "city": "Santiago", "country": "CL", "url": "https://scl-cl-ping.vultr.com/favicon.ico", "method": "HEAD", "fallback": "IMG", "cors": true, "tier": "A", "fam": "4", "continent": "sa" }, { "id": "vultr:sea", "vendor": "vultr", "region": "sea", "city": "Seattle", "country": "US", "url": "https://wa-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:sgp", "vendor": "vultr", "region": "sgp", "city": "Singapore", "country": "SG", "url": "https://sgp-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "as" }, { "id": "vultr:sjc", "vendor": "vultr", "region": "sjc", "city": "Silicon Valley", "country": "US", "url": "https://sjo-ca-us-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "vultr:sto", "vendor": "vultr", "region": "sto", "city": "Stockholm", "country": "SE", "url": "https://sto-se-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:syd", "vendor": "vultr", "region": "syd", "city": "Sydney", "country": "AU", "url": "https://syd-au-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "oc" }, { "id": "vultr:tlv", "vendor": "vultr", "region": "tlv", "city": "Tel Aviv", "country": "IL", "url": "https://tlv-il-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "me" }, { "id": "vultr:waw", "vendor": "vultr", "region": "waw", "city": "Warsaw", "country": "PL", "url": "https://waw-pl-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "vultr:yto", "vendor": "vultr", "region": "yto", "city": "Toronto", "country": "CA", "url": "https://tor-ca-ping.vultr.com/favicon.ico", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "aliyun:cn-hangzhou", "vendor": "aliyun", "region": "cn-hangzhou", "city": "Hangzhou", "country": "CN", "url": "https://oss-cn-hangzhou.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-hangzhou.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-shanghai", "vendor": "aliyun", "region": "cn-shanghai", "city": "Shanghai", "country": "CN", "url": "https://oss-cn-shanghai.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-shanghai.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-nanjing", "vendor": "aliyun", "region": "cn-nanjing", "city": "Nanjing", "country": "CN", "url": "https://oss-cn-nanjing.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:cn-fuzhou", "vendor": "aliyun", "region": "cn-fuzhou", "city": "Fuzhou", "country": "CN", "url": "https://oss-cn-fuzhou.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:cn-wuhan-lr", "vendor": "aliyun", "region": "cn-wuhan-lr", "city": "Wuhan", "country": "CN", "url": "https://oss-cn-wuhan-lr.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:cn-qingdao", "vendor": "aliyun", "region": "cn-qingdao", "city": "Qingdao", "country": "CN", "url": "https://oss-cn-qingdao.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-qingdao.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-beijing", "vendor": "aliyun", "region": "cn-beijing", "city": "Beijing", "country": "CN", "url": "https://oss-cn-beijing.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-beijing.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-zhangjiakou", "vendor": "aliyun", "region": "cn-zhangjiakou", "city": "Zhangjiakou", "country": "CN", "url": "https://oss-cn-zhangjiakou.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-zhangjiakou.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-huhehaote", "vendor": "aliyun", "region": "cn-huhehaote", "city": "Hohhot", "country": "CN", "url": "https://oss-cn-huhehaote.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-huhehaote.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-wulanchabu", "vendor": "aliyun", "region": "cn-wulanchabu", "city": "Ulanqab", "country": "CN", "url": "https://oss-cn-wulanchabu.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-wulanchabu.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-shenzhen", "vendor": "aliyun", "region": "cn-shenzhen", "city": "Shenzhen", "country": "CN", "url": "https://oss-cn-shenzhen.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-shenzhen.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-heyuan", "vendor": "aliyun", "region": "cn-heyuan", "city": "Heyuan", "country": "CN", "url": "https://oss-cn-heyuan.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-heyuan.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-guangzhou", "vendor": "aliyun", "region": "cn-guangzhou", "city": "Guangzhou", "country": "CN", "url": "https://oss-cn-guangzhou.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-guangzhou.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-chengdu", "vendor": "aliyun", "region": "cn-chengdu", "city": "Chengdu", "country": "CN", "url": "https://oss-cn-chengdu.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-chengdu.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:cn-hongkong", "vendor": "aliyun", "region": "cn-hongkong", "city": "Hong Kong", "country": "HK", "url": "https://oss-cn-hongkong.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://cn-hongkong.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:ap-northeast-1", "vendor": "aliyun", "region": "ap-northeast-1", "city": "Tokyo", "country": "JP", "url": "https://oss-ap-northeast-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:ap-northeast-2", "vendor": "aliyun", "region": "ap-northeast-2", "city": "Seoul", "country": "KR", "url": "https://oss-ap-northeast-2.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:ap-southeast-1", "vendor": "aliyun", "region": "ap-southeast-1", "city": "Singapore", "country": "SG", "url": "https://oss-ap-southeast-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://ap-southeast-1.oss.aliyuncs.com/", "continent": "as" }, { "id": "aliyun:ap-southeast-3", "vendor": "aliyun", "region": "ap-southeast-3", "city": "Kuala Lumpur", "country": "MY", "url": "https://oss-ap-southeast-3.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:ap-southeast-5", "vendor": "aliyun", "region": "ap-southeast-5", "city": "Jakarta", "country": "ID", "url": "https://oss-ap-southeast-5.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:ap-southeast-6", "vendor": "aliyun", "region": "ap-southeast-6", "city": "Manila", "country": "PH", "url": "https://oss-ap-southeast-6.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:ap-southeast-7", "vendor": "aliyun", "region": "ap-southeast-7", "city": "Bangkok", "country": "TH", "url": "https://oss-ap-southeast-7.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "aliyun:eu-central-1", "vendor": "aliyun", "region": "eu-central-1", "city": "Frankfurt", "country": "DE", "url": "https://oss-eu-central-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://eu-central-1.oss.aliyuncs.com/", "continent": "eu" }, { "id": "aliyun:eu-west-1", "vendor": "aliyun", "region": "eu-west-1", "city": "London", "country": "GB", "url": "https://oss-eu-west-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aliyun:us-west-1", "vendor": "aliyun", "region": "us-west-1", "city": "Silicon Valley", "country": "US", "url": "https://oss-us-west-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://us-west-1.oss.aliyuncs.com/", "continent": "na" }, { "id": "aliyun:us-east-1", "vendor": "aliyun", "region": "us-east-1", "city": "Virginia", "country": "US", "url": "https://oss-us-east-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "url6": "https://us-east-1.oss.aliyuncs.com/", "continent": "na" }, { "id": "aliyun:na-south-1", "vendor": "aliyun", "region": "na-south-1", "city": "Mexico City", "country": "MX", "url": "https://oss-na-south-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "aliyun:me-east-1", "vendor": "aliyun", "region": "me-east-1", "city": "Dubai", "country": "AE", "url": "https://oss-me-east-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "me" }, { "id": "aliyun:me-central-1", "vendor": "aliyun", "region": "me-central-1", "city": "Riyadh", "country": "SA", "url": "https://oss-me-central-1.aliyuncs.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "me" }, { "id": "tencent:ap-beijing", "vendor": "tencent", "region": "ap-beijing", "city": "Beijing", "country": "CN", "url": "https://cos.ap-beijing.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-nanjing", "vendor": "tencent", "region": "ap-nanjing", "city": "Nanjing", "country": "CN", "url": "https://cos.ap-nanjing.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-shanghai", "vendor": "tencent", "region": "ap-shanghai", "city": "Shanghai", "country": "CN", "url": "https://cos.ap-shanghai.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-guangzhou", "vendor": "tencent", "region": "ap-guangzhou", "city": "Guangzhou", "country": "CN", "url": "https://cos.ap-guangzhou.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-chengdu", "vendor": "tencent", "region": "ap-chengdu", "city": "Chengdu", "country": "CN", "url": "https://cos.ap-chengdu.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-chongqing", "vendor": "tencent", "region": "ap-chongqing", "city": "Chongqing", "country": "CN", "url": "https://cos.ap-chongqing.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-hongkong", "vendor": "tencent", "region": "ap-hongkong", "city": "Hong Kong", "country": "HK", "url": "https://cos.ap-hongkong.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-singapore", "vendor": "tencent", "region": "ap-singapore", "city": "Singapore", "country": "SG", "url": "https://cos.ap-singapore.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-jakarta", "vendor": "tencent", "region": "ap-jakarta", "city": "Jakarta", "country": "ID", "url": "https://cos.ap-jakarta.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-seoul", "vendor": "tencent", "region": "ap-seoul", "city": "Seoul", "country": "KR", "url": "https://cos.ap-seoul.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-bangkok", "vendor": "tencent", "region": "ap-bangkok", "city": "Bangkok", "country": "TH", "url": "https://cos.ap-bangkok.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:ap-tokyo", "vendor": "tencent", "region": "ap-tokyo", "city": "Tokyo", "country": "JP", "url": "https://cos.ap-tokyo.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "tencent:na-siliconvalley", "vendor": "tencent", "region": "na-siliconvalley", "city": "Silicon Valley", "country": "US", "url": "https://cos.na-siliconvalley.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "tencent:na-ashburn", "vendor": "tencent", "region": "na-ashburn", "city": "Virginia", "country": "US", "url": "https://cos.na-ashburn.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "tencent:sa-saopaulo", "vendor": "tencent", "region": "sa-saopaulo", "city": "S\xE3o Paulo", "country": "BR", "url": "https://cos.sa-saopaulo.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "sa" }, { "id": "tencent:eu-frankfurt", "vendor": "tencent", "region": "eu-frankfurt", "city": "Frankfurt", "country": "DE", "url": "https://cos.eu-frankfurt.myqcloud.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "huawei:cn-north-1", "vendor": "huawei", "region": "cn-north-1", "city": "Beijing 1", "country": "CN", "url": "https://ecs.cn-north-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-north-4", "vendor": "huawei", "region": "cn-north-4", "city": "Beijing 4", "country": "CN", "url": "https://ecs.cn-north-4.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-north-9", "vendor": "huawei", "region": "cn-north-9", "city": "Ulanqab", "country": "CN", "url": "https://ecs.cn-north-9.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-east-2", "vendor": "huawei", "region": "cn-east-2", "city": "Shanghai 2", "country": "CN", "url": "https://ecs.cn-east-2.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-east-3", "vendor": "huawei", "region": "cn-east-3", "city": "Shanghai 1", "country": "CN", "url": "https://ecs.cn-east-3.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-east-5", "vendor": "huawei", "region": "cn-east-5", "city": "Qingdao", "country": "CN", "url": "https://ecs.cn-east-5.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-south-1", "vendor": "huawei", "region": "cn-south-1", "city": "Guangzhou", "country": "CN", "url": "https://ecs.cn-south-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-south-4", "vendor": "huawei", "region": "cn-south-4", "city": "Guangzhou-Friendly", "country": "CN", "url": "https://ecs.cn-south-4.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:cn-southwest-2", "vendor": "huawei", "region": "cn-southwest-2", "city": "Guiyang", "country": "CN", "url": "https://ecs.cn-southwest-2.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:ap-southeast-1", "vendor": "huawei", "region": "ap-southeast-1", "city": "Hong Kong", "country": "HK", "url": "https://ecs.ap-southeast-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:ap-southeast-2", "vendor": "huawei", "region": "ap-southeast-2", "city": "Bangkok", "country": "TH", "url": "https://ecs.ap-southeast-2.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:ap-southeast-3", "vendor": "huawei", "region": "ap-southeast-3", "city": "Singapore", "country": "SG", "url": "https://ecs.ap-southeast-3.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:ap-southeast-4", "vendor": "huawei", "region": "ap-southeast-4", "city": "Jakarta", "country": "ID", "url": "https://ecs.ap-southeast-4.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:ap-southeast-5", "vendor": "huawei", "region": "ap-southeast-5", "city": "Manila", "country": "PH", "url": "https://ecs.ap-southeast-5.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:my-kualalumpur-1", "vendor": "huawei", "region": "my-kualalumpur-1", "city": "Kuala Lumpur", "country": "MY", "url": "https://ecs.my-kualalumpur-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "as" }, { "id": "huawei:af-south-1", "vendor": "huawei", "region": "af-south-1", "city": "Johannesburg", "country": "ZA", "url": "https://ecs.af-south-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "af" }, { "id": "huawei:af-north-1", "vendor": "huawei", "region": "af-north-1", "city": "Cairo", "country": "EG", "url": "https://ecs.af-north-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "af" }, { "id": "huawei:la-north-2", "vendor": "huawei", "region": "la-north-2", "city": "Mexico City 2", "country": "MX", "url": "https://ecs.la-north-2.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "na" }, { "id": "huawei:na-mexico-1", "vendor": "huawei", "region": "na-mexico-1", "city": "Mexico City 1", "country": "MX", "url": "https://ecs.na-mexico-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "na" }, { "id": "huawei:la-south-2", "vendor": "huawei", "region": "la-south-2", "city": "Santiago", "country": "CL", "url": "https://ecs.la-south-2.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "sa" }, { "id": "huawei:sa-brazil-1", "vendor": "huawei", "region": "sa-brazil-1", "city": "S\xE3o Paulo", "country": "BR", "url": "https://ecs.sa-brazil-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "sa" }, { "id": "huawei:tr-west-1", "vendor": "huawei", "region": "tr-west-1", "city": "Istanbul", "country": "TR", "url": "https://ecs.tr-west-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "me" }, { "id": "huawei:me-east-1", "vendor": "huawei", "region": "me-east-1", "city": "Riyadh", "country": "SA", "url": "https://ecs.me-east-1.myhuaweicloud.com/", "method": "HEAD", "noacao": true, "tier": "B", "fam": "4", "continent": "me" }, { "id": "azure:eastus", "vendor": "azure", "region": "eastus", "city": "Virginia", "country": "US", "url": "https://eastus.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:eastus2", "vendor": "azure", "region": "eastus2", "city": "Virginia", "country": "US", "url": "https://eastus2.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:centralus", "vendor": "azure", "region": "centralus", "city": "Iowa", "country": "US", "url": "https://centralus.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:northcentralus", "vendor": "azure", "region": "northcentralus", "city": "Illinois", "country": "US", "url": "https://northcentralus.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:southcentralus", "vendor": "azure", "region": "southcentralus", "city": "Texas", "country": "US", "url": "https://southcentralus.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:westcentralus", "vendor": "azure", "region": "westcentralus", "city": "Wyoming", "country": "US", "url": "https://westcentralus.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:westus", "vendor": "azure", "region": "westus", "city": "California", "country": "US", "url": "https://westus.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:westus2", "vendor": "azure", "region": "westus2", "city": "Washington", "country": "US", "url": "https://westus2.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:westus3", "vendor": "azure", "region": "westus3", "city": "Arizona", "country": "US", "url": "https://westus3.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:canadacentral", "vendor": "azure", "region": "canadacentral", "city": "Toronto", "country": "CA", "url": "https://canadacentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:canadaeast", "vendor": "azure", "region": "canadaeast", "city": "Quebec City", "country": "CA", "url": "https://canadaeast.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "azure:brazilsouth", "vendor": "azure", "region": "brazilsouth", "city": "S\xE3o Paulo", "country": "BR", "url": "https://brazilsouth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "sa" }, { "id": "azure:northeurope", "vendor": "azure", "region": "northeurope", "city": "Dublin", "country": "IE", "url": "https://northeurope.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:westeurope", "vendor": "azure", "region": "westeurope", "city": "Amsterdam", "country": "NL", "url": "https://westeurope.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:uksouth", "vendor": "azure", "region": "uksouth", "city": "London", "country": "GB", "url": "https://uksouth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:ukwest", "vendor": "azure", "region": "ukwest", "city": "Cardiff", "country": "GB", "url": "https://ukwest.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:francecentral", "vendor": "azure", "region": "francecentral", "city": "Paris", "country": "FR", "url": "https://francecentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:germanywestcentral", "vendor": "azure", "region": "germanywestcentral", "city": "Frankfurt", "country": "DE", "url": "https://germanywestcentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:switzerlandnorth", "vendor": "azure", "region": "switzerlandnorth", "city": "Zurich", "country": "CH", "url": "https://switzerlandnorth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:switzerlandwest", "vendor": "azure", "region": "switzerlandwest", "city": "Geneva", "country": "CH", "url": "https://switzerlandwest.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:norwayeast", "vendor": "azure", "region": "norwayeast", "city": "Oslo", "country": "NO", "url": "https://norwayeast.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:swedencentral", "vendor": "azure", "region": "swedencentral", "city": "G\xE4vle", "country": "SE", "url": "https://swedencentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:polandcentral", "vendor": "azure", "region": "polandcentral", "city": "Warsaw", "country": "PL", "url": "https://polandcentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:italynorth", "vendor": "azure", "region": "italynorth", "city": "Milan", "country": "IT", "url": "https://italynorth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:spaincentral", "vendor": "azure", "region": "spaincentral", "city": "Madrid", "country": "ES", "url": "https://spaincentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "azure:eastasia", "vendor": "azure", "region": "eastasia", "city": "Hong Kong", "country": "HK", "url": "https://eastasia.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:southeastasia", "vendor": "azure", "region": "southeastasia", "city": "Singapore", "country": "SG", "url": "https://southeastasia.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:japaneast", "vendor": "azure", "region": "japaneast", "city": "Tokyo", "country": "JP", "url": "https://japaneast.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:japanwest", "vendor": "azure", "region": "japanwest", "city": "Osaka", "country": "JP", "url": "https://japanwest.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:koreacentral", "vendor": "azure", "region": "koreacentral", "city": "Seoul", "country": "KR", "url": "https://koreacentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:australiaeast", "vendor": "azure", "region": "australiaeast", "city": "Sydney", "country": "AU", "url": "https://australiaeast.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "oc" }, { "id": "azure:newzealandnorth", "vendor": "azure", "region": "newzealandnorth", "city": "Auckland", "country": "NZ", "url": "https://newzealandnorth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "oc" }, { "id": "azure:centralindia", "vendor": "azure", "region": "centralindia", "city": "Pune", "country": "IN", "url": "https://centralindia.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:southindia", "vendor": "azure", "region": "southindia", "city": "Chennai", "country": "IN", "url": "https://southindia.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:jioindiawest", "vendor": "azure", "region": "jioindiawest", "city": "Jamnagar", "country": "IN", "url": "https://jioindiawest.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:jioindiacentral", "vendor": "azure", "region": "jioindiacentral", "city": "Nagpur", "country": "IN", "url": "https://jioindiacentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:indonesiacentral", "vendor": "azure", "region": "indonesiacentral", "city": "Jakarta", "country": "ID", "url": "https://indonesiacentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:malaysiawest", "vendor": "azure", "region": "malaysiawest", "city": "Kuala Lumpur", "country": "MY", "url": "https://malaysiawest.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "azure:uaenorth", "vendor": "azure", "region": "uaenorth", "city": "Dubai", "country": "AE", "url": "https://uaenorth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "me" }, { "id": "azure:qatarcentral", "vendor": "azure", "region": "qatarcentral", "city": "Doha", "country": "QA", "url": "https://qatarcentral.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "me" }, { "id": "azure:southafricanorth", "vendor": "azure", "region": "southafricanorth", "city": "Johannesburg", "country": "ZA", "url": "https://southafricanorth.api.cognitive.microsoft.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "af" }, { "id": "linode:us-east", "vendor": "linode", "region": "us-east", "city": "Newark", "country": "US", "url": "https://us-east-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "linode:us-southeast", "vendor": "linode", "region": "us-southeast", "city": "Atlanta", "country": "US", "url": "https://us-southeast-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "linode:eu-central", "vendor": "linode", "region": "eu-central", "city": "Frankfurt", "country": "DE", "url": "https://eu-central-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:ap-south", "vendor": "linode", "region": "ap-south", "city": "Singapore", "country": "SG", "url": "https://ap-south-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }, { "id": "linode:gb-lon", "vendor": "linode", "region": "gb-lon", "city": "London 2", "country": "GB", "url": "https://gb-lon-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:se-sto", "vendor": "linode", "region": "se-sto", "city": "Stockholm", "country": "SE", "url": "https://se-sto-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:es-mad", "vendor": "linode", "region": "es-mad", "city": "Madrid", "country": "ES", "url": "https://es-mad-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:in-maa", "vendor": "linode", "region": "in-maa", "city": "Chennai", "country": "IN", "url": "https://in-maa-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }, { "id": "linode:jp-osa", "vendor": "linode", "region": "jp-osa", "city": "Osaka", "country": "JP", "url": "https://jp-osa-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }, { "id": "linode:it-mil", "vendor": "linode", "region": "it-mil", "city": "Milan", "country": "IT", "url": "https://it-mil-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:us-mia", "vendor": "linode", "region": "us-mia", "city": "Miami", "country": "US", "url": "https://us-mia-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "linode:id-cgk", "vendor": "linode", "region": "id-cgk", "city": "Jakarta", "country": "ID", "url": "https://id-cgk-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }, { "id": "linode:us-lax", "vendor": "linode", "region": "us-lax", "city": "Los Angeles", "country": "US", "url": "https://us-lax-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "linode:nl-ams", "vendor": "linode", "region": "nl-ams", "city": "Amsterdam", "country": "NL", "url": "https://nl-ams-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:au-mel", "vendor": "linode", "region": "au-mel", "city": "Melbourne", "country": "AU", "url": "https://au-mel-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "oc" }, { "id": "linode:in-bom-2", "vendor": "linode", "region": "in-bom-2", "city": "Mumbai 2", "country": "IN", "url": "https://in-bom-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "review": "Served by cluster in-bom-1.", "continent": "as" }, { "id": "linode:de-fra-2", "vendor": "linode", "region": "de-fra-2", "city": "Frankfurt 2", "country": "DE", "url": "https://de-fra-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "review": "Served by cluster de-fra-1.", "continent": "eu" }, { "id": "linode:sg-sin-2", "vendor": "linode", "region": "sg-sin-2", "city": "Singapore 2", "country": "SG", "url": "https://sg-sin-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "review": "Served by cluster sg-sin-1.", "continent": "as" }, { "id": "linode:jp-tyo-3", "vendor": "linode", "region": "jp-tyo-3", "city": "Tokyo 3", "country": "JP", "url": "https://jp-tyo-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "review": "Served by cluster jp-tyo-1.", "continent": "as" }, { "id": "linode:us-iad-2", "vendor": "linode", "region": "us-iad-2", "city": "Washington 2", "country": "US", "url": "https://us-iad-2.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "review": "Cluster us-iad-2 assumed to belong to Washington 2.", "continent": "na" }, { "id": "linode:br-gru", "vendor": "linode", "region": "br-gru", "city": "S\xE3o Paulo", "country": "BR", "url": "https://br-gru-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "sa" }, { "id": "linode:us-sea", "vendor": "linode", "region": "us-sea", "city": "Seattle", "country": "US", "url": "https://us-sea-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "linode:fr-par", "vendor": "linode", "region": "fr-par", "city": "Paris", "country": "FR", "url": "https://fr-par-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "linode:us-ord", "vendor": "linode", "region": "us-ord", "city": "Chicago", "country": "US", "url": "https://us-ord-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "linode:us-iad", "vendor": "linode", "region": "us-iad", "city": "Washington", "country": "US", "url": "https://us-iad-1.linodeobjects.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "digitalocean:nyc3", "vendor": "digitalocean", "region": "nyc3", "city": "New York", "country": "US", "url": "https://nyc3.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "digitalocean:sfo2", "vendor": "digitalocean", "region": "sfo2", "city": "San Francisco", "country": "US", "url": "https://sfo2.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "digitalocean:sfo3", "vendor": "digitalocean", "region": "sfo3", "city": "San Francisco", "country": "US", "url": "https://sfo3.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "digitalocean:ams3", "vendor": "digitalocean", "region": "ams3", "city": "Amsterdam", "country": "NL", "url": "https://ams3.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "digitalocean:sgp1", "vendor": "digitalocean", "region": "sgp1", "city": "Singapore", "country": "SG", "url": "https://sgp1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "digitalocean:lon1", "vendor": "digitalocean", "region": "lon1", "city": "London", "country": "GB", "url": "https://lon1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "digitalocean:fra1", "vendor": "digitalocean", "region": "fra1", "city": "Frankfurt", "country": "DE", "url": "https://fra1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "digitalocean:tor1", "vendor": "digitalocean", "region": "tor1", "city": "Toronto", "country": "CA", "url": "https://tor1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "digitalocean:blr1", "vendor": "digitalocean", "region": "blr1", "city": "Bangalore", "country": "IN", "url": "https://blr1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "as" }, { "id": "digitalocean:syd1", "vendor": "digitalocean", "region": "syd1", "city": "Sydney", "country": "AU", "url": "https://syd1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "oc" }, { "id": "digitalocean:atl1", "vendor": "digitalocean", "region": "atl1", "city": "Atlanta", "country": "US", "url": "https://atl1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "digitalocean:ric1", "vendor": "digitalocean", "region": "ric1", "city": "Richmond", "country": "US", "url": "https://ric1.digitaloceanspaces.com/", "method": "GET", "tier": "B", "fam": "4", "continent": "na" }, { "id": "hetzner:fsn1", "vendor": "hetzner", "region": "fsn1", "city": "Falkenstein", "country": "DE", "url": "https://fsn1-speed.hetzner.com/", "method": "GET", "nobust": true, "noacao": true, "tier": "B", "fam": "46", "continent": "eu" }, { "id": "hetzner:nbg1", "vendor": "hetzner", "region": "nbg1", "city": "Nuremberg", "country": "DE", "url": "https://nbg1-speed.hetzner.com/", "method": "GET", "nobust": true, "noacao": true, "tier": "B", "fam": "46", "continent": "eu" }, { "id": "hetzner:hel1", "vendor": "hetzner", "region": "hel1", "city": "Helsinki", "country": "FI", "url": "https://hel1-speed.hetzner.com/", "method": "GET", "nobust": true, "noacao": true, "tier": "B", "fam": "46", "continent": "eu" }, { "id": "hetzner:ash", "vendor": "hetzner", "region": "ash", "city": "Ashburn", "country": "US", "url": "https://ash-speed.hetzner.com/", "method": "GET", "nobust": true, "noacao": true, "tier": "B", "fam": "46", "continent": "na" }, { "id": "hetzner:hil", "vendor": "hetzner", "region": "hil", "city": "Hillsboro", "country": "US", "url": "https://hil-speed.hetzner.com/", "method": "GET", "nobust": true, "noacao": true, "tier": "B", "fam": "46", "continent": "na" }, { "id": "hetzner:sin", "vendor": "hetzner", "region": "sin", "city": "Singapore", "country": "SG", "url": "https://sin-speed.hetzner.com/", "method": "GET", "nobust": true, "noacao": true, "tier": "B", "fam": "46", "continent": "as" }, { "id": "ovh:gra", "vendor": "ovh", "region": "gra", "city": "Gravelines", "country": "FR", "url": "https://proof.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "ovh:rbx", "vendor": "ovh", "region": "rbx", "city": "Roubaix", "country": "FR", "url": "https://lil1-rbx.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "ovh:sbg", "vendor": "ovh", "region": "sbg", "city": "Strasbourg", "country": "FR", "url": "https://sxb1-sbg.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "ovh:eri", "vendor": "ovh", "region": "eri", "city": "London", "country": "GB", "url": "https://lon1-eri.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "ovh:bhs", "vendor": "ovh", "region": "bhs", "city": "Beauharnois", "country": "CA", "url": "https://ymq1-bhs.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "ovh:vin", "vendor": "ovh", "region": "vin", "city": "Vint Hill", "country": "US", "url": "https://was1-vin.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "ovh:hil", "vendor": "ovh", "region": "hil", "city": "Hillsboro", "country": "US", "url": "https://pdx1-hil.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "na" }, { "id": "ovh:sgp", "vendor": "ovh", "region": "sgp", "city": "Singapore", "country": "SG", "url": "https://sin1-sgp.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }, { "id": "ovh:syd", "vendor": "ovh", "region": "syd", "city": "Sydney", "country": "AU", "url": "https://syd1-sy2.speedtest.network.ovh.net/files/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "oc" }, { "id": "gcp:us-central1", "vendor": "gcp", "region": "us-central1", "city": "Iowa", "country": "US", "url": "https://storage.us-central1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-central2", "vendor": "gcp", "region": "us-central2", "city": "Oklahoma", "country": "US", "url": "https://storage.us-central2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-east1", "vendor": "gcp", "region": "us-east1", "city": "South Carolina", "country": "US", "url": "https://storage.us-east1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-east4", "vendor": "gcp", "region": "us-east4", "city": "Virginia", "country": "US", "url": "https://storage.us-east4.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-east5", "vendor": "gcp", "region": "us-east5", "city": "Columbus", "country": "US", "url": "https://storage.us-east5.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-east7", "vendor": "gcp", "region": "us-east7", "city": "Alabama", "country": "US", "url": "https://storage.us-east7.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "46", "continent": "na" }, { "id": "gcp:us-south1", "vendor": "gcp", "region": "us-south1", "city": "Dallas", "country": "US", "url": "https://storage.us-south1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-west1", "vendor": "gcp", "region": "us-west1", "city": "Oregon", "country": "US", "url": "https://storage.us-west1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-west2", "vendor": "gcp", "region": "us-west2", "city": "Los Angeles", "country": "US", "url": "https://storage.us-west2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-west3", "vendor": "gcp", "region": "us-west3", "city": "Salt Lake City", "country": "US", "url": "https://storage.us-west3.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-west4", "vendor": "gcp", "region": "us-west4", "city": "Las Vegas", "country": "US", "url": "https://storage.us-west4.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:us-west8", "vendor": "gcp", "region": "us-west8", "city": "Phoenix", "country": "US", "url": "https://storage.us-west8.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:northamerica-northeast1", "vendor": "gcp", "region": "northamerica-northeast1", "city": "Montr\xE9al", "country": "CA", "url": "https://storage.northamerica-northeast1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:northamerica-northeast2", "vendor": "gcp", "region": "northamerica-northeast2", "city": "Toronto", "country": "CA", "url": "https://storage.northamerica-northeast2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:northamerica-south1", "vendor": "gcp", "region": "northamerica-south1", "city": "Quer\xE9taro", "country": "MX", "url": "https://storage.northamerica-south1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcp:southamerica-east1", "vendor": "gcp", "region": "southamerica-east1", "city": "S\xE3o Paulo", "country": "BR", "url": "https://storage.southamerica-east1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "sa" }, { "id": "gcp:southamerica-west1", "vendor": "gcp", "region": "southamerica-west1", "city": "Santiago", "country": "CL", "url": "https://storage.southamerica-west1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "sa" }, { "id": "gcp:europe-west1", "vendor": "gcp", "region": "europe-west1", "city": "Belgium", "country": "BE", "url": "https://storage.europe-west1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west2", "vendor": "gcp", "region": "europe-west2", "city": "London", "country": "GB", "url": "https://storage.europe-west2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west3", "vendor": "gcp", "region": "europe-west3", "city": "Frankfurt", "country": "DE", "url": "https://storage.europe-west3.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west4", "vendor": "gcp", "region": "europe-west4", "city": "Netherlands", "country": "NL", "url": "https://storage.europe-west4.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west6", "vendor": "gcp", "region": "europe-west6", "city": "Zurich", "country": "CH", "url": "https://storage.europe-west6.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west8", "vendor": "gcp", "region": "europe-west8", "city": "Milan", "country": "IT", "url": "https://storage.europe-west8.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west9", "vendor": "gcp", "region": "europe-west9", "city": "Paris", "country": "FR", "url": "https://storage.europe-west9.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west10", "vendor": "gcp", "region": "europe-west10", "city": "Berlin", "country": "DE", "url": "https://storage.europe-west10.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-west12", "vendor": "gcp", "region": "europe-west12", "city": "Turin", "country": "IT", "url": "https://storage.europe-west12.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-central2", "vendor": "gcp", "region": "europe-central2", "city": "Warsaw", "country": "PL", "url": "https://storage.europe-central2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-north1", "vendor": "gcp", "region": "europe-north1", "city": "Finland", "country": "FI", "url": "https://storage.europe-north1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-north2", "vendor": "gcp", "region": "europe-north2", "city": "Stockholm", "country": "SE", "url": "https://storage.europe-north2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:europe-southwest1", "vendor": "gcp", "region": "europe-southwest1", "city": "Madrid", "country": "ES", "url": "https://storage.europe-southwest1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcp:me-central1", "vendor": "gcp", "region": "me-central1", "city": "Doha", "country": "QA", "url": "https://storage.me-central1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "me" }, { "id": "gcp:me-central2", "vendor": "gcp", "region": "me-central2", "city": "Dammam", "country": "SA", "url": "https://storage.me-central2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "me" }, { "id": "gcp:me-west1", "vendor": "gcp", "region": "me-west1", "city": "Tel Aviv", "country": "IL", "url": "https://storage.me-west1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "me" }, { "id": "gcp:africa-south1", "vendor": "gcp", "region": "africa-south1", "city": "Johannesburg", "country": "ZA", "url": "https://storage.africa-south1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "af" }, { "id": "gcp:asia-east1", "vendor": "gcp", "region": "asia-east1", "city": "Changhua", "country": "TW", "url": "https://storage.asia-east1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-east2", "vendor": "gcp", "region": "asia-east2", "city": "Hong Kong", "country": "HK", "url": "https://storage.asia-east2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-northeast1", "vendor": "gcp", "region": "asia-northeast1", "city": "Tokyo", "country": "JP", "url": "https://storage.asia-northeast1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-northeast2", "vendor": "gcp", "region": "asia-northeast2", "city": "Osaka", "country": "JP", "url": "https://storage.asia-northeast2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-northeast3", "vendor": "gcp", "region": "asia-northeast3", "city": "Seoul", "country": "KR", "url": "https://storage.asia-northeast3.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-south1", "vendor": "gcp", "region": "asia-south1", "city": "Mumbai", "country": "IN", "url": "https://storage.asia-south1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-south2", "vendor": "gcp", "region": "asia-south2", "city": "Delhi", "country": "IN", "url": "https://storage.asia-south2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-southeast1", "vendor": "gcp", "region": "asia-southeast1", "city": "Singapore", "country": "SG", "url": "https://storage.asia-southeast1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:asia-southeast2", "vendor": "gcp", "region": "asia-southeast2", "city": "Jakarta", "country": "ID", "url": "https://storage.asia-southeast2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcp:australia-southeast1", "vendor": "gcp", "region": "australia-southeast1", "city": "Sydney", "country": "AU", "url": "https://storage.australia-southeast1.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "oc" }, { "id": "gcp:australia-southeast2", "vendor": "gcp", "region": "australia-southeast2", "city": "Melbourne", "country": "AU", "url": "https://storage.australia-southeast2.rep.googleapis.com/generate_204", "method": "GET", "fallback": "IMG", "tier": "B", "fam": "4", "continent": "oc" }, { "id": "ibm:us-south", "vendor": "ibm", "region": "us-south", "city": "Dallas", "country": "US", "url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "ibm:us-east", "vendor": "ibm", "region": "us-east", "city": "Washington", "country": "US", "url": "https://s3.us-east.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "ibm:ca-tor", "vendor": "ibm", "region": "ca-tor", "city": "Toronto", "country": "CA", "url": "https://s3.ca-tor.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "ibm:br-sao", "vendor": "ibm", "region": "br-sao", "city": "S\xE3o Paulo", "country": "BR", "url": "https://s3.br-sao.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "sa" }, { "id": "ibm:eu-gb", "vendor": "ibm", "region": "eu-gb", "city": "London", "country": "GB", "url": "https://s3.eu-gb.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "ibm:eu-de", "vendor": "ibm", "region": "eu-de", "city": "Frankfurt", "country": "DE", "url": "https://s3.eu-de.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "ibm:eu-es", "vendor": "ibm", "region": "eu-es", "city": "Madrid", "country": "ES", "url": "https://s3.eu-es.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "ibm:jp-tok", "vendor": "ibm", "region": "jp-tok", "city": "Tokyo", "country": "JP", "url": "https://s3.jp-tok.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "ibm:jp-osa", "vendor": "ibm", "region": "jp-osa", "city": "Osaka", "country": "JP", "url": "https://s3.jp-osa.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "ibm:au-syd", "vendor": "ibm", "region": "au-syd", "city": "Sydney", "country": "AU", "url": "https://s3.au-syd.cloud-object-storage.appdomain.cloud/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "oc" }, { "id": "scaleway:fr-par", "vendor": "scaleway", "region": "fr-par", "city": "Paris", "country": "FR", "url": "https://s3.fr-par.scw.cloud/", "method": "GET", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "scaleway:nl-ams", "vendor": "scaleway", "region": "nl-ams", "city": "Amsterdam", "country": "NL", "url": "https://s3.nl-ams.scw.cloud/", "method": "GET", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "scaleway:pl-waw", "vendor": "scaleway", "region": "pl-waw", "city": "Warsaw", "country": "PL", "url": "https://s3.pl-waw.scw.cloud/", "method": "GET", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "scaleway:it-mil", "vendor": "scaleway", "region": "it-mil", "city": "Milan", "country": "IT", "url": "https://s3.it-mil.scw.cloud/", "method": "GET", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "volcengine:cn-beijing", "vendor": "volcengine", "region": "cn-beijing", "city": "Beijing", "country": "CN", "url": "https://tos-cn-beijing.volces.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "volcengine:cn-shanghai", "vendor": "volcengine", "region": "cn-shanghai", "city": "Shanghai", "country": "CN", "url": "https://tos-cn-shanghai.volces.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "volcengine:cn-guangzhou", "vendor": "volcengine", "region": "cn-guangzhou", "city": "Guangzhou", "country": "CN", "url": "https://tos-cn-guangzhou.volces.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "volcengine:cn-hongkong", "vendor": "volcengine", "region": "cn-hongkong", "city": "Hong Kong", "country": "HK", "url": "https://tos-cn-hongkong.volces.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "volcengine:ap-southeast-1", "vendor": "volcengine", "region": "ap-southeast-1", "city": "Johor", "country": "MY", "url": "https://tos-ap-southeast-1.volces.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "volcengine:ap-southeast-3", "vendor": "volcengine", "region": "ap-southeast-3", "city": "Jakarta", "country": "ID", "url": "https://tos-ap-southeast-3.volces.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "baidu:bj", "vendor": "baidu", "region": "bj", "city": "Beijing", "country": "CN", "url": "https://bj.bcebos.com/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }, { "id": "baidu:bd", "vendor": "baidu", "region": "bd", "city": "Baoding", "country": "CN", "url": "https://bd.bcebos.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "baidu:su", "vendor": "baidu", "region": "su", "city": "Suzhou", "country": "CN", "url": "https://su.bcebos.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "baidu:gz", "vendor": "baidu", "region": "gz", "city": "Guangzhou", "country": "CN", "url": "https://gz.bcebos.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "baidu:fwh", "vendor": "baidu", "region": "fwh", "city": "Wuhan", "country": "CN", "url": "https://fwh.bcebos.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "baidu:hkg", "vendor": "baidu", "region": "hkg", "city": "Hong Kong", "country": "HK", "url": "https://hkg.bcebos.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "naver:kr", "vendor": "naver", "region": "kr", "city": "Chuncheon", "country": "KR", "url": "https://kr.object.ncloudstorage.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "naver:jp", "vendor": "naver", "region": "jp", "city": "Tokyo", "country": "JP", "url": "https://jp.object.ncloudstorage.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "naver:sg", "vendor": "naver", "region": "sg", "city": "Singapore", "country": "SG", "url": "https://sg.object.ncloudstorage.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "naver:us", "vendor": "naver", "region": "us", "city": "Silicon Valley", "country": "US", "url": "https://us.object.ncloudstorage.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "naver:de", "vendor": "naver", "region": "de", "city": "Frankfurt", "country": "DE", "url": "https://de.object.ncloudstorage.com/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "ionos:de-fra", "vendor": "ionos", "region": "de-fra", "city": "Frankfurt", "country": "DE", "url": "https://logging.de-fra.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "ionos:de-txl", "vendor": "ionos", "region": "de-txl", "city": "Berlin", "country": "DE", "url": "https://logging.de-txl.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "ionos:es-vit", "vendor": "ionos", "region": "es-vit", "city": "Logro\xF1o", "country": "ES", "url": "https://logging.es-vit.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "ionos:gb-lhr", "vendor": "ionos", "region": "gb-lhr", "city": "London", "country": "GB", "url": "https://logging.gb-lhr.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "ionos:gb-bhx", "vendor": "ionos", "region": "gb-bhx", "city": "Worcester", "country": "GB", "url": "https://logging.gb-bhx.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "ionos:fr-par", "vendor": "ionos", "region": "fr-par", "city": "Paris", "country": "FR", "url": "https://logging.fr-par.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "eu" }, { "id": "ionos:us-mci", "vendor": "ionos", "region": "us-mci", "city": "Lenexa", "country": "US", "url": "https://logging.us-mci.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "ionos:us-las", "vendor": "ionos", "region": "us-las", "city": "Las Vegas", "country": "US", "url": "https://logging.us-las.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "ionos:us-ewr", "vendor": "ionos", "region": "us-ewr", "city": "Newark", "country": "US", "url": "https://logging.us-ewr.ionos.com/", "method": "HEAD", "cors": true, "tier": "A", "fam": "4", "continent": "na" }, { "id": "aruba:r1-it", "vendor": "aruba", "region": "r1-it", "city": "Arezzo", "country": "IT", "url": "https://r1-it.storage.cloud.it/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aruba:r3-it", "vendor": "aruba", "region": "r3-it", "city": "Bergamo", "country": "IT", "url": "https://r3-it.storage.cloud.it/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aruba:r1-fr", "vendor": "aruba", "region": "r1-fr", "city": "Paris", "country": "FR", "url": "https://r1-fr.storage.arubacloud.fr/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aruba:r1-cz", "vendor": "aruba", "region": "r1-cz", "city": "Prague", "country": "CZ", "url": "https://r1-cz.storage.forpsicloud.cz/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aruba:r1-de", "vendor": "aruba", "region": "r1-de", "city": "Frankfurt", "country": "DE", "url": "https://r1-de.storage.arubacloud.de/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aruba:r1-uk", "vendor": "aruba", "region": "r1-uk", "city": "London", "country": "GB", "url": "https://r1-uk.storage.arubacloud.co.uk/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "aruba:r1-pl", "vendor": "aruba", "region": "r1-pl", "city": "Warsaw", "country": "PL", "url": "https://r1-pl.storage.arubacloud.pl/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "leaseweb:nl-01", "vendor": "leaseweb", "region": "nl-01", "city": "Netherlands", "country": "NL", "url": "https://nl.object-storage.io/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "leaseweb:de-01", "vendor": "leaseweb", "region": "de-01", "city": "Germany", "country": "DE", "url": "https://de.object-storage.io/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "leaseweb:uk-01", "vendor": "leaseweb", "region": "uk-01", "city": "United Kingdom", "country": "GB", "url": "https://uk.object-storage.io/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "leaseweb:us-01", "vendor": "leaseweb", "region": "us-01", "city": "United States", "country": "US", "url": "https://us.object-storage.io/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "leaseweb:ca-01", "vendor": "leaseweb", "region": "ca-01", "city": "Canada", "country": "CA", "url": "https://ca.object-storage.io/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "leaseweb:sg-01", "vendor": "leaseweb", "region": "sg-01", "city": "Singapore", "country": "SG", "url": "https://sg.object-storage.io/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcore:s-ed1", "vendor": "gcore", "region": "s-ed1", "city": "Luxembourg", "country": "LU", "url": "https://luxembourg-2.storage.gcore.dev/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcore:s-drc2", "vendor": "gcore", "region": "s-drc2", "city": "Chicago", "country": "US", "url": "https://chicago-1.storage.gcore.dev/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "na" }, { "id": "gcore:s-kal2", "vendor": "gcore", "region": "s-kal2", "city": "Almaty", "country": "KZ", "url": "https://almaty-1.storage.gcore.dev/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "gcore:s-ndp1-2", "vendor": "gcore", "region": "s-ndp1-2", "city": "Sines", "country": "PT", "url": "https://sines-2.storage.gcore.dev/", "method": "CORS", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcore:s-ndp1-3", "vendor": "gcore", "region": "s-ndp1-3", "city": "Sines 2", "country": "PT", "url": "https://sines-3.storage.gcore.dev/", "method": "CORS", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcore:s-ndlo-2", "vendor": "gcore", "region": "s-ndlo-2", "city": "London", "country": "GB", "url": "https://london-2.storage.gcore.dev/", "method": "CORS", "tier": "B", "fam": "4", "continent": "eu" }, { "id": "gcore:s-sgc1", "vendor": "gcore", "region": "s-sgc1", "city": "Singapore", "country": "SG", "url": "https://singapore-1.storage.gcore.dev/", "method": "HEAD", "tier": "B", "fam": "4", "continent": "as" }, { "id": "yandex:ru-central1", "vendor": "yandex", "region": "ru-central1", "city": "Russia", "country": "RU", "url": "https://storage.yandexcloud.net/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "eu" }, { "id": "yandex:kz1", "vendor": "yandex", "region": "kz1", "city": "Kazakhstan", "country": "KZ", "url": "https://storage.yandexcloud.kz/", "method": "HEAD", "tier": "B", "fam": "46", "continent": "as" }], "cdns": [{ "id": "cdn:cloudflare", "vendor": "cdn:cloudflare", "kind": "cdn", "name": "Cloudflare", "url": "https://www.cloudflare.com/cdn-cgi/trace", "method": "GET", "nobust": true, "cors": true, "tier": "A", "region": "edge", "city": "", "country": "", "continent": "xx" }, { "id": "cdn:akamai", "vendor": "cdn:akamai", "kind": "cdn", "name": "Akamai", "url": "https://store.akamai.steamstatic.com/favicon.ico", "method": "GET", "nobust": true, "tier": "B", "region": "edge", "city": "", "country": "", "continent": "xx" }, { "id": "cdn:cloudfront", "vendor": "cdn:cloudfront", "kind": "cdn", "name": "Amazon CloudFront", "url": "https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico", "method": "GET", "nobust": true, "tier": "B", "region": "edge", "city": "", "country": "", "continent": "xx" }, { "id": "cdn:google", "vendor": "cdn:google", "kind": "cdn", "name": "Google Cloud CDN", "url": "https://www.gstatic.com/generate_204", "method": "GET", "nobust": true, "tier": "B", "region": "edge", "city": "", "country": "", "continent": "xx" }, { "id": "cdn:fastly", "vendor": "cdn:fastly", "kind": "cdn", "name": "Fastly", "url": "https://github.githubassets.com/favicons/favicon.svg", "method": "GET", "nobust": true, "cors": true, "tier": "A", "region": "edge", "city": "", "country": "", "continent": "xx" }, { "id": "cdn:azure", "vendor": "cdn:azure", "kind": "cdn", "name": "Azure Front Door", "url": "https://assets.xboxservices.com/assets/f8/67/f86740d7-eedd-4d9c-a963-76af7e36c4b2.svg?n=Xbox-Follow-Footer_Image-0_Mail_32x32_02.svg", "method": "GET", "nobust": true, "tier": "B", "region": "edge", "city": "", "country": "", "continent": "xx" }] };
+  const CDNS = ENDPOINTS.cdns || [], CDN_IDS = CDNS.map((c) => c.vendor);
+  const isCdn = (v) => String(v).startsWith("cdn:");
+  const LANGS = [["zh-CN", "\u7B80\u4F53\u4E2D\u6587"], ["zh-TW", "\u7E41\u9AD4\u4E2D\u6587"], ["en", "English"], ["ja", "\u65E5\u672C\u8A9E"], ["ko", "\uD55C\uAD6D\uC5B4"], ["es", "Espa\xF1ol"], ["fr", "Fran\xE7ais"], ["de", "Deutsch"], ["pt", "Portugu\xEAs"], ["ru", "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"]];
+  const DATA = JSON.parse(document.getElementById("me2-data").textContent);
+  const I18N = DATA.i18n, LANG_PATHS = DATA.paths, PAGE = DATA.page || {};
+  const KEY = "me2cloud:v1", RES_KEY = "me2cloud:last", HIST_KEY = "me2cloud:history", LANG_KEY = "me2cloud:lang", THEME_KEY = "me2cloud:theme";
+  const MODES = { quick: 5, std: 10, precise: 20 };
+  const PRESETS = { game: [60, 10, 0], call: [150, 30, 1], ssh: [120, 20, 1], web: [250, 50, 2], any: [0, 0, 0] };
+  const PRESET_IC = { game: "\u{1F3AE}", call: "\u{1F4F9}", ssh: "\u2328\uFE0F", web: "\u{1F310}", any: "\u{1F440}", custom: "\u{1F3AF}" };
+  const GRADES = [30, 80, 150, 250];
+  const VENDOR_CAP = 2, GAP_MS = 250, FAIL_STOP = 3, MAX_HIST = 8;
+  const CT_ORDER = ["as", "na", "eu", "oc", "sa", "me", "af"];
+  const AX_MIN = 2, AX_MAX = 3e3, TICKS = [5, 10, 20, 50, 100, 200, 500, 1e3, 2e3];
+  const PEAK = [20, 23];
+  const DC_RE = /amazon|google|microsoft|azure|digitalocean|vultr|choopa|constant company|linode|akamai|ovh|hetzner|oracle|alibaba|aliyun|tencent|huawei|m247|datacamp|cloudflare|leaseweb|contabo|hostinger|it7|racknerd|colocrossing|psychz|zenlayer|g-core|gcore|hostwinds|scaleway|ionos|kamatera|upcloud|bandwagon|dmit|cogent|quadranet|servers\.com|packet|equinix|fastly|cdn77|datapacket|tzulo|hostdare|greencloud|nexeon|frantech|buyvm/i;
+  const TZ_CC = Object.fromEntries("Asia/Shanghai:CN Asia/Chongqing:CN Asia/Harbin:CN Asia/Urumqi:CN Asia/Hong_Kong:HK Asia/Macau:MO Asia/Taipei:TW Asia/Tokyo:JP Asia/Seoul:KR Asia/Singapore:SG Asia/Kuala_Lumpur:MY Asia/Bangkok:TH Asia/Jakarta:ID Asia/Manila:PH Asia/Ho_Chi_Minh:VN Asia/Saigon:VN Asia/Kolkata:IN Asia/Calcutta:IN Asia/Dubai:AE Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Tel_Aviv:IL Asia/Karachi:PK Europe/London:GB Europe/Dublin:IE Europe/Paris:FR Europe/Berlin:DE Europe/Amsterdam:NL Europe/Brussels:BE Europe/Zurich:CH Europe/Rome:IT Europe/Madrid:ES Europe/Lisbon:PT Europe/Stockholm:SE Europe/Oslo:NO Europe/Helsinki:FI Europe/Copenhagen:DK Europe/Warsaw:PL Europe/Vienna:AT Europe/Prague:CZ Europe/Moscow:RU Europe/Istanbul:TR Europe/Kiev:UA Europe/Kyiv:UA Europe/Athens:GR Europe/Bucharest:RO Europe/Budapest:HU Australia/Sydney:AU Australia/Melbourne:AU Australia/Brisbane:AU Australia/Perth:AU Australia/Adelaide:AU Pacific/Auckland:NZ America/New_York:US America/Chicago:US America/Denver:US America/Los_Angeles:US America/Phoenix:US America/Anchorage:US Pacific/Honolulu:US America/Toronto:CA America/Vancouver:CA America/Montreal:CA America/Edmonton:CA America/Mexico_City:MX America/Sao_Paulo:BR America/Santiago:CL America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE".split(" ").map((p) => p.split(":")));
+  const RULE_SPEC = [
+    { "v": "_detect", "d": "speed.cloudflare.com" },
+    { "v": "_detect", "d": "stun.cloudflare.com" },
+    { "v": "_detect", "d": "ipv4-check-perf.radar.cloudflare.com" },
+    { "v": "_detect", "d": "ipv6-check-perf.radar.cloudflare.com" },
+    { "v": "_detect", "d": "api4.ipify.org" },
+    { "v": "_detect", "d": "api6.ipify.org" },
+    { "v": "_detect", "d": "v4.ident.me" },
+    { "v": "_detect", "d": "v6.ident.me" }
+  ];
+  const RULE_FORMATS = ["clash", "surge", "shadowrocket", "quanx", "loon", "singbox", "xray", "omega", "plain"];
+  const RULE_NAMES = { clash: "Clash / Mihomo", surge: "Surge", shadowrocket: "Shadowrocket", quanx: "Quantumult X", loon: "Loon", singbox: "sing-box", xray: "Xray / v2rayN", omega: "SwitchyOmega", plain: "" };
+  const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const fmt = (v) => v == null || !isFinite(v) ? "\u2013" : v < 10 ? v.toFixed(1) : String(Math.round(v));
+  const caret = '<svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg>';
+  const LANG = document.documentElement.lang || "en";
+  const plural = {};
+  const pk = (lang, k, v) => v && typeof v.n === "number" ? k + "_" + (plural[lang] = plural[lang] || new Intl.PluralRules(lang)).select(v.n) : null;
+  const t = (k, v) => {
+    var _a, _b, _c, _d;
+    const D = I18N[LANG] || {}, p = pk(LANG, k, v), q = pk("en", k, v);
+    let s = (_d = (_c = (_b = (_a = p && D[p]) != null ? _a : D[k]) != null ? _b : q && I18N.en[q]) != null ? _c : I18N.en[k]) != null ? _d : k;
+    if (v) for (const p2 in v) s = s.split("{" + p2 + "}").join(v[p2]);
+    return s;
+  };
+  let regionNames = null;
+  const TW = { "zh-CN": "\u4E2D\u56FD\u53F0\u6E7E", "zh-TW": "\u4E2D\u570B\u53F0\u7063", en: "Taiwan, China", ja: "\u4E2D\u56FD\u53F0\u6E7E", ko: "\uC911\uAD6D \uB300\uB9CC", es: "Taiw\xE1n, China", fr: "Ta\xEFwan, Chine", de: "Taiwan, China", pt: "Taiwan, China", ru: "\u0422\u0430\u0439\u0432\u0430\u043D\u044C, \u041A\u0438\u0442\u0430\u0439" };
+  const country = (cc) => {
+    if (!cc || cc === "--") return "";
+    if (cc === "TW") return TW[LANG] || TW.en;
+    try {
+      regionNames = regionNames || new Intl.DisplayNames([LANG], { type: "region" });
+      return regionNames.of(cc);
+    } catch (e) {
+      return cc;
+    }
+  };
+  const tierName = (g) => t("g" + g).split(" \xB7 ")[1] || t("g" + g);
+  const tierCode = (g) => "T" + (g - 1);
+  function applyLang() {
+    try {
+      regionNames = new Intl.DisplayNames([LANG], { type: "region" });
+    } catch (e) {
+      regionNames = { of: (c) => c };
+    }
+    $$("[data-i]").forEach((el) => {
+      el.textContent = t(el.dataset.i);
+    });
+    $$("[data-ph]").forEach((el) => {
+      el.placeholder = t(el.dataset.ph);
+    });
+    $$("[data-al]").forEach((el) => {
+      el.setAttribute("aria-label", t(el.dataset.al));
+    });
+    $$("[data-tl]").forEach((el) => {
+      el.title = t(el.dataset.tl);
+    });
+    $("#footTxt").textContent = t("foot", { d: ENDPOINTS.verified });
+    renderDocs();
+  }
+  $("#lang").innerHTML = LANGS.filter(([c]) => LANG_PATHS[c]).map(([c, n]) => '<option value="'.concat(c, '">').concat(n, "</option>")).join("");
+  function defaults() {
+    return {
+      v: 4,
+      vendors: Object.keys(ENDPOINTS.vendors).concat(CDN_IDS),
+      cts: CT_ORDER.slice(),
+      mode: "std",
+      conc: 4,
+      timeout: 4e3,
+      need: { preset: "web", lat: 250, jit: 50, loss: 2 },
+      home: "all",
+      ip: "v4",
+      custom: [],
+      onlyPass: false,
+      hideIp: false,
+      rtc: true,
+      ruleFmt: "clash"
+    };
+  }
+  function sanitize(s) {
+    const d = defaults();
+    if (!s || typeof s !== "object") return d;
+    const o = Object.assign(d, s);
+    const https = (u) => typeof u === "string" && /^https:\/\//i.test(u);
+    o.custom = Array.isArray(o.custom) ? o.custom.filter((c) => c && https(c.url)).slice(0, 200).map((c) => Object.assign(
+      {
+        k: String(c.k),
+        name: String(c.name || c.url.split("/")[2]).slice(0, 40),
+        url: c.url,
+        method: c.method || "AUTO",
+        g: String(c.g || "").slice(0, 24)
+      },
+      /^[A-Z]{2}$/.test(c.cc) ? { cc: c.cc } : {},
+      /^[A-Z]{2}$/.test(c.cc) && c.ccSet ? { ccSet: true } : {},
+      c.geo === 3 ? { geo: 3 } : {},
+      https(c.url6) ? { url6: c.url6 } : {}
+    )) : [];
+    const groups = new Set(o.custom.map((c) => "c:" + c.g));
+    o.vendors = Array.isArray(o.vendors) ? o.vendors.filter((v) => ENDPOINTS.vendors[v] || CDN_IDS.includes(v) || groups.has(v)) : d.vendors;
+    if (Array.isArray(o.customSel)) o.custom.filter((c) => o.customSel.map(String).includes(c.k)).forEach((c) => {
+      if (!o.vendors.includes("c:" + c.g)) o.vendors.push("c:" + c.g);
+    });
+    delete o.customSel;
+    o.cts = Array.isArray(o.cts) ? o.cts.filter((c) => CT_ORDER.includes(c)) : d.cts;
+    if (o.exclHome === true) o.home = "excl";
+    delete o.exclHome;
+    if (!["all", "excl", "only"].includes(o.home)) o.home = "all";
+    if (!["v4", "v6"].includes(o.ip)) o.ip = "v4";
+    if (!MODES[o.mode]) o.mode = "std";
+    o.conc = clamp(+o.conc || 4, 1, 8);
+    o.timeout = [3e3, 4e3, 6e3, 8e3].includes(+o.timeout) ? +o.timeout : 4e3;
+    o.need = Object.assign(d.need, o.need || {});
+    if (!RULE_FORMATS.includes(o.ruleFmt)) o.ruleFmt = "clash";
+    if (!(o.v >= 3)) {
+      o.vendors = [...new Set(o.vendors.concat(CDN_IDS))];
+      o.v = 3;
+    }
+    if (o.v < 4) {
+      if (!o.vendors.some((v) => !isCdn(v))) {
+        o.vendors = [...new Set(d.vendors.concat(o.vendors))];
+        o.cts = d.cts;
+      }
+      o.v = 4;
+    }
+    return o;
+  }
+  function load() {
+    try {
+      return sanitize(JSON.parse(localStorage.getItem(KEY)));
+    } catch (e) {
+      return defaults();
+    }
+  }
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(ONE ? Object.assign({}, S, HOME_PICKS) : S));
+    } catch (e) {
+    }
+  }
+  let S = load();
+  const ONE = PAGE.vendor && ENDPOINTS.vendors[PAGE.vendor] ? PAGE.vendor : null, HOME_PICKS = { vendors: S.vendors, cts: S.cts };
+  (function parseLink() {
+    let q;
+    try {
+      q = new URLSearchParams(location.search);
+    } catch (e) {
+      return;
+    }
+    let changed2 = false;
+    if (q.get("vendors")) {
+      S.vendors = q.get("vendors").split(",").filter((v) => ENDPOINTS.vendors[v] || CDN_IDS.includes(v));
+      S.cts = CT_ORDER.filter((c) => ENDPOINTS.endpoints.some((e) => S.vendors.includes(e.vendor) && e.continent === c));
+      changed2 = true;
+    }
+    if (q.get("areas")) {
+      S.cts = q.get("areas").split(",").filter((c) => CT_ORDER.includes(c));
+      changed2 = true;
+    }
+    if (MODES[q.get("mode")]) {
+      S.mode = q.get("mode");
+      changed2 = true;
+    }
+    if (["v4", "v6"].includes(q.get("ip"))) {
+      S.ip = q.get("ip");
+      changed2 = true;
+    }
+    if (["all", "excl", "only"].includes(q.get("home"))) {
+      S.home = q.get("home");
+      changed2 = true;
+    }
+    const n = (q.get("need") || "").split(",").map(Number);
+    if (n.length === 3 && n.every((x) => x >= 0)) {
+      S.need = { preset: "custom", lat: n[0], jit: n[1], loss: n[2] };
+      changed2 = true;
+    }
+    if (changed2) save();
+  })();
+  const hostOf = (u) => {
+    try {
+      return new URL(u).hostname;
+    } catch (e) {
+      return u;
+    }
+  };
+  let enRegions = null;
+  const EN_REGION = (cc) => {
+    try {
+      enRegions = enRegions || new Intl.DisplayNames(["en"], { type: "region" });
+      return cc ? enRegions.of(cc) : "";
+    } catch (e) {
+      return "";
+    }
+  };
+  const cityName = (c, code) => {
+    if (!c || c === "?") return code;
+    const m = /^(.*?)( \d)?$/.exec(c), C = (I18N[LANG] || {}).cities || {};
+    return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || "");
+  };
+  const isCustom = (v) => String(v).startsWith("c:");
+  const vnm = (v) => isCustom(v) ? v.slice(2) || t("custom") : vtext(v, "name");
+  const vsh = (v) => isCustom(v) ? (v.slice(2) || "\u2605").slice(0, 4) : vshort[v] || "";
+  const vtext = (v, k) => {
+    var _a, _b;
+    return isCdn(v) ? k === "name" ? (CDNS.find((c) => c.vendor === v) || {}).name || "" : k === "kind" ? "CDN" : k === "note" ? t("cdn_note") : "" : (((I18N[LANG] || {}).vendors || {})[v] || {})[k] || ((_a = (I18N.en.vendors || {})[v]) == null ? void 0 : _a[k]) || ((_b = ENDPOINTS.vendors[v]) == null ? void 0 : _b[k]) || "";
+  };
+  const vshort = {
+    aws: "AWS",
+    oracle: "OCI",
+    vultr: "VLT",
+    azure: "AZ",
+    gcp: "GCP",
+    aliyun: "ALI",
+    tencent: "TC",
+    huawei: "HWC",
+    linode: "LIN",
+    digitalocean: "DO",
+    ovh: "OVH",
+    hetzner: "HTZ",
+    ibm: "IBM",
+    scaleway: "SCW",
+    volcengine: "VOLC",
+    baidu: "BAI",
+    naver: "NAV",
+    ionos: "ION",
+    aruba: "ARU",
+    leaseweb: "LSW",
+    gcore: "GC",
+    yandex: "YC",
+    custom: "\u2605",
+    "cdn:cloudflare": "CF",
+    "cdn:akamai": "AKA",
+    "cdn:cloudfront": "CFR",
+    "cdn:google": "GOOG",
+    "cdn:fastly": "FST",
+    "cdn:azure": "AFD"
+  };
+  const CC_CT = {};
+  ENDPOINTS.endpoints.forEach((e) => {
+    if (e.country) CC_CT[e.country] = e.continent;
+  });
+  Object.entries({
+    na: "US CA MX PA CR GT",
+    sa: "BR CL AR CO PE EC UY VE BO PY",
+    oc: "AU NZ FJ",
+    af: "ZA NG KE EG MA TN DZ GH TZ UG MU",
+    me: "AE IL SA QA BH TR OM KW JO LB IQ IR",
+    as: "HK TW KR JP SG MY TH VN PH ID IN PK KZ BD KH MO MN CN GE AM AZ UZ KG NP LK",
+    eu: "NL LU LT LV EE PL RO BG FI SE NO DK ES IT CH AT CZ SK HU GR PT IS MD RS AL UA RU CY IE BE HR SI DE FR GB BY BA MK ME LI MT"
+  }).forEach(([ct, l]) => l.split(" ").forEach((cc) => {
+    CC_CT[cc] = CC_CT[cc] || ct;
+  }));
+  let ALL = [];
+  function buildAll() {
+    ALL = ENDPOINTS.endpoints.map((e) => Object.assign({}, e, { vname: vnm(e.vendor), cityEn: e.city, city: e.city === EN_REGION(e.country) ? country(e.country) : cityName(e.city, e.region) })).concat(S.custom.map((c) => ({
+      id: "custom:" + c.k,
+      k: c.k,
+      vendor: "c:" + c.g,
+      vname: vnm("c:" + c.g),
+      region: hostOf(c.url),
+      city: c.name,
+      cityEn: c.name,
+      country: c.cc || "",
+      continent: CC_CT[c.cc] || "xx",
+      url: c.url,
+      url6: c.url6,
+      method: c.method || "AUTO",
+      tier: "?"
+    }))).concat(CDNS.map((c) => Object.assign({}, c, { vname: c.name, region: hostOf(c.url), city: t("cdn_edge"), cityEn: "Nearest edge" })));
+  }
+  const GIDS = () => [...new Set(S.custom.map((c) => "c:" + c.g))];
+  const allVids = () => VIDS.concat(GIDS());
+  const RUNNER = { host: null, anim: null, rate: 1, target: 1, recent: [], timer: 0, still: matchMedia("(prefers-reduced-motion: reduce)").matches };
+  function runner() {
+    if (RUNNER.host) return RUNNER.host;
+    const host = RUNNER.host = document.createElement("span");
+    host.className = "runner";
+    host.setAttribute("aria-hidden", "true");
+    const strip = document.createElement("i");
+    host.appendChild(strip);
+    RUNNER.anim = strip.animate([{ transform: "translateX(0)" }, { transform: "translateX(-1000px)" }], { duration: 760, iterations: Infinity, easing: "steps(20, end)" });
+    RUNNER.anim.pause();
+    return host;
+  }
+  function runnerStart() {
+    runner();
+    RUNNER.recent = [];
+    RUNNER.target = 1;
+    if (RUNNER.still) return;
+    RUNNER.anim.play();
+    clearInterval(RUNNER.timer);
+    RUNNER.timer = setInterval(() => {
+      if (!RUN) {
+        clearInterval(RUNNER.timer);
+        RUNNER.anim.pause();
+        return;
+      }
+      const next = RUNNER.rate + (RUNNER.target - RUNNER.rate) * 0.35;
+      if (Math.abs(next - RUNNER.rate) > 0.01) {
+        RUNNER.rate = next;
+        RUNNER.anim.updatePlaybackRate(next);
+      }
+    }, 100);
+  }
+  function runnerSample(v) {
+    if (v == null) return;
+    const a = RUNNER.recent;
+    a.push(v);
+    if (a.length > 8) a.shift();
+    const m = a.slice().sort((x, y) => x - y)[a.length >> 1];
+    RUNNER.target = clamp(150 / Math.max(1, m), 0.2, 3);
+  }
+  const FAV = /* @__PURE__ */ new Map();
+  function favOf(url) {
+    let u;
+    try {
+      u = new URL(url);
+    } catch (e) {
+      return "";
+    }
+    const root = u.hostname.split(".").slice(-2).join("."), letter = esc((root[0] || "?").toUpperCase()), known = FAV.get(u.origin);
+    if (known === "") return '<span class="fav l" aria-hidden="true">'.concat(letter, "</span>");
+    const alt = known || root === u.hostname ? "" : "https://" + root + "/favicon.ico";
+    return '<img class="fav" src="'.concat(esc(known || u.origin + "/favicon.ico"), '" data-o="').concat(esc(u.origin), '" data-alt="').concat(esc(alt), '" data-l="').concat(letter, '" alt="" referrerpolicy="no-referrer">');
+  }
+  document.addEventListener("load", (e) => {
+    const im = e.target;
+    if (im.classList && im.classList.contains("fav") && im.dataset.o) FAV.set(im.dataset.o, im.src);
+  }, true);
+  document.addEventListener("error", (e) => {
+    const im = e.target;
+    if (!im.classList || !im.classList.contains("fav") || !im.dataset.o) return;
+    if (im.dataset.alt) {
+      const a = im.dataset.alt;
+      im.dataset.alt = "";
+      im.src = a;
+      return;
+    }
+    FAV.set(im.dataset.o, "");
+    const s = document.createElement("span");
+    s.className = "fav l";
+    s.setAttribute("aria-hidden", "true");
+    s.textContent = im.dataset.l;
+    im.replaceWith(s);
+  }, true);
+  const gIcon = (v) => {
+    const cs = S.custom.filter((x) => "c:" + x.g === v), n = {};
+    cs.forEach((c) => {
+      const r = hostOf(c.url).split(".").slice(-2).join(".");
+      n[r] = (n[r] || 0) + 1;
+    });
+    const top = cs.slice().sort((a, b) => n[hostOf(b.url).split(".").slice(-2).join(".")] - n[hostOf(a.url).split(".").slice(-2).join(".")])[0];
+    return top ? favOf(top.url) : "";
+  };
+  const LOC = {};
+  let IPDB = null;
+  function ipdb() {
+    return IPDB || (IPDB = (async () => {
+      if (typeof DecompressionStream !== "function") throw new Error("no DecompressionStream");
+      let b = new Uint8Array(await (await fetch("/ipdb/v4.bin.gz")).arrayBuffer());
+      if (b[0] === 31 && b[1] === 139) b = new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
+      const dv = new DataView(b.buffer), n = dv.getUint32(4, true), nc = b[8], codes = [""];
+      for (let i = 0; i < nc; i++) codes.push(String.fromCharCode(b[9 + i * 2], b[10 + i * 2]));
+      const head = 9 + nc * 2, starts = new Uint32Array(n);
+      for (let i = 0, s = 0; i < n; i++) {
+        s = s + dv.getUint32(head + i * 4, true) >>> 0;
+        starts[i] = s;
+      }
+      return { starts, idx: b.subarray(head + n * 4, head + n * 5), codes };
+    })().catch((e) => {
+      if (typeof DecompressionStream === "function") IPDB = null;
+      throw e;
+    }));
+  }
+  async function ipCountry(ip) {
+    const { starts, idx, codes } = await ipdb(), x = ip.split(".").reduce((a, p) => a * 256 + +p, 0);
+    let lo = 0, hi = starts.length - 1;
+    while (lo < hi) {
+      const m = lo + hi + 1 >> 1;
+      if (starts[m] <= x) lo = m;
+      else hi = m - 1;
+    }
+    return codes[idx[lo]];
+  }
+  function myEcs() {
+    const pub = (x) => /^\d+\.\d+\.\d+\.\d+$/.test(x || "") && !/^(10|127|169\.254|192\.168|172\.(1[6-9]|2\d|3[01])|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7]))\./.test(x);
+    const ip = NET.verdict !== "warn" && pub(NET.ip4) ? NET.ip4 : (NET.rtc || []).find(pub);
+    return ip ? ip.split(".").slice(0, 3).join(".") + ".0/24" : "";
+  }
+  async function dnsLookup(host) {
+    if (/^\d+(\.\d+){3}$/.test(host)) return { ip: host };
+    for (let i = 0; i < 40 && NET.state !== "done"; i++) await new Promise((r) => setTimeout(r, 250));
+    const ecs = myEcs(), q = encodeURIComponent(host);
+    for (const url of [
+      "https://dns.google/resolve?type=A&name=" + q + (ecs ? "&edns_client_subnet=" + ecs : ""),
+      "https://cloudflare-dns.com/dns-query?ct=application/dns-json&type=A&name=" + q
+    ]) {
+      try {
+        const j = await (await fetch(url, { headers: { accept: "application/dns-json" }, credentials: "omit", signal: AbortSignal.timeout(5e3) })).json();
+        if (j.Status === 3) return { nx: true };
+        if (j.Status !== 0) continue;
+        const a = (j.Answer || []).filter((x) => x.type === 1);
+        return { ip: a.length ? a[a.length - 1].data : null };
+      } catch (e) {
+      }
+    }
+    throw new Error("dns");
+  }
+  const HOST_CC = {};
+  "US:lax,sjc,sea,dfw,dal,ord,chi,nyc,jfk,ewr,iad,ash,atl,mia,phx,den,slc,pdx,buf,las;CA:yyz,yvr,tor;HK:hkg;JP:tyo,nrt,hnd,osa,kix;SG:sin;TW:tpe;KR:icn,sel;NL:ams;DE:fra,fsn,nbg,dus,ber,muc;GB:lon,lhr;FR:par,cdg,sxb;IE:dub;LU:lux;SE:sto,arn;FI:hel;PL:waw;ES:mad;IT:mil,mxp;CH:zrh;AT:vie;AU:syd,mel;IN:bom,del;BR:gru,sao;ZA:jnb;AE:dxb".split(";").forEach((p) => {
+    const [cc, l] = p.split(":");
+    l.split(",").forEach((x) => {
+      HOST_CC[x] = cc;
+    });
+  });
+  const hostCC = (h) => {
+    for (const x of h.toLowerCase().split(/[.-]/).slice(0, -2)) {
+      const k = x.replace(/\d+$/, "");
+      if (HOST_CC[k]) return HOST_CC[k];
+    }
+    return "";
+  };
+  async function locateCustom(c) {
+    if (c.ccSet) return;
+    LOC[c.k] = "ing";
+    renderCtrl();
+    let cc = hostCC(hostOf(c.url));
+    if (!cc) try {
+      const { ip } = await dnsLookup(hostOf(c.url));
+      cc = ip ? await ipCountry(ip) : "";
+    } catch (e) {
+    }
+    const x = S.custom.find((y) => y.k === c.k);
+    if (!x) return;
+    if (cc && !x.ccSet) {
+      delete LOC[c.k];
+      x.cc = cc;
+      x.geo = 3;
+      const ct = CC_CT[cc];
+      if (ct && S.vendors.includes("c:" + x.g) && !S.cts.includes(ct)) S.cts = CT_ORDER.filter((k) => k === ct || S.cts.includes(k));
+    } else if (!cc) LOC[c.k] = "fail";
+    buildAll();
+    changed();
+  }
+  function dropCustom(pred) {
+    S.custom = S.custom.filter((c) => !pred(c));
+    const gs = new Set(GIDS());
+    S.vendors = S.vendors.filter((v) => !isCustom(v) || gs.has(v));
+    buildAll();
+    S.cts = coveredCts();
+    changed();
+    $("#plV").open = true;
+  }
+  let CEDIT = null, GEDIT = null, CADD = false, COPEN = null;
+  const PEN = '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>';
+  const ccMark = (c) => c.cc && !LOC[c.k] ? flag(c.cc) : '<span class="cnq'.concat(LOC[c.k] === "ing" ? "" : " bad", '">').concat(LOC[c.k] === "ing" ? "\u2026" : "?", "</span>");
+  function customList() {
+    return GIDS().map((v) => {
+      const cs = S.custom.filter((c) => "c:" + c.g === v), open = cs.find((c) => c.k === CEDIT || c.k === COPEN), on = S.vendors.includes(v);
+      return '<div class="cn-g'.concat(on ? " on" : "", '">').concat(gIcon(v)).concat(GEDIT === v ? '<input class="inp cg-in" id="cgIn" data-gin="'.concat(esc(v), '" maxlength="24" value="').concat(esc(v.slice(2)), '" placeholder="').concat(esc(t("custom")), '" aria-label="').concat(esc(t("cust_edit")), '">') : '<span class="cn-gn">'.concat(esc(vnm(v)), '</span><span class="c">').concat(cs.length, '</span><button type="button" class="x" data-gedit="').concat(esc(v), '" aria-label="').concat(esc(t("cust_edit")), '" title="').concat(esc(t("cust_edit")), '">').concat(PEN, "</button>")) + '<button type="button" class="x" data-delg="'.concat(esc(v), '" aria-label="').concat(esc(t("del")), '" title="').concat(esc(t("del")), '">\xD7</button></div>') + '<div class="cn-chips">'.concat(cs.map((c) => '<button type="button" class="cnc'.concat(on ? " sel" : "", '" data-cn="').concat(esc(c.k), '" aria-expanded="').concat(open === c, '" title="').concat(esc(c.name + " \xB7 " + hostOf(c.url)), '">').concat(ccMark(c), "<span>").concat(esc(c.name), "</span></button>")).join(""), "</div>") + (!open ? "" : CEDIT === open.k ? editRow(open) : nodeRow(open));
+    }).join("");
+  }
+  function nodeRow(c) {
+    return '<div class="cn">'.concat(favOf(c.url), '<span class="cn-h" title="').concat(esc(c.url), '">').concat(esc(c.url.replace(/^https:\/\//, "").replace(/\/$/, "")), "</span>") + '<label class="cn-cc'.concat(c.ccSet ? " set" : "", '" title="').concat(esc((c.ccSet ? "" : t("cust_auto") + " \xB7 ") + (country(c.cc) || t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail"))), '">') + (c.cc && !LOC[c.k] ? flag(c.cc) + '<span class="st">'.concat(esc(country(c.cc)), "</span>") : '<span class="st'.concat(LOC[c.k] === "ing" ? "" : " bad", '">').concat(esc(t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail")), "</span>")) + '<select data-cc="'.concat(esc(c.k), '" aria-label="').concat(esc(t("cust_cc")), '"><option value="">').concat(esc(t("cust_auto") + (c.cc && !c.ccSet ? " \xB7 " + country(c.cc) : "")), "</option>").concat(c.ccSet ? '<option value="'.concat(c.cc, '" selected>').concat(esc(country(c.cc)), "</option>") : "", "</select></label>") + '<button type="button" class="x" data-edit="'.concat(esc(c.k), '" aria-label="').concat(esc(t("cust_edit")), '" title="').concat(esc(t("cust_edit")), '">').concat(PEN, "</button>") + '<button type="button" class="x" data-del="'.concat(esc(c.k), '" aria-label="').concat(esc(t("del")), '" title="').concat(esc(t("del")), '">\xD7</button></div>');
+  }
+  const CHECK = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>';
+  function editRow(c) {
+    const groups = [...new Set([""].concat(GIDS().map((v) => v.slice(2))))];
+    return '<div class="cn on">'.concat(favOf(c.url), '<input class="inp cn-in" id="ceName" maxlength="40" value="').concat(esc(c.name), '" placeholder="').concat(esc(t("cust_name_ph")), '" aria-label="').concat(esc(t("cust_name_ph")), '">') + '<input class="inp cn-in u" id="ceUrl" maxlength="500" value="'.concat(esc(c.url), '" aria-label="URL">') + '<select class="inp" id="ceGroup" aria-label="'.concat(esc(t("cust_group")), '">').concat(groups.map((g) => '<option value="'.concat(esc(g), '"').concat(g === c.g ? " selected" : "", ">").concat(esc(g || t("cust_nogroup")), "</option>")).join(""), "</select>") + '<button type="button" class="x ok" data-esave="'.concat(esc(c.k), '" aria-label="').concat(esc(t("cust_save")), '" title="').concat(esc(t("cust_save")), '">').concat(CHECK, "</button>") + '<button type="button" class="x" data-ecancel aria-label="'.concat(esc(t("cust_cancel")), '" title="').concat(esc(t("cust_cancel")), '">\xD7</button></div>');
+  }
+  async function saveNode(k, name, raw, g) {
+    raw = String(raw).trim();
+    name = String(name).trim().slice(0, 40);
+    g = String(g).trim().slice(0, 24);
+    let u;
+    try {
+      u = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : "https://" + raw);
+    } catch (x) {
+      return t("cust_err_url");
+    }
+    if (u.protocol !== "https:") return t("cust_err_https");
+    if (!u.hostname.includes(".")) return t("cust_err_url");
+    if (S.custom.some((x) => x.url === u.href && x.k !== k)) return t("cust_err_dup");
+    let c = k ? S.custom.find((x) => x.k === k) : null;
+    const moved = !c || hostOf(c.url) !== u.hostname;
+    if (moved) try {
+      if ((await dnsLookup(u.hostname)).nx) return t("cust_err_nx", { h: u.hostname });
+    } catch (e) {
+    }
+    if (c) {
+      if (moved && !c.ccSet) {
+        delete c.cc;
+        delete c.geo;
+      }
+      Object.assign(c, { name: name || u.hostname, url: u.href, g });
+    } else {
+      c = { k: Date.now().toString(36), name: name || u.hostname, url: u.href, method: "AUTO", g };
+      S.custom.push(c);
+    }
+    if (!S.vendors.includes("c:" + g)) S.vendors.push("c:" + g);
+    const gs = new Set(GIDS());
+    S.vendors = S.vendors.filter((v) => !isCustom(v) || gs.has(v));
+    buildAll();
+    S.cts = coveredCts();
+    changed();
+    $("#plV").open = true;
+    if (moved) locateCustom(c);
+    return "";
+  }
+  async function saveEdit(k) {
+    const msg = await saveNode(k, $("#ceName").value, $("#ceUrl").value, $("#ceGroup").value);
+    if (msg) {
+      toast(msg);
+      return;
+    }
+    CEDIT = null;
+    renderCtrl();
+    $("#plV").open = true;
+    toast(t("cust_saved"));
+  }
+  let FG = "", FNEW = false;
+  function groupPick() {
+    const named = GIDS().filter((v) => v.length > 2).map((v) => v.slice(2));
+    if (FG && !named.includes(FG)) FG = "";
+    return '<div class="gpick"><span class="lbl">'.concat(esc(t("cust_group")), "</span>") + '<button type="button" class="gp" data-gp="" aria-pressed="'.concat(!FNEW && !FG, '">').concat(esc(t("cust_nogroup")), "</button>") + named.map((g) => '<button type="button" class="gp" data-gp="'.concat(esc(g), '" aria-pressed="').concat(!FNEW && FG === g, '">').concat(gIcon("c:" + g)).concat(esc(g), "</button>")).join("") + (FNEW ? '<input class="inp gp-in" id="cGroup" maxlength="24" placeholder="'.concat(esc(t("cust_group_ph")), '" aria-label="').concat(esc(t("cust_group_ph")), '">') : '<button type="button" class="gp add" data-gp-new>\uFF0B '.concat(esc(t("cust_newgroup")), "</button>")) + "</div>";
+  }
+  function renameGroup(v, name) {
+    GEDIT = null;
+    const g = name.trim().slice(0, 24), nv = "c:" + g;
+    if (nv !== v) {
+      if (FG === v.slice(2)) FG = g;
+      S.custom.forEach((c) => {
+        if ("c:" + c.g === v) c.g = g;
+      });
+      S.vendors = [...new Set(S.vendors.map((x) => x === v ? nv : x))];
+      buildAll();
+    }
+    changed();
+    $("#plV").open = true;
+  }
+  document.addEventListener("keydown", (e) => {
+    if (CADD && e.key === "Escape" && e.target.closest && e.target.closest("#cform")) {
+      e.stopPropagation();
+      CADD = false;
+      renderCtrl();
+      $("#plV").open = true;
+      return;
+    }
+    if ((e.target.id === "ceName" || e.target.id === "ceUrl") && CEDIT) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        saveEdit(CEDIT);
+      } else if (e.key === "Escape") {
+        e.stopPropagation();
+        CEDIT = null;
+        renderCtrl();
+      }
+      return;
+    }
+    if (e.target.id === "cgIn") {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        renameGroup(e.target.dataset.gin, e.target.value);
+      } else if (e.key === "Escape") {
+        e.stopPropagation();
+        GEDIT = null;
+        renderCtrl();
+      }
+    }
+  });
+  document.addEventListener("focusout", (e) => {
+    if (e.target.id === "cgIn" && GEDIT) renameGroup(e.target.dataset.gin, e.target.value);
+  });
+  document.addEventListener("focusin", (e) => {
+    const s = e.target;
+    if (s.dataset == null || s.dataset.cc == null || s.dataset.full) return;
+    s.dataset.full = "1";
+    const cur = s.value;
+    Object.keys(CC_CT).sort((a, b) => country(a).localeCompare(country(b))).forEach((cc) => {
+      if (cc !== cur) s.add(new Option(country(cc), cc));
+    });
+    s.value = cur;
+  });
+  const flagCode = (cc) => cc === "TW" ? "cn" : cc.toLowerCase();
+  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? '<img class="'.concat(cls || "flag", '" src="/flags/').concat(flagCode(cc), '.svg" alt="').concat(esc(country(cc)), '" width="20" height="15" loading="lazy">') : "";
+  const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_CC[NET.tz] ? TZ_CC[NET.tz] : NET.cc || "";
+  const excluded = (e) => {
+    if (S.home === "all" || !e.country || !homeCC()) return false;
+    const mine = e.country === homeCC();
+    return S.home === "excl" ? mine : !mine;
+  };
+  const selected = () => ALL.filter((e) => S.vendors.includes(e.vendor) && (e.continent === "xx" || S.cts.includes(e.continent)) && !excluded(e));
+  const VIDS = Object.keys(ENDPOINTS.vendors);
+  const coveredCts = () => CT_ORDER.filter((c) => ENDPOINTS.endpoints.some((e) => S.vendors.includes(e.vendor) && e.continent === c) || S.custom.some((x) => S.vendors.includes("c:" + x.g) && CC_CT[x.cc] === c));
+  if (ONE) {
+    S.vendors = [ONE];
+    S.cts = coveredCts();
+  }
+  const pickToggle = (list, all, x) => all.length < 2 ? list.includes(x) ? [] : [x] : list.length === all.length ? [x] : list.length === 1 && list[0] === x ? all.slice() : list.includes(x) ? list.filter((y) => y !== x) : list.concat(x);
+  let R = /* @__PURE__ */ new Map(), VIEW = { ts: 0, live: true, peak: false };
+  function stats(r) {
+    if (r && r.sum) {
+      const u = r.sum, ok2 = Math.round(u.n * (1 - u.loss));
+      return { n: u.n, ok: ok2, loss: u.loss, med: u.med, p25: u.p25, p75: u.p75, p90: u.p90, jit: u.jit, score: u.med + 2 * u.jit + u.loss * 1e3 };
+    }
+    const s = r ? r.s : [], ok = s.filter((v) => v != null), n = s.length;
+    if (!ok.length) return { n, ok: 0, loss: n ? 1 : 0 };
+    const a = ok.slice().sort((x, y) => x - y);
+    const q = (p) => {
+      const i = p * (a.length - 1), lo = Math.floor(i), hi = Math.ceil(i);
+      return a[lo] + (a[hi] - a[lo]) * (i - lo);
+    };
+    const avg = ok.reduce((x, y) => x + y, 0) / ok.length;
+    const sd = Math.sqrt(ok.reduce((x, y) => x + (y - avg) ** 2, 0) / ok.length);
+    let jit = 0;
+    for (let i = 1; i < ok.length; i++) jit += Math.abs(ok[i] - ok[i - 1]);
+    jit = ok.length > 1 ? jit / (ok.length - 1) : 0;
+    const med = q(0.5), loss = (n - ok.length) / n;
+    return { n, ok: ok.length, loss, min: a[0], max: a[a.length - 1], avg, med, p25: q(0.25), p75: q(0.75), p90: q(0.9), sd, jit, score: med + 2 * jit + loss * 1e3 };
+  }
+  const grade = (v) => v == null ? 0 : GRADES.findIndex((g) => v <= g) + 1 || 5;
+  const NEED = () => VIEW.need || S.need;
+  const pkt = () => !!(VIEW.shared && VIEW.shared.m === "icmp");
+  const meets = (st) => {
+    if (!st || !st.ok) return false;
+    const N = NEED();
+    return (!N.lat || st.med <= N.lat) && (!N.jit || st.jit <= N.jit) && (!N.loss ? st.loss === 0 : st.loss * 100 <= N.loss);
+  };
+  const shaky = (st) => st.ok > 1 && (st.jit > Math.max(10, st.med * 0.2) || st.loss > 0);
+  const LOG = [];
+  function logReq(url, method, ms) {
+    LOG.push([Date.now(), method, hostOf(url), ms]);
+    if (LOG.length > 400) LOG.shift();
+    if (!$("#logDlg").hidden) renderLog();
+  }
+  function renderLog() {
+    const tf = new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+    $("#log").innerHTML = LOG.length ? LOG.slice().reverse().slice(0, 300).map(([ts, m, h, ms]) => '<div class="'.concat(ms == null ? "f" : "", '"><span>').concat(tf.format(ts), "</span><span>").concat(m, "</span><span>").concat(esc(h), "</span><span>").concat(ms == null ? t("failed") : ms ? fmt(ms) + " ms" : "ok", "</span></div>")).join("") : '<div class="note">'.concat(esc(t("log_empty")), "</div>");
+  }
+  const bust = (url) => url + (url.includes("?") ? "&" : "?") + "_clp=" + Math.random().toString(36).slice(2, 10);
+  async function probeFetch(url, method, timeout, signal, keep, noacao) {
+    const ctl = new AbortController(), stop = () => ctl.abort();
+    const tm = setTimeout(stop, timeout);
+    signal && signal.addEventListener("abort", stop);
+    const t0 = performance.now();
+    let ms = null;
+    try {
+      const res = await fetch(keep ? url : bust(url), { method: method === "CORS" ? "GET" : method, mode: method === "CORS" || noacao ? "cors" : "no-cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: ctl.signal });
+      if (method === "CORS") await res.arrayBuffer();
+      ms = performance.now() - t0;
+    } catch (e) {
+      if (noacao && e.name === "TypeError" && !ctl.signal.aborted) ms = performance.now() - t0;
+    }
+    clearTimeout(tm);
+    signal && signal.removeEventListener("abort", stop);
+    logReq(url, method, ms);
+    return ms;
+  }
+  function probeImg(url, timeout, signal) {
+    return new Promise((res) => {
+      const img = new Image();
+      let done = false;
+      const t0 = performance.now();
+      const fin = (v) => {
+        if (done) return;
+        done = true;
+        clearTimeout(tm);
+        img.onload = img.onerror = null;
+        logReq(url, "IMG", v);
+        res(v);
+      };
+      img.onload = img.onerror = () => fin(performance.now() - t0);
+      const tm = setTimeout(() => fin(null), timeout);
+      signal && signal.addEventListener("abort", () => fin(null), { once: true });
+      img.referrerPolicy = "no-referrer";
+      img.src = bust(url);
+    });
+  }
+  const probe = (ep, m, signal) => m === "IMG" ? probeImg(ep.url, S.timeout, signal) : probeFetch(ep.url, m, S.timeout, signal, ep.nobust, ep.noacao);
+  async function corsCheck(ep) {
+    try {
+      const res = await fetch(ep.nobust ? ep.url : bust(ep.url), { method: "GET", mode: "cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(S.timeout) });
+      logReq(ep.url, "CORS", 0);
+      if (ep.expect) return (await res.text()).includes(ep.expect);
+      return res.status > 0;
+    } catch (e) {
+      logReq(ep.url, "CORS", null);
+      return false;
+    }
+  }
+  const urlFor = (e, ip) => ip !== "v6" ? e.url : e.url6 || (isCustom(e.vendor) || isCdn(e.vendor) || (e.fam || "").includes("6") ? e.url : null);
+  async function runEndpoint(ep, n, signal) {
+    const ip = VIEW.ip || "v4", url = urlFor(ep, ip);
+    if (!url) {
+      R.set(ep.id, { s: [], w: null, m: ep.method, st: "nov6", ip });
+      markDirty(ep.id, true);
+      return;
+    }
+    ep = Object.assign({}, ep, { url });
+    const r = { s: [], w: null, m: ep.method, st: "running", ip };
+    R.set(ep.id, r);
+    markDirty(ep.id);
+    const gap = () => sleep(GAP_MS + Math.random() * 120);
+    let m = ep.method === "AUTO" ? "GET" : ep.method;
+    let w = ep.noacao && await probeFetch(ep.url, m, S.timeout, signal, ep.nobust) == null ? null : await probe(ep, m, signal);
+    if (w == null && m !== "IMG" && (ep.fallback === "IMG" || ep.method === "AUTO") && !signal.aborted) {
+      const wi = await probe(ep, "IMG", signal);
+      if (wi != null) {
+        m = "IMG";
+        w = wi;
+      }
+    }
+    r.w = w;
+    r.m = m;
+    let fails = w == null ? 1 : 0;
+    if (ep.method === "AUTO" && m !== "IMG" && w != null) {
+      const g = [], h = [];
+      for (let i = 0; i < 2 && !signal.aborted; i++) {
+        await gap();
+        g.push(await probe(ep, "GET", signal));
+        await gap();
+        h.push(await probe(ep, "HEAD", signal));
+      }
+      const md = (a) => {
+        const b = a.filter((v) => v != null).sort((x, y) => x - y);
+        return b.length ? b[b.length >> 1] : Infinity;
+      };
+      m = md(h) < md(g) * 0.85 ? "HEAD" : "GET";
+      r.m = m;
+      r.s.push(...(m === "HEAD" ? h : g).map((v) => v == null ? null : Math.round(v * 10) / 10));
+      (m === "HEAD" ? h : g).forEach(runnerSample);
+      markDirty(ep.id, true);
+    }
+    while (r.s.length < n && !signal.aborted && fails < FAIL_STOP) {
+      await gap();
+      if (signal.aborted) break;
+      const v = await probe(ep, m, signal);
+      if (signal.aborted) break;
+      r.s.push(v == null ? null : Math.round(v * 10) / 10);
+      runnerSample(v);
+      fails = v == null ? fails + 1 : 0;
+      markDirty(ep.id, true);
+    }
+    if (!signal.aborted && ep.cors && r.s.some((v) => v != null)) r.vf = await corsCheck(ep);
+    r.st = signal.aborted ? "stopped" : fails >= FAIL_STOP && !r.s.some((v) => v != null) ? "fail" : "done";
+    markDirty(ep.id, true);
+  }
+  function interleave(list) {
+    const by = /* @__PURE__ */ new Map();
+    for (const e of list) {
+      if (!by.has(e.vendor)) by.set(e.vendor, []);
+      by.get(e.vendor).push(e);
+    }
+    const qs = [...by.values()], out = [];
+    while (qs.some((q) => q.length)) for (const q of qs) if (q.length) out.push(q.shift());
+    return out;
+  }
+  let RUN = null;
+  async function runTests(list, n, conc, keep) {
+    if (RUN || !list.length) return;
+    const ctl = new AbortController();
+    RUN = { ctl, total: list.length, done: 0, t0: performance.now(), n, list };
+    runnerStart();
+    if (VIEW.shared) {
+      clearHash();
+      $("#sharedT").hidden = true;
+      hideReceived();
+    }
+    if (!$("#shareBad").hidden) {
+      clearHash();
+      $("#shareBad").hidden = true;
+    }
+    if (!keep || !VIEW.live) {
+      R = /* @__PURE__ */ new Map();
+      VIEW = { ts: Date.now(), live: true, peak: isPeak(/* @__PURE__ */ new Date()), mode: n, ip: S.ip, need: Object.assign({}, S.need) };
+    }
+    for (const e of list) R.set(e.id, { s: [], w: null, m: e.method, st: "queued" });
+    renderAll();
+    const queue = interleave(list), active = /* @__PURE__ */ new Map();
+    const worker = async () => {
+      while (!ctl.signal.aborted) {
+        const i = queue.findIndex((e) => (active.get(e.vendor) || 0) < VENDOR_CAP);
+        if (i < 0) {
+          if (!queue.length) return;
+          await sleep(60);
+          continue;
+        }
+        const ep = queue.splice(i, 1)[0];
+        active.set(ep.vendor, (active.get(ep.vendor) || 0) + 1);
+        try {
+          await runEndpoint(ep, n, ctl.signal);
+        } finally {
+          active.set(ep.vendor, active.get(ep.vendor) - 1);
+          RUN.done++;
+          saveSoon();
+        }
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(conc, list.length) }, worker));
+    if (ctl.signal.aborted) for (const e of list) {
+      const r = R.get(e.id);
+      if (r && (r.st === "queued" || r.st === "running")) r.st = "stopped";
+    }
+    RUN = null;
+    saveResults();
+    renderAll();
+  }
+  function snapshot() {
+    const res = {};
+    for (const [id, r] of R) if (r.st !== "queued") res[id] = { s: r.s, w: r.w, m: r.m, st: r.st, vf: r.vf, ip: r.ip };
+    return { v: 1, ts: VIEW.ts || Date.now(), peak: !!VIEW.peak, mode: VIEW.mode, ip: VIEW.ip || "v4", need: VIEW.need, net: NET.ok ? { asn: NET.asn, org: NET.org, cc: NET.cc, city: NET.city, colo: NET.colo, proxy: NET.verdict === "warn" } : null, res };
+  }
+  function saveResults() {
+    const snap = snapshot();
+    if (!Object.keys(snap.res).length) return;
+    try {
+      localStorage.setItem(RES_KEY, JSON.stringify(snap));
+      const h = loadHist().filter((x) => x.ts !== snap.ts);
+      h.unshift(snap);
+      localStorage.setItem(HIST_KEY, JSON.stringify(h.slice(0, MAX_HIST)));
+    } catch (e) {
+    }
+    renderHist();
+  }
+  let saveT = 0;
+  function saveSoon() {
+    if (!saveT) saveT = setTimeout(() => {
+      saveT = 0;
+      saveResults();
+    }, 3e3);
+  }
+  addEventListener("pagehide", () => {
+    if (RUN) saveResults();
+  });
+  const scoped = !!ONE;
+  function restoreLast() {
+    try {
+      const last = JSON.parse(localStorage.getItem(RES_KEY));
+      if (!last || !last.res) return;
+      if (scoped) last.res = Object.fromEntries(Object.entries(last.res).filter(([id]) => S.vendors.includes(isCdn(id) ? id : id.split(":")[0])));
+      applySnapshot(last, true);
+    } catch (e) {
+    }
+  }
+  function loadHist() {
+    try {
+      const h = JSON.parse(localStorage.getItem(HIST_KEY));
+      return Array.isArray(h) ? h : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  function applySnapshot(snap, live) {
+    R = /* @__PURE__ */ new Map();
+    for (const [id, r] of Object.entries(snap.res || {})) if (r && Array.isArray(r.s)) R.set(id, { s: r.s.map((v) => v == null ? null : +v), w: r.w, m: r.m, st: r.st === "running" ? "stopped" : r.st || "done", vf: r.vf, ip: r.ip });
+    VIEW = { ts: snap.ts, live, peak: !!snap.peak, mode: snap.mode, ip: snap.ip || "v4", need: snap.need && typeof snap.need === "object" ? snap.need : void 0 };
+  }
+  let NET = { ok: false, state: "idle" }, netOpen = false, netRun = 0;
+  const isPeak = (d) => d.getHours() >= PEAK[0] && d.getHours() < PEAK[1];
+  async function getTrace() {
+    const u = "https://speed.cloudflare.com/cdn-cgi/trace";
+    try {
+      const r = await fetch(u, { cache: "no-store", signal: AbortSignal.timeout(6e3) });
+      const tx = await r.text();
+      logReq(u, "GET", 0);
+      if (/^ip=/m.test(tx)) return { url: u, data: Object.fromEntries(tx.trim().split("\n").map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)])) };
+    } catch (e) {
+      logReq(u, "GET", null);
+    }
+    return null;
+  }
+  async function stunIPs() {
+    if (!window.RTCPeerConnection) return null;
+    let pc;
+    try {
+      pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.cloudflare.com:3478" }] });
+      pc.createDataChannel("x");
+      const ips = /* @__PURE__ */ new Set();
+      const done = new Promise((res) => {
+        pc.onicecandidate = (e) => {
+          if (!e.candidate) return res();
+          const c = e.candidate.candidate || "", p = c.split(" ");
+          if (/ typ srflx /.test(c) && p[4]) ips.add(p[4]);
+        };
+        setTimeout(res, 3500);
+      });
+      await pc.setLocalDescription(await pc.createOffer());
+      await done;
+      logReq("https://stun.cloudflare.com", "STUN", 0);
+      return [...ips];
+    } catch (e) {
+      return null;
+    } finally {
+      try {
+        pc && pc.close();
+      } catch (e) {
+      }
+    }
+  }
+  async function checkNetwork() {
+    const run = ++netRun;
+    const step = (k, v) => {
+      if (run === netRun && NET.state === "checking") {
+        NET.step = t(k, v);
+        renderNet();
+      }
+    };
+    NET = { ok: false, state: "checking", recheck: NET.state === "done" };
+    step("chk_net");
+    const tz = (() => {
+      try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone;
+      } catch (e) {
+        return "";
+      }
+    })();
+    const RX_IP = /"ip"\s*:\s*"([^"]+)"/, RX_RADAR = /"ip_address"\s*:\s*"([^"]+)"/, RX_TRACE = /^ip=(.*)$/m;
+    const firstOk = (ps) => new Promise((ok, no) => {
+      let left = ps.length;
+      if (!left) no(new Error("none"));
+      for (const p of ps) Promise.resolve(p).then(ok, () => {
+        if (--left === 0) no(new Error("all failed"));
+      });
+    });
+    const IP_SRC = {
+      4: [
+        ["https://ipv4-check-perf.radar.cloudflare.com/", RX_RADAR],
+        ["https://ipv4-check-perf.radar.cloudflare.com/cdn-cgi/trace", RX_TRACE],
+        ["https://api4.ipify.org/?format=json", RX_IP],
+        ["https://v4.ident.me/json", RX_IP]
+      ],
+      6: [
+        ["https://ipv6-check-perf.radar.cloudflare.com/", RX_RADAR],
+        ["https://ipv6-check-perf.radar.cloudflare.com/cdn-cgi/trace", RX_TRACE],
+        ["https://api6.ipify.org/?format=json", RX_IP],
+        ["https://v6.ident.me/json", RX_IP]
+      ]
+    };
+    const ipSeen = [], ipAll = [];
+    const ipOne = (f, u, rx) => {
+      const p = ipOne1(f, u, rx);
+      ipAll.push(p);
+      return p;
+    };
+    const ipOne1 = async (f, u, rx) => {
+      try {
+        const x = await (await fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(5e3) })).text();
+        const m = rx.exec(x), ip = m ? m[1].trim() : "";
+        if (ip && f === 6 === ip.includes(":")) {
+          logReq(u, "GET", 0);
+          ipSeen.push(ip);
+          return { ip, src: new URL(u).hostname };
+        }
+      } catch (e) {
+      }
+      logReq(u, "GET", null);
+      throw new Error("no ip");
+    };
+    const ipOf = async (f) => {
+      for (let round = 0; round < 2; round++) {
+        try {
+          return await firstOk(IP_SRC[f].map(([u, rx]) => ipOne(f, u, rx)));
+        } catch (e) {
+        }
+      }
+      return { ip: "", src: "" };
+    };
+    const meU = "/_ms/me";
+    const meP = fetch(meU, { cache: "no-store", signal: AbortSignal.timeout(5e3) }).then((r) => r.ok ? r.json() : null).then((j) => {
+      if (!j || !j.ip) {
+        logReq(location.origin + meU, "GET", null);
+        return null;
+      }
+      logReq(location.origin + meU, "GET", 0);
+      return {
+        clientIp: j.ip,
+        family: j.family || (j.ip.includes(":") ? 6 : 4),
+        country: j.country || "",
+        city: j.city || "",
+        asn: j.asn,
+        asOrganization: j.org || "",
+        colo: j.colo ? { iata: j.colo } : null,
+        httpProtocol: j.http || ""
+      };
+    }).catch(() => null);
+    const metaP = fetch("https://speed.cloudflare.com/meta", { cache: "no-store", signal: AbortSignal.timeout(6e3) }).then((r) => r.ok ? r.json() : null).then((j) => {
+      logReq("https://speed.cloudflare.com/meta", "GET", 0);
+      return j;
+    }).catch(() => null);
+    const traceP = getTrace();
+    const pathP = Promise.all([metaP, traceP]).then(([m, tr2]) => m && m.clientIp || tr2 && tr2.data.ip || "");
+    const fams = Promise.all([4, 6].map((f) => Promise.all([meP, pathP]).then(([m, ip]) => m && m.family === f && (!ip || ip === m.clientIp) ? { ip: m.clientIp, src: location.hostname } : ipOf(f))));
+    const rtcP = S.rtc ? stunIPs() : Promise.resolve(null);
+    const selfP = fetch("/cdn-cgi/trace", { cache: "no-store", signal: AbortSignal.timeout(5e3) }).then((r) => r.ok ? r.text() : "").then((x) => (RX_TRACE.exec(x) || [])[1] || "").catch(() => "");
+    const edgeU = "https://speed.cloudflare.com/__down?bytes=0";
+    const edgeP = metaP.then(async (m) => {
+      const xs = [], warm = m ? 0 : 1;
+      for (let i = 0; i < 3 + warm; i++) {
+        if (i >= warm) step("chk_edge", { i: i - warm + 1, n: 3 });
+        const t0 = performance.now();
+        try {
+          await fetch(bust(edgeU), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4e3) });
+          if (i >= warm) xs.push(performance.now() - t0);
+        } catch (e) {
+        }
+      }
+      if (xs.length) logReq(edgeU, "GET", 0);
+      xs.sort((a, b) => a - b);
+      return xs.length ? xs[xs.length >> 1] : null;
+    });
+    const mkN = (m, tr2) => ({
+      ok: !!(m || tr2.ip),
+      state: "checking",
+      partial: true,
+      step: NET.step,
+      tz,
+      ip: m && m.clientIp || tr2.ip || "",
+      cc: m && m.country || tr2.loc || "",
+      city: m ? m.city || "" : "",
+      asn: m ? m.asn : null,
+      org: m ? m.asOrganization : "",
+      colo: m && m.colo && m.colo.iata || tr2.colo || "",
+      http: tr2.http || m && m.httpProtocol || "",
+      warp: tr2.warp || "off",
+      recheck: NET.recheck
+    });
+    let me = null, painted = false;
+    meP.then((m) => {
+      me = m;
+      if (m && !painted && run === netRun) {
+        painted = true;
+        NET = mkN(m, {});
+        renderNet();
+      }
+    });
+    const [meta, trace] = await Promise.all([metaP, traceP]);
+    painted = true;
+    const tr = trace ? trace.data : {};
+    let N = mkN(meta, tr);
+    if (!N.ok && (me = await meP)) {
+      N = mkN(me, {});
+      N.self = true;
+    } else if (me && me.clientIp === N.ip) {
+      for (const [k, v] of Object.entries(mkN(me, {}))) if (!N[k] && v) N[k] = v;
+    }
+    if (run !== netRun) return;
+    if (N.ok) {
+      NET = N;
+      renderNet();
+    }
+    edgeP.then(() => step("chk_ip"));
+    const [edge, [r4, r6], rtc, selfIp] = await Promise.all([edgeP, fams, rtcP, selfP]);
+    if (run !== netRun) return;
+    N.edge = edge;
+    N.rtc = rtc;
+    N.ip4 = r4.ip;
+    N.ip6 = r6.ip;
+    N.src4 = r4.src;
+    N.src6 = r6.src;
+    N.has6 = N.ip6 ? true : N.ip4 ? false : null;
+    const reasons = [];
+    if (N.org && DC_RE.test(N.org)) reasons.push(t("r_dc", { org: esc(N.org) + (N.asn ? " (AS" + N.asn + ")" : "") }));
+    if (N.warp && N.warp !== "off") reasons.push(t("r_warp"));
+    const tzc = TZ_CC[tz];
+    if (tzc && N.cc && tzc !== N.cc && !(tzc === "CN" && ["HK", "MO"].includes(N.cc))) reasons.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(N.cc)) }));
+    const fam = (x) => x.includes(":") ? 6 : 4;
+    if (rtc && rtc.length && N.ip) {
+      const same = rtc.filter((x) => fam(x) === fam(N.ip));
+      if (same.length && !same.includes(N.ip)) reasons.push(t("r_rtc", { a: esc(same[0]), b: esc(N.ip) }));
+    }
+    const v6g = (a) => {
+      const [h, tl = ""] = a.toLowerCase().split("::"), H = h ? h.split(":") : [], T = tl ? tl.split(":") : [];
+      return [...H, ...Array(Math.max(0, 8 - H.length - T.length)).fill("0"), ...T].map((g) => g.padStart(4, "0"));
+    };
+    const netOf = (x) => fam(x) === 6 ? v6g(x).slice(0, 4).join(":") : x.split(".").slice(0, 2).join(".");
+    for (const [f, got] of [[4, N.ip4], [6, N.ip6]]) {
+      const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find((x) => fam(x) === f);
+      if (got && ref && netOf(got) !== netOf(ref)) reasons.push(t("r_fam", { f: "IPv" + f, a: esc(got), b: esc(ref) }));
+    }
+    const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
+    const RELAY_IP = /^(104\.28\.|146\.75\.|172\.2(2[4-9]|3[01])\.|2a09:bac[0-7]:|2a02:26f7:|2a04:4e41:)/i;
+    const viaRelay = !N.self && N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));
+    const direct = () => [...ipSeen, selfIp].filter((x) => x && !RELAY_IP.test(x));
+    if (viaRelay && !direct().length) {
+      await Promise.all(ipAll.map((p) => Promise.resolve(p).catch(() => {
+      })));
+      if (run !== netRun) return;
+    }
+    const outside = direct().length > 0;
+    N.relay = viaRelay && !outside;
+    if (viaRelay && outside) {
+      N.hidden = true;
+      N.via = (N.org || "") + (N.asn ? " \xB7 AS" + N.asn : "");
+      const real = (f) => direct().find((x) => x.includes(":") === (f === 6));
+      N.ip4 = real(4) || N.ip4;
+      N.ip6 = real(6) || N.ip6;
+      N.cc = tzc || "";
+      N.city = "";
+      N.org = "";
+      N.asn = null;
+      reasons.length = 0;
+    }
+    N.reasons = N.self ? [] : N.relay ? [t("r_relay", { org: esc(N.org || "") + (N.asn ? " (AS" + N.asn + ")" : "") })] : reasons;
+    N.verdict = !N.ok || N.self ? "unknown" : N.reasons.length ? "warn" : "good";
+    N.state = "done";
+    N.partial = false;
+    NET = N;
+    renderNet();
+    renderCtrl();
+  }
+  const ICON_EYE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
+  const ICON_EYEOFF = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
+  const ICON_EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
+  const toolUrl = (id, path = "") => {
+    const b = (document.querySelector('meta[name="'.concat(id, '"]')) || {}).content;
+    return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : "";
+  };
+  const toolLink = (id, text, path, cls = "tl") => {
+    const u = toolUrl(id, path);
+    return u ? '<a class="'.concat(cls, '" href="').concat(esc(u), '" target="_blank" rel="noopener">').concat(esc(text)).concat(ICON_EXT, "</a>") : "";
+  };
+  const COST_V = /* @__PURE__ */ new Set(["aws", "gcp", "azure", "oracle", "hetzner", "digitalocean", "vultr", "linode", "tencent", "aliyun"]);
+  const costLink = (v) => {
+    if (!COST_V.has(v)) return "";
+    const c = NET.cc === "CN" ? "cn" : { na: "na", eu: "eu", as: "ap", oc: "ap" }[CC_CT[NET.cc]];
+    return toolLink("cost", t("lk_cost"), c ? "r/1_-_1_2_20_1_1024_0_0_".concat(c, "_1_500") : "", "tl dc");
+  };
+  const traceLink = (e) => {
+    if (isCustom(e.vendor)) return "";
+    let h = "";
+    try {
+      h = new URL(e.url).hostname.replace(/^[|]$/g, "");
+    } catch {
+    }
+    return h ? toolLink("trace", t("lk_trace"), "?t=" + encodeURIComponent(h), "tl dc") : "";
+  };
+  function renderNet() {
+    const N = NET, ck = N.state === "checking", warn = N.verdict === "warn";
+    const bar = $("#netbar");
+    bar.className = "netbar " + (ck ? "chk" : warn ? "warn" : N.verdict === "good" ? "good" : "");
+    const peak = isPeak(/* @__PURE__ */ new Date());
+    const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
+    const st = ck ? t("checking") : N.relay ? t("pxRelay") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
+    const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
+    const ipf = ck || !fams ? "" : ' <span class="m" title="IPv4 \u2190 '.concat(esc(N.src4 || "\u2013"), " \xB7 IPv6 \u2190 ").concat(esc(N.src6 || "\u2013"), '">\xB7 ').concat(fams, "</span>");
+    const egl = toolLink("egress", t("egressLink"), "", "nb-eg");
+    bar.innerHTML = '<span class="nb-dot"></span><span class="nb-st">'.concat(esc(st), '</span>\n      <span class="nb-main">').concat(ck && !N.partial ? '<span class="m">'.concat(esc(N.step || ""), "</span>") : "".concat(flag(N.cc, "nb-flag")).concat(esc(where || "\u2013")).concat(N.org ? ' <span class="m">\xB7 '.concat(esc(N.org), "</span>") : "").concat(N.hidden ? ' <span class="m">\xB7 '.concat(esc(t("ipHidden")), "</span>") : "").concat(N.edge != null && !N.hidden ? ' <span class="m">\xB7 CF '.concat(esc(N.colo), " ").concat(fmt(N.edge), " ms</span>") : "").concat(ipf).concat(ck ? ' <span class="m">\xB7 '.concat(esc(N.step || ""), "</span>") : ""), "</span>").concat(egl, '\n      <span class="nb-acts">\n        <span class="pill ').concat(peak ? "warn" : "idle", '" title="').concat(esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(/* @__PURE__ */ new Date()) })), '">').concat(t(peak ? "peakNow" : "offPeak"), "</span>\n        ").concat(N.relay ? "" : '<button class="btn sm '.concat(warn ? "warn" : "", '" type="button" data-rules title="').concat(esc(t("rulesBtn")), '"').concat(ck && !N.partial && !N.recheck ? ' style="visibility:hidden" tabindex="-1" aria-hidden="true"' : "", "><span>").concat(t("rulesBtn"), "</span></button>"), '\n        <button class="icon-btn sm" type="button" id="recheckBtn" title="').concat(esc(t("recheck")), '" aria-label="').concat(esc(t("recheck")), '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>\n        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="').concat(netOpen, '" title="').concat(esc(t("netDetails")), '" aria-label="').concat(esc(t("netDetails")), '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="').concat(netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4", '"/></svg></button>\n      </span>');
+    const det = $("#netdet");
+    if (ck) {
+      det.hidden = !netOpen || det.hidden;
+      if (!det.hidden) {
+        det.style.minHeight = det.offsetHeight + "px";
+        det.innerHTML = netDetails({}, N.step || t("checking"));
+      }
+      return;
+    }
+    det.style.minHeight = "";
+    det.hidden = !netOpen;
+    if (det.hidden) return;
+    det.innerHTML = netDetails(N);
+  }
+  function netDetails(N, pending) {
+    const blur = S.hideIp ? " blur" : "", s = (x) => x || "&nbsp;";
+    const ipx = (x) => esc(x).replace(/:/g, ":<wbr>"), tip2 = (x) => S.hideIp || !x ? "" : ' title="'.concat(esc(x), '"');
+    const ipq = (x) => {
+      const u = toolUrl("ipqs", "?ip=" + encodeURIComponent(x));
+      return u ? '<a class="ipq" href="'.concat(esc(u), '" target="_blank" rel="noopener">').concat(ipx(x), "</a>") : ipx(x);
+    };
+    const dot = (x) => x ? " \xB7 " + x : "";
+    const v4 = N.ip4 || (N.has6 === null ? t("chkFail") : "\u2013"), v6 = N.ip6 || (pending ? "" : N.has6 === null ? t("chkBlocked") : t("ip_no6short"));
+    const rtc = N.rtc && N.rtc.length ? N.rtc.join(", ") : "";
+    const note = pending != null ? '<div class="note" style="grid-column:1/-1">'.concat(esc(pending), "</div>") : N.reasons && N.reasons.length ? '<ul class="reasons">'.concat(N.reasons.map((r) => "<li>".concat(r, "</li>")).join("")).concat(N.relay ? "" : ((x) => x && "<li>".concat(x, "</li>"))(toolLink("egress", t("lk_egress"))), "</ul>") : '<div class="note" style="grid-column:1/-1">'.concat(t(N.hidden ? "px_hiddenNote" : N.verdict === "good" ? "px_okNote" : "px_unknownNote"), "</div>");
+    return '\n      <div class="kv"><span class="lbl">'.concat(t("ip"), '<button class="eye" type="button" id="eyeBtn" title="').concat(esc(t(S.hideIp ? "show" : "hide")), '">').concat(S.hideIp ? ICON_EYEOFF : ICON_EYE, '</button></span><span class="v ip').concat(blur, '"').concat(tip2(N.ip), ">").concat(N.ip ? ipq(N.ip) : "\u2013", '</span><span class="s">').concat(s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") + dot(toolLink("ipqs", t("lk_ipqs"), "?ip=" + encodeURIComponent(N.ip))) : ""), '</span></div>\n      <div class="kv"><span class="lbl">').concat(t("isp"), '</span><span class="v">').concat(esc(N.org || N.via || "\u2013"), '</span><span class="s">').concat(s(N.asn ? "AS" + N.asn + dot(toolLink("asn", t("lk_asn"), "AS" + N.asn)) : N.hidden ? esc(t("ipHidden")) : ""), '</span></div>\n      <div class="kv"><span class="lbl">').concat(t("edge"), '</span><span class="v">').concat(N.edge != null ? fmt(N.edge) + " ms" : "\u2013", '</span><span class="s">').concat(s(esc(N.colo || "") + (N.http ? " \xB7 " + esc(N.http) : "")), '</span></div>\n      <div class="kv" title="IPv4 \u2190 ').concat(esc(N.src4 || "\u2013"), " \xB7 IPv6 \u2190 ").concat(esc(N.src6 || "\u2013"), '"><span class="lbl">IPv4 / IPv6</span><span class="v ip').concat(blur, '"').concat(tip2(N.ip4), ">").concat(N.ip4 ? ipq(N.ip4) : ipx(v4), '</span><span class="s ip').concat(blur, '"').concat(tip2(N.ip6), ">").concat(N.ip6 ? ipq(N.ip6) : s(ipx(v6) + (N.has6 === false ? dot(toolLink("ipv6", t("lk_ipv6"))) : "")), '</span></div>\n      <div class="kv"><span class="lbl">WebRTC</span><span class="v ip').concat(blur, '"').concat(tip2(rtc), ">").concat(rtc ? N.rtc.map(ipx).join("<br>") : "\u2013", '</span><span class="s">').concat(s(esc(N.tz || "")), "</span></div>\n      ").concat(note);
+  }
+  const SVG_V = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg>';
+  const SVG_A = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>';
+  const SVG_M = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg>';
+  const sumList = (names, total, allLabel) => names.length === total && total > 1 ? allLabel : names.slice(0, 2).join(t("sep")) + (names.length > 2 ? " +" + (names.length - 2) : "");
+  const allNone = (k) => '<span class="lk"><button type="button" data-all="'.concat(k, '">').concat(t("all"), '</button> \xB7 <button type="button" data-none="').concat(k, '">').concat(t("none"), "</button></span>");
+  function homeSection() {
+    const cc = homeCC();
+    if (!cc) return "";
+    return '<section class="pg"><div class="pg-h"><span class="pg-flag">'.concat(flag(cc), "<span>").concat(esc(t("homeL", { c: country(cc) })), '</span></span></div>\n      <div class="seg" role="group">').concat(["all", "excl", "only"].map((k) => '<button type="button" data-home="'.concat(k, '" aria-pressed="').concat(S.home === k, '">').concat(esc(t("home_" + k)), "</button>")).join(""), '</div>\n      <div class="lbl">').concat(esc(t("homeTip", { c: country(cc) })), "</div></section>");
+  }
+  function ipSection() {
+    const no6 = NET.state === "done" && NET.has6 === false;
+    return '<section class="pg"><div class="pg-h"><span>'.concat(esc(t("ip_h")), '</span></div>\n      <div class="seg" role="group">').concat(["v4", "v6"].map((k) => '<button type="button" data-ip="'.concat(k, '" aria-pressed="').concat(S.ip === k, '"').concat(k === "v6" && no6 ? " disabled" : "", ">").concat(k === "v4" ? "IPv4" : "IPv6", "</button>")).join(""), '</div>\n      <div class="lbl">').concat(esc(t(no6 ? "ip_no6" : "ipTip")), "</div></section>");
+  }
+  const vCount = (v) => {
+    const narrowed = coveredCts().some((c) => !S.cts.includes(c));
+    return ALL.filter((e) => e.vendor === v && (e.continent === "xx" || !narrowed || S.cts.includes(e.continent)) && !excluded(e)).length;
+  };
+  function renderCtrl() {
+    if (NET.state === "done" && NET.has6 === false && S.ip === "v6") S.ip = "v4";
+    $("#cliCmd").textContent = cliCmd();
+    const N = S.need, cov = coveredCts();
+    const noV = !S.vendors.some((v) => !isCdn(v));
+    const vLabel = sumList(S.vendors.filter((v) => !isCdn(v)).map((v) => (isCustom(v) ? "\u2605 " : "") + vnm(v)), allVids().length, t("allVendors")) + (S.vendors.some(isCdn) ? " + " + t("cdn_h") : "");
+    $("#plV").classList.toggle("ask", noV);
+    $("#plV").hidden = !!ONE;
+    $("#plV > summary").innerHTML = "".concat(SVG_V).concat(noV ? "<span>".concat(t("pickVendor"), "</span>") : '<span class="pl-k">'.concat(t("pl_vendors"), "</span><b>").concat(esc(vLabel), "</b>")).concat(caret);
+    const aOff = noV;
+    $("#plA").classList.toggle("off", aOff);
+    $("#plA > summary").innerHTML = "".concat(SVG_A, '<span class="pl-k">').concat(t("pl_areas"), "</span><b>").concat(aOff ? "\u2013" : S.cts.length ? esc(sumList(S.cts.map((c) => t("ct_" + c)), cov.length, t("allAreas"))) : t("noArea")).concat(!aOff && S.home !== "all" && homeCC() ? " \xB7 ".concat(esc(t("home_" + S.home)), " ").concat(flag(homeCC())) : "", "</b>").concat(caret);
+    $("#plN > summary").innerHTML = "<span>".concat(PRESET_IC[N.preset] || "\u{1F3AF}", "</span><span>").concat(esc(t("p_" + N.preset)), '</span><b class="num">').concat(N.lat ? "\u2264" + N.lat + "ms" : "", "</b>").concat(caret);
+    $("#plM > summary").innerHTML = "".concat(SVG_M, "<span>").concat(esc(t("m_" + S.mode)), '</span><b class="num">\xD7').concat(MODES[S.mode], " \xB7 ").concat(S.ip === "v6" ? "IPv6" : "IPv4", "</b>").concat(caret);
+    const popTop = $("#popV").scrollTop;
+    const keep = ["cUrl", "cName", "cGroup", "cgIn", "ceName", "ceUrl", "ceGroup"].map((id) => {
+      const el = $("#" + id);
+      return el ? [id, el.value, document.activeElement === el] : null;
+    }).filter(Boolean);
+    $("#popV").innerHTML = '<section class="pg"><div class="pg-h"><span>'.concat(t("pl_vendors"), "</span>").concat(allNone("vendors"), '</div>\n      <div class="chips">').concat(allVids().map((v) => '<button type="button" class="chip'.concat(vCount(v) ? "" : " zero", '" data-v="').concat(esc(v), '" aria-pressed="').concat(S.vendors.includes(v), '">').concat(isCustom(v) ? gIcon(v) : "").concat(esc(vnm(v)), '<span class="c">').concat(vCount(v), "</span></button>")).join(""), "</div></section>\n      ").concat(CDNS.length ? '<section class="pg"><div class="pg-h"><span>'.concat(t("cdn_h"), '</span></div>\n      <div class="chips">').concat(CDN_IDS.map((v) => '<button type="button" class="chip" data-cdn="'.concat(esc(v), '" aria-pressed="').concat(S.vendors.includes(v), '">').concat(esc(vnm(v)), "</button>")).join(""), '</div>\n      <div class="note">').concat(esc(t("cdn_note")), "</div></section>") : "", '\n      <section class="pg cust').concat(CADD ? " adding" : "", '"><div class="pg-h"><span class="pg-hl"><span>').concat(t("cust_h"), "</span>").concat(S.custom.length ? '<button type="button" class="cust-rules" data-rules>\u26A0 '.concat(esc(t("cust_rules")), " \u2192</button>") : "", '</span><button type="button" data-cadd aria-expanded="').concat(CADD, '">\uFF0B ').concat(t("add"), "</button></div>\n      ").concat(CADD ? '<form class="cform cadd" id="cform" autocomplete="off"><button type="button" class="x cadd-x" data-cadd aria-label="'.concat(esc(t("cust_cancel")), '">\xD7</button>\n        <div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>\n        <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="').concat(esc(t("cust_name_ph")), '"><button class="btn ink sm" style="height:32px" type="submit">').concat(t("add"), "</button></div>\n        ").concat(groupPick(), '\n        <div class="err" id="cErr" hidden></div><div class="note">').concat(t("cust_tip"), '</div><div class="dbip">').concat(esc(t("cust_geo")), ' <a href="https://db-ip.com" target="_blank" rel="noopener noreferrer">IP Geolocation by DB-IP</a></div></form>') : "", "\n      ").concat(S.custom.length ? customList() : '<div class="note">'.concat(esc(t("cust_empty")), "</div>"), "</section>");
+    keep.forEach(([id, v, f]) => {
+      const el = $("#" + id);
+      if (!el) return;
+      el.value = v;
+      if (f) el.focus({ preventScroll: true });
+    });
+    $("#popV").scrollTop = popTop;
+    $("#popA").innerHTML = '<section class="pg"><div class="pg-h"><span>'.concat(t("pl_areas"), "</span>").concat(allNone("cts"), '</div>\n      <div class="chips">').concat(cov.map((c) => '<button type="button" class="chip" data-c="'.concat(c, '" aria-pressed="').concat(S.cts.includes(c), '">').concat(esc(t("ct_" + c)), '<span class="c">').concat(ALL.filter((e) => e.continent === c && S.vendors.includes(e.vendor) && !excluded(e)).length, "</span></button>")).join(""), "</div></section>") + homeSection();
+    $("#popN").innerHTML = '<section class="pg opts">'.concat(Object.keys(PRESETS).map((k) => {
+      const [l, j, s] = PRESETS[k];
+      return '<button type="button" class="opt" data-p="'.concat(k, '" aria-pressed="').concat(N.preset === k, '"><span class="ic">').concat(PRESET_IC[k], '</span><span class="tx"><b>').concat(esc(t("p_" + k)), "</b><span>").concat(l ? "\u2264" + l + " ms \xB7 \xB1" + j + " \xB7 " + (s ? "\u2264" + s + "%" : t("noLoss")) : t("anyLat"), "</span></span></button>");
+    }).join(""), '</section>\n      <section class="pg"><div class="pg-h">').concat(PRESET_IC.custom, " ").concat(t("p_custom"), '</div><div class="need">\n        <div><div class="need-l">').concat(t("maxLat"), '</div><label class="nin"><input id="nLat" type="number" min="0" inputmode="numeric" value="').concat(N.lat || "", '" placeholder="').concat(esc(t("noLimit")), '"><span>ms</span></label></div>\n        <div><div class="need-l">').concat(t("maxJit"), '</div><label class="nin"><input id="nJit" type="number" min="0" inputmode="numeric" value="').concat(N.jit || "", '" placeholder="').concat(esc(t("noLimit")), '"><span>ms</span></label></div>\n        <div><div class="need-l">').concat(t("maxLoss"), '</div><label class="nin"><input id="nLoss" type="number" min="0" max="100" inputmode="numeric" value="').concat(N.loss || "", '" placeholder="0"><span>%</span></label></div></div></section>');
+    $("#popM").innerHTML = '<section class="pg opts">'.concat(Object.keys(MODES).map((k) => '<button type="button" class="opt" data-m="'.concat(k, '" aria-pressed="').concat(S.mode === k, '"><span class="ic num" style="font-size:12.5px;font-weight:600">\xD7').concat(MODES[k], '</span><span class="tx"><b>').concat(esc(t("m_" + k)), '</b><span style="font-family:var(--f-ui)">').concat(esc(t("m_" + k + "D")), "</span></span></button>")).join(""), "</section>") + ipSection();
+    renderRun();
+  }
+  const dur = (s) => s < 60 ? t("secs", { n: Math.max(1, s) }) : t("mins", { n: Math.round(s / 60) });
+  function estimate(n, k) {
+    return Math.round(n * (k + 1) * (GAP_MS + 60 + 250) / 1e3 / Math.max(1, S.conc));
+  }
+  function renderRun() {
+    const btn = $("#runBtn"), sel = selected().length;
+    if (RUN) {
+      btn.className = "go stop";
+      btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>'.concat(t("stop"));
+      let got = 0;
+      const need = RUN.total * RUN.n;
+      for (const e of RUN.list) {
+        const r = R.get(e.id);
+        if (r) got += r.st === "done" || r.st === "fail" ? RUN.n : Math.min(RUN.n, r.s.length);
+      }
+      const p = need ? got / need : 0, el = (performance.now() - RUN.t0) / 1e3, left = p > 0.03 ? el / p - el : null;
+      $("#bar").hidden = false;
+      $("#bar i").style.width = (p * 100).toFixed(1) + "%";
+      const now = RUN.list.filter((e) => {
+        const r = R.get(e.id);
+        return r && r.st === "running";
+      }).map((e) => '<span class="nowi">'.concat(isCustom(e.vendor) ? favOf(e.url) : esc(vshort[e.vendor]), " ").concat(esc(e.city), "</span>"));
+      const rt = $("#runT");
+      if (!rt.querySelector(".runner")) {
+        rt.innerHTML = '<span class="nowl"><b class="run-n"></b><span class="run-now"></span></span>';
+        rt.firstChild.prepend(runner());
+      }
+      const rn = rt.querySelector(".run-n");
+      rn.textContent = t("running", { d: RUN.done, n: RUN.total });
+      rt.querySelector(".run-now").innerHTML = now.join("");
+      $("#runEta").textContent = left != null ? t("eta", { t: dur(Math.round(left)) }) : "";
+    } else {
+      btn.className = "go";
+      btn.disabled = !sel;
+      btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>'.concat(t(R.size && VIEW.live ? "again" : "start"));
+      $("#bar").hidden = true;
+      $("#runEta").textContent = "";
+      $("#runT").innerHTML = sel ? "<b>".concat(t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) }), "</b>") : "<b>".concat(esc(t("pickFirst")), "</b>");
+    }
+  }
+  const fmtTs = (ts) => new Intl.DateTimeFormat(LANG, { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(ts);
+  const pos = (v) => clamp((Math.log(v) - Math.log(AX_MIN)) / (Math.log(AX_MAX) - Math.log(AX_MIN)), 0, 1) * 100;
+  const rankList = () => (VIEW.shared || R.size ? ALL.filter((e) => R.has(e.id) && (!ONE || e.vendor === ONE)) : selected()).map((e) => {
+    const r = R.get(e.id), st = stats(r);
+    return { e, r, st, pass: meets(st) };
+  });
+  const byScore = (a, b) => a.st.score - b.st.score;
+  const dirty = /* @__PURE__ */ new Set(), fresh = /* @__PURE__ */ new Set();
+  let openId = null, dirtyAll = true;
+  function markDirty(id, isNew) {
+    dirty.add(id);
+    if (isNew) fresh.add(id);
+    schedule();
+  }
+  let raf = 0, rafT = 0;
+  function frame() {
+    cancelAnimationFrame(raf);
+    clearTimeout(rafT);
+    raf = rafT = 0;
+    renderResults();
+    renderRun();
+  }
+  function schedule() {
+    if (!raf && !rafT) {
+      raf = requestAnimationFrame(frame);
+      rafT = setTimeout(frame, 250);
+    }
+  }
+  function renderAll() {
+    dirtyAll = true;
+    schedule();
+  }
+  function renderResults() {
+    const list = rankList(), ok = list.filter((x) => x.st.ok);
+    renderPodium(ok);
+    renderViz(list);
+    renderGroups(list);
+    dirty.clear();
+    fresh.clear();
+    dirtyAll = false;
+  }
+  function renderPodium(ok) {
+    const pass = ok.filter((x) => x.pass), top = (pass.length ? pass : ok).slice().sort(byScore).slice(0, 3);
+    const slots = RUN ? Math.min(3, RUN.total) : top.length;
+    $("#resWrap").hidden = !slots;
+    if (!slots) return;
+    $("#podiumT").textContent = t(pass.length || !ok.length ? "picks_h" : "picks_closest");
+    $("#podiumS").textContent = pass.length ? t("picks_sub2", { n: pass.length, need: needText() }) : RUN ? "" : t("picks_none");
+    const sl = RUN ? "" : toolLink("speed", t("lk_speed"));
+    const pre = t("speedPre"), gap = /[⺀-鿿＀-￯]$/.test(pre) ? "" : " ";
+    $("#speedL").hidden = !sl;
+    if (sl) $("#speedL").innerHTML = esc(pre) + gap + sl;
+    $("#podium").innerHTML = top.map((x, i) => {
+      const g = grade(x.st.med);
+      return '<button type="button" class="pd c'.concat(g, '" data-go="').concat(esc(x.e.id), '"><span class="rk">#').concat(i + 1, '</span><span class="ms">').concat(fmt(x.st.med), '<small>ms</small></span>\n        <span class="inf"><span class="nm">').concat(esc(x.e.city), '</span><span class="sb"><span class="tg">').concat(tierCode(g), " ").concat(esc(tierName(g)), "</span><span>").concat(esc(x.e.vname), '</span><span class="num">\xB1').concat(fmt(x.st.jit), "</span></span></span></button>");
+    }).join("") + Array.from({ length: slots - top.length }, (_, i) => '<div class="pd pend" aria-hidden="true"><span class="rk">#'.concat(top.length + i + 1, '</span><span class="ms">\u2026</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div>')).join("");
+  }
+  const needText = () => {
+    const N = NEED();
+    return (N.lat ? "\u2264" + N.lat + " ms" : t("anyLat")) + (N.jit ? " \xB7 \xB1" + N.jit : "");
+  };
+  const spread = (id) => {
+    let h = 7;
+    for (let i = 0; i < id.length; i++) h = h * 31 + id.charCodeAt(i) | 0;
+    return (h >>> 0) % 5 - 2;
+  };
+  let vizKey = "";
+  const vizEls = /* @__PURE__ */ new Map();
+  function renderViz(list) {
+    const vz = $("#vz");
+    const lanes = [...new Set(list.map((x) => x.e.vendor))];
+    const got = list.filter((x) => x.st.ok);
+    $("#vizCard").hidden = !lanes.length;
+    if (!lanes.length) return;
+    const when = VIEW.ts ? fmtTs(VIEW.ts) + (VIEW.peak ? " \xB7 " + t("tagPeak") : "") + " \xB7 " : "";
+    $("#vizSub").textContent = got.length ? when + t("vizSub", { n: got.length, p: got.filter((x) => x.pass).length }) : "";
+    const lh = lanes.length <= 2 ? 84 : lanes.length <= 5 ? 60 : 46;
+    const key = [lanes.join(), NEED().lat, LANG, lh].join("|");
+    if (key !== vizKey || !vz.firstChild) {
+      vizKey = key;
+      vizEls.clear();
+      const bands = [AX_MIN].concat(GRADES, AX_MAX);
+      let h = '<div class="lanes" style="--lh:'.concat(lh, 'px">');
+      for (let g = 1; g <= 5; g++) h += '<div class="band b'.concat(g, '" style="left:').concat(pos(bands[g - 1]), "%;width:").concat(pos(bands[g]) - pos(bands[g - 1]), '%"><span>').concat(tierCode(g), "</span></div>");
+      if (NEED().lat) h += '<div class="needl" style="left:'.concat(pos(NEED().lat), '%"><span>').concat(esc(t("needLine")), " ").concat(NEED().lat, "</span></div>");
+      h += lanes.map((v) => '<div class="lane" data-v="'.concat(v, '"><div class="ln"><b class="full">').concat(esc(vnm(v)), '</b><b class="short">').concat(esc(vsh(v)), '</b><span class="lb"></span></div></div>')).join("");
+      h += '<div class="vz-empty" hidden><span></span></div></div>';
+      h += '<div class="axis">'.concat(TICKS.map((v) => '<span style="left:'.concat(pos(v), '%">').concat(v >= 1e3 ? v / 1e3 + "s" : v, "</span>")).join(""), "</div>");
+      h += '<div class="legend">'.concat([1, 2, 3, 4, 5].map((g) => '<span class="c'.concat(g, '"><i></i>').concat(tierCode(g), " ").concat(esc(tierName(g)), " <em>").concat(g < 5 ? "\u2264" + GRADES[g - 1] : ">" + GRADES[3], " ms</em></span>")).join(""), '<span><i class="o"></i>').concat(esc(t("lgMiss")), '</span><span><i class="lv"></i>').concat(esc(t("lgLive")), "</span></div>");
+      vz.innerHTML = h;
+    }
+    const empty = $(".vz-empty", vz);
+    empty.hidden = !!got.length;
+    empty.firstChild.textContent = t(lanes.length ? "viz_empty" : "pickFirst");
+    for (const v of lanes) {
+      const best = got.filter((x) => x.e.vendor === v).sort(byScore)[0];
+      const lb = $('.lane[data-v="'.concat(v, '"] .lb'), vz);
+      if (lb) {
+        lb.textContent = best ? "".concat(best.e.city, " \xB7 ").concat(fmt(best.st.med), " ms") : "";
+        lb.className = "lb c" + (best ? grade(best.st.med) : 0);
+      }
+    }
+    const seen = /* @__PURE__ */ new Set();
+    for (const x of got) {
+      const lane = $('.lane[data-v="'.concat(x.e.vendor, '"]'), vz);
+      if (!lane) continue;
+      const id = x.e.id, g = grade(x.st.med), live = x.r.st === "running";
+      seen.add(id);
+      let el = vizEls.get(id);
+      if (!el) {
+        el = { wk: document.createElement("i"), dot: document.createElement("i") };
+        el.dot.dataset.go = el.dot.dataset.tipid = id;
+        lane.append(el.wk, el.dot);
+        vizEls.set(id, el);
+      }
+      const dy = spread(id) * lh / 10;
+      el.wk.className = "wk c".concat(g);
+      el.wk.style.cssText = "left:".concat(pos(x.st.p25), "%;width:").concat(Math.max(0.4, pos(x.st.p75) - pos(x.st.p25)), "%;top:calc(50% + ").concat(dy, "px)");
+      el.dot.className = "vd c".concat(g).concat(x.pass ? "" : " miss").concat(live ? " live" : "").concat(!live && fresh.has(id) ? " new" : "");
+      el.dot.style.left = pos(x.st.med) + "%";
+      el.dot.style.top = "calc(50% + ".concat(dy, "px)");
+    }
+    for (const [id, el] of vizEls) if (!seen.has(id)) {
+      el.wk.remove();
+      el.dot.remove();
+      vizEls.delete(id);
+    }
+  }
+  let TOKYO = null, tokyoAsked = false;
+  function tokyo() {
+    if (tokyoAsked) return;
+    tokyoAsked = true;
+    fetch("/tokyo.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : null).catch(() => null).then((j) => {
+      if (j && j.regions) {
+        TOKYO = j;
+        renderAll();
+      }
+    });
+  }
+  const tokyoOf = (e, r) => {
+    const x = TOKYO && TOKYO.regions[e.id];
+    return x && x[r && r.ip === "v6" ? "v6" : "v4"];
+  };
+  const rowEls = /* @__PURE__ */ new Map();
+  function rowHTML(x) {
+    const { e, r, st } = x, g = grade(st.med);
+    if (r && r.st === "fail") tokyo();
+    const tk = r && r.st === "fail" && tokyoOf(e, r);
+    let sp = TICKS.map((v) => '<i class="gl" style="left:'.concat(pos(v), '%"></i>')).join("");
+    if (r && r.st === "running" && !r.s.length) sp += '<i class="runm"></i>';
+    if (st.ok) {
+      sp += '<i class="bx" style="left:'.concat(pos(st.p25), "%;width:").concat(Math.max(0.6, pos(st.p75) - pos(st.p25)), '%"></i><i class="md" style="left:').concat(pos(st.med), '%"></i>');
+      sp += r.s.map((v) => v == null ? "" : '<i class="d" style="left:'.concat(pos(v), '%"></i>')).join("");
+    }
+    if (st.n && st.ok < st.n) sp += '<span class="x">\xD7'.concat(st.n - st.ok, "</span>");
+    const flag2 = st.ok && shaky(st) ? '<span class="r-f" title="'.concat(esc(st.loss ? t(pkt() ? "pktWarn" : "lossWarn", { p: Math.round(st.loss * 100) }) : t("jitWarn", { j: fmt(st.jit) })), '">\u26A0</span>') : "<span></span>";
+    return '<div class="r rg" role="button" tabindex="0" aria-expanded="'.concat(openId === e.id, '">\n      <span class="vb">').concat(isCustom(e.vendor) ? favOf(e.url) : vshort[e.vendor] || "", '</span>\n      <span class="r-nm"><b>').concat(esc(e.city)).concat(tk && tk.d ? ' <span class="tkd">'.concat(esc(t("tk_tag")), "</span>") : "", "</b><span>").concat(isCustom(e.vendor) ? esc(vnm(e.vendor)) + " \xB7 " : "").concat(esc(e.region)).concat(e.country && e.cityEn !== EN_REGION(e.country) ? " \xB7 " + esc(country(e.country)) : "", '</span></span>\n      <span class="sp c-sp c').concat(g, '" data-tipid="').concat(esc(e.id), '">').concat(sp, "</span>\n      ").concat(flag2, '\n      <span class="r-v c').concat(st.ok ? g : 0, '">').concat(st.ok ? fmt(st.med) + "<small>ms</small>" : r && r.st === "fail" ? "\u2715" : r && r.st === "nov6" ? "<small>".concat(esc(t("nov6")), "</small>") : "\u2026", "</span></div>");
+  }
+  function renderGroups(list) {
+    const card = $("#listCard"), box = $("#groups");
+    const touched = list.filter((x) => x.r);
+    card.hidden = !touched.length;
+    if (!touched.length) {
+      box.innerHTML = "";
+      rowEls.clear();
+      return;
+    }
+    const q = $("#q").value.trim().toLowerCase();
+    const live = !!RUN;
+    const shown = touched.filter((x) => (!q || (x.e.vname + " " + x.e.city + " " + (x.e.cityEn || "") + " " + x.e.region + " " + country(x.e.country)).toLowerCase().includes(q)) && (live || !S.onlyPass || x.pass));
+    const nov6 = (x) => x.r && x.r.st === "nov6";
+    const G = live ? [{ g: 9, items: shown }] : [1, 2, 3, 4, 5, 0, -1].map((g) => ({ g, items: shown.filter((x) => x.st.ok ? grade(x.st.med) === g : g === -1 ? nov6(x) : g === 0 && !nov6(x)) }));
+    const gk = G.map((x) => x.g).join();
+    if (box.dataset.g !== gk) {
+      box.dataset.g = gk;
+      box.innerHTML = G.map(({ g }) => '<div class="grp" data-g="'.concat(g, '"><div class="grp-h"></div><div class="grp-b"></div></div>')).join("");
+    }
+    for (const { g, items } of G) {
+      const el = box.querySelector('.grp[data-g="'.concat(g, '"]'));
+      el.hidden = !items.length;
+      const meds = items.filter((x) => x.st.ok).map((x) => x.st.med);
+      el.firstChild.hidden = live;
+      if (!live) el.firstChild.innerHTML = g > 0 ? '<span class="tg c'.concat(g, '">').concat(tierCode(g), " \xB7 ").concat(esc(tierName(g)), '</span><span class="n">').concat(items.length, '</span><span class="rng">').concat(meds.length ? fmt(Math.min(...meds)) + "\u2013" + fmt(Math.max(...meds)) + " ms" : "", "</span>") : '<span class="tg c0">'.concat(esc(t(g === -1 ? "grp_nov6" : "grp_other")), '</span><span class="n">').concat(items.length, "</span>");
+      const body = el.lastChild;
+      if (!items.length) {
+        body.innerHTML = "";
+        continue;
+      }
+      if (!live) items.sort((a, b) => a.st.ok && b.st.ok ? byScore(a, b) : 0);
+      items.forEach((x, i) => {
+        let row = rowEls.get(x.e.id);
+        if (!row) {
+          row = document.createElement("div");
+          row.className = "ri";
+          row.dataset.id = x.e.id;
+          rowEls.set(x.e.id, row);
+        }
+        if (dirtyAll || dirty.has(x.e.id) || !row.firstChild || row.__g !== g) {
+          row.innerHTML = rowHTML(x) + (openId === x.e.id ? detHTML(x) : "");
+          row.classList.toggle("open", openId === x.e.id);
+          row.classList.toggle("fail", !!x.r && x.r.st === "fail");
+          row.__g = g;
+        }
+        if (body.children[i] !== row) body.insertBefore(row, body.children[i] || null);
+      });
+      while (body.children.length > items.length) {
+        const extra = body.lastChild;
+        rowEls.forEach((v, k) => {
+          if (v === extra) rowEls.delete(k);
+        });
+        extra.remove();
+      }
+    }
+    const keep = new Set(shown.map((x) => x.e.id));
+    for (const [id, el] of rowEls) if (!keep.has(id)) {
+      el.remove();
+      rowEls.delete(id);
+    }
+  }
+  function chartSVG(r, st) {
+    const W = 600, H = 130, P = { l: 34, r: 8, t: 10, b: 18 }, s = r.s, n = Math.max(2, s.length);
+    const mx = Math.max(10, (st.max || 10) * 1.15);
+    const X = (i) => P.l + (W - P.l - P.r) * (s.length > 1 ? i / (n - 1) : 0.5), Y = (v) => P.t + (H - P.t - P.b) * (1 - v / mx);
+    let path = "", pen = false;
+    s.forEach((v, i) => {
+      if (v == null) {
+        pen = false;
+        return;
+      }
+      path += (pen ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1);
+      pen = true;
+    });
+    const ticks = [0, mx / 2, mx].map((v) => '<text x="'.concat(P.l - 6, '" y="').concat(Y(v) + 3, '" text-anchor="end">').concat(Math.round(v), '</text><line x1="').concat(P.l, '" x2="').concat(W - P.r, '" y1="').concat(Y(v), '" y2="').concat(Y(v), '" stroke="var(--line)"/>')).join("");
+    const dots = s.map((v, i) => v == null ? '<text x="'.concat(X(i), '" y="').concat(P.t + 8, '" text-anchor="middle" style="fill:var(--bad);font-weight:700">\xD7</text>') : '<circle cx="'.concat(X(i), '" cy="').concat(Y(v), '" r="3" fill="currentColor"><title>#').concat(i + 1, ": ").concat(fmt(v), " ms</title></circle>")).join("");
+    return '<svg viewBox="0 0 '.concat(W, " ").concat(H, '" preserveAspectRatio="none" class="c').concat(grade(st.med), '" role="img" aria-label="').concat(esc(t("chartAria")), '">').concat(ticks, "\n      ").concat(st.ok ? '<line x1="'.concat(P.l, '" x2="').concat(W - P.r, '" y1="').concat(Y(st.med), '" y2="').concat(Y(st.med), '" stroke="currentColor" stroke-dasharray="4 4" opacity=".7"/>') : "", '\n      <path d="').concat(path, '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>').concat(dots, "</svg>");
+  }
+  function detHTML(x) {
+    const { e, r, st } = x, V = ENDPOINTS.vendors[e.vendor];
+    const kv = (k, v) => '<div class="kv"><span class="lbl">'.concat(t(k), '</span><span class="v">').concat(v, "</span></div>");
+    const ms = (v) => v == null || !isFinite(v) ? "\u2013" : fmt(v) + " ms";
+    const lines = ["<span>".concat(esc(e.vname), " \xB7 ").concat(t("d_method"), " <b>").concat(esc(r ? r.m : e.method), "</b>").concat(r && r.w != null ? " \xB7 " + t("d_warm") + " " + fmt(r.w) + " ms" : "", " \xB7 <code>").concat(esc(e.url), "</code></span>")];
+    if (r && r.w != null && st.ok && st.min > r.w * 0.9) lines.push('<span class="w">'.concat(t("d_cold"), "</span>"));
+    if (r && r.st === "nov6") lines.push('<span class="w">'.concat(t("d_nov6"), "</span>"));
+    else if (r && r.ip === "v6") lines.push("<span>".concat(t("d_v6"), "</span>"));
+    else if (r && (e.fam || "").includes("6")) lines.push('<span class="w">'.concat(t("d_dual"), "</span>"));
+    if (r && r.vf === true) lines.push('<span style="color:var(--pool)">\u2713 '.concat(t("d_verified"), "</span>"));
+    if (r && r.vf === false) lines.push('<span class="w">'.concat(t("d_notverified"), "</span>"));
+    if (e.review) lines.push('<span class="w">'.concat(t("d_review"), "</span>"));
+    if (!isCustom(e.vendor)) {
+      tokyo();
+      const tk = tokyoOf(e, r);
+      if (tk && tk.d) lines.push('<span class="w">'.concat(esc(t("d_tk_down", { t: fmtTs(tk.d * 1e3) })), "</span>"));
+      else if (tk && tk.m != null) lines.push("<span>".concat(esc(t("d_tk", { m: fmt(tk.m), u: Math.round(tk.u) })), "</span>"));
+    }
+    if (!isCustom(e.vendor)) lines.push("<span>".concat(esc(vtext(e.vendor, "kind")), " \xB7 ").concat(esc(vtext(e.vendor, "note")), "</span>"));
+    return '<div class="det">\n      <div>'.concat(r && r.s.length ? chartSVG(r, st) : '<div class="empty">'.concat(t(r && r.sum ? "sharedNoRaw" : "noSamples"), "</div>"), '</div>\n      <div class="dstats">').concat(kv("d_med", ms(st.med))).concat(kv("d_jit", st.ok > 1 ? "\xB1" + ms(st.jit) : "\u2013")).concat(kv(pkt() ? "d_pkt" : "d_loss", st.n ? Math.round(st.loss * 100) + "%" : "\u2013")).concat(kv("d_min", ms(st.min))).concat(kv("d_avg", ms(st.avg))).concat(kv("d_p90", ms(st.p90)), '</div>\n      <div class="dmeta">').concat(lines.join(""), '<div class="dbtns"><button class="btn sm" type="button" data-retest="').concat(esc(e.id), '" ').concat(RUN ? "disabled" : "", ">").concat(t("retest"), '</button><button class="btn sm" type="button" data-copy="').concat(esc(e.url), '">').concat(t("copyUrl"), "</button>").concat(costLink(e.vendor)).concat(traceLink(e), "</div></div>\n    </div>");
+  }
+  function renderHist() {
+    const h = loadHist(), sel = $("#hist");
+    $("#histWrap").hidden = !h.length;
+    sel.innerHTML = '<option value="">'.concat(esc(t("histCurrent")), "</option>") + h.map((x, i) => '<option value="'.concat(i, '">').concat(esc(fmtTs(x.ts))).concat(x.peak ? " \xB7 " + esc(t("tagPeak")) : "", " \xB7 ").concat(Object.keys(x.res).length, "</option>")).join("");
+    sel.value = VIEW.live ? "" : String(h.findIndex((x) => x.ts === VIEW.ts));
+  }
+  const SITE = /^(localhost|127\.|\[)/.test(location.hostname) ? "https://m2c.1ms.dog" : location.origin;
+  const ruleNote = (r) => r.v === "_detect" ? t("rc_detect") : r.v === "custom" ? "\u2605 " + r.n : [vnm(r.v), vtext(r.v, "kind")].filter(Boolean).join(" \xB7 ");
+  function ruleItems(withCustom) {
+    const items = [], seen = /* @__PURE__ */ new Set(), add = (r) => {
+      if (!seen.has(r.d)) {
+        seen.add(r.d);
+        items.push(r);
+      }
+    };
+    for (const e of ENDPOINTS.endpoints) for (const u of [e.url, e.url6]) if (u) add({ v: e.vendor, d: hostOf(u) });
+    for (const c of CDNS) add({ v: c.vendor, d: hostOf(c.url) });
+    RULE_SPEC.forEach((r) => add(Object.assign({}, r)));
+    if (withCustom) S.custom.forEach((c) => {
+      const n = (c.g ? c.g + " \xB7 " : "") + c.name;
+      add({ v: "custom", d: hostOf(c.url), n });
+      if (c.url6) add({ v: "custom", d: hostOf(c.url6), n });
+    });
+    return items.map((r) => Object.assign(r, { c: ruleNote(r) }));
+  }
+  function ruleLine(f, { d }) {
+    switch (f) {
+      case "clash":
+      case "surge":
+      case "shadowrocket":
+      case "loon":
+        return "DOMAIN,".concat(d, ",DIRECT");
+      case "quanx":
+        return "host, ".concat(d, ", direct");
+      default:
+        return d;
+    }
+  }
+  const realIp = (f, items) => f === "clash" ? "dns:\n  fake-ip-filter:\n" + items.map((i) => "    - ".concat(i.d)).join("\n") : "[General]\nalways-real-ip = " + items.map((i) => i.d).join(", ");
+  function ruleInline(f, items) {
+    const hosts = items.map((i) => i.d);
+    if (f === "singbox") return JSON.stringify({ route: { rules: [{ domain: hosts, outbound: "direct" }] }, dns: { rules: [{ domain: hosts, server: "local" }] } }, null, 2);
+    if (f === "xray") return JSON.stringify({ routing: { rules: [{ type: "field", domain: hosts.map((d) => "full:" + d), outboundTag: "direct" }] } }, null, 2);
+    if (f === "omega") return hosts.join("\n");
+    const ind = f === "clash" ? "  - " : "", cind = f === "clash" ? "  " : "";
+    const body = items.map((i, k) => (k && items[k - 1].c === i.c ? "" : "".concat(cind, "# ").concat(i.c, "\n")) + ind + ruleLine(f, i)).join("\n");
+    const head = { clash: "rules:", surge: "[Rule]", shadowrocket: "[Rule]", loon: "[Rule]", quanx: "[filter_local]" }[f];
+    const dns = f === "clash" || f === "surge" || f === "shadowrocket" ? "\n\n# ".concat(t("rules_fakeip"), "\n") + realIp(f, items) : "";
+    return (head ? head + "\n" : "") + body + dns;
+  }
+  function ruleRemote(f) {
+    const u = SITE + "/rules/";
+    switch (f) {
+      case "clash":
+        return "rule-providers:\n  me2cloud:\n    type: http\n    behavior: classical\n    format: yaml\n    url: ".concat(u, "clash.yaml\n    path: ./ruleset/me2cloud.yaml\n    interval: 86400\n\nrules:\n  - RULE-SET,me2cloud,DIRECT   # ").concat(t("rc_top"), "\n\n# ").concat(t("rules_fakeip"), "\n") + realIp(f, ruleItems(false));
+      case "surge":
+        return "[Rule]\n# ".concat(t("rc_top"), "\nRULE-SET,").concat(u, "surge.list,DIRECT,update-interval=86400\n\n# ").concat(t("rules_fakeip"), "\n") + realIp(f, ruleItems(false));
+      case "shadowrocket":
+        return "[Rule]\n# ".concat(t("rc_top"), "\nRULE-SET,").concat(u, "surge.list,DIRECT\n\n# ").concat(t("rules_fakeip"), "\n") + realIp(f, ruleItems(false));
+      case "quanx":
+        return "[filter_remote]\n".concat(u, "quanx.list, tag=Me2Cloud, force-policy=direct, update-interval=86400, opt-parser=false, enabled=true");
+      case "loon":
+        return "[Remote Rule]\n".concat(u, "loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true");
+      case "singbox":
+        return JSON.stringify({ route: {
+          rule_set: [{ tag: "me2cloud", type: "remote", format: "source", url: u + "singbox.json", download_detour: "direct", update_interval: "1d" }],
+          rules: [{ rule_set: "me2cloud", outbound: "direct" }]
+        } }, null, 2);
+    }
+    return null;
+  }
+  const codeBox = (text, i) => '<div class="code"><textarea readonly spellcheck="false" rows="'.concat(Math.min(16, text.split("\n").length + 1), '" data-ta="').concat(i, '">').concat(esc(text), '</textarea><button class="btn sm" type="button" data-copyta="').concat(i, '">').concat(t("copy"), "</button></div>");
+  function renderRules() {
+    const f = S.ruleFmt;
+    $("#ruleTabs").innerHTML = RULE_FORMATS.map((x) => '<button type="button" role="tab" data-f="'.concat(x, '" aria-selected="').concat(f === x, '">').concat(x === "plain" ? esc(t("rules_plain")) : RULE_NAMES[x], "</button>")).join("");
+    const all = ruleItems(true), remote = ruleRemote(f), customs = all.filter((i) => i.v === "custom");
+    const json = f === "singbox" || f === "xray";
+    let h = "";
+    if (remote) {
+      h += '<section class="rblk"><div class="rblk-h"><b>'.concat(t("rules_remote_h"), '</b><span class="note">').concat(t("rules_remote_s"), "</span></div>").concat(codeBox(remote, 0), "\n        ").concat(customs.length ? '<div class="note">'.concat(t("rules_custom"), "</div>").concat(codeBox(customs.map((i) => (json ? "" : "# " + i.c + "\n") + ruleLine(f, i)).join("\n"), 2)) : "", "</section>");
+      h += '<details class="rblk"><summary>'.concat(t("rules_inline_h", { n: all.length }), "</summary>").concat(codeBox(ruleInline(f, all), 1), "</details>");
+    } else {
+      h += '<section class="rblk"><div class="rblk-h"><b>'.concat(t("rules_inline_only", { n: all.length }), "</b></div>").concat(codeBox(ruleInline(f, all), 1), "</section>");
+    }
+    h += '<div class="note">'.concat(esc(t("rules_note_" + f))).concat(json ? " " + esc(t("rules_json_note")) : "", "</div>");
+    $("#ruleBody").innerHTML = h;
+    $("#ruleSteps").innerHTML = ((I18N[LANG] || {}).rules_steps || I18N.en.rules_steps).map((s) => "<li>".concat(s, "</li>")).join("");
+  }
+  function openDlg(id) {
+    $$("details.menu[open]").forEach((d) => {
+      d.open = false;
+    });
+    $("#" + id).hidden = false;
+    document.documentElement.style.overflow = "hidden";
+    $("#" + id + " [data-close]").focus();
+  }
+  function closeDlg() {
+    $$(".scrim").forEach((s) => {
+      s.hidden = true;
+    });
+    document.documentElement.style.overflow = "";
+  }
+  let helpIdx = 0;
+  function renderDocs() {
+    $$("#helpNav [data-hq]").forEach((b) => b.setAttribute("aria-selected", +b.dataset.hq === helpIdx));
+    $$("#helpC [data-hqb]").forEach((a) => {
+      a.hidden = +a.dataset.hqb !== helpIdx;
+    });
+    const sel = $("#helpSel");
+    sel.value = helpIdx;
+    $$("[data-hstep]").forEach((b) => {
+      b.disabled = helpIdx + +b.dataset.hstep < 0 || helpIdx + +b.dataset.hstep >= sel.options.length;
+    });
+    $("#helpC").scrollTop = 0;
+  }
+  function openHelp(i) {
+    helpIdx = clamp(i, 0, $$("#helpNav [data-hq]").length - 1);
+    renderDocs();
+    openDlg("help");
+    const b = $('#helpNav [data-hq="'.concat(i, '"]'));
+    b && b.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+  function download(name, text, type) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type }));
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    }, 0);
+  }
+  const stamp = () => new Date(VIEW.ts || Date.now()).toISOString().slice(0, 16).replace(/[:T]/g, "-");
+  function exportCSV() {
+    const rows = [["id", "provider", "region", "city", "country", "url", "method", "tier", "samples", "ok", "loss_pct", "min_ms", "median_ms", "avg_ms", "p90_ms", "max_ms", "jitter_ms", "stdev_ms", "fits_needs", "cors_verified", "raw_ms"]];
+    for (const x of rankList()) {
+      if (!x.r || x.r.st === "queued") continue;
+      const s = x.st, f = (v) => v == null || !isFinite(v) ? "" : (Math.round(v * 10) / 10).toString();
+      rows.push([x.e.id, x.e.vname, x.e.region, x.e.city, x.e.country, x.e.url, x.r.m, s.ok ? tierCode(grade(s.med)) : "", s.n, s.ok, f(s.loss * 100), f(s.min), f(s.med), f(s.avg), f(s.p90), f(s.max), f(s.jit), f(s.sd), x.pass ? "yes" : "no", x.r.vf == null ? "" : x.r.vf ? "yes" : "no", x.r.s.map((v) => v == null ? "x" : v).join(" ")]);
+    }
+    download("me2cloud-".concat(stamp(), ".csv"), "\uFEFF" + rows.map((r) => r.map((c) => /[",\n]/.test(String(c)) ? '"'.concat(String(c).replace(/"/g, '""'), '"') : c).join(",")).join("\n"), "text/csv");
+  }
+  function exportJSON() {
+    download("me2cloud-".concat(stamp(), ".json"), JSON.stringify(Object.assign({ tool: "Me2Cloud", verified: ENDPOINTS.verified }, snapshot()), null, 1), "application/json");
+  }
+  const b64u = (bytes) => {
+    let s = "";
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  };
+  const b64d = (str) => {
+    const s = atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+    const b = new Uint8Array(s.length);
+    for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i);
+    return b;
+  };
+  const codec = () => import("/assets/share/codec.js?v=1");
+  const unzipBytes = async (bytes) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+  function shareLoc() {
+    const P = VIEW.shared;
+    if (P) return { city: P.l ? P.l[0] : "", cc: P.l ? P.l[1] : "", org: P.l ? P.l[2] : "", proxy: !!P.x };
+    return { city: NET.city || "", cc: NET.cc || "", org: NET.org || "", proxy: NET.verdict === "warn" };
+  }
+  function sharePayload(withLoc) {
+    const r = {}, k = (v) => Math.round(v * 10), L = shareLoc();
+    for (const x of rankList()) {
+      if (isCustom(x.e.vendor) || !x.st.ok) continue;
+      (r[x.e.vendor] = r[x.e.vendor] || []).push([x.e.region, k(x.st.med), k(x.st.p25), k(x.st.p75), k(x.st.p90), k(x.st.jit), Math.round(x.st.loss * 100), x.st.n]);
+    }
+    return { v: 1, t: Math.round((VIEW.ts || Date.now()) / 6e4), p: VIEW.peak ? 1 : 0, k: VIEW.mode || MODES[S.mode], f: VIEW.ip === "v6" ? 6 : 4, x: L.proxy ? 1 : 0, l: withLoc && (L.city || L.org) ? [L.city, L.cc, L.org] : 0, r };
+  }
+  const shareLink = async (withLoc) => location.origin + location.pathname + "#s=2~" + await (await codec()).pack(JSON.stringify(sharePayload(withLoc)));
+  const listFp = async (ids) => b64u(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ids.map((i) => i + "\n").join("")))).subarray(0, 6));
+  function decodeCLI(b) {
+    let p = 0;
+    const byte = () => b[p++];
+    const uv = () => {
+      let v = 0, sh = 0, x;
+      do {
+        x = b[p++];
+        v += (x & 127) * 2 ** sh;
+        sh += 7;
+      } while (x & 128);
+      return v;
+    };
+    const str = () => {
+      const n2 = uv(), out = new TextDecoder().decode(b.subarray(p, p + n2));
+      p += n2;
+      return out;
+    };
+    const format = byte(), flags = byte(), mode = byte(), n = uv(), t2 = uv(), fp = b64u(b.subarray(p, p + 6));
+    p += 6;
+    const l = [str(), str(), str()];
+    const blocks = (flags & 8 ? [4, 6] : [flags & 2 ? 6 : 4]).map((f) => {
+      const count = uv(), bm = b.subarray(p, p + Math.ceil(count / 8));
+      p += Math.ceil(count / 8);
+      const rows = [], cdns = [];
+      for (let i = 0; i < count; i++) if (bm[i >> 3] & 1 << (i & 7)) rows.push([i, uv(), uv(), uv(), byte()]);
+      if (format === 3) for (let k = uv(); k > 0; k--) cdns.push([str(), uv(), uv(), uv(), byte()]);
+      return { f, rows, cdns };
+    });
+    return { flags, mode: ["tcp", "https", "icmp"][mode] || "tcp", n, t: t2, fp, l, blocks };
+  }
+  async function listIds(fp) {
+    const ids = ENDPOINTS.endpoints.map((e) => e.id);
+    if (await listFp(ids) === fp) return ids;
+    const r = await fetch("/e/" + fp + ".json");
+    if (!r.ok) throw new Error("list");
+    return (await r.json()).endpoints.map((e) => e.id);
+  }
+  function useFam(i) {
+    const P = VIEW.shared;
+    if (!P || !P.maps || !P.maps[i]) return;
+    P.fi = i;
+    P.f = P.fams[i];
+    R = P.maps[i];
+    VIEW.ip = P.f === 6 ? "v6" : "v4";
+    openId = null;
+  }
+  async function loadShared() {
+    const m = /(?:^#|&)s=((?:2~)?[A-Za-z0-9_-]+)/.exec(location.hash);
+    if (!m) return false;
+    try {
+      const C = await codec();
+      const bytes = m[1].startsWith("2~") ? new TextEncoder().encode(await C.unpack(m[1].slice(2))) : C.canInflate() ? await unzipBytes(b64d(m[1])) : (() => {
+        throw new C.CodecError("inflate");
+      })();
+      if (bytes[0] === 2 || bytes[0] === 3) {
+        const D = decodeCLI(bytes), ids = D.blocks.some((bl) => bl.rows.length) ? await listIds(D.fp) : [];
+        const maps = D.blocks.map((bl) => {
+          const map = /* @__PURE__ */ new Map();
+          const put = (id, med, dp90, jit, loss) => {
+            if (!id || !ALL.some((e) => e.id === id)) return;
+            const md = med / 10, p90 = md + dp90 / 10;
+            map.set(id, { s: [], st: "done", m: "", sum: { med: md, p25: md, p75: (md + p90) / 2, p90, jit: jit / 10, loss: loss / 100, n: D.n } });
+          };
+          for (const [i, ...v] of bl.rows) put(ids[i], ...v);
+          for (const [id, ...v] of bl.cdns) put(id, ...v);
+          return map;
+        });
+        const P2 = { v: 2, t: D.t, p: D.flags & 1, k: D.n, x: D.flags & 16 ? 1 : 0, l: D.l[0] || D.l[2] ? D.l : 0, m: D.mode, fams: D.blocks.map((bl) => bl.f), maps };
+        VIEW = { ts: D.t * 6e4, live: false, peak: !!(D.flags & 1), mode: D.n, shared: P2 };
+        useFam(0);
+        return true;
+      }
+      const P = JSON.parse(new TextDecoder().decode(bytes));
+      if (!P || P.v !== 1 || !P.r || typeof P.r !== "object") throw 0;
+      const next = /* @__PURE__ */ new Map();
+      for (const [v, rows] of Object.entries(P.r)) for (const row of rows) {
+        const [reg, med, p25, p75, p90, jit, loss, n] = row, id = v + ":" + reg;
+        if (!ALL.some((e) => e.id === id)) continue;
+        next.set(id, { s: [], st: "done", m: "", sum: { med: med / 10, p25: p25 / 10, p75: p75 / 10, p90: p90 / 10, jit: jit / 10, loss: loss / 100, n } });
+      }
+      R = next;
+      VIEW = { ts: P.t * 6e4, live: false, peak: !!P.p, mode: P.k, ip: P.f === 6 ? "v6" : "v4", shared: P };
+      openId = null;
+      return true;
+    } catch (e) {
+      $("#shareBad span").textContent = t(e && e.reason === "inflate" ? "share_old" : "share_bad");
+      $("#shareBad").hidden = false;
+      return false;
+    }
+  }
+  let RECV = null, recvFor = null;
+  async function showReceived(P) {
+    if (recvFor === P) return;
+    recvFor = P;
+    const { received } = await import("/assets/share/share.js?v=8");
+    if (VIEW.shared !== P) return;
+    if (RECV) RECV.remove();
+    RECV = received({ lang: LANG, ts: P.t * 6e4, at: $("#resWrap"), test: testSame });
+  }
+  function hideReceived() {
+    recvFor = null;
+    if (RECV) {
+      RECV.remove();
+      RECV = null;
+    }
+  }
+  function renderShared() {
+    const P = VIEW.shared;
+    $("#sharedT").hidden = !P;
+    if (!P) {
+      hideReceived();
+      return;
+    }
+    showReceived(P);
+    const who = P.l ? [P.l[0], country(P.l[1]), P.l[2]].filter(Boolean).join(" \xB7 ") : "";
+    const two = P.maps && P.maps.length > 1;
+    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc([who, P.m ? t("mm_" + P.m) : "", P.f === 6 && !two ? "IPv6" : "", P.p ? t("tagPeak") : "", P.x ? t("share_viaProxy") : ""].filter(Boolean).join(" \xB7 ")) + (two ? ' <span class="fam-seg">'.concat(P.fams.map((f, i) => '<button type="button" class="btn sm" data-fam="'.concat(i, '" aria-pressed="').concat(i === (P.fi || 0), '">IPv').concat(f, "</button>")).join(""), "</span>") : "");
+  }
+  const clearHash = () => {
+    try {
+      history.replaceState(null, "", location.pathname + location.search);
+    } catch (e) {
+    }
+  };
+  function exitShared() {
+    clearHash();
+    R = /* @__PURE__ */ new Map();
+    VIEW = { ts: 0, live: true };
+    restoreLast();
+    renderShared();
+    renderAll();
+  }
+  function testSame() {
+    const eps = ALL.filter((e) => R.has(e.id));
+    S.vendors = VIDS.concat(CDN_IDS).filter((v) => eps.some((e) => e.vendor === v));
+    S.cts = CT_ORDER.filter((c) => eps.some((e) => e.continent === c));
+    save();
+    exitShared();
+    renderCtrl();
+    runTests(selected(), MODES[S.mode], S.conc);
+  }
+  async function openShare() {
+    if (!rankList().some((x) => x.st.ok && !isCustom(x.e.vendor))) {
+      toast(t(rankList().some((x) => x.st.ok) ? "share_customOnly" : "share_none"));
+      return;
+    }
+    const L = shareLoc(), list = rankList().filter((x) => x.st.ok && !isCustom(x.e.vendor));
+    const where = [L.city, L.org].filter(Boolean).join(" \xB7 ");
+    const how = [L.proxy ? t("pxShort") : t("okShort"), VIEW.ip === "v6" ? "IPv6" : "IPv4", VIEW.peak ? t("tagPeak") : "", t("card_regions", { n: list.length, k: VIEW.mode || MODES[S.mode] })].filter(Boolean).join("  \xB7  ");
+    const pool = list.filter((x) => x.pass).length ? list.filter((x) => x.pass) : list, top = pool.slice().sort(byScore).slice(0, 3);
+    const vs = [...new Set(list.map((x) => x.e.vendor))].map((v) => ({ v, best: list.filter((x) => x.e.vendor === v).sort(byScore)[0] })).sort((a, b) => byScore(a.best, b.best));
+    const lanes = vs.slice(0, 6), more = vs.length - lanes.length, LH = 56, ph = LH * Math.max(1, lanes.length);
+    const links = [await shareLink(false), await shareLink(true)];
+    const head = (g, kit) => {
+      g.font = "700 46px ".concat(kit.F);
+      const title = kit.wrap(g, t("card_title"), kit.W - 2 * kit.P);
+      g.font = "500 26px ".concat(kit.F);
+      const sub = kit.wrap(g, [kit.show ? where : "", how].filter(Boolean).join("  \xB7  "), kit.W - 2 * kit.P);
+      return { title, sub, dy: (title.length - 1) * 54 + (sub.length - 1) * 36 };
+    };
+    const draw = (g, kit) => {
+      const { W, P, F, M, v, clip, roundRect } = kit, hd = head(g, kit), y = kit.top + hd.dy;
+      const C = { bg: v("bg"), fg: v("fg"), mu: v("muted"), line: v("line"), t: [0, 1, 2, 3, 4, 5].map((i) => v(i ? "g" + i : "muted")) };
+      const font = (w, sz, mono) => {
+        g.font = "".concat(w, " ").concat(sz, "px ").concat(mono ? M : F);
+      };
+      const text = (str, x, yy, color, align) => {
+        g.fillStyle = color;
+        g.textAlign = align || "left";
+        g.fillText(str, x, yy);
+      };
+      const fit = (str, max) => clip(g, str, max);
+      g.textBaseline = "alphabetic";
+      const ty = kit.top;
+      font(700, 46);
+      hd.title.forEach((l, i) => text(l, P, ty + 30 + i * 54, C.fg));
+      font(500, 26);
+      hd.sub.forEach((l, i) => text(l, P, ty + 76 + (hd.title.length - 1) * 54 + i * 36, C.mu));
+      const cw = (W - 2 * P - 48) / 3, cy = y + 110, ch = 228;
+      top.forEach((x, i) => {
+        const cx = P + i * (cw + 24), gr = grade(x.st.med), col = C.t[gr];
+        roundRect(g, cx, cy, cw, ch, 22);
+        g.strokeStyle = C.line;
+        g.lineWidth = 2;
+        g.stroke();
+        g.save();
+        roundRect(g, cx, cy, cw, ch, 22);
+        g.clip();
+        g.fillStyle = col;
+        g.fillRect(cx, cy + ch - 10, cw, 10);
+        g.restore();
+        font(600, 26, true);
+        text("#" + (i + 1), cx + 26, cy + 50, C.mu);
+        font(700, 22);
+        text(fit(tierCode(gr) + " " + tierName(gr), cw - 110), cx + cw - 24, cy + 50, col, "right");
+        font(700, 76, true);
+        text(fmt(x.st.med), cx + 24, cy + 128, col);
+        const mw = g.measureText(fmt(x.st.med)).width;
+        font(500, 28, true);
+        text("ms", cx + 30 + mw, cy + 128, C.mu);
+        kit.fit(g, x.e.city, cw - 48, 32, 22);
+        text(fit(x.e.city, cw - 48), cx + 26, cy + 172, C.fg);
+        font(500, 24);
+        const jt = "\xB1" + fmt(x.st.jit), jw = (font(500, 24, true), g.measureText(jt).width);
+        font(500, 24);
+        text(fit(x.e.vname, cw - 64 - jw), cx + 26, cy + 204, C.mu);
+        font(500, 24, true);
+        text(jt, cx + cw - 24, cy + 204, C.mu, "right");
+      });
+      const lx = P + 196, rx = W - P, y0 = cy + ch + 56;
+      const X = (val) => lx + (rx - lx) * pos(val) / 100, bands = [AX_MIN].concat(GRADES, AX_MAX);
+      for (let k = 1; k <= 5; k++) {
+        g.globalAlpha = 0.1;
+        g.fillStyle = C.t[k];
+        g.fillRect(X(bands[k - 1]), y0, X(bands[k]) - X(bands[k - 1]), ph);
+        g.globalAlpha = 1;
+      }
+      lanes.forEach(({ v: vid }, i) => {
+        const ly = y0 + i * LH + LH / 2;
+        if (i) {
+          g.strokeStyle = C.line;
+          g.lineWidth = 1.5;
+          g.setLineDash([6, 6]);
+          g.beginPath();
+          g.moveTo(lx, y0 + i * LH);
+          g.lineTo(rx, y0 + i * LH);
+          g.stroke();
+          g.setLineDash([]);
+        }
+        font(600, 23);
+        g.textBaseline = "middle";
+        text(fit(vnm(vid), 178), lx - 16, ly, C.fg, "right");
+        g.textBaseline = "alphabetic";
+        for (const x of list.filter((z) => z.e.vendor === vid)) {
+          const col = C.t[grade(x.st.med)], cx = X(x.st.med), cyy = ly + spread(x.e.id) * LH / 12;
+          g.beginPath();
+          g.arc(cx, cyy, 10, 0, Math.PI * 2);
+          g.fillStyle = x.pass ? col : C.bg;
+          g.fill();
+          g.lineWidth = x.pass ? 3 : 4;
+          g.strokeStyle = x.pass ? C.bg : col;
+          g.stroke();
+        }
+      });
+      font(700, 20, true);
+      for (let k = 1; k <= 5; k++) {
+        const tx = X(bands[k - 1]) + 6, tw = g.measureText(tierCode(k)).width;
+        g.fillStyle = C.bg;
+        g.globalAlpha = 0.85;
+        roundRect(g, tx - 4, y0 + 6, tw + 8, 24, 5);
+        g.fill();
+        g.globalAlpha = 1;
+        text(tierCode(k), tx, y0 + 24, C.t[k]);
+      }
+      font(500, 22, true);
+      for (const val of [5, 20, 100, 500, 2e3]) text(val >= 1e3 ? val / 1e3 + "s" : String(val), X(val), y0 + ph + 32, C.mu, "center");
+      if (more > 0) {
+        font(500, 22);
+        text(t("card_more", { n: more }), lx - 18, y0 + ph + 32, C.mu, "right");
+      }
+      const by = y0 + ph + 70, counts = [1, 2, 3, 4, 5].map((k) => list.filter((x) => grade(x.st.med) === k).length), tot = list.length || 1;
+      g.save();
+      roundRect(g, P, by, W - 2 * P, 20, 10);
+      g.clip();
+      g.fillStyle = C.line;
+      g.fillRect(P, by, W - 2 * P, 20);
+      let bx = P;
+      counts.forEach((c, i) => {
+        const w = (W - 2 * P) * c / tot;
+        g.fillStyle = C.t[i + 1];
+        g.fillRect(bx, by, w, 20);
+        bx += w;
+      });
+      g.restore();
+      counts.forEach((c, i) => {
+        const s = "".concat(tierCode(i + 1), " ").concat(tierName(i + 1), " ").concat(c);
+        kit.fit(g, s, (W - 2 * P) / 5 - 8, 24, 16, 600);
+        text(fit(s, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]);
+      });
+    };
+    const { share } = await import("/assets/share/share.js?v=8");
+    share({
+      lang: LANG,
+      name: "Me2Cloud",
+      file: "me2cloud-" + stamp(),
+      show: ["city", "isp"],
+      never: ["ip"],
+      canShow: !!where,
+      link: (on) => links[on ? 1 : 0],
+      home: SITE + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/"),
+      text: () => t("card_cta"),
+      height: (g, kit) => 200 + head(g, kit).dy + 110 + 228 + 56 + ph + 70 + 84 + 70,
+      draw,
+      foot: () => [t("card_local")],
+      ts: VIEW.ts || Date.now()
+    }).open();
+  }
+  function aiSummary() {
+    const list = rankList().filter((x) => x.st.ok), L = shareLoc(), N = NEED();
+    const line = (x, i) => "".concat(i + 1, ". ").concat(x.e.vname, " ").concat(x.e.region, " (").concat(x.e.cityEn || x.e.city).concat(x.e.country ? ", " + x.e.country : "", "): median ").concat(fmt(x.st.med), " ms, jitter \xB1").concat(fmt(x.st.jit), " ms, ").concat(pkt() ? "packet loss" : "timeout rate", " ").concat(Math.round(x.st.loss * 100), "%, ").concat(tierCode(grade(x.st.med))).concat(x.pass ? ", fits" : "");
+    const best = [...new Set(list.map((x) => x.e.vendor))].map((v) => list.filter((x) => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
+    return [
+      "Me2Cloud latency results (HTTPS round trips measured in my own browser; median of " + (VIEW.mode || MODES[S.mode]) + " samples per region)",
+      "Network: " + [L.city, L.cc, L.org].filter(Boolean).join(", ") + (L.proxy ? " (through a proxy)" : " (direct)") + " \xB7 " + (VIEW.ip === "v6" ? "IPv6" : "IPv4") + " \xB7 " + new Date(VIEW.ts || Date.now()).toISOString().slice(0, 16).replace("T", " ") + " UTC" + (VIEW.peak ? " (evening peak)" : ""),
+      "My requirements: median \u2264 " + (N.lat || "any") + " ms, jitter \u2264 " + (N.jit || "any") + " ms, timeout rate \u2264 " + (N.loss || 0) + "%",
+      "Tiers: T0 \u2264 30 ms, T1 \u2264 80, T2 \u2264 150, T3 \u2264 250, T4 above",
+      "",
+      "Best regions (" + list.length + " measured):",
+      ...list.slice().sort(byScore).slice(0, 15).map(line),
+      "",
+      "Best region of each provider:",
+      ...best.map(line),
+      "",
+      t("ai_q")
+    ].join("\n");
+  }
+  function renderAI() {
+    const has = rankList().some((x) => x.st.ok), base = location.origin;
+    const prompt = t("ai_linkPrompt", { u: base + "/llms.txt" });
+    $("#aiBody").innerHTML = '\n      <section class="ai-sec"><h4>'.concat(esc(t("ai_res_h")), "</h4><p>").concat(esc(t(has ? "ai_res_p" : "ai_res_none")), "</p>\n        ").concat(has ? '<div class="code"><textarea readonly rows="8" data-ta="ai1">'.concat(esc(aiSummary()), '</textarea><button class="btn sm" type="button" data-copyai="ai1">').concat(t("copy"), "</button></div>") : "", '</section>\n      <section class="ai-sec"><h4>').concat(esc(t("ai_link_h")), "</h4><p>").concat(esc(t("ai_link_p")), '</p>\n        <div class="code"><textarea readonly rows="3" data-ta="ai2">').concat(esc(prompt), '</textarea><button class="btn sm" type="button" data-copyai="ai2">').concat(t("copy"), '</button></div></section>\n      <section class="ai-sec"><h4>').concat(esc(t("ai_dev_h")), "</h4><p>").concat(esc(t("ai_dev_p")), '</p>\n        <div class="ai-links"><a href="/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="/endpoints.json" target="_blank" rel="noopener">endpoints.json</a><a href="/rules/clash.yaml" target="_blank" rel="noopener">rules/clash.yaml \xB7 surge.list \xB7 loon.list \xB7 quanx.list \xB7 singbox.json</a></div></section>');
+  }
+  let toastT = 0;
+  function toast(msg) {
+    const el = $("#toast");
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(toastT);
+    toastT = setTimeout(() => {
+      el.hidden = true;
+    }, Math.max(2200, msg.length * 110));
+  }
+  function cliCmd() {
+    const one = S.vendors.filter((v) => ENDPOINTS.vendors[v]);
+    return "curl -fsSL ".concat(SITE, "/i | sh") + (one.length === 1 ? " -s -- -p " + one[0] : "");
+  }
+  function renderCli() {
+    const line = (cmd, note) => '<button class="cmdline" type="button" data-cmd title="'.concat(esc(t("copy")), '"><code>').concat(esc(cmd), '</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>') + (note ? '<span class="note">'.concat(esc(note), "</span>") : "");
+    const sec = (h, body) => '<section class="rblk"><b>'.concat(esc(t(h)), "</b>").concat(body, "</section>");
+    const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
+    $("#cliBody").innerHTML = [
+      sec("cli_install", line("curl -fsSL ".concat(SITE, "/i | sh"), t("cli_install_s"))),
+      sec("cli_once", line("curl -fsSL ".concat(SITE, "/i | sh -s -- run"))),
+      sec("cli_wget", line("wget -qO- ".concat(SITE, "/i | sh"))),
+      sec("cli_opts", line("vps2cloud -p aws,gcp --continent as", t("cli_o_pick")) + line("vps2cloud --ip both", t("cli_o_ip")) + line("vps2cloud --cdn", t("cli_o_cdn")) + line("vps2cloud -m icmp", t("cli_o_icmp")) + line("vps2cloud -o md", t("cli_o_md"))),
+      sec("cli_win", line("irm ".concat(SITE, "/i.ps1 | iex"), t("cli_win_s")) + '<a class="dl" href="'.concat(esc(win), '">vps2cloud-windows-amd64.exe \u2193</a>')),
+      '<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>'.concat(esc(t("cli_src")), '<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>')
+    ].join("");
+  }
+  async function copyText(s) {
+    try {
+      await navigator.clipboard.writeText(s);
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = s;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+      } catch (x) {
+      }
+      ta.remove();
+    }
+    toast(t("copied"));
+  }
+  const THEMES = ["system", "light", "dark"];
+  function applyTheme() {
+    let th = "system";
+    try {
+      th = localStorage.getItem(THEME_KEY) || "system";
+    } catch (e) {
+    }
+    if (!THEMES.includes(th)) th = "system";
+    if (th === "system") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", th);
+    $$("#themeSeg button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.t === th));
+  }
+  function renderSettings() {
+    $("#conc").value = S.conc;
+    $("#concV").textContent = S.conc;
+    $("#timeout").value = String(S.timeout);
+    $("#rtc").checked = S.rtc;
+    $("#onlyPass").checked = S.onlyPass;
+  }
+  function full() {
+    buildAll();
+    applyLang();
+    $("#lang").value = LANG;
+    $$("[data-tool]").forEach((el) => {
+      const u = toolUrl(el.dataset.tool), a = el.querySelector("a");
+      if (!u || !a) return el.remove();
+      a.href = u;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "tl";
+      a.insertAdjacentHTML("beforeend", ICON_EXT);
+      el.hidden = false;
+    });
+    applyTheme();
+    renderSettings();
+    renderCtrl();
+    renderNet();
+    renderHist();
+    renderAll();
+  }
+  function changed() {
+    save();
+    renderCtrl();
+    renderAll();
+  }
+  $("#helpSel").addEventListener("change", (e) => {
+    helpIdx = +e.target.value;
+    renderDocs();
+  });
+  $("#lang").addEventListener("change", (e) => {
+    const l = e.target.value;
+    try {
+      localStorage.setItem(LANG_KEY, l);
+    } catch (x) {
+    }
+    location.href = LANG_PATHS[l] + location.search + location.hash;
+  });
+  document.addEventListener("toggle", (e) => {
+    if (!(e.target.matches && e.target.matches("details.menu") && e.target.open)) return;
+    if (e.target.id === "plA" && !S.vendors.some((v) => !isCdn(v))) {
+      e.target.open = false;
+      $("#plV").open = true;
+      return;
+    }
+    $$("details.menu[open]").forEach((d) => {
+      if (d !== e.target) d.open = false;
+    });
+  }, true);
+  document.addEventListener("pointerdown", (e) => {
+    if (!e.target.closest("details.menu")) $$("details.menu[open]").forEach((d) => {
+      d.open = false;
+    });
+  });
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("button, [data-go], .r, [data-help]");
+    if (!el) return;
+    const cdnPicks = () => S.vendors.filter(isCdn), cloudPicks = () => S.vendors.filter((v) => !isCdn(v));
+    if (el.matches("[data-v]")) {
+      S.vendors = pickToggle(cloudPicks(), allVids(), el.dataset.v).concat(cdnPicks());
+      S.cts = coveredCts();
+      changed();
+      return;
+    }
+    if (el.matches("[data-cdn]")) {
+      const v = el.dataset.cdn;
+      S.vendors = S.vendors.includes(v) ? S.vendors.filter((x) => x !== v) : S.vendors.concat(v);
+      changed();
+      return;
+    }
+    if (el.matches("[data-c]")) {
+      S.cts = pickToggle(S.cts, coveredCts(), el.dataset.c);
+      changed();
+      return;
+    }
+    if (el.dataset.all || el.dataset.none) {
+      const k = el.dataset.all || el.dataset.none, on = !!el.dataset.all;
+      if (k === "vendors") {
+        S.vendors = on ? allVids().concat(CDN_IDS) : [];
+        S.cts = coveredCts();
+      } else if (k === "cts") S.cts = on ? coveredCts() : [];
+      changed();
+      return;
+    }
+    if (el.matches("[data-delg]")) {
+      dropCustom((c) => "c:" + c.g === el.dataset.delg);
+      return;
+    }
+    if (el.matches("[data-cn]")) {
+      const k = el.dataset.cn;
+      COPEN = COPEN === k && !CEDIT ? null : k;
+      CEDIT = null;
+      renderCtrl();
+      $("#plV").open = true;
+      return;
+    }
+    if (el.matches("[data-cadd]")) {
+      CADD = !CADD;
+      renderCtrl();
+      $("#plV").open = true;
+      if (CADD) {
+        $("#cform").scrollIntoView({ block: "nearest" });
+        $("#cUrl").focus({ preventScroll: true });
+      }
+      return;
+    }
+    if (el.matches("[data-gp]")) {
+      FG = el.dataset.gp;
+      FNEW = false;
+      renderCtrl();
+      $("#plV").open = true;
+      return;
+    }
+    if (el.matches("[data-gp-new]")) {
+      FNEW = true;
+      renderCtrl();
+      $("#plV").open = true;
+      $("#cGroup").focus();
+      return;
+    }
+    if (el.matches("[data-gedit]")) {
+      GEDIT = el.dataset.gedit;
+      renderCtrl();
+      $("#plV").open = true;
+      const i = $("#cgIn");
+      i.focus();
+      i.select();
+      return;
+    }
+    if (el.matches("[data-edit]")) {
+      CEDIT = el.dataset.edit;
+      renderCtrl();
+      $("#plV").open = true;
+      const i = $("#ceName");
+      if (i) {
+        i.focus({ preventScroll: true });
+        i.select();
+      }
+      return;
+    }
+    if (el.matches("[data-esave]")) {
+      saveEdit(el.dataset.esave);
+      return;
+    }
+    if (el.matches("[data-ecancel]")) {
+      CEDIT = null;
+      renderCtrl();
+      $("#plV").open = true;
+      return;
+    }
+    if (el.matches("[data-p]")) {
+      const p = el.dataset.p;
+      S.need.preset = p;
+      [S.need.lat, S.need.jit, S.need.loss] = PRESETS[p];
+      changed();
+      return;
+    }
+    if (el.matches("[data-m]")) {
+      S.mode = el.dataset.m;
+      changed();
+      return;
+    }
+    if (el.matches("[data-rules]")) {
+      renderRules();
+      openDlg("rules");
+      return;
+    }
+    if (el.id === "recheckBtn") {
+      checkNetwork();
+      return;
+    }
+    if (el.id === "netMore") {
+      netOpen = !netOpen;
+      renderNet();
+      return;
+    }
+    if (el.id === "eyeBtn") {
+      S.hideIp = !S.hideIp;
+      save();
+      renderNet();
+      return;
+    }
+    if (el.matches("[data-f]")) {
+      S.ruleFmt = el.dataset.f;
+      save();
+      renderRules();
+      return;
+    }
+    if (el.matches("[data-copyta]")) {
+      copyText($('#ruleBody [data-ta="'.concat(el.dataset.copyta, '"]')).value);
+      return;
+    }
+    if (el.matches("[data-close]")) {
+      closeDlg();
+      return;
+    }
+    if (el.id === "logBtn") {
+      renderLog();
+      openDlg("logDlg");
+      return;
+    }
+    if (el.id === "aiBtn") {
+      renderAI();
+      openDlg("aiDlg");
+      return;
+    }
+    if (el.matches("[data-cli]")) {
+      renderCli();
+      openDlg("cliDlg");
+      return;
+    }
+    if (el.matches("[data-cmd]")) {
+      copyText(el.querySelector("code").textContent);
+      el.classList.add("done");
+      setTimeout(() => el.classList.remove("done"), 1200);
+      return;
+    }
+    if (el.matches("[data-copyai]")) {
+      copyText($('#aiBody [data-ta="'.concat(el.dataset.copyai, '"]')).value);
+      return;
+    }
+    if (el.matches("[data-retest]")) {
+      const ep = ALL.find((x) => x.id === el.dataset.retest);
+      if (ep) runTests([ep], MODES.precise, 1, true);
+      return;
+    }
+    if (el.matches("[data-copy]")) {
+      copyText(el.dataset.copy);
+      return;
+    }
+    if (el.matches("[data-del]")) {
+      dropCustom((c) => c.k === el.dataset.del);
+      return;
+    }
+    if (el.matches("[data-go]")) {
+      openId = el.dataset.go;
+      S.onlyPass = false;
+      $("#onlyPass").checked = false;
+      $("#q").value = "";
+      renderAll();
+      setTimeout(() => {
+        const r = rowEls.get(openId);
+        r && r.scrollIntoView({ block: "center", behavior: "smooth" });
+      }, 300);
+      return;
+    }
+    if (el.matches("[data-help]")) {
+      e.preventDefault();
+      openHelp(+el.dataset.help);
+      return;
+    }
+    if (el.id === "shareBtn") {
+      openShare();
+      return;
+    }
+    if (el.matches("[data-home]")) {
+      S.home = el.dataset.home;
+      changed();
+      return;
+    }
+    if (el.matches("[data-ip]")) {
+      S.ip = el.dataset.ip;
+      changed();
+      return;
+    }
+    if (el.id === "shareBadGo") {
+      runTests(selected(), MODES[S.mode], S.conc);
+      return;
+    }
+    if (el.matches("[data-fam]")) {
+      useFam(+el.dataset.fam);
+      renderShared();
+      renderAll();
+      return;
+    }
+    if (el.matches("[data-hq]")) {
+      helpIdx = +el.dataset.hq;
+      renderDocs();
+      return;
+    }
+    if (el.matches("[data-hstep]")) {
+      helpIdx = clamp(helpIdx + +el.dataset.hstep, 0, $("#helpSel").options.length - 1);
+      renderDocs();
+      return;
+    }
+    if (el.classList.contains("r")) {
+      const id = el.parentElement.dataset.id;
+      const prev = openId;
+      openId = openId === id ? null : id;
+      markDirty(id);
+      if (prev) markDirty(prev);
+      return;
+    }
+  });
+  document.addEventListener("submit", async (e) => {
+    if (e.target.id !== "cform") return;
+    e.preventDefault();
+    const g = (FNEW ? ($("#cGroup") || {}).value || "" : FG).trim().slice(0, 24), btn = e.target.querySelector("[type=submit]");
+    $("#cErr").hidden = true;
+    btn.disabled = true;
+    const msg = await saveNode(null, $("#cName").value, $("#cUrl").value, g);
+    btn.disabled = false;
+    if (msg) {
+      $("#cErr").textContent = msg;
+      $("#cErr").hidden = false;
+      return;
+    }
+    FG = g;
+    FNEW = false;
+    CADD = false;
+    renderCtrl();
+    $("#plV").open = true;
+    toast(t("cust_added"));
+  });
+  document.addEventListener("change", (e) => {
+    const k = e.target.dataset.cc;
+    if (k == null) return;
+    const c = S.custom.find((x) => x.k === k);
+    if (!c) return;
+    if (e.target.value) {
+      c.cc = e.target.value;
+      c.ccSet = true;
+      buildAll();
+      S.cts = coveredCts();
+      changed();
+    } else {
+      delete c.ccSet;
+      locateCustom(c);
+    }
+  });
+  document.addEventListener("input", (e) => {
+    const k = { nLat: "lat", nJit: "jit", nLoss: "loss" }[e.target.id];
+    if (!k) return;
+    S.need[k] = Math.max(0, +e.target.value || 0);
+    S.need.preset = "custom";
+    save();
+    $("#plN > summary").innerHTML = "<span>".concat(PRESET_IC.custom, "</span><span>").concat(esc(t("p_custom")), '</span><b class="num">').concat(S.need.lat ? "\u2264" + S.need.lat + "ms" : "", "</b>").concat(caret);
+    $$("#popN .opt").forEach((b) => b.setAttribute("aria-pressed", "false"));
+    renderAll();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if ($$(".scrim").some((s) => !s.hidden)) closeDlg();
+      else $$("details.menu[open]").forEach((d) => {
+        d.open = false;
+      });
+    }
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("r")) {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
+  $$(".scrim").forEach((s) => s.addEventListener("click", (e) => {
+    if (e.target === s) closeDlg();
+  }));
+  addEventListener("hashchange", async () => {
+    if (await loadShared()) {
+      renderShared();
+      renderAll();
+    }
+  });
+  $("#runBtn").addEventListener("click", () => {
+    if (RUN) {
+      RUN.ctl.abort();
+      return;
+    }
+    openId = null;
+    runTests(selected(), MODES[S.mode], S.conc);
+  });
+  $("#q").addEventListener("input", () => renderAll());
+  $("#onlyPass").addEventListener("change", (e) => {
+    S.onlyPass = e.target.checked;
+    save();
+    renderAll();
+  });
+  $("#conc").addEventListener("input", (e) => {
+    S.conc = +e.target.value;
+    $("#concV").textContent = S.conc;
+    save();
+    renderRun();
+  });
+  $("#timeout").addEventListener("change", (e) => {
+    S.timeout = +e.target.value;
+    save();
+  });
+  $("#rtc").addEventListener("change", (e) => {
+    S.rtc = e.target.checked;
+    save();
+  });
+  $("#themeSeg").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    try {
+      localStorage.setItem(THEME_KEY, b.dataset.t);
+    } catch (x) {
+    }
+    applyTheme();
+  });
+  $("#hist").addEventListener("change", (e) => {
+    if (RUN) {
+      renderHist();
+      return;
+    }
+    const v = e.target.value;
+    if (v === "") {
+      restoreLast();
+    } else {
+      const h = loadHist()[+v];
+      if (h) applySnapshot(h, false);
+    }
+    openId = null;
+    renderAll();
+  });
+  $("#csvBtn").addEventListener("click", () => {
+    $("#settings").open = false;
+    exportCSV();
+  });
+  $("#jsonBtn").addEventListener("click", () => {
+    $("#settings").open = false;
+    exportJSON();
+  });
+  $("#importFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    try {
+      const j = JSON.parse(await f.text());
+      if (!j || typeof j.res !== "object") throw 0;
+      applySnapshot(j, false);
+      openId = null;
+      renderAll();
+      toast(t("imported"));
+    } catch (x) {
+      toast(t("importErr"));
+    }
+    $("#settings").open = false;
+  });
+  $("#copyLinkBtn").addEventListener("click", () => {
+    const u = new URL(location.origin + location.pathname);
+    u.searchParams.set("vendors", S.vendors.join(","));
+    u.searchParams.set("areas", S.cts.join(","));
+    u.searchParams.set("mode", S.mode);
+    u.searchParams.set("need", [S.need.lat, S.need.jit, S.need.loss].join(","));
+    if (S.ip === "v6") u.searchParams.set("ip", "v6");
+    if (S.home !== "all") u.searchParams.set("home", S.home);
+    copyText(u.href);
+    $("#settings").open = false;
+  });
+  let holdT = 0;
+  const rb = $("#resetBtn");
+  rb.addEventListener("pointerdown", () => {
+    rb.classList.add("hold");
+    $("#resetHint").hidden = false;
+    holdT = setTimeout(() => {
+      try {
+        [RES_KEY, HIST_KEY].forEach((k) => localStorage.removeItem(k));
+      } catch (e) {
+      }
+      R = /* @__PURE__ */ new Map();
+      VIEW = { ts: 0, live: true };
+      openId = null;
+      rb.classList.remove("hold");
+      $("#settings").open = false;
+      full();
+      toast(t("resetDone"));
+    }, 1e3);
+  });
+  ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => rb.addEventListener(ev, () => {
+    clearTimeout(holdT);
+    rb.classList.remove("hold");
+  }));
+  document.addEventListener("error", (e) => {
+    if (e.target.matches && e.target.matches("img.flag, img.nb-flag")) e.target.remove();
+  }, true);
+  const tip = $("#tip");
+  document.addEventListener("mousemove", (e) => {
+    const el = e.target.closest && e.target.closest("[data-tipid]");
+    if (!el) {
+      tip.hidden = true;
+      return;
+    }
+    const ep = ALL.find((x) => x.id === el.dataset.tipid), st = stats(R.get(el.dataset.tipid));
+    if (!ep || !st.ok) {
+      tip.hidden = true;
+      return;
+    }
+    const g = grade(st.med);
+    tip.innerHTML = "<b>".concat(esc(ep.vname), " \xB7 ").concat(esc(ep.city), ' <span class="c').concat(g, '">').concat(tierCode(g), " ").concat(esc(tierName(g)), "</span></b><span>").concat(t("d_med"), '</span><span class="num">').concat(fmt(st.med), " ms</span><span>").concat(t("d_jit"), '</span><span class="num">\xB1').concat(fmt(st.jit), " ms</span><span>").concat(t(pkt() ? "d_pkt" : "d_loss"), '</span><span class="num">').concat(Math.round(st.loss * 100), "%</span><span>").concat(t("d_min"), " \u2013 ").concat(t("d_max"), '</span><span class="num">').concat(fmt(st.min), " \u2013 ").concat(fmt(st.max), "</span>");
+    tip.hidden = false;
+    tip.style.left = clamp(e.clientX + 14, 8, innerWidth - tip.offsetWidth - 8) + "px";
+    tip.style.top = clamp(e.clientY + 14, 8, innerHeight - tip.offsetHeight - 8) + "px";
+  });
+  setInterval(() => {
+    if (NET.state === "done") renderNet();
+  }, 6e4);
+  addEventListener("beforeunload", (e) => {
+    if (RUN) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+  restoreLast();
+  full();
+  checkNetwork();
+  (window.requestIdleCallback || ((f) => setTimeout(f, 1500)))(() => {
+    new Image().src = "/assets/shiba-run.png";
+  }, { timeout: 3e3 });
+  S.custom.filter((c) => !c.ccSet && c.geo !== 3).forEach(locateCustom);
+  loadShared().then((ok) => {
+    if (ok) {
+      renderShared();
+      renderAll();
+    }
+  });
+})();

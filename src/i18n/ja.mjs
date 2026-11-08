@@ -170,6 +170,7 @@ export default {
   mm_https: "HTTPS",
   mm_icmp: "ICMP ping",
   share_bad: "この結果のリンクは読み込めません",
+  share_old: "このブラウザは古いため、この結果を開けません。最新のブラウザでリンクを開くか、自分の回線を測ってください。",
   share_test: "自分も測る",
   share_none: "先に一度測ってください",
   sharedNoRaw: "共有された結果には統計値だけが入っていて、1 回ごとの計測値はありません。",

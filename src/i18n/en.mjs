@@ -18,6 +18,7 @@ export default {
   mm_https: "HTTPS",
   mm_icmp: "ICMP ping",
   share_bad: "This result link can't be read",
+  share_old: "This browser is too old to open this result. Open the link in a current browser, or test your own.",
   share_test: "Test my own",
   share_none: "Run a test first, then share",
   sharedNoRaw: "Shared results include the statistics, not every sample.",
