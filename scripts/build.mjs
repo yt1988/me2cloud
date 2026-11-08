@@ -102,7 +102,10 @@ export async function build({ check = false } = {}) {
   new Function(source);                                                 // must parse
   // down to ES2019 (old in-app browsers, Chrome 70 and Safari 12 era, can not parse ?. or ??: one unparsable token and
   // the whole script does nothing). Not minified, so the shipped code reads like the source.
-  const app = (await transform(source, { loader: "js", target: ["es2019", "chrome70", "safari12", "firefox68", "edge79"], legalComments: "inline" })).code;
+  const app = (await transform(source, { loader: "js", target: ["es2019", "chrome70", "safari12", "firefox68", "edge79"],
+    // template literals stay: Safari 12 runs them (only tagged templates have its caching bug), and 1ms-shell's check
+    // reads the tool-address lookup `meta[name="${id}"]` in them
+    supported: { "template-literal": true }, legalComments: "inline" })).code;
   // (a crude check, strings and regular expressions included: rewrite any text that trips it)
   if (/\?\.(?![0-9])|\?\?/.test(app)) throw new Error("the app script still has ?. or ?? after the ES2019 transform");
   const appName = `app.${createHash("sha256").update(app).digest("hex").slice(0, 10)}.js`;

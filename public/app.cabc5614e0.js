@@ -80,7 +80,7 @@
     $("#footTxt").textContent = t("foot", { d: ENDPOINTS.verified });
     renderDocs();
   }
-  $("#lang").innerHTML = LANGS.filter(([c]) => LANG_PATHS[c]).map(([c, n]) => '<option value="'.concat(c, '">').concat(n, "</option>")).join("");
+  $("#lang").innerHTML = LANGS.filter(([c]) => LANG_PATHS[c]).map(([c, n]) => `<option value="${c}">${n}</option>`).join("");
   function defaults() {
     return {
       v: 4,
@@ -340,9 +340,9 @@
       return "";
     }
     const root = u.hostname.split(".").slice(-2).join("."), letter = esc((root[0] || "?").toUpperCase()), known = FAV.get(u.origin);
-    if (known === "") return '<span class="fav l" aria-hidden="true">'.concat(letter, "</span>");
+    if (known === "") return `<span class="fav l" aria-hidden="true">${letter}</span>`;
     const alt = known || root === u.hostname ? "" : "https://" + root + "/favicon.ico";
-    return '<img class="fav" src="'.concat(esc(known || u.origin + "/favicon.ico"), '" data-o="').concat(esc(u.origin), '" data-alt="').concat(esc(alt), '" data-l="').concat(letter, '" alt="" referrerpolicy="no-referrer">');
+    return `<img class="fav" src="${esc(known || u.origin + "/favicon.ico")}" data-o="${esc(u.origin)}" data-alt="${esc(alt)}" data-l="${letter}" alt="" referrerpolicy="no-referrer">`;
   }
   document.addEventListener("load", (e) => {
     const im = e.target;
@@ -473,21 +473,21 @@
     $("#plV").open = true;
   }
   let CEDIT = null, GEDIT = null, CADD = false, COPEN = null;
-  const PEN = '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>';
-  const ccMark = (c) => c.cc && !LOC[c.k] ? flag(c.cc) : '<span class="cnq'.concat(LOC[c.k] === "ing" ? "" : " bad", '">').concat(LOC[c.k] === "ing" ? "\u2026" : "?", "</span>");
+  const PEN = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>`;
+  const ccMark = (c) => c.cc && !LOC[c.k] ? flag(c.cc) : `<span class="cnq${LOC[c.k] === "ing" ? "" : " bad"}">${LOC[c.k] === "ing" ? "\u2026" : "?"}</span>`;
   function customList() {
     return GIDS().map((v) => {
       const cs = S.custom.filter((c) => "c:" + c.g === v), open = cs.find((c) => c.k === CEDIT || c.k === COPEN), on = S.vendors.includes(v);
-      return '<div class="cn-g'.concat(on ? " on" : "", '">').concat(gIcon(v)).concat(GEDIT === v ? '<input class="inp cg-in" id="cgIn" data-gin="'.concat(esc(v), '" maxlength="24" value="').concat(esc(v.slice(2)), '" placeholder="').concat(esc(t("custom")), '" aria-label="').concat(esc(t("cust_edit")), '">') : '<span class="cn-gn">'.concat(esc(vnm(v)), '</span><span class="c">').concat(cs.length, '</span><button type="button" class="x" data-gedit="').concat(esc(v), '" aria-label="').concat(esc(t("cust_edit")), '" title="').concat(esc(t("cust_edit")), '">').concat(PEN, "</button>")) + '<button type="button" class="x" data-delg="'.concat(esc(v), '" aria-label="').concat(esc(t("del")), '" title="').concat(esc(t("del")), '">\xD7</button></div>') + '<div class="cn-chips">'.concat(cs.map((c) => '<button type="button" class="cnc'.concat(on ? " sel" : "", '" data-cn="').concat(esc(c.k), '" aria-expanded="').concat(open === c, '" title="').concat(esc(c.name + " \xB7 " + hostOf(c.url)), '">').concat(ccMark(c), "<span>").concat(esc(c.name), "</span></button>")).join(""), "</div>") + (!open ? "" : CEDIT === open.k ? editRow(open) : nodeRow(open));
+      return `<div class="cn-g${on ? " on" : ""}">${gIcon(v)}${GEDIT === v ? `<input class="inp cg-in" id="cgIn" data-gin="${esc(v)}" maxlength="24" value="${esc(v.slice(2))}" placeholder="${esc(t("custom"))}" aria-label="${esc(t("cust_edit"))}">` : `<span class="cn-gn">${esc(vnm(v))}</span><span class="c">${cs.length}</span><button type="button" class="x" data-gedit="${esc(v)}" aria-label="${esc(t("cust_edit"))}" title="${esc(t("cust_edit"))}">${PEN}</button>`}<button type="button" class="x" data-delg="${esc(v)}" aria-label="${esc(t("del"))}" title="${esc(t("del"))}">\xD7</button></div><div class="cn-chips">${cs.map((c) => `<button type="button" class="cnc${on ? " sel" : ""}" data-cn="${esc(c.k)}" aria-expanded="${open === c}" title="${esc(c.name + " \xB7 " + hostOf(c.url))}">${ccMark(c)}<span>${esc(c.name)}</span></button>`).join("")}</div>` + (!open ? "" : CEDIT === open.k ? editRow(open) : nodeRow(open));
     }).join("");
   }
   function nodeRow(c) {
-    return '<div class="cn">'.concat(favOf(c.url), '<span class="cn-h" title="').concat(esc(c.url), '">').concat(esc(c.url.replace(/^https:\/\//, "").replace(/\/$/, "")), "</span>") + '<label class="cn-cc'.concat(c.ccSet ? " set" : "", '" title="').concat(esc((c.ccSet ? "" : t("cust_auto") + " \xB7 ") + (country(c.cc) || t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail"))), '">') + (c.cc && !LOC[c.k] ? flag(c.cc) + '<span class="st">'.concat(esc(country(c.cc)), "</span>") : '<span class="st'.concat(LOC[c.k] === "ing" ? "" : " bad", '">').concat(esc(t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail")), "</span>")) + '<select data-cc="'.concat(esc(c.k), '" aria-label="').concat(esc(t("cust_cc")), '"><option value="">').concat(esc(t("cust_auto") + (c.cc && !c.ccSet ? " \xB7 " + country(c.cc) : "")), "</option>").concat(c.ccSet ? '<option value="'.concat(c.cc, '" selected>').concat(esc(country(c.cc)), "</option>") : "", "</select></label>") + '<button type="button" class="x" data-edit="'.concat(esc(c.k), '" aria-label="').concat(esc(t("cust_edit")), '" title="').concat(esc(t("cust_edit")), '">').concat(PEN, "</button>") + '<button type="button" class="x" data-del="'.concat(esc(c.k), '" aria-label="').concat(esc(t("del")), '" title="').concat(esc(t("del")), '">\xD7</button></div>');
+    return `<div class="cn">${favOf(c.url)}<span class="cn-h" title="${esc(c.url)}">${esc(c.url.replace(/^https:\/\//, "").replace(/\/$/, ""))}</span><label class="cn-cc${c.ccSet ? " set" : ""}" title="${esc((c.ccSet ? "" : t("cust_auto") + " \xB7 ") + (country(c.cc) || t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail")))}">` + (c.cc && !LOC[c.k] ? flag(c.cc) + `<span class="st">${esc(country(c.cc))}</span>` : `<span class="st${LOC[c.k] === "ing" ? "" : " bad"}">${esc(t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail"))}</span>`) + `<select data-cc="${esc(c.k)}" aria-label="${esc(t("cust_cc"))}"><option value="">${esc(t("cust_auto") + (c.cc && !c.ccSet ? " \xB7 " + country(c.cc) : ""))}</option>${c.ccSet ? `<option value="${c.cc}" selected>${esc(country(c.cc))}</option>` : ""}</select></label><button type="button" class="x" data-edit="${esc(c.k)}" aria-label="${esc(t("cust_edit"))}" title="${esc(t("cust_edit"))}">${PEN}</button><button type="button" class="x" data-del="${esc(c.k)}" aria-label="${esc(t("del"))}" title="${esc(t("del"))}">\xD7</button></div>`;
   }
-  const CHECK = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>';
+  const CHECK = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
   function editRow(c) {
     const groups = [...new Set([""].concat(GIDS().map((v) => v.slice(2))))];
-    return '<div class="cn on">'.concat(favOf(c.url), '<input class="inp cn-in" id="ceName" maxlength="40" value="').concat(esc(c.name), '" placeholder="').concat(esc(t("cust_name_ph")), '" aria-label="').concat(esc(t("cust_name_ph")), '">') + '<input class="inp cn-in u" id="ceUrl" maxlength="500" value="'.concat(esc(c.url), '" aria-label="URL">') + '<select class="inp" id="ceGroup" aria-label="'.concat(esc(t("cust_group")), '">').concat(groups.map((g) => '<option value="'.concat(esc(g), '"').concat(g === c.g ? " selected" : "", ">").concat(esc(g || t("cust_nogroup")), "</option>")).join(""), "</select>") + '<button type="button" class="x ok" data-esave="'.concat(esc(c.k), '" aria-label="').concat(esc(t("cust_save")), '" title="').concat(esc(t("cust_save")), '">').concat(CHECK, "</button>") + '<button type="button" class="x" data-ecancel aria-label="'.concat(esc(t("cust_cancel")), '" title="').concat(esc(t("cust_cancel")), '">\xD7</button></div>');
+    return `<div class="cn on">${favOf(c.url)}<input class="inp cn-in" id="ceName" maxlength="40" value="${esc(c.name)}" placeholder="${esc(t("cust_name_ph"))}" aria-label="${esc(t("cust_name_ph"))}"><input class="inp cn-in u" id="ceUrl" maxlength="500" value="${esc(c.url)}" aria-label="URL"><select class="inp" id="ceGroup" aria-label="${esc(t("cust_group"))}">${groups.map((g) => `<option value="${esc(g)}"${g === c.g ? " selected" : ""}>${esc(g || t("cust_nogroup"))}</option>`).join("")}</select><button type="button" class="x ok" data-esave="${esc(c.k)}" aria-label="${esc(t("cust_save"))}" title="${esc(t("cust_save"))}">${CHECK}</button><button type="button" class="x" data-ecancel aria-label="${esc(t("cust_cancel"))}" title="${esc(t("cust_cancel"))}">\xD7</button></div>`;
   }
   async function saveNode(k, name, raw, g) {
     raw = String(raw).trim();
@@ -543,7 +543,7 @@
   function groupPick() {
     const named = GIDS().filter((v) => v.length > 2).map((v) => v.slice(2));
     if (FG && !named.includes(FG)) FG = "";
-    return '<div class="gpick"><span class="lbl">'.concat(esc(t("cust_group")), "</span>") + '<button type="button" class="gp" data-gp="" aria-pressed="'.concat(!FNEW && !FG, '">').concat(esc(t("cust_nogroup")), "</button>") + named.map((g) => '<button type="button" class="gp" data-gp="'.concat(esc(g), '" aria-pressed="').concat(!FNEW && FG === g, '">').concat(gIcon("c:" + g)).concat(esc(g), "</button>")).join("") + (FNEW ? '<input class="inp gp-in" id="cGroup" maxlength="24" placeholder="'.concat(esc(t("cust_group_ph")), '" aria-label="').concat(esc(t("cust_group_ph")), '">') : '<button type="button" class="gp add" data-gp-new>\uFF0B '.concat(esc(t("cust_newgroup")), "</button>")) + "</div>";
+    return `<div class="gpick"><span class="lbl">${esc(t("cust_group"))}</span><button type="button" class="gp" data-gp="" aria-pressed="${!FNEW && !FG}">${esc(t("cust_nogroup"))}</button>` + named.map((g) => `<button type="button" class="gp" data-gp="${esc(g)}" aria-pressed="${!FNEW && FG === g}">${gIcon("c:" + g)}${esc(g)}</button>`).join("") + (FNEW ? `<input class="inp gp-in" id="cGroup" maxlength="24" placeholder="${esc(t("cust_group_ph"))}" aria-label="${esc(t("cust_group_ph"))}">` : `<button type="button" class="gp add" data-gp-new>\uFF0B ${esc(t("cust_newgroup"))}</button>`) + `</div>`;
   }
   function renameGroup(v, name) {
     GEDIT = null;
@@ -603,7 +603,7 @@
     s.value = cur;
   });
   const flagCode = (cc) => cc === "TW" ? "cn" : cc.toLowerCase();
-  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? '<img class="'.concat(cls || "flag", '" src="/flags/').concat(flagCode(cc), '.svg" alt="').concat(esc(country(cc)), '" width="20" height="15" loading="lazy">') : "";
+  const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${flagCode(cc)}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
   const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_CC[NET.tz] ? TZ_CC[NET.tz] : NET.cc || "";
   const excluded = (e) => {
     if (S.home === "all" || !e.country || !homeCC()) return false;
@@ -656,7 +656,7 @@
   }
   function renderLog() {
     const tf = new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-    $("#log").innerHTML = LOG.length ? LOG.slice().reverse().slice(0, 300).map(([ts, m, h, ms]) => '<div class="'.concat(ms == null ? "f" : "", '"><span>').concat(tf.format(ts), "</span><span>").concat(m, "</span><span>").concat(esc(h), "</span><span>").concat(ms == null ? t("failed") : ms ? fmt(ms) + " ms" : "ok", "</span></div>")).join("") : '<div class="note">'.concat(esc(t("log_empty")), "</div>");
+    $("#log").innerHTML = LOG.length ? LOG.slice().reverse().slice(0, 300).map(([ts, m, h, ms]) => `<div class="${ms == null ? "f" : ""}"><span>${tf.format(ts)}</span><span>${m}</span><span>${esc(h)}</span><span>${ms == null ? t("failed") : ms ? fmt(ms) + " ms" : "ok"}</span></div>`).join("") : `<div class="note">${esc(t("log_empty"))}</div>`;
   }
   const bust = (url) => url + (url.includes("?") ? "&" : "?") + "_clp=" + Math.random().toString(36).slice(2, 10);
   async function probeFetch(url, method, timeout, signal, keep, noacao) {
@@ -1133,18 +1133,18 @@
   const ICON_EYEOFF = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
   const ICON_EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
   const toolUrl = (id, path = "") => {
-    const b = (document.querySelector('meta[name="'.concat(id, '"]')) || {}).content;
+    const b = (document.querySelector(`meta[name="${id}"]`) || {}).content;
     return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : "";
   };
   const toolLink = (id, text, path, cls = "tl") => {
     const u = toolUrl(id, path);
-    return u ? '<a class="'.concat(cls, '" href="').concat(esc(u), '" target="_blank" rel="noopener">').concat(esc(text)).concat(ICON_EXT, "</a>") : "";
+    return u ? `<a class="${cls}" href="${esc(u)}" target="_blank" rel="noopener">${esc(text)}${ICON_EXT}</a>` : "";
   };
   const COST_V = /* @__PURE__ */ new Set(["aws", "gcp", "azure", "oracle", "hetzner", "digitalocean", "vultr", "linode", "tencent", "aliyun"]);
   const costLink = (v) => {
     if (!COST_V.has(v)) return "";
     const c = NET.cc === "CN" ? "cn" : { na: "na", eu: "eu", as: "ap", oc: "ap" }[CC_CT[NET.cc]];
-    return toolLink("cost", t("lk_cost"), c ? "r/1_-_1_2_20_1_1024_0_0_".concat(c, "_1_500") : "", "tl dc");
+    return toolLink("cost", t("lk_cost"), c ? `r/1_-_1_2_20_1_1024_0_0_${c}_1_500` : "", "tl dc");
   };
   const traceLink = (e) => {
     if (isCustom(e.vendor)) return "";
@@ -1163,9 +1163,16 @@
     const where = [N.city, country(N.cc)].filter(Boolean).join(", ");
     const st = ck ? t("checking") : N.relay ? t("pxRelay") : warn ? t("pxShort") : N.verdict === "good" ? t("okShort") : t("unkShort");
     const fams = [N.ip4 && "IPv4", N.ip6 && "IPv6"].filter(Boolean).join(" + ");
-    const ipf = ck || !fams ? "" : ' <span class="m" title="IPv4 \u2190 '.concat(esc(N.src4 || "\u2013"), " \xB7 IPv6 \u2190 ").concat(esc(N.src6 || "\u2013"), '">\xB7 ').concat(fams, "</span>");
+    const ipf = ck || !fams ? "" : ` <span class="m" title="IPv4 \u2190 ${esc(N.src4 || "\u2013")} \xB7 IPv6 \u2190 ${esc(N.src6 || "\u2013")}">\xB7 ${fams}</span>`;
     const egl = toolLink("egress", t("egressLink"), "", "nb-eg");
-    bar.innerHTML = '<span class="nb-dot"></span><span class="nb-st">'.concat(esc(st), '</span>\n      <span class="nb-main">').concat(ck && !N.partial ? '<span class="m">'.concat(esc(N.step || ""), "</span>") : "".concat(flag(N.cc, "nb-flag")).concat(esc(where || "\u2013")).concat(N.org ? ' <span class="m">\xB7 '.concat(esc(N.org), "</span>") : "").concat(N.hidden ? ' <span class="m">\xB7 '.concat(esc(t("ipHidden")), "</span>") : "").concat(N.edge != null && !N.hidden ? ' <span class="m">\xB7 CF '.concat(esc(N.colo), " ").concat(fmt(N.edge), " ms</span>") : "").concat(ipf).concat(ck ? ' <span class="m">\xB7 '.concat(esc(N.step || ""), "</span>") : ""), "</span>").concat(egl, '\n      <span class="nb-acts">\n        <span class="pill ').concat(peak ? "warn" : "idle", '" title="').concat(esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(/* @__PURE__ */ new Date()) })), '">').concat(t(peak ? "peakNow" : "offPeak"), "</span>\n        ").concat(N.relay ? "" : '<button class="btn sm '.concat(warn ? "warn" : "", '" type="button" data-rules title="').concat(esc(t("rulesBtn")), '"').concat(ck && !N.partial && !N.recheck ? ' style="visibility:hidden" tabindex="-1" aria-hidden="true"' : "", "><span>").concat(t("rulesBtn"), "</span></button>"), '\n        <button class="icon-btn sm" type="button" id="recheckBtn" title="').concat(esc(t("recheck")), '" aria-label="').concat(esc(t("recheck")), '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>\n        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="').concat(netOpen, '" title="').concat(esc(t("netDetails")), '" aria-label="').concat(esc(t("netDetails")), '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="').concat(netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4", '"/></svg></button>\n      </span>');
+    bar.innerHTML = `<span class="nb-dot"></span><span class="nb-st">${esc(st)}</span>
+      <span class="nb-main">${ck && !N.partial ? `<span class="m">${esc(N.step || "")}</span>` : `${flag(N.cc, "nb-flag")}${esc(where || "\u2013")}${N.org ? ` <span class="m">\xB7 ${esc(N.org)}</span>` : ""}${N.hidden ? ` <span class="m">\xB7 ${esc(t("ipHidden"))}</span>` : ""}${N.edge != null && !N.hidden ? ` <span class="m">\xB7 CF ${esc(N.colo)} ${fmt(N.edge)} ms</span>` : ""}${ipf}${ck ? ` <span class="m">\xB7 ${esc(N.step || "")}</span>` : ""}`}</span>${egl}
+      <span class="nb-acts">
+        <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(/* @__PURE__ */ new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
+        ${N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"${ck && !N.partial && !N.recheck ? ` style="visibility:hidden" tabindex="-1" aria-hidden="true"` : ""}><span>${t("rulesBtn")}</span></button>`}
+        <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
+        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
+      </span>`;
     const det = $("#netdet");
     if (ck) {
       det.hidden = !netOpen || det.hidden;
@@ -1182,30 +1189,40 @@
   }
   function netDetails(N, pending) {
     const blur = S.hideIp ? " blur" : "", s = (x) => x || "&nbsp;";
-    const ipx = (x) => esc(x).replace(/:/g, ":<wbr>"), tip2 = (x) => S.hideIp || !x ? "" : ' title="'.concat(esc(x), '"');
+    const ipx = (x) => esc(x).replace(/:/g, ":<wbr>"), tip2 = (x) => S.hideIp || !x ? "" : ` title="${esc(x)}"`;
     const ipq = (x) => {
       const u = toolUrl("ipqs", "?ip=" + encodeURIComponent(x));
-      return u ? '<a class="ipq" href="'.concat(esc(u), '" target="_blank" rel="noopener">').concat(ipx(x), "</a>") : ipx(x);
+      return u ? `<a class="ipq" href="${esc(u)}" target="_blank" rel="noopener">${ipx(x)}</a>` : ipx(x);
     };
     const dot = (x) => x ? " \xB7 " + x : "";
     const v4 = N.ip4 || (N.has6 === null ? t("chkFail") : "\u2013"), v6 = N.ip6 || (pending ? "" : N.has6 === null ? t("chkBlocked") : t("ip_no6short"));
     const rtc = N.rtc && N.rtc.length ? N.rtc.join(", ") : "";
-    const note = pending != null ? '<div class="note" style="grid-column:1/-1">'.concat(esc(pending), "</div>") : N.reasons && N.reasons.length ? '<ul class="reasons">'.concat(N.reasons.map((r) => "<li>".concat(r, "</li>")).join("")).concat(N.relay ? "" : ((x) => x && "<li>".concat(x, "</li>"))(toolLink("egress", t("lk_egress"))), "</ul>") : '<div class="note" style="grid-column:1/-1">'.concat(t(N.hidden ? "px_hiddenNote" : N.verdict === "good" ? "px_okNote" : "px_unknownNote"), "</div>");
-    return '\n      <div class="kv"><span class="lbl">'.concat(t("ip"), '<button class="eye" type="button" id="eyeBtn" title="').concat(esc(t(S.hideIp ? "show" : "hide")), '">').concat(S.hideIp ? ICON_EYEOFF : ICON_EYE, '</button></span><span class="v ip').concat(blur, '"').concat(tip2(N.ip), ">").concat(N.ip ? ipq(N.ip) : "\u2013", '</span><span class="s">').concat(s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") + dot(toolLink("ipqs", t("lk_ipqs"), "?ip=" + encodeURIComponent(N.ip))) : ""), '</span></div>\n      <div class="kv"><span class="lbl">').concat(t("isp"), '</span><span class="v">').concat(esc(N.org || N.via || "\u2013"), '</span><span class="s">').concat(s(N.asn ? "AS" + N.asn + dot(toolLink("asn", t("lk_asn"), "AS" + N.asn)) : N.hidden ? esc(t("ipHidden")) : ""), '</span></div>\n      <div class="kv"><span class="lbl">').concat(t("edge"), '</span><span class="v">').concat(N.edge != null ? fmt(N.edge) + " ms" : "\u2013", '</span><span class="s">').concat(s(esc(N.colo || "") + (N.http ? " \xB7 " + esc(N.http) : "")), '</span></div>\n      <div class="kv" title="IPv4 \u2190 ').concat(esc(N.src4 || "\u2013"), " \xB7 IPv6 \u2190 ").concat(esc(N.src6 || "\u2013"), '"><span class="lbl">IPv4 / IPv6</span><span class="v ip').concat(blur, '"').concat(tip2(N.ip4), ">").concat(N.ip4 ? ipq(N.ip4) : ipx(v4), '</span><span class="s ip').concat(blur, '"').concat(tip2(N.ip6), ">").concat(N.ip6 ? ipq(N.ip6) : s(ipx(v6) + (N.has6 === false ? dot(toolLink("ipv6", t("lk_ipv6"))) : "")), '</span></div>\n      <div class="kv"><span class="lbl">WebRTC</span><span class="v ip').concat(blur, '"').concat(tip2(rtc), ">").concat(rtc ? N.rtc.map(ipx).join("<br>") : "\u2013", '</span><span class="s">').concat(s(esc(N.tz || "")), "</span></div>\n      ").concat(note);
+    const note = pending != null ? `<div class="note" style="grid-column:1/-1">${esc(pending)}</div>` : N.reasons && N.reasons.length ? `<ul class="reasons">${N.reasons.map((r) => `<li>${r}</li>`).join("")}${N.relay ? "" : ((x) => x && `<li>${x}</li>`)(toolLink("egress", t("lk_egress")))}</ul>` : `<div class="note" style="grid-column:1/-1">${t(N.hidden ? "px_hiddenNote" : N.verdict === "good" ? "px_okNote" : "px_unknownNote")}</div>`;
+    return `
+      <div class="kv"><span class="lbl">${t("ip")}<button class="eye" type="button" id="eyeBtn" title="${esc(t(S.hideIp ? "show" : "hide"))}">${S.hideIp ? ICON_EYEOFF : ICON_EYE}</button></span><span class="v ip${blur}"${tip2(N.ip)}>${N.ip ? ipq(N.ip) : "\u2013"}</span><span class="s">${s(N.ip ? (N.ip.includes(":") ? "IPv6" : "IPv4") + dot(toolLink("ipqs", t("lk_ipqs"), "?ip=" + encodeURIComponent(N.ip))) : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("isp")}</span><span class="v">${esc(N.org || N.via || "\u2013")}</span><span class="s">${s(N.asn ? "AS" + N.asn + dot(toolLink("asn", t("lk_asn"), "AS" + N.asn)) : N.hidden ? esc(t("ipHidden")) : "")}</span></div>
+      <div class="kv"><span class="lbl">${t("edge")}</span><span class="v">${N.edge != null ? fmt(N.edge) + " ms" : "\u2013"}</span><span class="s">${s(esc(N.colo || "") + (N.http ? " \xB7 " + esc(N.http) : ""))}</span></div>
+      <div class="kv" title="IPv4 \u2190 ${esc(N.src4 || "\u2013")} \xB7 IPv6 \u2190 ${esc(N.src6 || "\u2013")}"><span class="lbl">IPv4 / IPv6</span><span class="v ip${blur}"${tip2(N.ip4)}>${N.ip4 ? ipq(N.ip4) : ipx(v4)}</span><span class="s ip${blur}"${tip2(N.ip6)}>${N.ip6 ? ipq(N.ip6) : s(ipx(v6) + (N.has6 === false ? dot(toolLink("ipv6", t("lk_ipv6"))) : ""))}</span></div>
+      <div class="kv"><span class="lbl">WebRTC</span><span class="v ip${blur}"${tip2(rtc)}>${rtc ? N.rtc.map(ipx).join("<br>") : "\u2013"}</span><span class="s">${s(esc(N.tz || ""))}</span></div>
+      ${note}`;
   }
   const SVG_V = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg>';
   const SVG_A = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>';
   const SVG_M = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg>';
   const sumList = (names, total, allLabel) => names.length === total && total > 1 ? allLabel : names.slice(0, 2).join(t("sep")) + (names.length > 2 ? " +" + (names.length - 2) : "");
-  const allNone = (k) => '<span class="lk"><button type="button" data-all="'.concat(k, '">').concat(t("all"), '</button> \xB7 <button type="button" data-none="').concat(k, '">').concat(t("none"), "</button></span>");
+  const allNone = (k) => `<span class="lk"><button type="button" data-all="${k}">${t("all")}</button> \xB7 <button type="button" data-none="${k}">${t("none")}</button></span>`;
   function homeSection() {
     const cc = homeCC();
     if (!cc) return "";
-    return '<section class="pg"><div class="pg-h"><span class="pg-flag">'.concat(flag(cc), "<span>").concat(esc(t("homeL", { c: country(cc) })), '</span></span></div>\n      <div class="seg" role="group">').concat(["all", "excl", "only"].map((k) => '<button type="button" data-home="'.concat(k, '" aria-pressed="').concat(S.home === k, '">').concat(esc(t("home_" + k)), "</button>")).join(""), '</div>\n      <div class="lbl">').concat(esc(t("homeTip", { c: country(cc) })), "</div></section>");
+    return `<section class="pg"><div class="pg-h"><span class="pg-flag">${flag(cc)}<span>${esc(t("homeL", { c: country(cc) }))}</span></span></div>
+      <div class="seg" role="group">${["all", "excl", "only"].map((k) => `<button type="button" data-home="${k}" aria-pressed="${S.home === k}">${esc(t("home_" + k))}</button>`).join("")}</div>
+      <div class="lbl">${esc(t("homeTip", { c: country(cc) }))}</div></section>`;
   }
   function ipSection() {
     const no6 = NET.state === "done" && NET.has6 === false;
-    return '<section class="pg"><div class="pg-h"><span>'.concat(esc(t("ip_h")), '</span></div>\n      <div class="seg" role="group">').concat(["v4", "v6"].map((k) => '<button type="button" data-ip="'.concat(k, '" aria-pressed="').concat(S.ip === k, '"').concat(k === "v6" && no6 ? " disabled" : "", ">").concat(k === "v4" ? "IPv4" : "IPv6", "</button>")).join(""), '</div>\n      <div class="lbl">').concat(esc(t(no6 ? "ip_no6" : "ipTip")), "</div></section>");
+    return `<section class="pg"><div class="pg-h"><span>${esc(t("ip_h"))}</span></div>
+      <div class="seg" role="group">${["v4", "v6"].map((k) => `<button type="button" data-ip="${k}" aria-pressed="${S.ip === k}"${k === "v6" && no6 ? " disabled" : ""}>${k === "v4" ? "IPv4" : "IPv6"}</button>`).join("")}</div>
+      <div class="lbl">${esc(t(no6 ? "ip_no6" : "ipTip"))}</div></section>`;
   }
   const vCount = (v) => {
     const narrowed = coveredCts().some((c) => !S.cts.includes(c));
@@ -1219,18 +1236,29 @@
     const vLabel = sumList(S.vendors.filter((v) => !isCdn(v)).map((v) => (isCustom(v) ? "\u2605 " : "") + vnm(v)), allVids().length, t("allVendors")) + (S.vendors.some(isCdn) ? " + " + t("cdn_h") : "");
     $("#plV").classList.toggle("ask", noV);
     $("#plV").hidden = !!ONE;
-    $("#plV > summary").innerHTML = "".concat(SVG_V).concat(noV ? "<span>".concat(t("pickVendor"), "</span>") : '<span class="pl-k">'.concat(t("pl_vendors"), "</span><b>").concat(esc(vLabel), "</b>")).concat(caret);
+    $("#plV > summary").innerHTML = `${SVG_V}${noV ? `<span>${t("pickVendor")}</span>` : `<span class="pl-k">${t("pl_vendors")}</span><b>${esc(vLabel)}</b>`}${caret}`;
     const aOff = noV;
     $("#plA").classList.toggle("off", aOff);
-    $("#plA > summary").innerHTML = "".concat(SVG_A, '<span class="pl-k">').concat(t("pl_areas"), "</span><b>").concat(aOff ? "\u2013" : S.cts.length ? esc(sumList(S.cts.map((c) => t("ct_" + c)), cov.length, t("allAreas"))) : t("noArea")).concat(!aOff && S.home !== "all" && homeCC() ? " \xB7 ".concat(esc(t("home_" + S.home)), " ").concat(flag(homeCC())) : "", "</b>").concat(caret);
-    $("#plN > summary").innerHTML = "<span>".concat(PRESET_IC[N.preset] || "\u{1F3AF}", "</span><span>").concat(esc(t("p_" + N.preset)), '</span><b class="num">').concat(N.lat ? "\u2264" + N.lat + "ms" : "", "</b>").concat(caret);
-    $("#plM > summary").innerHTML = "".concat(SVG_M, "<span>").concat(esc(t("m_" + S.mode)), '</span><b class="num">\xD7').concat(MODES[S.mode], " \xB7 ").concat(S.ip === "v6" ? "IPv6" : "IPv4", "</b>").concat(caret);
+    $("#plA > summary").innerHTML = `${SVG_A}<span class="pl-k">${t("pl_areas")}</span><b>${aOff ? "\u2013" : S.cts.length ? esc(sumList(S.cts.map((c) => t("ct_" + c)), cov.length, t("allAreas"))) : t("noArea")}${!aOff && S.home !== "all" && homeCC() ? ` \xB7 ${esc(t("home_" + S.home))} ${flag(homeCC())}` : ""}</b>${caret}`;
+    $("#plN > summary").innerHTML = `<span>${PRESET_IC[N.preset] || "\u{1F3AF}"}</span><span>${esc(t("p_" + N.preset))}</span><b class="num">${N.lat ? "\u2264" + N.lat + "ms" : ""}</b>${caret}`;
+    $("#plM > summary").innerHTML = `${SVG_M}<span>${esc(t("m_" + S.mode))}</span><b class="num">\xD7${MODES[S.mode]} \xB7 ${S.ip === "v6" ? "IPv6" : "IPv4"}</b>${caret}`;
     const popTop = $("#popV").scrollTop;
     const keep = ["cUrl", "cName", "cGroup", "cgIn", "ceName", "ceUrl", "ceGroup"].map((id) => {
       const el = $("#" + id);
       return el ? [id, el.value, document.activeElement === el] : null;
     }).filter(Boolean);
-    $("#popV").innerHTML = '<section class="pg"><div class="pg-h"><span>'.concat(t("pl_vendors"), "</span>").concat(allNone("vendors"), '</div>\n      <div class="chips">').concat(allVids().map((v) => '<button type="button" class="chip'.concat(vCount(v) ? "" : " zero", '" data-v="').concat(esc(v), '" aria-pressed="').concat(S.vendors.includes(v), '">').concat(isCustom(v) ? gIcon(v) : "").concat(esc(vnm(v)), '<span class="c">').concat(vCount(v), "</span></button>")).join(""), "</div></section>\n      ").concat(CDNS.length ? '<section class="pg"><div class="pg-h"><span>'.concat(t("cdn_h"), '</span></div>\n      <div class="chips">').concat(CDN_IDS.map((v) => '<button type="button" class="chip" data-cdn="'.concat(esc(v), '" aria-pressed="').concat(S.vendors.includes(v), '">').concat(esc(vnm(v)), "</button>")).join(""), '</div>\n      <div class="note">').concat(esc(t("cdn_note")), "</div></section>") : "", '\n      <section class="pg cust').concat(CADD ? " adding" : "", '"><div class="pg-h"><span class="pg-hl"><span>').concat(t("cust_h"), "</span>").concat(S.custom.length ? '<button type="button" class="cust-rules" data-rules>\u26A0 '.concat(esc(t("cust_rules")), " \u2192</button>") : "", '</span><button type="button" data-cadd aria-expanded="').concat(CADD, '">\uFF0B ').concat(t("add"), "</button></div>\n      ").concat(CADD ? '<form class="cform cadd" id="cform" autocomplete="off"><button type="button" class="x cadd-x" data-cadd aria-label="'.concat(esc(t("cust_cancel")), '">\xD7</button>\n        <div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>\n        <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="').concat(esc(t("cust_name_ph")), '"><button class="btn ink sm" style="height:32px" type="submit">').concat(t("add"), "</button></div>\n        ").concat(groupPick(), '\n        <div class="err" id="cErr" hidden></div><div class="note">').concat(t("cust_tip"), '</div><div class="dbip">').concat(esc(t("cust_geo")), ' <a href="https://db-ip.com" target="_blank" rel="noopener noreferrer">IP Geolocation by DB-IP</a></div></form>') : "", "\n      ").concat(S.custom.length ? customList() : '<div class="note">'.concat(esc(t("cust_empty")), "</div>"), "</section>");
+    $("#popV").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_vendors")}</span>${allNone("vendors")}</div>
+      <div class="chips">${allVids().map((v) => `<button type="button" class="chip${vCount(v) ? "" : " zero"}" data-v="${esc(v)}" aria-pressed="${S.vendors.includes(v)}">${isCustom(v) ? gIcon(v) : ""}${esc(vnm(v))}<span class="c">${vCount(v)}</span></button>`).join("")}</div></section>
+      ${CDNS.length ? `<section class="pg"><div class="pg-h"><span>${t("cdn_h")}</span></div>
+      <div class="chips">${CDN_IDS.map((v) => `<button type="button" class="chip" data-cdn="${esc(v)}" aria-pressed="${S.vendors.includes(v)}">${esc(vnm(v))}</button>`).join("")}</div>
+      <div class="note">${esc(t("cdn_note"))}</div></section>` : ""}
+      <section class="pg cust${CADD ? " adding" : ""}"><div class="pg-h"><span class="pg-hl"><span>${t("cust_h")}</span>${S.custom.length ? `<button type="button" class="cust-rules" data-rules>\u26A0 ${esc(t("cust_rules"))} \u2192</button>` : ""}</span><button type="button" data-cadd aria-expanded="${CADD}">\uFF0B ${t("add")}</button></div>
+      ${CADD ? `<form class="cform cadd" id="cform" autocomplete="off"><button type="button" class="x cadd-x" data-cadd aria-label="${esc(t("cust_cancel"))}">\xD7</button>
+        <div class="row"><input class="inp" id="cUrl" maxlength="500" placeholder="https://example.com/ping"></div>
+        <div class="row"><input class="inp" id="cName" maxlength="40" placeholder="${esc(t("cust_name_ph"))}"><button class="btn ink sm" style="height:32px" type="submit">${t("add")}</button></div>
+        ${groupPick()}
+        <div class="err" id="cErr" hidden></div><div class="note">${t("cust_tip")}</div><div class="dbip">${esc(t("cust_geo"))} <a href="https://db-ip.com" target="_blank" rel="noopener noreferrer">IP Geolocation by DB-IP</a></div></form>` : ""}
+      ${S.custom.length ? customList() : `<div class="note">${esc(t("cust_empty"))}</div>`}</section>`;
     keep.forEach(([id, v, f]) => {
       const el = $("#" + id);
       if (!el) return;
@@ -1238,12 +1266,17 @@
       if (f) el.focus({ preventScroll: true });
     });
     $("#popV").scrollTop = popTop;
-    $("#popA").innerHTML = '<section class="pg"><div class="pg-h"><span>'.concat(t("pl_areas"), "</span>").concat(allNone("cts"), '</div>\n      <div class="chips">').concat(cov.map((c) => '<button type="button" class="chip" data-c="'.concat(c, '" aria-pressed="').concat(S.cts.includes(c), '">').concat(esc(t("ct_" + c)), '<span class="c">').concat(ALL.filter((e) => e.continent === c && S.vendors.includes(e.vendor) && !excluded(e)).length, "</span></button>")).join(""), "</div></section>") + homeSection();
-    $("#popN").innerHTML = '<section class="pg opts">'.concat(Object.keys(PRESETS).map((k) => {
+    $("#popA").innerHTML = `<section class="pg"><div class="pg-h"><span>${t("pl_areas")}</span>${allNone("cts")}</div>
+      <div class="chips">${cov.map((c) => `<button type="button" class="chip" data-c="${c}" aria-pressed="${S.cts.includes(c)}">${esc(t("ct_" + c))}<span class="c">${ALL.filter((e) => e.continent === c && S.vendors.includes(e.vendor) && !excluded(e)).length}</span></button>`).join("")}</div></section>` + homeSection();
+    $("#popN").innerHTML = `<section class="pg opts">${Object.keys(PRESETS).map((k) => {
       const [l, j, s] = PRESETS[k];
-      return '<button type="button" class="opt" data-p="'.concat(k, '" aria-pressed="').concat(N.preset === k, '"><span class="ic">').concat(PRESET_IC[k], '</span><span class="tx"><b>').concat(esc(t("p_" + k)), "</b><span>").concat(l ? "\u2264" + l + " ms \xB7 \xB1" + j + " \xB7 " + (s ? "\u2264" + s + "%" : t("noLoss")) : t("anyLat"), "</span></span></button>");
-    }).join(""), '</section>\n      <section class="pg"><div class="pg-h">').concat(PRESET_IC.custom, " ").concat(t("p_custom"), '</div><div class="need">\n        <div><div class="need-l">').concat(t("maxLat"), '</div><label class="nin"><input id="nLat" type="number" min="0" inputmode="numeric" value="').concat(N.lat || "", '" placeholder="').concat(esc(t("noLimit")), '"><span>ms</span></label></div>\n        <div><div class="need-l">').concat(t("maxJit"), '</div><label class="nin"><input id="nJit" type="number" min="0" inputmode="numeric" value="').concat(N.jit || "", '" placeholder="').concat(esc(t("noLimit")), '"><span>ms</span></label></div>\n        <div><div class="need-l">').concat(t("maxLoss"), '</div><label class="nin"><input id="nLoss" type="number" min="0" max="100" inputmode="numeric" value="').concat(N.loss || "", '" placeholder="0"><span>%</span></label></div></div></section>');
-    $("#popM").innerHTML = '<section class="pg opts">'.concat(Object.keys(MODES).map((k) => '<button type="button" class="opt" data-m="'.concat(k, '" aria-pressed="').concat(S.mode === k, '"><span class="ic num" style="font-size:12.5px;font-weight:600">\xD7').concat(MODES[k], '</span><span class="tx"><b>').concat(esc(t("m_" + k)), '</b><span style="font-family:var(--f-ui)">').concat(esc(t("m_" + k + "D")), "</span></span></button>")).join(""), "</section>") + ipSection();
+      return `<button type="button" class="opt" data-p="${k}" aria-pressed="${N.preset === k}"><span class="ic">${PRESET_IC[k]}</span><span class="tx"><b>${esc(t("p_" + k))}</b><span>${l ? "\u2264" + l + " ms \xB7 \xB1" + j + " \xB7 " + (s ? "\u2264" + s + "%" : t("noLoss")) : t("anyLat")}</span></span></button>`;
+    }).join("")}</section>
+      <section class="pg"><div class="pg-h">${PRESET_IC.custom} ${t("p_custom")}</div><div class="need">
+        <div><div class="need-l">${t("maxLat")}</div><label class="nin"><input id="nLat" type="number" min="0" inputmode="numeric" value="${N.lat || ""}" placeholder="${esc(t("noLimit"))}"><span>ms</span></label></div>
+        <div><div class="need-l">${t("maxJit")}</div><label class="nin"><input id="nJit" type="number" min="0" inputmode="numeric" value="${N.jit || ""}" placeholder="${esc(t("noLimit"))}"><span>ms</span></label></div>
+        <div><div class="need-l">${t("maxLoss")}</div><label class="nin"><input id="nLoss" type="number" min="0" max="100" inputmode="numeric" value="${N.loss || ""}" placeholder="0"><span>%</span></label></div></div></section>`;
+    $("#popM").innerHTML = `<section class="pg opts">${Object.keys(MODES).map((k) => `<button type="button" class="opt" data-m="${k}" aria-pressed="${S.mode === k}"><span class="ic num" style="font-size:12.5px;font-weight:600">\xD7${MODES[k]}</span><span class="tx"><b>${esc(t("m_" + k))}</b><span style="font-family:var(--f-ui)">${esc(t("m_" + k + "D"))}</span></span></button>`).join("")}</section>` + ipSection();
     renderRun();
   }
   const dur = (s) => s < 60 ? t("secs", { n: Math.max(1, s) }) : t("mins", { n: Math.round(s / 60) });
@@ -1254,7 +1287,7 @@
     const btn = $("#runBtn"), sel = selected().length;
     if (RUN) {
       btn.className = "go stop";
-      btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>'.concat(t("stop"));
+      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>${t("stop")}`;
       let got = 0;
       const need = RUN.total * RUN.n;
       for (const e of RUN.list) {
@@ -1267,10 +1300,10 @@
       const now = RUN.list.filter((e) => {
         const r = R.get(e.id);
         return r && r.st === "running";
-      }).map((e) => '<span class="nowi">'.concat(isCustom(e.vendor) ? favOf(e.url) : esc(vshort[e.vendor]), " ").concat(esc(e.city), "</span>"));
+      }).map((e) => `<span class="nowi">${isCustom(e.vendor) ? favOf(e.url) : esc(vshort[e.vendor])} ${esc(e.city)}</span>`);
       const rt = $("#runT");
       if (!rt.querySelector(".runner")) {
-        rt.innerHTML = '<span class="nowl"><b class="run-n"></b><span class="run-now"></span></span>';
+        rt.innerHTML = `<span class="nowl"><b class="run-n"></b><span class="run-now"></span></span>`;
         rt.firstChild.prepend(runner());
       }
       const rn = rt.querySelector(".run-n");
@@ -1280,10 +1313,10 @@
     } else {
       btn.className = "go";
       btn.disabled = !sel;
-      btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>'.concat(t(R.size && VIEW.live ? "again" : "start"));
+      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>${t(R.size && VIEW.live ? "again" : "start")}`;
       $("#bar").hidden = true;
       $("#runEta").textContent = "";
-      $("#runT").innerHTML = sel ? "<b>".concat(t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) }), "</b>") : "<b>".concat(esc(t("pickFirst")), "</b>");
+      $("#runT").innerHTML = sel ? `<b>${t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) })}</b>` : `<b>${esc(t("pickFirst"))}</b>`;
     }
   }
   const fmtTs = (ts) => new Intl.DateTimeFormat(LANG, { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(ts);
@@ -1340,8 +1373,9 @@
     if (sl) $("#speedL").innerHTML = esc(pre) + gap + sl;
     $("#podium").innerHTML = top.map((x, i) => {
       const g = grade(x.st.med);
-      return '<button type="button" class="pd c'.concat(g, '" data-go="').concat(esc(x.e.id), '"><span class="rk">#').concat(i + 1, '</span><span class="ms">').concat(fmt(x.st.med), '<small>ms</small></span>\n        <span class="inf"><span class="nm">').concat(esc(x.e.city), '</span><span class="sb"><span class="tg">').concat(tierCode(g), " ").concat(esc(tierName(g)), "</span><span>").concat(esc(x.e.vname), '</span><span class="num">\xB1').concat(fmt(x.st.jit), "</span></span></span></button>");
-    }).join("") + Array.from({ length: slots - top.length }, (_, i) => '<div class="pd pend" aria-hidden="true"><span class="rk">#'.concat(top.length + i + 1, '</span><span class="ms">\u2026</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div>')).join("");
+      return `<button type="button" class="pd c${g}" data-go="${esc(x.e.id)}"><span class="rk">#${i + 1}</span><span class="ms">${fmt(x.st.med)}<small>ms</small></span>
+        <span class="inf"><span class="nm">${esc(x.e.city)}</span><span class="sb"><span class="tg">${tierCode(g)} ${esc(tierName(g))}</span><span>${esc(x.e.vname)}</span><span class="num">\xB1${fmt(x.st.jit)}</span></span></span></button>`;
+    }).join("") + Array.from({ length: slots - top.length }, (_, i) => `<div class="pd pend" aria-hidden="true"><span class="rk">#${top.length + i + 1}</span><span class="ms">\u2026</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div>`).join("");
   }
   const needText = () => {
     const N = NEED();
@@ -1368,13 +1402,13 @@
       vizKey = key;
       vizEls.clear();
       const bands = [AX_MIN].concat(GRADES, AX_MAX);
-      let h = '<div class="lanes" style="--lh:'.concat(lh, 'px">');
-      for (let g = 1; g <= 5; g++) h += '<div class="band b'.concat(g, '" style="left:').concat(pos(bands[g - 1]), "%;width:").concat(pos(bands[g]) - pos(bands[g - 1]), '%"><span>').concat(tierCode(g), "</span></div>");
-      if (NEED().lat) h += '<div class="needl" style="left:'.concat(pos(NEED().lat), '%"><span>').concat(esc(t("needLine")), " ").concat(NEED().lat, "</span></div>");
-      h += lanes.map((v) => '<div class="lane" data-v="'.concat(v, '"><div class="ln"><b class="full">').concat(esc(vnm(v)), '</b><b class="short">').concat(esc(vsh(v)), '</b><span class="lb"></span></div></div>')).join("");
-      h += '<div class="vz-empty" hidden><span></span></div></div>';
-      h += '<div class="axis">'.concat(TICKS.map((v) => '<span style="left:'.concat(pos(v), '%">').concat(v >= 1e3 ? v / 1e3 + "s" : v, "</span>")).join(""), "</div>");
-      h += '<div class="legend">'.concat([1, 2, 3, 4, 5].map((g) => '<span class="c'.concat(g, '"><i></i>').concat(tierCode(g), " ").concat(esc(tierName(g)), " <em>").concat(g < 5 ? "\u2264" + GRADES[g - 1] : ">" + GRADES[3], " ms</em></span>")).join(""), '<span><i class="o"></i>').concat(esc(t("lgMiss")), '</span><span><i class="lv"></i>').concat(esc(t("lgLive")), "</span></div>");
+      let h = `<div class="lanes" style="--lh:${lh}px">`;
+      for (let g = 1; g <= 5; g++) h += `<div class="band b${g}" style="left:${pos(bands[g - 1])}%;width:${pos(bands[g]) - pos(bands[g - 1])}%"><span>${tierCode(g)}</span></div>`;
+      if (NEED().lat) h += `<div class="needl" style="left:${pos(NEED().lat)}%"><span>${esc(t("needLine"))} ${NEED().lat}</span></div>`;
+      h += lanes.map((v) => `<div class="lane" data-v="${v}"><div class="ln"><b class="full">${esc(vnm(v))}</b><b class="short">${esc(vsh(v))}</b><span class="lb"></span></div></div>`).join("");
+      h += `<div class="vz-empty" hidden><span></span></div></div>`;
+      h += `<div class="axis">${TICKS.map((v) => `<span style="left:${pos(v)}%">${v >= 1e3 ? v / 1e3 + "s" : v}</span>`).join("")}</div>`;
+      h += `<div class="legend">${[1, 2, 3, 4, 5].map((g) => `<span class="c${g}"><i></i>${tierCode(g)} ${esc(tierName(g))} <em>${g < 5 ? "\u2264" + GRADES[g - 1] : ">" + GRADES[3]} ms</em></span>`).join("")}<span><i class="o"></i>${esc(t("lgMiss"))}</span><span><i class="lv"></i>${esc(t("lgLive"))}</span></div>`;
       vz.innerHTML = h;
     }
     const empty = $(".vz-empty", vz);
@@ -1382,15 +1416,15 @@
     empty.firstChild.textContent = t(lanes.length ? "viz_empty" : "pickFirst");
     for (const v of lanes) {
       const best = got.filter((x) => x.e.vendor === v).sort(byScore)[0];
-      const lb = $('.lane[data-v="'.concat(v, '"] .lb'), vz);
+      const lb = $(`.lane[data-v="${v}"] .lb`, vz);
       if (lb) {
-        lb.textContent = best ? "".concat(best.e.city, " \xB7 ").concat(fmt(best.st.med), " ms") : "";
+        lb.textContent = best ? `${best.e.city} \xB7 ${fmt(best.st.med)} ms` : "";
         lb.className = "lb c" + (best ? grade(best.st.med) : 0);
       }
     }
     const seen = /* @__PURE__ */ new Set();
     for (const x of got) {
-      const lane = $('.lane[data-v="'.concat(x.e.vendor, '"]'), vz);
+      const lane = $(`.lane[data-v="${x.e.vendor}"]`, vz);
       if (!lane) continue;
       const id = x.e.id, g = grade(x.st.med), live = x.r.st === "running";
       seen.add(id);
@@ -1402,11 +1436,11 @@
         vizEls.set(id, el);
       }
       const dy = spread(id) * lh / 10;
-      el.wk.className = "wk c".concat(g);
-      el.wk.style.cssText = "left:".concat(pos(x.st.p25), "%;width:").concat(Math.max(0.4, pos(x.st.p75) - pos(x.st.p25)), "%;top:calc(50% + ").concat(dy, "px)");
-      el.dot.className = "vd c".concat(g).concat(x.pass ? "" : " miss").concat(live ? " live" : "").concat(!live && fresh.has(id) ? " new" : "");
+      el.wk.className = `wk c${g}`;
+      el.wk.style.cssText = `left:${pos(x.st.p25)}%;width:${Math.max(0.4, pos(x.st.p75) - pos(x.st.p25))}%;top:calc(50% + ${dy}px)`;
+      el.dot.className = `vd c${g}${x.pass ? "" : " miss"}${live ? " live" : ""}${!live && fresh.has(id) ? " new" : ""}`;
       el.dot.style.left = pos(x.st.med) + "%";
-      el.dot.style.top = "calc(50% + ".concat(dy, "px)");
+      el.dot.style.top = `calc(50% + ${dy}px)`;
     }
     for (const [id, el] of vizEls) if (!seen.has(id)) {
       el.wk.remove();
@@ -1434,15 +1468,20 @@
     const { e, r, st } = x, g = grade(st.med);
     if (r && r.st === "fail") tokyo();
     const tk = r && r.st === "fail" && tokyoOf(e, r);
-    let sp = TICKS.map((v) => '<i class="gl" style="left:'.concat(pos(v), '%"></i>')).join("");
-    if (r && r.st === "running" && !r.s.length) sp += '<i class="runm"></i>';
+    let sp = TICKS.map((v) => `<i class="gl" style="left:${pos(v)}%"></i>`).join("");
+    if (r && r.st === "running" && !r.s.length) sp += `<i class="runm"></i>`;
     if (st.ok) {
-      sp += '<i class="bx" style="left:'.concat(pos(st.p25), "%;width:").concat(Math.max(0.6, pos(st.p75) - pos(st.p25)), '%"></i><i class="md" style="left:').concat(pos(st.med), '%"></i>');
-      sp += r.s.map((v) => v == null ? "" : '<i class="d" style="left:'.concat(pos(v), '%"></i>')).join("");
+      sp += `<i class="bx" style="left:${pos(st.p25)}%;width:${Math.max(0.6, pos(st.p75) - pos(st.p25))}%"></i><i class="md" style="left:${pos(st.med)}%"></i>`;
+      sp += r.s.map((v) => v == null ? "" : `<i class="d" style="left:${pos(v)}%"></i>`).join("");
     }
-    if (st.n && st.ok < st.n) sp += '<span class="x">\xD7'.concat(st.n - st.ok, "</span>");
-    const flag2 = st.ok && shaky(st) ? '<span class="r-f" title="'.concat(esc(st.loss ? t(pkt() ? "pktWarn" : "lossWarn", { p: Math.round(st.loss * 100) }) : t("jitWarn", { j: fmt(st.jit) })), '">\u26A0</span>') : "<span></span>";
-    return '<div class="r rg" role="button" tabindex="0" aria-expanded="'.concat(openId === e.id, '">\n      <span class="vb">').concat(isCustom(e.vendor) ? favOf(e.url) : vshort[e.vendor] || "", '</span>\n      <span class="r-nm"><b>').concat(esc(e.city)).concat(tk && tk.d ? ' <span class="tkd">'.concat(esc(t("tk_tag")), "</span>") : "", "</b><span>").concat(isCustom(e.vendor) ? esc(vnm(e.vendor)) + " \xB7 " : "").concat(esc(e.region)).concat(e.country && e.cityEn !== EN_REGION(e.country) ? " \xB7 " + esc(country(e.country)) : "", '</span></span>\n      <span class="sp c-sp c').concat(g, '" data-tipid="').concat(esc(e.id), '">').concat(sp, "</span>\n      ").concat(flag2, '\n      <span class="r-v c').concat(st.ok ? g : 0, '">').concat(st.ok ? fmt(st.med) + "<small>ms</small>" : r && r.st === "fail" ? "\u2715" : r && r.st === "nov6" ? "<small>".concat(esc(t("nov6")), "</small>") : "\u2026", "</span></div>");
+    if (st.n && st.ok < st.n) sp += `<span class="x">\xD7${st.n - st.ok}</span>`;
+    const flag2 = st.ok && shaky(st) ? `<span class="r-f" title="${esc(st.loss ? t(pkt() ? "pktWarn" : "lossWarn", { p: Math.round(st.loss * 100) }) : t("jitWarn", { j: fmt(st.jit) }))}">\u26A0</span>` : `<span></span>`;
+    return `<div class="r rg" role="button" tabindex="0" aria-expanded="${openId === e.id}">
+      <span class="vb">${isCustom(e.vendor) ? favOf(e.url) : vshort[e.vendor] || ""}</span>
+      <span class="r-nm"><b>${esc(e.city)}${tk && tk.d ? ` <span class="tkd">${esc(t("tk_tag"))}</span>` : ""}</b><span>${isCustom(e.vendor) ? esc(vnm(e.vendor)) + " \xB7 " : ""}${esc(e.region)}${e.country && e.cityEn !== EN_REGION(e.country) ? " \xB7 " + esc(country(e.country)) : ""}</span></span>
+      <span class="sp c-sp c${g}" data-tipid="${esc(e.id)}">${sp}</span>
+      ${flag2}
+      <span class="r-v c${st.ok ? g : 0}">${st.ok ? fmt(st.med) + "<small>ms</small>" : r && r.st === "fail" ? "\u2715" : r && r.st === "nov6" ? `<small>${esc(t("nov6"))}</small>` : "\u2026"}</span></div>`;
   }
   function renderGroups(list) {
     const card = $("#listCard"), box = $("#groups");
@@ -1461,14 +1500,14 @@
     const gk = G.map((x) => x.g).join();
     if (box.dataset.g !== gk) {
       box.dataset.g = gk;
-      box.innerHTML = G.map(({ g }) => '<div class="grp" data-g="'.concat(g, '"><div class="grp-h"></div><div class="grp-b"></div></div>')).join("");
+      box.innerHTML = G.map(({ g }) => `<div class="grp" data-g="${g}"><div class="grp-h"></div><div class="grp-b"></div></div>`).join("");
     }
     for (const { g, items } of G) {
-      const el = box.querySelector('.grp[data-g="'.concat(g, '"]'));
+      const el = box.querySelector(`.grp[data-g="${g}"]`);
       el.hidden = !items.length;
       const meds = items.filter((x) => x.st.ok).map((x) => x.st.med);
       el.firstChild.hidden = live;
-      if (!live) el.firstChild.innerHTML = g > 0 ? '<span class="tg c'.concat(g, '">').concat(tierCode(g), " \xB7 ").concat(esc(tierName(g)), '</span><span class="n">').concat(items.length, '</span><span class="rng">').concat(meds.length ? fmt(Math.min(...meds)) + "\u2013" + fmt(Math.max(...meds)) + " ms" : "", "</span>") : '<span class="tg c0">'.concat(esc(t(g === -1 ? "grp_nov6" : "grp_other")), '</span><span class="n">').concat(items.length, "</span>");
+      if (!live) el.firstChild.innerHTML = g > 0 ? `<span class="tg c${g}">${tierCode(g)} \xB7 ${esc(tierName(g))}</span><span class="n">${items.length}</span><span class="rng">${meds.length ? fmt(Math.min(...meds)) + "\u2013" + fmt(Math.max(...meds)) + " ms" : ""}</span>` : `<span class="tg c0">${esc(t(g === -1 ? "grp_nov6" : "grp_other"))}</span><span class="n">${items.length}</span>`;
       const body = el.lastChild;
       if (!items.length) {
         body.innerHTML = "";
@@ -1518,35 +1557,41 @@
       path += (pen ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1);
       pen = true;
     });
-    const ticks = [0, mx / 2, mx].map((v) => '<text x="'.concat(P.l - 6, '" y="').concat(Y(v) + 3, '" text-anchor="end">').concat(Math.round(v), '</text><line x1="').concat(P.l, '" x2="').concat(W - P.r, '" y1="').concat(Y(v), '" y2="').concat(Y(v), '" stroke="var(--line)"/>')).join("");
-    const dots = s.map((v, i) => v == null ? '<text x="'.concat(X(i), '" y="').concat(P.t + 8, '" text-anchor="middle" style="fill:var(--bad);font-weight:700">\xD7</text>') : '<circle cx="'.concat(X(i), '" cy="').concat(Y(v), '" r="3" fill="currentColor"><title>#').concat(i + 1, ": ").concat(fmt(v), " ms</title></circle>")).join("");
-    return '<svg viewBox="0 0 '.concat(W, " ").concat(H, '" preserveAspectRatio="none" class="c').concat(grade(st.med), '" role="img" aria-label="').concat(esc(t("chartAria")), '">').concat(ticks, "\n      ").concat(st.ok ? '<line x1="'.concat(P.l, '" x2="').concat(W - P.r, '" y1="').concat(Y(st.med), '" y2="').concat(Y(st.med), '" stroke="currentColor" stroke-dasharray="4 4" opacity=".7"/>') : "", '\n      <path d="').concat(path, '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>').concat(dots, "</svg>");
+    const ticks = [0, mx / 2, mx].map((v) => `<text x="${P.l - 6}" y="${Y(v) + 3}" text-anchor="end">${Math.round(v)}</text><line x1="${P.l}" x2="${W - P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/>`).join("");
+    const dots = s.map((v, i) => v == null ? `<text x="${X(i)}" y="${P.t + 8}" text-anchor="middle" style="fill:var(--bad);font-weight:700">\xD7</text>` : `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="currentColor"><title>#${i + 1}: ${fmt(v)} ms</title></circle>`).join("");
+    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="c${grade(st.med)}" role="img" aria-label="${esc(t("chartAria"))}">${ticks}
+      ${st.ok ? `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(st.med)}" y2="${Y(st.med)}" stroke="currentColor" stroke-dasharray="4 4" opacity=".7"/>` : ""}
+      <path d="${path}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>${dots}</svg>`;
   }
   function detHTML(x) {
     const { e, r, st } = x, V = ENDPOINTS.vendors[e.vendor];
-    const kv = (k, v) => '<div class="kv"><span class="lbl">'.concat(t(k), '</span><span class="v">').concat(v, "</span></div>");
+    const kv = (k, v) => `<div class="kv"><span class="lbl">${t(k)}</span><span class="v">${v}</span></div>`;
     const ms = (v) => v == null || !isFinite(v) ? "\u2013" : fmt(v) + " ms";
-    const lines = ["<span>".concat(esc(e.vname), " \xB7 ").concat(t("d_method"), " <b>").concat(esc(r ? r.m : e.method), "</b>").concat(r && r.w != null ? " \xB7 " + t("d_warm") + " " + fmt(r.w) + " ms" : "", " \xB7 <code>").concat(esc(e.url), "</code></span>")];
-    if (r && r.w != null && st.ok && st.min > r.w * 0.9) lines.push('<span class="w">'.concat(t("d_cold"), "</span>"));
-    if (r && r.st === "nov6") lines.push('<span class="w">'.concat(t("d_nov6"), "</span>"));
-    else if (r && r.ip === "v6") lines.push("<span>".concat(t("d_v6"), "</span>"));
-    else if (r && (e.fam || "").includes("6")) lines.push('<span class="w">'.concat(t("d_dual"), "</span>"));
-    if (r && r.vf === true) lines.push('<span style="color:var(--pool)">\u2713 '.concat(t("d_verified"), "</span>"));
-    if (r && r.vf === false) lines.push('<span class="w">'.concat(t("d_notverified"), "</span>"));
-    if (e.review) lines.push('<span class="w">'.concat(t("d_review"), "</span>"));
+    const lines = [`<span>${esc(e.vname)} \xB7 ${t("d_method")} <b>${esc(r ? r.m : e.method)}</b>${r && r.w != null ? " \xB7 " + t("d_warm") + " " + fmt(r.w) + " ms" : ""} \xB7 <code>${esc(e.url)}</code></span>`];
+    if (r && r.w != null && st.ok && st.min > r.w * 0.9) lines.push(`<span class="w">${t("d_cold")}</span>`);
+    if (r && r.st === "nov6") lines.push(`<span class="w">${t("d_nov6")}</span>`);
+    else if (r && r.ip === "v6") lines.push(`<span>${t("d_v6")}</span>`);
+    else if (r && (e.fam || "").includes("6")) lines.push(`<span class="w">${t("d_dual")}</span>`);
+    if (r && r.vf === true) lines.push(`<span style="color:var(--pool)">\u2713 ${t("d_verified")}</span>`);
+    if (r && r.vf === false) lines.push(`<span class="w">${t("d_notverified")}</span>`);
+    if (e.review) lines.push(`<span class="w">${t("d_review")}</span>`);
     if (!isCustom(e.vendor)) {
       tokyo();
       const tk = tokyoOf(e, r);
-      if (tk && tk.d) lines.push('<span class="w">'.concat(esc(t("d_tk_down", { t: fmtTs(tk.d * 1e3) })), "</span>"));
-      else if (tk && tk.m != null) lines.push("<span>".concat(esc(t("d_tk", { m: fmt(tk.m), u: Math.round(tk.u) })), "</span>"));
+      if (tk && tk.d) lines.push(`<span class="w">${esc(t("d_tk_down", { t: fmtTs(tk.d * 1e3) }))}</span>`);
+      else if (tk && tk.m != null) lines.push(`<span>${esc(t("d_tk", { m: fmt(tk.m), u: Math.round(tk.u) }))}</span>`);
     }
-    if (!isCustom(e.vendor)) lines.push("<span>".concat(esc(vtext(e.vendor, "kind")), " \xB7 ").concat(esc(vtext(e.vendor, "note")), "</span>"));
-    return '<div class="det">\n      <div>'.concat(r && r.s.length ? chartSVG(r, st) : '<div class="empty">'.concat(t(r && r.sum ? "sharedNoRaw" : "noSamples"), "</div>"), '</div>\n      <div class="dstats">').concat(kv("d_med", ms(st.med))).concat(kv("d_jit", st.ok > 1 ? "\xB1" + ms(st.jit) : "\u2013")).concat(kv(pkt() ? "d_pkt" : "d_loss", st.n ? Math.round(st.loss * 100) + "%" : "\u2013")).concat(kv("d_min", ms(st.min))).concat(kv("d_avg", ms(st.avg))).concat(kv("d_p90", ms(st.p90)), '</div>\n      <div class="dmeta">').concat(lines.join(""), '<div class="dbtns"><button class="btn sm" type="button" data-retest="').concat(esc(e.id), '" ').concat(RUN ? "disabled" : "", ">").concat(t("retest"), '</button><button class="btn sm" type="button" data-copy="').concat(esc(e.url), '">').concat(t("copyUrl"), "</button>").concat(costLink(e.vendor)).concat(traceLink(e), "</div></div>\n    </div>");
+    if (!isCustom(e.vendor)) lines.push(`<span>${esc(vtext(e.vendor, "kind"))} \xB7 ${esc(vtext(e.vendor, "note"))}</span>`);
+    return `<div class="det">
+      <div>${r && r.s.length ? chartSVG(r, st) : `<div class="empty">${t(r && r.sum ? "sharedNoRaw" : "noSamples")}</div>`}</div>
+      <div class="dstats">${kv("d_med", ms(st.med))}${kv("d_jit", st.ok > 1 ? "\xB1" + ms(st.jit) : "\u2013")}${kv(pkt() ? "d_pkt" : "d_loss", st.n ? Math.round(st.loss * 100) + "%" : "\u2013")}${kv("d_min", ms(st.min))}${kv("d_avg", ms(st.avg))}${kv("d_p90", ms(st.p90))}</div>
+      <div class="dmeta">${lines.join("")}<div class="dbtns"><button class="btn sm" type="button" data-retest="${esc(e.id)}" ${RUN ? "disabled" : ""}>${t("retest")}</button><button class="btn sm" type="button" data-copy="${esc(e.url)}">${t("copyUrl")}</button>${costLink(e.vendor)}${traceLink(e)}</div></div>
+    </div>`;
   }
   function renderHist() {
     const h = loadHist(), sel = $("#hist");
     $("#histWrap").hidden = !h.length;
-    sel.innerHTML = '<option value="">'.concat(esc(t("histCurrent")), "</option>") + h.map((x, i) => '<option value="'.concat(i, '">').concat(esc(fmtTs(x.ts))).concat(x.peak ? " \xB7 " + esc(t("tagPeak")) : "", " \xB7 ").concat(Object.keys(x.res).length, "</option>")).join("");
+    sel.innerHTML = `<option value="">${esc(t("histCurrent"))}</option>` + h.map((x, i) => `<option value="${i}">${esc(fmtTs(x.ts))}${x.peak ? " \xB7 " + esc(t("tagPeak")) : ""} \xB7 ${Object.keys(x.res).length}</option>`).join("");
     sel.value = VIEW.live ? "" : String(h.findIndex((x) => x.ts === VIEW.ts));
   }
   const SITE = /^(localhost|127\.|\[)/.test(location.hostname) ? "https://m2c.1ms.dog" : location.origin;
@@ -1574,38 +1619,70 @@
       case "surge":
       case "shadowrocket":
       case "loon":
-        return "DOMAIN,".concat(d, ",DIRECT");
+        return `DOMAIN,${d},DIRECT`;
       case "quanx":
-        return "host, ".concat(d, ", direct");
+        return `host, ${d}, direct`;
       default:
         return d;
     }
   }
-  const realIp = (f, items) => f === "clash" ? "dns:\n  fake-ip-filter:\n" + items.map((i) => "    - ".concat(i.d)).join("\n") : "[General]\nalways-real-ip = " + items.map((i) => i.d).join(", ");
+  const realIp = (f, items) => f === "clash" ? `dns:
+  fake-ip-filter:
+` + items.map((i) => `    - ${i.d}`).join("\n") : `[General]
+always-real-ip = ` + items.map((i) => i.d).join(", ");
   function ruleInline(f, items) {
     const hosts = items.map((i) => i.d);
     if (f === "singbox") return JSON.stringify({ route: { rules: [{ domain: hosts, outbound: "direct" }] }, dns: { rules: [{ domain: hosts, server: "local" }] } }, null, 2);
     if (f === "xray") return JSON.stringify({ routing: { rules: [{ type: "field", domain: hosts.map((d) => "full:" + d), outboundTag: "direct" }] } }, null, 2);
     if (f === "omega") return hosts.join("\n");
     const ind = f === "clash" ? "  - " : "", cind = f === "clash" ? "  " : "";
-    const body = items.map((i, k) => (k && items[k - 1].c === i.c ? "" : "".concat(cind, "# ").concat(i.c, "\n")) + ind + ruleLine(f, i)).join("\n");
+    const body = items.map((i, k) => (k && items[k - 1].c === i.c ? "" : `${cind}# ${i.c}
+`) + ind + ruleLine(f, i)).join("\n");
     const head = { clash: "rules:", surge: "[Rule]", shadowrocket: "[Rule]", loon: "[Rule]", quanx: "[filter_local]" }[f];
-    const dns = f === "clash" || f === "surge" || f === "shadowrocket" ? "\n\n# ".concat(t("rules_fakeip"), "\n") + realIp(f, items) : "";
+    const dns = f === "clash" || f === "surge" || f === "shadowrocket" ? `
+
+# ${t("rules_fakeip")}
+` + realIp(f, items) : "";
     return (head ? head + "\n" : "") + body + dns;
   }
   function ruleRemote(f) {
     const u = SITE + "/rules/";
     switch (f) {
       case "clash":
-        return "rule-providers:\n  me2cloud:\n    type: http\n    behavior: classical\n    format: yaml\n    url: ".concat(u, "clash.yaml\n    path: ./ruleset/me2cloud.yaml\n    interval: 86400\n\nrules:\n  - RULE-SET,me2cloud,DIRECT   # ").concat(t("rc_top"), "\n\n# ").concat(t("rules_fakeip"), "\n") + realIp(f, ruleItems(false));
+        return `rule-providers:
+  me2cloud:
+    type: http
+    behavior: classical
+    format: yaml
+    url: ${u}clash.yaml
+    path: ./ruleset/me2cloud.yaml
+    interval: 86400
+
+rules:
+  - RULE-SET,me2cloud,DIRECT   # ${t("rc_top")}
+
+# ${t("rules_fakeip")}
+` + realIp(f, ruleItems(false));
       case "surge":
-        return "[Rule]\n# ".concat(t("rc_top"), "\nRULE-SET,").concat(u, "surge.list,DIRECT,update-interval=86400\n\n# ").concat(t("rules_fakeip"), "\n") + realIp(f, ruleItems(false));
+        return `[Rule]
+# ${t("rc_top")}
+RULE-SET,${u}surge.list,DIRECT,update-interval=86400
+
+# ${t("rules_fakeip")}
+` + realIp(f, ruleItems(false));
       case "shadowrocket":
-        return "[Rule]\n# ".concat(t("rc_top"), "\nRULE-SET,").concat(u, "surge.list,DIRECT\n\n# ").concat(t("rules_fakeip"), "\n") + realIp(f, ruleItems(false));
+        return `[Rule]
+# ${t("rc_top")}
+RULE-SET,${u}surge.list,DIRECT
+
+# ${t("rules_fakeip")}
+` + realIp(f, ruleItems(false));
       case "quanx":
-        return "[filter_remote]\n".concat(u, "quanx.list, tag=Me2Cloud, force-policy=direct, update-interval=86400, opt-parser=false, enabled=true");
+        return `[filter_remote]
+${u}quanx.list, tag=Me2Cloud, force-policy=direct, update-interval=86400, opt-parser=false, enabled=true`;
       case "loon":
-        return "[Remote Rule]\n".concat(u, "loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true");
+        return `[Remote Rule]
+${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
       case "singbox":
         return JSON.stringify({ route: {
           rule_set: [{ tag: "me2cloud", type: "remote", format: "source", url: u + "singbox.json", download_detour: "direct", update_interval: "1d" }],
@@ -1614,22 +1691,23 @@
     }
     return null;
   }
-  const codeBox = (text, i) => '<div class="code"><textarea readonly spellcheck="false" rows="'.concat(Math.min(16, text.split("\n").length + 1), '" data-ta="').concat(i, '">').concat(esc(text), '</textarea><button class="btn sm" type="button" data-copyta="').concat(i, '">').concat(t("copy"), "</button></div>");
+  const codeBox = (text, i) => `<div class="code"><textarea readonly spellcheck="false" rows="${Math.min(16, text.split("\n").length + 1)}" data-ta="${i}">${esc(text)}</textarea><button class="btn sm" type="button" data-copyta="${i}">${t("copy")}</button></div>`;
   function renderRules() {
     const f = S.ruleFmt;
-    $("#ruleTabs").innerHTML = RULE_FORMATS.map((x) => '<button type="button" role="tab" data-f="'.concat(x, '" aria-selected="').concat(f === x, '">').concat(x === "plain" ? esc(t("rules_plain")) : RULE_NAMES[x], "</button>")).join("");
+    $("#ruleTabs").innerHTML = RULE_FORMATS.map((x) => `<button type="button" role="tab" data-f="${x}" aria-selected="${f === x}">${x === "plain" ? esc(t("rules_plain")) : RULE_NAMES[x]}</button>`).join("");
     const all = ruleItems(true), remote = ruleRemote(f), customs = all.filter((i) => i.v === "custom");
     const json = f === "singbox" || f === "xray";
     let h = "";
     if (remote) {
-      h += '<section class="rblk"><div class="rblk-h"><b>'.concat(t("rules_remote_h"), '</b><span class="note">').concat(t("rules_remote_s"), "</span></div>").concat(codeBox(remote, 0), "\n        ").concat(customs.length ? '<div class="note">'.concat(t("rules_custom"), "</div>").concat(codeBox(customs.map((i) => (json ? "" : "# " + i.c + "\n") + ruleLine(f, i)).join("\n"), 2)) : "", "</section>");
-      h += '<details class="rblk"><summary>'.concat(t("rules_inline_h", { n: all.length }), "</summary>").concat(codeBox(ruleInline(f, all), 1), "</details>");
+      h += `<section class="rblk"><div class="rblk-h"><b>${t("rules_remote_h")}</b><span class="note">${t("rules_remote_s")}</span></div>${codeBox(remote, 0)}
+        ${customs.length ? `<div class="note">${t("rules_custom")}</div>${codeBox(customs.map((i) => (json ? "" : "# " + i.c + "\n") + ruleLine(f, i)).join("\n"), 2)}` : ""}</section>`;
+      h += `<details class="rblk"><summary>${t("rules_inline_h", { n: all.length })}</summary>${codeBox(ruleInline(f, all), 1)}</details>`;
     } else {
-      h += '<section class="rblk"><div class="rblk-h"><b>'.concat(t("rules_inline_only", { n: all.length }), "</b></div>").concat(codeBox(ruleInline(f, all), 1), "</section>");
+      h += `<section class="rblk"><div class="rblk-h"><b>${t("rules_inline_only", { n: all.length })}</b></div>${codeBox(ruleInline(f, all), 1)}</section>`;
     }
-    h += '<div class="note">'.concat(esc(t("rules_note_" + f))).concat(json ? " " + esc(t("rules_json_note")) : "", "</div>");
+    h += `<div class="note">${esc(t("rules_note_" + f))}${json ? " " + esc(t("rules_json_note")) : ""}</div>`;
     $("#ruleBody").innerHTML = h;
-    $("#ruleSteps").innerHTML = ((I18N[LANG] || {}).rules_steps || I18N.en.rules_steps).map((s) => "<li>".concat(s, "</li>")).join("");
+    $("#ruleSteps").innerHTML = ((I18N[LANG] || {}).rules_steps || I18N.en.rules_steps).map((s) => `<li>${s}</li>`).join("");
   }
   function openDlg(id) {
     $$("details.menu[open]").forEach((d) => {
@@ -1662,7 +1740,7 @@
     helpIdx = clamp(i, 0, $$("#helpNav [data-hq]").length - 1);
     renderDocs();
     openDlg("help");
-    const b = $('#helpNav [data-hq="'.concat(i, '"]'));
+    const b = $(`#helpNav [data-hq="${i}"]`);
     b && b.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
   function download(name, text, type) {
@@ -1684,10 +1762,10 @@
       const s = x.st, f = (v) => v == null || !isFinite(v) ? "" : (Math.round(v * 10) / 10).toString();
       rows.push([x.e.id, x.e.vname, x.e.region, x.e.city, x.e.country, x.e.url, x.r.m, s.ok ? tierCode(grade(s.med)) : "", s.n, s.ok, f(s.loss * 100), f(s.min), f(s.med), f(s.avg), f(s.p90), f(s.max), f(s.jit), f(s.sd), x.pass ? "yes" : "no", x.r.vf == null ? "" : x.r.vf ? "yes" : "no", x.r.s.map((v) => v == null ? "x" : v).join(" ")]);
     }
-    download("me2cloud-".concat(stamp(), ".csv"), "\uFEFF" + rows.map((r) => r.map((c) => /[",\n]/.test(String(c)) ? '"'.concat(String(c).replace(/"/g, '""'), '"') : c).join(",")).join("\n"), "text/csv");
+    download(`me2cloud-${stamp()}.csv`, "\uFEFF" + rows.map((r) => r.map((c) => /[",\n]/.test(String(c)) ? `"${String(c).replace(/"/g, '""')}"` : c).join(",")).join("\n"), "text/csv");
   }
   function exportJSON() {
-    download("me2cloud-".concat(stamp(), ".json"), JSON.stringify(Object.assign({ tool: "Me2Cloud", verified: ENDPOINTS.verified }, snapshot()), null, 1), "application/json");
+    download(`me2cloud-${stamp()}.json`, JSON.stringify(Object.assign({ tool: "Me2Cloud", verified: ENDPOINTS.verified }, snapshot()), null, 1), "application/json");
   }
   const b64u = (bytes) => {
     let s = "";
@@ -1811,7 +1889,7 @@
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
-    const { received } = await import("/assets/share/share.js?v=8");
+    const { received } = await import("/assets/share/share.js?v=9");
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 6e4, at: $("#resWrap"), test: testSame });
@@ -1833,7 +1911,7 @@
     showReceived(P);
     const who = P.l ? [P.l[0], country(P.l[1]), P.l[2]].filter(Boolean).join(" \xB7 ") : "";
     const two = P.maps && P.maps.length > 1;
-    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc([who, P.m ? t("mm_" + P.m) : "", P.f === 6 && !two ? "IPv6" : "", P.p ? t("tagPeak") : "", P.x ? t("share_viaProxy") : ""].filter(Boolean).join(" \xB7 ")) + (two ? ' <span class="fam-seg">'.concat(P.fams.map((f, i) => '<button type="button" class="btn sm" data-fam="'.concat(i, '" aria-pressed="').concat(i === (P.fi || 0), '">IPv').concat(f, "</button>")).join(""), "</span>") : "");
+    $("#sharedT").innerHTML = (P.l ? flag(P.l[1], "nb-flag") : "") + esc([who, P.m ? t("mm_" + P.m) : "", P.f === 6 && !two ? "IPv6" : "", P.p ? t("tagPeak") : "", P.x ? t("share_viaProxy") : ""].filter(Boolean).join(" \xB7 ")) + (two ? ` <span class="fam-seg">${P.fams.map((f, i) => `<button type="button" class="btn sm" data-fam="${i}" aria-pressed="${i === (P.fi || 0)}">IPv${f}</button>`).join("")}</span>` : "");
   }
   const clearHash = () => {
     try {
@@ -1871,9 +1949,9 @@
     const lanes = vs.slice(0, 6), more = vs.length - lanes.length, LH = 56, ph = LH * Math.max(1, lanes.length);
     const links = [await shareLink(false), await shareLink(true)];
     const head = (g, kit) => {
-      g.font = "700 46px ".concat(kit.F);
+      g.font = `700 46px ${kit.F}`;
       const title = kit.wrap(g, t("card_title"), kit.W - 2 * kit.P);
-      g.font = "500 26px ".concat(kit.F);
+      g.font = `500 26px ${kit.F}`;
       const sub = kit.wrap(g, [kit.show ? where : "", how].filter(Boolean).join("  \xB7  "), kit.W - 2 * kit.P);
       return { title, sub, dy: (title.length - 1) * 54 + (sub.length - 1) * 36 };
     };
@@ -1881,7 +1959,7 @@
       const { W, P, F, M, v, clip, roundRect } = kit, hd = head(g, kit), y = kit.top + hd.dy;
       const C = { bg: v("bg"), fg: v("fg"), mu: v("muted"), line: v("line"), t: [0, 1, 2, 3, 4, 5].map((i) => v(i ? "g" + i : "muted")) };
       const font = (w, sz, mono) => {
-        g.font = "".concat(w, " ").concat(sz, "px ").concat(mono ? M : F);
+        g.font = `${w} ${sz}px ${mono ? M : F}`;
       };
       const text = (str, x, yy, color, align) => {
         g.fillStyle = color;
@@ -1992,12 +2070,12 @@
       });
       g.restore();
       counts.forEach((c, i) => {
-        const s = "".concat(tierCode(i + 1), " ").concat(tierName(i + 1), " ").concat(c);
+        const s = `${tierCode(i + 1)} ${tierName(i + 1)} ${c}`;
         kit.fit(g, s, (W - 2 * P) / 5 - 8, 24, 16, 600);
         text(fit(s, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]);
       });
     };
-    const { share } = await import("/assets/share/share.js?v=8");
+    const { share } = await import("/assets/share/share.js?v=9");
     share({
       lang: LANG,
       name: "Me2Cloud",
@@ -2016,7 +2094,7 @@
   }
   function aiSummary() {
     const list = rankList().filter((x) => x.st.ok), L = shareLoc(), N = NEED();
-    const line = (x, i) => "".concat(i + 1, ". ").concat(x.e.vname, " ").concat(x.e.region, " (").concat(x.e.cityEn || x.e.city).concat(x.e.country ? ", " + x.e.country : "", "): median ").concat(fmt(x.st.med), " ms, jitter \xB1").concat(fmt(x.st.jit), " ms, ").concat(pkt() ? "packet loss" : "timeout rate", " ").concat(Math.round(x.st.loss * 100), "%, ").concat(tierCode(grade(x.st.med))).concat(x.pass ? ", fits" : "");
+    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${x.e.country ? ", " + x.e.country : ""}): median ${fmt(x.st.med)} ms, jitter \xB1${fmt(x.st.jit)} ms, ${pkt() ? "packet loss" : "timeout rate"} ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
     const best = [...new Set(list.map((x) => x.e.vendor))].map((v) => list.filter((x) => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
     return [
       "Me2Cloud latency results (HTTPS round trips measured in my own browser; median of " + (VIEW.mode || MODES[S.mode]) + " samples per region)",
@@ -2036,7 +2114,13 @@
   function renderAI() {
     const has = rankList().some((x) => x.st.ok), base = location.origin;
     const prompt = t("ai_linkPrompt", { u: base + "/llms.txt" });
-    $("#aiBody").innerHTML = '\n      <section class="ai-sec"><h4>'.concat(esc(t("ai_res_h")), "</h4><p>").concat(esc(t(has ? "ai_res_p" : "ai_res_none")), "</p>\n        ").concat(has ? '<div class="code"><textarea readonly rows="8" data-ta="ai1">'.concat(esc(aiSummary()), '</textarea><button class="btn sm" type="button" data-copyai="ai1">').concat(t("copy"), "</button></div>") : "", '</section>\n      <section class="ai-sec"><h4>').concat(esc(t("ai_link_h")), "</h4><p>").concat(esc(t("ai_link_p")), '</p>\n        <div class="code"><textarea readonly rows="3" data-ta="ai2">').concat(esc(prompt), '</textarea><button class="btn sm" type="button" data-copyai="ai2">').concat(t("copy"), '</button></div></section>\n      <section class="ai-sec"><h4>').concat(esc(t("ai_dev_h")), "</h4><p>").concat(esc(t("ai_dev_p")), '</p>\n        <div class="ai-links"><a href="/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="/endpoints.json" target="_blank" rel="noopener">endpoints.json</a><a href="/rules/clash.yaml" target="_blank" rel="noopener">rules/clash.yaml \xB7 surge.list \xB7 loon.list \xB7 quanx.list \xB7 singbox.json</a></div></section>');
+    $("#aiBody").innerHTML = `
+      <section class="ai-sec"><h4>${esc(t("ai_res_h"))}</h4><p>${esc(t(has ? "ai_res_p" : "ai_res_none"))}</p>
+        ${has ? `<div class="code"><textarea readonly rows="8" data-ta="ai1">${esc(aiSummary())}</textarea><button class="btn sm" type="button" data-copyai="ai1">${t("copy")}</button></div>` : ""}</section>
+      <section class="ai-sec"><h4>${esc(t("ai_link_h"))}</h4><p>${esc(t("ai_link_p"))}</p>
+        <div class="code"><textarea readonly rows="3" data-ta="ai2">${esc(prompt)}</textarea><button class="btn sm" type="button" data-copyai="ai2">${t("copy")}</button></div></section>
+      <section class="ai-sec"><h4>${esc(t("ai_dev_h"))}</h4><p>${esc(t("ai_dev_p"))}</p>
+        <div class="ai-links"><a href="/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="/endpoints.json" target="_blank" rel="noopener">endpoints.json</a><a href="/rules/clash.yaml" target="_blank" rel="noopener">rules/clash.yaml \xB7 surge.list \xB7 loon.list \xB7 quanx.list \xB7 singbox.json</a></div></section>`;
   }
   let toastT = 0;
   function toast(msg) {
@@ -2050,19 +2134,19 @@
   }
   function cliCmd() {
     const one = S.vendors.filter((v) => ENDPOINTS.vendors[v]);
-    return "curl -fsSL ".concat(SITE, "/i | sh") + (one.length === 1 ? " -s -- -p " + one[0] : "");
+    return `curl -fsSL ${SITE}/i | sh` + (one.length === 1 ? " -s -- -p " + one[0] : "");
   }
   function renderCli() {
-    const line = (cmd, note) => '<button class="cmdline" type="button" data-cmd title="'.concat(esc(t("copy")), '"><code>').concat(esc(cmd), '</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>') + (note ? '<span class="note">'.concat(esc(note), "</span>") : "");
-    const sec = (h, body) => '<section class="rblk"><b>'.concat(esc(t(h)), "</b>").concat(body, "</section>");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+    const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`;
     const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
     $("#cliBody").innerHTML = [
-      sec("cli_install", line("curl -fsSL ".concat(SITE, "/i | sh"), t("cli_install_s"))),
-      sec("cli_once", line("curl -fsSL ".concat(SITE, "/i | sh -s -- run"))),
-      sec("cli_wget", line("wget -qO- ".concat(SITE, "/i | sh"))),
+      sec("cli_install", line(`curl -fsSL ${SITE}/i | sh`, t("cli_install_s"))),
+      sec("cli_once", line(`curl -fsSL ${SITE}/i | sh -s -- run`)),
+      sec("cli_wget", line(`wget -qO- ${SITE}/i | sh`)),
       sec("cli_opts", line("vps2cloud -p aws,gcp --continent as", t("cli_o_pick")) + line("vps2cloud --ip both", t("cli_o_ip")) + line("vps2cloud --cdn", t("cli_o_cdn")) + line("vps2cloud -m icmp", t("cli_o_icmp")) + line("vps2cloud -o md", t("cli_o_md"))),
-      sec("cli_win", line("irm ".concat(SITE, "/i.ps1 | iex"), t("cli_win_s")) + '<a class="dl" href="'.concat(esc(win), '">vps2cloud-windows-amd64.exe \u2193</a>')),
-      '<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>'.concat(esc(t("cli_src")), '<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>')
+      sec("cli_win", line(`irm ${SITE}/i.ps1 | iex`, t("cli_win_s")) + `<a class="dl" href="${esc(win)}">vps2cloud-windows-amd64.exe \u2193</a>`),
+      `<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(t("cli_src"))}<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>`
     ].join("");
   }
   async function copyText(s) {
@@ -2289,7 +2373,7 @@
       return;
     }
     if (el.matches("[data-copyta]")) {
-      copyText($('#ruleBody [data-ta="'.concat(el.dataset.copyta, '"]')).value);
+      copyText($(`#ruleBody [data-ta="${el.dataset.copyta}"]`).value);
       return;
     }
     if (el.matches("[data-close]")) {
@@ -2318,7 +2402,7 @@
       return;
     }
     if (el.matches("[data-copyai]")) {
-      copyText($('#aiBody [data-ta="'.concat(el.dataset.copyai, '"]')).value);
+      copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value);
       return;
     }
     if (el.matches("[data-retest]")) {
@@ -2436,7 +2520,7 @@
     S.need[k] = Math.max(0, +e.target.value || 0);
     S.need.preset = "custom";
     save();
-    $("#plN > summary").innerHTML = "<span>".concat(PRESET_IC.custom, "</span><span>").concat(esc(t("p_custom")), '</span><b class="num">').concat(S.need.lat ? "\u2264" + S.need.lat + "ms" : "", "</b>").concat(caret);
+    $("#plN > summary").innerHTML = `<span>${PRESET_IC.custom}</span><span>${esc(t("p_custom"))}</span><b class="num">${S.need.lat ? "\u2264" + S.need.lat + "ms" : ""}</b>${caret}`;
     $$("#popN .opt").forEach((b) => b.setAttribute("aria-pressed", "false"));
     renderAll();
   });
@@ -2587,7 +2671,7 @@
       return;
     }
     const g = grade(st.med);
-    tip.innerHTML = "<b>".concat(esc(ep.vname), " \xB7 ").concat(esc(ep.city), ' <span class="c').concat(g, '">').concat(tierCode(g), " ").concat(esc(tierName(g)), "</span></b><span>").concat(t("d_med"), '</span><span class="num">').concat(fmt(st.med), " ms</span><span>").concat(t("d_jit"), '</span><span class="num">\xB1').concat(fmt(st.jit), " ms</span><span>").concat(t(pkt() ? "d_pkt" : "d_loss"), '</span><span class="num">').concat(Math.round(st.loss * 100), "%</span><span>").concat(t("d_min"), " \u2013 ").concat(t("d_max"), '</span><span class="num">').concat(fmt(st.min), " \u2013 ").concat(fmt(st.max), "</span>");
+    tip.innerHTML = `<b>${esc(ep.vname)} \xB7 ${esc(ep.city)} <span class="c${g}">${tierCode(g)} ${esc(tierName(g))}</span></b><span>${t("d_med")}</span><span class="num">${fmt(st.med)} ms</span><span>${t("d_jit")}</span><span class="num">\xB1${fmt(st.jit)} ms</span><span>${t(pkt() ? "d_pkt" : "d_loss")}</span><span class="num">${Math.round(st.loss * 100)}%</span><span>${t("d_min")} \u2013 ${t("d_max")}</span><span class="num">${fmt(st.min)} \u2013 ${fmt(st.max)}</span>`;
     tip.hidden = false;
     tip.style.left = clamp(e.clientX + 14, 8, innerWidth - tip.offsetWidth - 8) + "px";
     tip.style.top = clamp(e.clientY + 14, 8, innerHeight - tip.offsetHeight - 8) + "px";

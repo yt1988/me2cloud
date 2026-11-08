@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=8");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=9");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 8;
+export const VERSION = 9;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -140,7 +140,7 @@ function clip(x, s, w) {
   if (x.measureText(s).width <= w) return s;
   const whole = s;
   while (s && x.measureText(s + "…").width > w) s = s.slice(0, -1);
-  try { (window.__msShareClips ||= []).push(whole); console.warn("share card: clipped", JSON.stringify(whole)); } catch (e) {}
+  try { (window.__msShareClips || (window.__msShareClips = [])).push(whole); console.warn("share card: clipped", JSON.stringify(whole)); } catch (e) {}
   return s + "…";
 }
 // Sets the largest font from `size` down to `min` (2px steps) at which s fits in w, and returns that size.
@@ -168,12 +168,12 @@ function wrap(x, s, w, n = 2) {
 const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
 let qrP = null;
-const loadQR = () => qrP ||= new Promise((res, rej) => {
+const loadQR = () => qrP || (qrP = new Promise((res, rej) => {
   if (self.QR1MS) return res(self.QR1MS);
   const el = document.createElement("script"); el.src = here("qr.js");
   el.onload = () => res(self.QR1MS); el.onerror = () => { qrP = null; rej(new Error("qr")); };
   document.head.appendChild(el);
-});
+}));
 
 // the shortener 1ms.dog announces; absent when self-hosted, and then nothing leaves the browser
 const shortener = () => {
@@ -224,10 +224,10 @@ async function storePreview(s, card, bg) {
 }
 
 let cssP = null;
-const loadCSS = () => cssP ||= new Promise(res => {
+const loadCSS = () => cssP || (cssP = new Promise(res => {
   const l = document.createElement("link"); l.rel = "stylesheet"; l.href = here("share.css");
   l.onload = l.onerror = res; document.head.appendChild(l);
-});
+}));
 
 const ICON_X = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -386,7 +386,7 @@ export function received(o) {
       say.textContent = r.ready;
       const a = document.createElement("a"); a.className = "ms-recv-b"; a.href = url; a.textContent = r.cmp;
       a.onclick = () => ev("compare", lang);
-      el.querySelector(".ms-recv-b")?.remove(); el.append(a);
+      { const old = el.querySelector(".ms-recv-b"); if (old) old.remove(); } el.append(a);
     },
     remove() { test(); el.remove(); },
   };
