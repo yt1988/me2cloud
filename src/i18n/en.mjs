@@ -211,6 +211,7 @@ export default {
   d_max: "Max",
   d_jit: "Jitter",
   d_loss: "Timeout rate",
+  rp_sum: "Tested {n} regions ({k} samples each): {ok} answered, {pass} within your limits ({need}). Fastest: {fast} {fastms} ms; slowest: {slow} {slowms} ms.",
   d_pkt: "Packet loss",
   d_method: "Method",
   d_warm: "warm-up (not counted)",

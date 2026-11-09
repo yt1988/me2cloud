@@ -360,6 +360,7 @@ export default {
   d_max: "최대",
   d_jit: "지터",
   d_loss: "타임아웃 비율",
+  rp_sum: "브라우저에서 {n}개 리전을 측정했습니다(각 {k}회): {ok}개 응답, {pass}개가 조건 충족({need}). 가장 빠름: {fast} {fastms} ms, 가장 느림: {slow} {slowms} ms.",
   d_pkt: "패킷 손실",
   d_method: "요청 방식",
   d_warm: "워밍업(집계 제외)",

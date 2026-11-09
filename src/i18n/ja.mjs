@@ -360,6 +360,7 @@ export default {
   d_max: "最大",
   d_jit: "ジッター",
   d_loss: "タイムアウト率",
+  rp_sum: "ブラウザで {n} リージョンを測定（各 {k} 回）：{ok} 件が応答、{pass} 件が条件を満たす（{need}）。最速：{fast} {fastms} ms、最も遅い：{slow} {slowms} ms。",
   d_pkt: "パケットロス",
   d_method: "リクエスト方式",
   d_warm: "ウォームアップ（集計外）",

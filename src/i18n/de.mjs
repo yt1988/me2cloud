@@ -362,6 +362,7 @@ export default {
   d_max: "Max",
   d_jit: "Jitter",
   d_loss: "Timeout-Rate",
+  rp_sum: "Im Browser {n} Regionen getestet ({k} Messungen je Region): {ok} mit Antwort, {pass} innerhalb deiner Grenzen ({need}). Schnellste: {fast} {fastms} ms; langsamste: {slow} {slowms} ms.",
   d_pkt: "Paketverlust",
   d_method: "Methode",
   d_warm: "Aufwärmen (zählt nicht)",

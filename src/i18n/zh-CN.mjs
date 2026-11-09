@@ -359,6 +359,7 @@ export default {
   d_max: "最高",
   d_jit: "抖动",
   d_loss: "超时率",
+  rp_sum: "测了 {n} 个区域（每个 {k} 次）：{ok} 个有回应，{pass} 个符合要求（{need}）。最快：{fast} {fastms} ms；最慢：{slow} {slowms} ms。",
   d_pkt: "丢包",
   d_method: "请求方式",
   d_warm: "预热（不计入）",

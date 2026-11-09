@@ -203,6 +203,7 @@ export default {
   d_max: "最高",
   d_jit: "抖動",
   d_loss: "逾時率",
+  rp_sum: "測了 {n} 個區域（每個 {k} 次）：{ok} 個有回應，{pass} 個符合條件（{need}）。最快：{fast} {fastms} ms；最慢：{slow} {slowms} ms。",
   d_pkt: "封包遺失",
   d_method: "請求方式",
   d_warm: "暖機（不計入）",

@@ -1767,6 +1767,57 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
   function exportJSON() {
     download(`me2cloud-${stamp()}.json`, JSON.stringify(Object.assign({ tool: "Me2Cloud", verified: ENDPOINTS.verified }, snapshot()), null, 1), "application/json");
   }
+  window.msReport = () => {
+    const rows = rankList(), cloud = rows.filter((x) => !isCustom(x.e.vendor)), items = cloud.filter((x) => x.st.ok);
+    if (!items.length) return null;
+    const k = VIEW.mode || MODES[S.mode], stById = new Map(rows.map((x) => [x.e.id, x.st]));
+    const byMed = items.slice().sort((a, b) => a.st.med - b.st.med), n = (x) => vnm(x.e.vendor) + " " + (x.e.city || x.e.region);
+    const fast = byMed[0], slow = byMed[byMed.length - 1], pass = items.filter((x) => x.pass).length;
+    const summary = t("rp_sum", {
+      n: cloud.length,
+      k,
+      ok: items.length,
+      pass,
+      need: needText(),
+      fast: n(fast),
+      fastms: fmt(fast.st.med),
+      slow: n(slow),
+      slowms: fmt(slow.st.med)
+    });
+    const sep = /^(zh|ja)/.test(LANG) ? "\uFF1A" : ": ", line = (x) => n(x) + sep + fmt(x.st.med) + " ms";
+    const picks = [
+      ...byMed.slice(0, 2).map(line),
+      ...byMed.slice(-2).reverse().map(line),
+      t("picks_sub2", { n: pass, need: needText() }),
+      !VIEW.shared && NET.verdict === "warn" ? t("pxShort") : ""
+    ].filter(Boolean).slice(0, 8).map((s) => s.slice(0, 60));
+    const read = (st) => st && st.ok ? [Math.round(st.med), Math.round(st.jit), Math.round(st.loss * 100), Math.round(st.p90)] : [-1, -1, -1, -1];
+    const pack = (withP90) => {
+      const cells = (st) => (withP90 ? read(st) : read(st).slice(0, 3)).join(":");
+      return {
+        v: 1,
+        t: VIEW.ts || Date.now(),
+        l: LANG,
+        sh: VIEW.shared ? 1 : 0,
+        k,
+        f: VIEW.ip === "v6" ? 6 : 4,
+        p: VIEW.peak ? 1 : 0,
+        need: [NEED().lat, NEED().jit, NEED().loss],
+        c: S.conc,
+        to: S.timeout,
+        list: [ENDPOINTS.verified, ENDPOINTS.endpoints.length],
+        fmt: withP90 ? "res/cd: median:jitter:timeout%:p90, per ENDPOINTS.endpoints and ENDPOINTS.cdns order; -1 = no answer" : "res/cd: median:jitter:timeout%, per ENDPOINTS.endpoints and ENDPOINTS.cdns order; -1 = no answer",
+        cnt: [cloud.length, items.length, pass],
+        res: ENDPOINTS.endpoints.map((e) => cells(stById.get(e.id))).join(";"),
+        cd: ENDPOINTS.cdns.map((c) => cells(stById.get(c.id))),
+        net: VIEW.live ? { x: NET.verdict === "warn" ? 1 : 0, relay: NET.relay ? 1 : 0, warp: NET.warp || "off", v6: NET.has6 == null ? -1 : NET.has6 ? 1 : 0 } : void 0
+      };
+    };
+    const size = (o) => new Blob([JSON.stringify(o, null, 1)]).size;
+    let data = pack(true);
+    if (size(data) > 5700) data = pack(false);
+    return { summary: summary.slice(0, 300), data, picks };
+  };
   const b64u = (bytes) => {
     let s = "";
     for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);

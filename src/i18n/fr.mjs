@@ -363,6 +363,7 @@ export default {
   d_max: "Max",
   d_jit: "Gigue",
   d_loss: "Expirations",
+  rp_sum: "J'ai testé {n} régions ({k} échantillons chacune) : {ok} réponses, {pass} dans vos limites ({need}). La plus rapide : {fast} {fastms} ms ; la plus lente : {slow} {slowms} ms.",
   d_pkt: "Perte",
   d_method: "Méthode",
   d_warm: "préchauffage (non compté)",

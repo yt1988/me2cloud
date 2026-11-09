@@ -363,6 +363,7 @@ export default {
   d_max: "Máx.",
   d_jit: "Jitter",
   d_loss: "Timeouts",
+  rp_sum: "Testei {n} regiões ({k} amostras cada): {ok} com resposta, {pass} dentro dos seus limites ({need}). Mais rápida: {fast} {fastms} ms; mais lenta: {slow} {slowms} ms.",
   d_pkt: "Perda",
   d_method: "Método",
   d_warm: "aquecimento (não conta)",
