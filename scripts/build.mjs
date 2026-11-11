@@ -92,6 +92,10 @@ export async function build({ check = false } = {}) {
   const E = block(tpl, "ENDPOINTS", "ENDPOINTS"), spec = block(tpl, "RULES", "RULE_SPEC");
   const langs = LANGS.filter(([l]) => I[l] && I[l].heroT);            // languages with a translation
   const vids = Object.keys(E.vendors);
+  // the region chart is drawn after the first paint: its height for the default picks (every provider and CDN) and for
+  // a provider page (one lane) goes into the page, so the first paint already holds the lanes' space
+  const vizLanes = vids.length + (E.cdns || []).length, vizLh = vizLanes <= 2 ? 84 : vizLanes <= 5 ? 60 : 46;
+  const vizHeights = { home: vizLanes * vizLh + 94, one: 84 + 94 };
   const gaps = i18nGaps(tpl, I, E, langs);
   if (gaps.length) throw new Error(`untranslated text (${gaps.length}): ${gaps.slice(0, 12).join(" | ")}${gaps.length > 12 ? " …" : ""}`);
 
@@ -182,7 +186,8 @@ export async function build({ check = false } = {}) {
         .replace("{{head}}", head).replace("{{helpNav}}", helpNav).replace("{{helpSel}}", helpSel).replace("{{helpC}}", helpC)
         .replace("{{homeHref}}", path(slug, "")).replace("{{homeCur}}", sub ? "" : ' aria-current="page"')
         .replace("{{landing}}", landing).replace("{{allCta}}", allCta).replace("{{vendorNav}}", vendorNav)
-        .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
+        .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"))
+        .replace("{{vizHeights}}", JSON.stringify(vizHeights));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
       pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, lang, slug, sub, html });
     }

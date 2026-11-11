@@ -10,6 +10,23 @@
     var d = document.documentElement, th = null, s = null;
     try { th = localStorage.getItem("me2cloud:theme"); s = localStorage.getItem("me2cloud:lang"); } catch (e) {}
     if (th === "light" || th === "dark") d.setAttribute("data-theme", th);
+    // The region chart's height: its lanes are drawn after the first paint, so their space is reserved here, before
+    // it. Home turns the visitor's saved picks into the lanes the app will draw (the same lh rule as renderViz); a
+    // provider page always draws one lane.
+    var VH = {{vizHeights}}, H = VH.one;
+    if (d.hasAttribute("data-root")) {
+      H = VH.home;
+      try {
+        var q = new URLSearchParams(location.search).get("vendors"), v = null, list = null, seen = {}, n = 0;
+        if (q) list = q.split(",");
+        else { v = JSON.parse(localStorage.getItem("me2cloud:v1") || "0"); list = v && Array.isArray(v.vendors) ? v.vendors : null; }
+        // a shared result is decoded after the first paint: reserve one lane, its own set is drawn once decoded
+        if (location.hash.slice(0, 3) === "#s=") n = 1;
+        else if (list) for (var i = 0; i < list.length; i++) if (!seen[list[i]]) { seen[list[i]] = 1; n++; }
+        if (n) H = n * (n <= 2 ? 84 : n <= 5 ? 60 : 46) + 94;
+      } catch (e) {}
+    }
+    d.style.setProperty("--viz-h", H + "px");
     if (!d.hasAttribute("data-root")) return;
     var P = JSON.parse(d.getAttribute("data-paths") || "{}"), l = null;
     try { var q = new URLSearchParams(location.search).get("lang"); if (P[q]) l = q; } catch (e) {}
@@ -357,19 +374,21 @@ a.dl { font-size: 12.5px; color: var(--fg); align-self: flex-start; }
 .run-tx { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 220px; font-size: 13px; color: var(--muted); }
 .run-tx b { color: var(--fg); font-weight: 600; }
 #runT { display: flex; flex-direction: column; gap: 2px; }
-.nowl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.nowl b { margin-right: 4px; }
+/* one line, whatever arrives: the progress line must not grow and push the cards below it */
+.nowl { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; min-width: 0; }
+.nowl b { margin-right: 4px; white-space: nowrap; }
 /* lined up with the text under it; only its height is pulled in, so the line keeps its height */
 .runner { display: block; width: 50px; height: 30px; flex: none; margin: -6px 0; overflow: hidden; }
 .runner i { display: block; width: 1000px; height: 30px; background: url(/assets/shiba-run.png) 0 0 / 1000px 30px no-repeat; will-change: transform; }
-.run-now { display: contents; }
-/* progress bar and the time left share a line; the time's slot is there from the start */
+.run-now { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; flex: 0 1 auto; }
+/* progress bar and the time left share a line; the time's slot is there from the start, and so is the row's own:
+   hiding it keeps its height, so starting or stopping a test does not move the cards below the hero */
 .bar-row { display: flex; align-items: center; gap: 10px; }
-.bar-row[hidden] { display: none; }
+.bar-row[hidden] { display: flex !important; visibility: hidden; }
 .bar-row .bar { flex: 1; }
 /* a fixed line height: the row is as tall before the time shows up as after, so nothing above it moves */
 .run-eta { flex: none; min-width: 7.5em; height: 16px; line-height: 16px; text-align: right; font-size: 12px; white-space: nowrap; }
-.nowi { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 11px; background: var(--sel-soft); color: var(--fg); font-size: 12px; white-space: nowrap; }
+.nowi { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 11px; background: var(--sel-soft); color: var(--fg); font-size: 12px; white-space: nowrap; flex: none; }
 .nowi::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--sel); animation: blink 1s infinite; }
 .bar { height: 6px; border-radius: 3px; background: var(--soft); overflow: hidden; }
 .bar i { display: block; height: 100%; width: 0; background: var(--sel); border-radius: 3px; transition: width .3s; }
@@ -430,7 +449,8 @@ a.dl { font-size: 12.5px; color: var(--fg); align-self: flex-start; }
 .pd-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: -4px; }
 .pd-h b { font-size: 15px; }
 /* distribution: one lane per provider on a shared log axis, colored tier bands behind */
-.viz { padding: 14px 18px 18px; }
+/* min-height: the chart's height, set before the first paint (the pre-paint script) so drawing the lanes moves nothing */
+.viz { padding: 14px 18px 18px; min-height: var(--viz-h, 0px); }
 .vz { position: relative; margin-left: 150px; }
 .band { position: absolute; top: 0; bottom: 0; }
 .band span { position: absolute; top: -1px; left: 4px; font: 600 10px var(--f-num); white-space: nowrap; opacity: .9; }
@@ -1287,6 +1307,8 @@ footer a { color: var(--muted); }
   /* ---------- results ---------- */
   // R: id -> { s: samples (ms or null), w: warm-up ms, m: method used, st: queued|running|done|fail|stopped, vf: CORS check }
   let R = new Map(), VIEW = { ts: 0, live: true, peak: false };
+  // a share link's result is decoded after the first paint; until then the chart draws no lanes (they would be the picks')
+  let sharePending = /(?:^#|&)s=/.test(location.hash);
   function stats(r) {
     if (r && r.sum) {
       // a shared result carries the summary only
@@ -1895,9 +1917,11 @@ footer a { color: var(--muted); }
   // median with a whisker over the middle half of its samples. Elements are kept between frames, so a dot slides as its
   // median settles, and regions still being measured pulse.
   const spread = id => { let h = 7; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0; return ((h >>> 0) % 5) - 2; };
-  let vizKey = "";
+  let vizKey = "", vizH = -1;
   const vizEls = new Map();
   function renderViz(list) {
+    // the lanes are drawn once: from the shared result once it is decoded, not from the picks before that
+    if (sharePending && !VIEW.shared) return;
     const vz = $("#vz");
     const lanes = [...new Set(list.map(x => x.e.vendor))];
     const got = list.filter(x => x.st.ok);
@@ -1908,6 +1932,10 @@ footer a { color: var(--muted); }
     const when = VIEW.ts ? fmtTs(VIEW.ts) + (VIEW.peak ? " · " + t("tagPeak") : "") + " · " : "";
     $("#vizSub").textContent = got.length ? when + t("vizSub", { n: got.length, p: got.filter(x => x.pass).length }) : "";
     const lh = lanes.length <= 2 ? 84 : lanes.length <= 5 ? 60 : 46;
+    // the chart's height is reserved before the first paint (see the pre-paint script): keep it in step here for a
+    // pick made on this page, so the lanes never move what is below them
+    const H = lanes.length * lh + 94;
+    if (H !== vizH) { vizH = H; document.documentElement.style.setProperty("--viz-h", H + "px"); }
     const key = [lanes.join(), NEED().lat, LANG, lh].join("|");
     if (key !== vizKey || !vz.firstChild) {
       vizKey = key; vizEls.clear();
@@ -2614,7 +2642,11 @@ footer a { color: var(--muted); }
   });
   $$(".scrim").forEach(s => s.addEventListener("click", e => { if (e.target === s) closeDlg(); }));
 
-  addEventListener("hashchange", async () => { if (await loadShared()) { renderShared(); renderAll(); } });
+  addEventListener("hashchange", async () => {
+    sharePending = /(?:^#|&)s=/.test(location.hash);
+    const ok = await loadShared(); sharePending = false;
+    if (ok) renderShared(); renderAll();
+  });
   $("#runBtn").addEventListener("click", () => {
     if (RUN) { RUN.ctl.abort(); return; }
     openId = null; runTests(selected(), MODES[S.mode], S.conc);
@@ -2682,7 +2714,7 @@ footer a { color: var(--muted); }
   (window.requestIdleCallback || (f => setTimeout(f, 1500)))(() => { new Image().src = "/assets/shiba-run.png"; }, { timeout: 3000 });
   // custom nodes with no automatic country yet, or one from an earlier way of looking it up (before geo 3), get looked up now
   S.custom.filter(c => !c.ccSet && c.geo !== 3).forEach(locateCustom);
-  loadShared().then(ok => { if (ok) { renderShared(); renderAll(); } });
+  loadShared().then(ok => { sharePending = false; if (ok) renderShared(); renderAll(); });
 })();
 </script>
 </body>

@@ -619,6 +619,7 @@
   }
   const pickToggle = (list, all, x) => all.length < 2 ? list.includes(x) ? [] : [x] : list.length === all.length ? [x] : list.length === 1 && list[0] === x ? all.slice() : list.includes(x) ? list.filter((y) => y !== x) : list.concat(x);
   let R = /* @__PURE__ */ new Map(), VIEW = { ts: 0, live: true, peak: false };
+  let sharePending = /(?:^#|&)s=/.test(location.hash);
   function stats(r) {
     if (r && r.sum) {
       const u = r.sum, ok2 = Math.round(u.n * (1 - u.loss));
@@ -1386,9 +1387,10 @@
     for (let i = 0; i < id.length; i++) h = h * 31 + id.charCodeAt(i) | 0;
     return (h >>> 0) % 5 - 2;
   };
-  let vizKey = "";
+  let vizKey = "", vizH = -1;
   const vizEls = /* @__PURE__ */ new Map();
   function renderViz(list) {
+    if (sharePending && !VIEW.shared) return;
     const vz = $("#vz");
     const lanes = [...new Set(list.map((x) => x.e.vendor))];
     const got = list.filter((x) => x.st.ok);
@@ -1397,6 +1399,11 @@
     const when = VIEW.ts ? fmtTs(VIEW.ts) + (VIEW.peak ? " \xB7 " + t("tagPeak") : "") + " \xB7 " : "";
     $("#vizSub").textContent = got.length ? when + t("vizSub", { n: got.length, p: got.filter((x) => x.pass).length }) : "";
     const lh = lanes.length <= 2 ? 84 : lanes.length <= 5 ? 60 : 46;
+    const H = lanes.length * lh + 94;
+    if (H !== vizH) {
+      vizH = H;
+      document.documentElement.style.setProperty("--viz-h", H + "px");
+    }
     const key = [lanes.join(), NEED().lat, LANG, lh].join("|");
     if (key !== vizKey || !vz.firstChild) {
       vizKey = key;
@@ -2591,10 +2598,11 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     if (e.target === s) closeDlg();
   }));
   addEventListener("hashchange", async () => {
-    if (await loadShared()) {
-      renderShared();
-      renderAll();
-    }
+    sharePending = /(?:^#|&)s=/.test(location.hash);
+    const ok = await loadShared();
+    sharePending = false;
+    if (ok) renderShared();
+    renderAll();
   });
   $("#runBtn").addEventListener("click", () => {
     if (RUN) {
@@ -2744,9 +2752,8 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
   }, { timeout: 3e3 });
   S.custom.filter((c) => !c.ccSet && c.geo !== 3).forEach(locateCustom);
   loadShared().then((ok) => {
-    if (ok) {
-      renderShared();
-      renderAll();
-    }
+    sharePending = false;
+    if (ok) renderShared();
+    renderAll();
   });
 })();
