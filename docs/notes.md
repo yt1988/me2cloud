@@ -36,10 +36,25 @@ Technical reasons behind choices the code does not explain, and what was measure
     using the same `lh` rule (84/60/46 px) plus 94 px of padding, axis and legend, and sets `--viz-h`; `.viz` carries
     it as `min-height`. `renderViz` updates the same variable when the picks change on the page.
   - A share link (`#s=`) is decoded after the first paint, so the chart draws nothing until then (no lanes from the
-    picks that would be replaced) and one lane is reserved. What is left on a share link (~0.14) is the share banner
-    and the podium appearing above the chart, not the chart.
+    picks that would be replaced) and one lane is reserved. Its banner and picks are reserved too (2026-11-12): the
+    results section is shown from the first paint with the three pending slots the markup now carries, the banner's
+    56 px and its 14 px margin held by a `#resWrap::before` block, and `#data-share` dropped in the same frame the
+    banner is inserted. The banner is passed `at: $("#sharedT")`, inside the section, so the section's own top and
+    height never change (a banner before the section moved it 90 px, worth 0.018).
   - The progress row keeps its height too: the bar row stays in the layout while hidden, and the "which endpoints are
     on the wire" chips sit on one line (clipped on a phone) instead of wrapping, so starting, finishing or the chips
     changing never moves the cards below the hero.
   - Measured after the change: CLS 0 on the home page at 1280 px and at 375 px, with and without a click on Start;
-    0.02 at 375 px before the progress-row part of the fix.
+    a share link 0 at both widths (0.139 before the reservation, 0.018 when the banner still landed outside the
+    section); 0.02 at 375 px before the progress-row part of the fix.
+- **The pre-paint script must stay byte-identical on every page.** The CSP carries one hash for the inline snippet,
+  and `build.mjs` took it from the template — where the snippet still holds `{{vizHeights}}` — while each page ships
+  it with the value filled in. From 7aac7589 to 0df791cd the browser refused the snippet on the live site: no
+  `--viz-h` reservation, no theme and no language redirect before the first paint. It is invisible in a build that
+  only compares files, so the hash is now taken from a built page and the build fails when two pages' snippets differ.
+  Anything substituted into that script (a height, a path) breaks the hash: put page data in an attribute
+  (`data-paths`) and read it from the script instead.
+- **`data-root` marks every English page, not just home.** The home/provider decision before the first paint now asks
+  whether `location.pathname` is one of the language home paths in `data-paths`: with `data-root`, English provider
+  pages reserved 28 lanes for a one-lane chart and the other languages' home pages reserved one for 28 (found while
+  measuring a share link on `/zh-cn/`, 2026-11-12).
