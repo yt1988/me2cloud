@@ -47,6 +47,15 @@ Technical reasons behind choices the code does not explain, and what was measure
   - Measured after the change: CLS 0 on the home page at 1280 px and at 375 px, with and without a click on Start;
     a share link 0 at both widths (0.139 before the reservation, 0.018 when the banner still landed outside the
     section); 0.02 at 375 px before the progress-row part of the fix.
+- **A block that ships empty reserves nothing.** The network bar, the language menu and the filter chips were drawn
+  by the app script, which reaches a slow visitor ~600 ms after the first paint: until then the bar was 20 px, the menu
+  narrow and the chips empty, and filling them moved the page 0.26 at 1280 px and up to 0.3 on a tablet (measured live
+  2026-11-12). They now ship in their final shape — the bar with the "checking" row it is drawn with, the chips with the
+  default picks' labels and values (a visitor's own picks re-wrap the row once), the menu with its options, whose names
+  `build.mjs` reads from the app's own `LANGS` line so the two cannot drift. An empty chip summary also sat on the text
+  baseline, and its line's descender added 6 px that the row lost once the summary had content: `vertical-align: top`.
+  To see these moves at all, hold the app script back while measuring (`page.route` + 900 ms); on a fast local server
+  the app runs before the first paint and every number is 0.
 - **The pre-paint script must stay byte-identical on every page.** The CSP carries one hash for the inline snippet,
   and `build.mjs` took it from the template — where the snippet still holds `{{vizHeights}}` — while each page ships
   it with the value filled in. From 7aac7589 to 0df791cd the browser refused the snippet on the live site: no
