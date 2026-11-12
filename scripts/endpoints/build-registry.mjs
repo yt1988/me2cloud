@@ -128,7 +128,11 @@ for (const c of CANDIDATES) {
     continue;
   }
   const v = VENDORS[c.vendor];
-  const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: c.cc, url: v.url ? v.url(c.code) : last.url, method: METHOD[id] || v.method };
+  // candidates.mjs marks an unnamed region with city "?" and country "--". The page shows the region code for "?";
+  // "--" is not an ISO code and must not reach it (Intl rejects it, and it was printed as a dangling separator):
+  // an unknown country is stored as ""
+  const e = { id, vendor: c.vendor, region: c.code, city: c.city, country: /^[A-Z]{2}$/.test(c.cc || "") ? c.cc : "",
+    url: v.url ? v.url(c.code) : last.url, method: METHOD[id] || v.method };
   if (v.method !== "IMG" && (FALLBACK_IMG.has(id) || FALLBACK_IMG.has(`${c.vendor}:*`))) e.fallback = "IMG";
   if (v.cors && last.get?.acao) e.cors = true;
   if (v.nobust) e.nobust = true;

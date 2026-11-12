@@ -90,6 +90,10 @@ export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
   const I = await loadI18n();
   const E = block(tpl, "ENDPOINTS", "ENDPOINTS"), spec = block(tpl, "RULES", "RULE_SPEC");
+  // a region with no known place keeps an empty country and a "?" city, which the page draws as the region code; any
+  // other value would reach the page as text (AWS's "--" showed up as a dangling separator on 2026-11-11)
+  const badGeo = E.endpoints.filter(e => !e.city || !/^([A-Z]{2})?$/.test(e.country));
+  if (badGeo.length) throw new Error(`city/country missing or not ISO: ${badGeo.slice(0, 5).map(e => `${e.id} (${e.city}/${e.country})`).join(", ")}`);
   const langs = LANGS.filter(([l]) => I[l] && I[l].heroT);            // languages with a translation
   const vids = Object.keys(E.vendors);
   // the region chart is drawn after the first paint: its height for the default picks (every provider and CDN) and for
