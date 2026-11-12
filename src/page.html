@@ -24,8 +24,14 @@
         if (q) list = q.split(",");
         else { v = JSON.parse(localStorage.getItem("me2cloud:v1") || "0"); list = v && Array.isArray(v.vendors) ? v.vendors : null; }
         // a shared result is decoded after the first paint: reserve one lane, its own set is drawn once decoded, and
-        // mark the page so its banner and picks keep their room until then (see the data-share styles)
-        if (location.hash.slice(0, 3) === "#s=") { n = 1; d.setAttribute("data-share", ""); }
+        // mark the page so its banner and picks keep their room until then (see the data-share styles). The banner is
+        // built by /assets/share/, whose stylesheet is asked for now: arriving with the banner, it left it unstyled
+        // for a frame, and the space its banner replaced was already gone
+        if (location.hash.slice(0, 3) === "#s=") {
+          n = 1; d.setAttribute("data-share", "");
+          var sl = d.ownerDocument.createElement("link");
+          sl.rel = "stylesheet"; sl.href = "/assets/share/share.css?v=9"; d.ownerDocument.head.appendChild(sl);
+        }
         else if (list) for (var i = 0; i < list.length; i++) if (!seen[list[i]]) { seen[list[i]] = 1; n++; }
         if (n) H = n * (n <= 2 ? 84 : n <= 5 ? 60 : 46) + 94;
       }
@@ -601,6 +607,9 @@ a.dl { font-size: 12.5px; color: var(--fg); align-self: flex-start; }
    renderPodium overwrites once the result is known. */
 :root[data-share] #resWrap { display: block !important; }
 :root[data-share] #resWrap::before { content: ""; display: block; height: 70px; }
+/* the banner is in, but /assets/share/share.css may not be: it holds the banner's height until its own styles arrive */
+:root[data-recv] #resWrap::before { display: none; }
+:root[data-recv] #resWrap > .ms-recv { min-height: 70px; }
 :root[data-share] #sharedT { display: block !important; min-height: 28px; }
 :root[data-share] #shareBtn { visibility: hidden; }
 @media (max-width: 520px) { :root[data-share] #sharedT { min-height: 48px; } }
@@ -2364,7 +2373,7 @@ footer a { color: var(--muted); }
   let RECV = null, recvFor = null;
   // the space a shared result's banner and picks take is reserved before the first paint (see the data-share styles):
   // it is given up only once the banner is in the page, in the same frame, so nothing moves in between
-  const clearShareSkel = () => document.documentElement.removeAttribute("data-share");
+  const clearShareSkel = () => { const d = document.documentElement; d.removeAttribute("data-share"); d.removeAttribute("data-recv"); };
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
@@ -2372,7 +2381,14 @@ footer a { color: var(--muted); }
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 60000, at: $("#sharedT"), test: testSame });
-    clearShareSkel();
+    // the banner takes over the space the skeleton held, and holds it itself until its stylesheet is in: arriving with
+    // the banner, the sheet left it a third of its height for a frame, and the space it replaced was already gone
+    document.documentElement.setAttribute("data-recv", "");
+    const css = document.querySelector('link[href^="/assets/share/share.css"]');
+    if (!css || css.sheet) { clearShareSkel(); return; }
+    const done = () => { css.removeEventListener("load", done); css.removeEventListener("error", done); clearShareSkel(); };
+    css.addEventListener("load", done); css.addEventListener("error", done);
+    setTimeout(done, 3000);
   }
   function hideReceived() { recvFor = null; if (RECV) { RECV.remove(); RECV = null; } }
   function renderShared() {

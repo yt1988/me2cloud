@@ -1950,7 +1950,11 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     }
   }
   let RECV = null, recvFor = null;
-  const clearShareSkel = () => document.documentElement.removeAttribute("data-share");
+  const clearShareSkel = () => {
+    const d = document.documentElement;
+    d.removeAttribute("data-share");
+    d.removeAttribute("data-recv");
+  };
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
@@ -1958,7 +1962,20 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 6e4, at: $("#sharedT"), test: testSame });
-    clearShareSkel();
+    document.documentElement.setAttribute("data-recv", "");
+    const css = document.querySelector('link[href^="/assets/share/share.css"]');
+    if (!css || css.sheet) {
+      clearShareSkel();
+      return;
+    }
+    const done = () => {
+      css.removeEventListener("load", done);
+      css.removeEventListener("error", done);
+      clearShareSkel();
+    };
+    css.addEventListener("load", done);
+    css.addEventListener("error", done);
+    setTimeout(done, 3e3);
   }
   function hideReceived() {
     recvFor = null;
