@@ -1,0 +1,211 @@
+/* 1ms.dog base — the file every tool page starts from: tokens for both themes, the reset, the page column, the top bar, and
+   the few components every tool shows (button, card, section title, key number, status pill, verdict, note, skeleton).
+   A tool owns exactly one part of it: the ACCENT block, its --ink and any extra colors. Everything else is shared, so a
+   page made by any 1ms.dog tool reads as the same site at a glance.
+   This file lives at assets/design/base.css in 1ms-shell and is copied into each tool's src/base.css by
+   `npm run design`; edit it here, never in a tool. Rules and the reasoning: docs/design.md. */
+:root {
+  /* surfaces and text: the same in every tool, light and dark */
+  --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
+  --fg: #141416; --muted: #6e6e78;
+  --shadow: #0000001c;
+  /* type: ten sizes by role, nothing in between (docs/design.md §2) */
+  --fs-micro: 11.5px;    /* units, axis labels, corner badges */
+  --fs-caption: 12px;    /* secondary notes, table footnotes */
+  --fs-small: 13px;      /* labels, secondary cells, the top bar */
+  --fs-body: 14px;       /* running text, table cells — body's own size */
+  --fs-title: 15px;      /* card and section titles (weight 700) */
+  --fs-lead: 17px;       /* the verdict sentence, a result's main value */
+  --fs-brand: 20px;      /* the tool's name in the top bar, nothing else */
+  --fs-h1: clamp(20px, 2.6vw, 26px);
+  --fs-num: clamp(22px, 2.8vw, 28px);       /* a key number in a tile or a row */
+  --fs-num-lg: clamp(36px, 5vw, 52px);      /* the one number a running test turns on */
+  /* radius: four steps by role, plus pills and circles */
+  --r-chip: 6px;   /* badges, small blocks inside a block */
+  --r-ctl-sm: 8px; /* a control 30px tall: a small button, the language picker */
+  --r-ctl: 10px;   /* a control 36px tall and up: buttons, inputs, the top bar */
+  --r: 12px;       /* cards and panels */
+  --r-lg: 16px;    /* the first-screen block, a large result card */
+  --r-pill: 999px;
+  /* spacing: multiples of 4 (an inline gap may be 6) */
+  --gap: 20px;           /* between the blocks of a page */
+  --pad: 16px 20px;      /* inside a card */
+  --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
+  --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0;
+  --shadow: #00000080;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0;
+  --shadow: #00000080;
+  color-scheme: dark;
+}
+
+/* ===== ACCENT: this tool's colors, the only part of this file it edits =====
+   --ink is the accent; --t1…--t5 keep the site-wide meaning; add a tool color in here, never outside. */
+:root {
+  --ink: #1a8a5a;
+  --ink-fg: #ffffff;
+  --pool: #1a8a5a;
+  --pool-soft: #1a8a5a1f;
+  --on-pool: #ffffff;
+  --sel: #1a8a5a;
+  --sel-soft: #1a8a5a1f;
+  --on-sel: #ffffff;
+  --knob: #ffffff;
+  --warn: #b86e00;
+  --warn-soft: #b86e001f;
+  --bad: #d23a2f;
+  --bad-soft: #d23a2f1a;
+  --g1: #1a8a5a;
+  --g2: #3d7d1e;
+  --g3: #8a6700;
+  --g4: #b0530a;
+  --g5: #d23a2f;
+  --logo-bg: transparent;
+  --logo-pad: 0px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  {
+  --bg: #1c1c1c;
+  --ink: #3ecf8e;
+  --ink-fg: #0b2a1c;
+  --pool: #3ecf8e;
+  --pool-soft: #3ecf8e24;
+  --on-pool: #0b2a1c;
+  --sel: #3ecf8e;
+  --sel-soft: #3ecf8e1a;
+  --on-sel: #0b2a1c;
+  --knob: #ffffff;
+  --warn: #f5a524;
+  --warn-soft: #f5a52424;
+  --bad: #f56565;
+  --bad-soft: #f5656522;
+  --g1: #3ecf8e;
+  --g2: #9fd356;
+  --g3: #f5c524;
+  --g4: #f59e42;
+  --g5: #f56565;
+  : };
+} }
+:root[data-theme="dark"] {
+  --ink: #3ecf8e;
+  --ink-fg: #0b2a1c;
+  --pool: #3ecf8e;
+  --pool-soft: #3ecf8e24;
+  --on-pool: #0b2a1c;
+  --sel: #3ecf8e;
+  --sel-soft: #3ecf8e1a;
+  --on-sel: #0b2a1c;
+  --knob: #ffffff;
+  --warn: #f5a524;
+  --warn-soft: #f5a52424;
+  --bad: #f56565;
+  --bad-soft: #f5656522;
+  --g1: #3ecf8e;
+  --g2: #9fd356;
+  --g3: #f5c524;
+  --g4: #f59e42;
+  --g5: #f56565;
+}
+/* ===== ACCENT ends ===== */
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+html { background: var(--bg); scrollbar-gutter: stable; }   /* reserve the scrollbar's space, so the page doesn't shift when one appears */
+body { background: var(--bg); color: var(--fg); font: var(--fs-body)/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+.app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: var(--gap); }
+main { display: flex; flex-direction: column; gap: var(--gap); }
+button, select { font: inherit; color: inherit; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.m { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+svg[viewBox="0 0 16 16"] { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* top bar: the page's own header (the site's bar above it is the shell's) */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; overflow: hidden; border-radius: var(--r-ctl); }
+.logo { display: block; width: 90px; height: 36px; flex: none; }
+.logo img { display: block; width: 90px; height: 36px; }
+.brand-name { font-size: var(--fs-brand); font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+@media (max-width: 720px) { .brand-name { font-size: var(--fs-lead); } }
+@media (max-width: 520px) { .brand-name { display: none; } .brand { flex: none; } }
+.logo-dark { display: none !important; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-light { display: none !important; } :root:not([data-theme="light"]) .logo-dark { display: block !important; } }
+:root[data-theme="dark"] .logo-light { display: none !important; }
+:root[data-theme="dark"] .logo-dark { display: block !important; }
+.top-acts { display: flex; gap: 8px; align-items: center; }
+.sel { position: relative; display: flex; align-items: center; height: 34px; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); padding-left: 10px; }
+.sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+/* the open list is drawn by the OS: without its own colors it stays light in the dark theme */
+select option, select optgroup { background-color: var(--panel); color: var(--fg); }
+select option:checked { background-color: var(--soft); }
+.sel select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; height: 100%; padding: 0 12px 0 7px; font-size: 16px; /* under 16px iOS zooms the page on tap */ cursor: pointer; outline: none; }
+.icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); cursor: pointer; padding: 0; }
+.icon-btn svg { width: 16px; height: 16px; }
+/* the GitHub mark is a filled shape, unlike the stroked icons */
+.gh svg { fill: currentColor; stroke: none; }
+#theme svg { display: none; }
+#theme[data-th="system"] .i-sys, #theme[data-th="light"] .i-light, #theme[data-th="dark"] .i-dark, #theme:not([data-th]) .i-sys { display: block; }
+
+/* page heading: one h1 and at most one line under it.
+   Class names here are deliberately not the short generic ones (.h1, .lead, .st, .dot, .note, .empty, .pad): a tool page
+   that already uses such a name keeps its own rule for the properties it sets and silently inherits the rest from here —
+   who's 18px status dot grew 9px of pill padding that way on 2026-11-12. What a page's own name cannot collide with, the
+   shared file may own. */
+.page-h { font-size: var(--fs-h1); font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.page-sub { font-size: var(--fs-body); color: var(--muted); }
+h2 { font-size: var(--fs-title); font-weight: 700; }
+
+/* everything that answers a question about this page is a card; depth comes from --line and --soft, not from shadows */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
+.card-pad { padding: var(--pad); }
+
+/* button: one shape in three weights. The primary is the tool's accent, and a page has at most one */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); color: var(--fg);
+  font-size: var(--fs-body); font-weight: 500; white-space: nowrap; cursor: pointer; }
+.btn svg { width: 15px; height: 15px; }
+.btn.pri { background: var(--ink); border-color: transparent; color: var(--ink-fg); font-weight: 600; }
+.btn.ghost { border-color: transparent; background: none; }
+.btn.sm { height: 30px; padding: 0 10px; border-radius: var(--r-ctl-sm); font-size: var(--fs-small); }
+.btn:disabled { opacity: .5; cursor: default; }
+@media (pointer: coarse) { .btn { height: 44px; } }
+
+/* key numbers: a row of tiles, label under value, every figure in --f-num so columns line up */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; }
+.kpi { padding: 12px 14px; border-radius: var(--r); background: var(--soft); min-width: 0; }
+.kpi b { display: block; font: 600 var(--fs-num)/1.15 var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.kpi span { display: block; margin-top: 4px; font-size: var(--fs-caption); color: var(--muted); }
+
+/* the verdict: a colored dot and one sentence, the same shape on every tool and the first thing in the first screen */
+.page-verdict { display: flex; align-items: center; gap: 10px; font-size: var(--fs-lead); font-weight: 600; line-height: 1.4; }
+.page-verdict .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.page-verdict.ok .dot { background: var(--t1); } .page-verdict.warn .dot { background: var(--warn); } .page-verdict.bad .dot { background: var(--t5); }
+
+/* a state in one word: the pill carries the color, the dot inside it repeats it */
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: var(--r-pill);
+  font-size: var(--fs-caption); font-weight: 600; background: var(--soft); color: var(--muted); white-space: nowrap; }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.pill.ok { color: var(--t1); background: color-mix(in srgb, var(--t1) 12%, transparent); }
+.pill.warn { color: var(--warn); background: var(--warn-soft); }
+.pill.bad { color: var(--t5); background: color-mix(in srgb, var(--t5) 12%, transparent); }
+
+.hint { font-size: var(--fs-caption); color: var(--muted); line-height: 1.5; }
+/* a value that has not arrived: same height as the text it will replace, so nothing below it moves. No min-width: the
+   block that holds it says how wide, and a minimum of our own would push a narrow one wider than its space */
+.skel { display: inline-block; height: 12px; max-width: 100%; border-radius: var(--r-chip);
+  background: var(--soft); vertical-align: middle; animation: skel-blink 1.4s ease-in-out infinite; }
+@keyframes skel-blink { 50% { opacity: .45; } }
+/* nothing to show here yet, or nothing this source could tell: never dressed up as a result */
+.blank { display: grid; place-items: center; min-height: 64px; padding: 12px; text-align: center; color: var(--muted); font-size: var(--fs-small); }

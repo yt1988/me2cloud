@@ -86,6 +86,218 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Me2Cloud","url":"https://m2c.1ms.dog/pt/scaleway/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Meça latência, jitter e taxa de timeout até as 4 regiões da nuvem Scaleway direto do seu navegador, com a sua operadora e no horário de pico. Grátis, sem instalar nada.","inLanguage":"pt","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Por que testar da sua própria rede é melhor que sites de ping e looking glass","acceptedAnswer":{"@type":"Answer","text":"Resumindo: só um teste da sua rede diz o quanto uma região é rápida para você. A maioria dos sites de \"ping na nuvem\" e todos os looking glass dos provedores testam a partir dos servidores deles , que ficam em data centers com links de primeira. Isso mostra a velocidade de um data center até outro. Não mede a parte que você sente: sua internet de casa ou do celular, a rede da sua operadora, as saídas internacionais dela e o quanto estão congestionadas hoje à noite. O Me2Cloud manda cada requisição do seu navegador, então o resultado inclui tudo: Wi-Fi, roteador, operadora, a rota que ela escol"}},{"@type":"Question","name":"Como cada medição é feita","acceptedAnswer":{"@type":"Answer","text":"Uma requisição de aquecimento prepara o DNS, a conexão TCP e a criptografia TLS. O tempo dela aparece, mas não conta. Depois o navegador manda mais 5, 10 ou 20 requisições ao mesmo host pela mesma conexão . Cada uma custa uma única ida e volta, mais um pouco de processamento no servidor do provedor. Cada provedor recebe o tipo de requisição que confirmamos manter a conexão aberta: GET para AWS, Azure, Google Cloud, DigitalOcean e Scaleway; HEAD para Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Arub"}},{"@type":"Question","name":"Por que medir com HTTPS é mais parecido com o uso real que o ICMP ping","acceptedAnswer":{"@type":"Answer","text":"Vai pelo mesmo caminho do seu tráfego. Sites, APIs, túneis na porta 443, login em jogos e downloads usam TCP. Muitas operadoras colocam o ICMP numa fila separada, seguram a velocidade dele ou mandam por outra rota, então o ping pode parecer ótimo enquanto as páginas se arrastam, ou o contrário. Não some por causa de limites. Roteadores e nuvens costumam limitar ou descartar ICMP. Um ponto HTTPS público sempre responde. Inclui a sua configuração real. DNS, a escolha entre IPv4 e IPv6, proxies e aceleradores valem para o tráfego do navegador, então você mede o que realmente teria. A contrapartid"}},{"@type":"Question","name":"Quando testar: no horário de pico da noite","acceptedAnswer":{"@type":"Answer","text":"As redes de casa ficam mais cheias das 20:00 às 23:00 , e os links internacionais mais ainda. Uma região que é T1 ao meio-dia pode cair para NPC à noite. Teste uma vez de dia e outra no pico. Os testes feitos no pico ganham a marca \"horário de pico\", e você pode alternar entre eles nos resultados. Pause downloads grandes, streaming e sincronização na nuvem enquanto testa. Cabo ganha do Wi-Fi; no Wi-Fi, fique perto do roteador. Nos dados móveis, os resultados mudam com o sinal. Teste onde você vai usar o serviço de verdade."}},{"@type":"Question","name":"Para que serve","acceptedAnswer":{"@type":"Answer","text":"Montar uma lista curta de regiões antes de contratar um servidor, um servidor de jogo ou uma origem de CDN. Comparar regiões de um provedor, ou provedores diferentes na mesma cidade. Ver se a estabilidade (jitter, taxa de timeout) dá conta de jogos, videochamadas, área de trabalho remota e SSH. Ver como seu proxy, acelerador ou novo plano de internet se sai de verdade: teste uma vez com ele e outra sem. Colocar seu próprio servidor ou CDN ao lado dos grandes com um ponto próprio."}},{"@type":"Question","name":"O que ele não consegue dizer","acceptedAnswer":{"@type":"Answer","text":"Só um lugar. Ele mede a sua linha, não a dos seus usuários. Peça para alguns rodarem também, depois exporte e compare. O ponto público do provedor, não o seu futuro servidor. Testamos a API pública ou o armazenamento de cada provedor na região. Servidores da mesma região costumam usar essa rede, mas rotas premium (por exemplo CN2, BGP ou operadora única, Lightsail ou EC2) podem ser diferentes. Sem banda, sem UDP, sem traceroute. Ele mede idas e voltas, não a velocidade de download nem o tráfego UDP de jogos, e não mostra os saltos no meio do caminho. Para medir a velocidade de download, use o "}},{"@type":"Question","name":"Privacidade: os testes saem do seu navegador e os resultados ficam com você","acceptedAnswer":{"@type":"Answer","text":"Seus resultados não são enviados e não existe conta. Só quando você toca em Compartilhar o resultado é salvo no 1ms.dog como link curto com imagem de prévia, para os apps de mensagem poderem mostrar. Cada requisição de teste vai direto do seu navegador ao provedor. Abra o Registro de requisições acima ou as ferramentas de desenvolvedor do navegador (aba Rede) para ver uma por uma. Os dados de rede vêm da Cloudflare: primeiro responde o /_ms/me , deste próprio site, e a palavra final é do speed.cloudflare.com/meta e do /cdn-cgi/trace , que seguem o mesmo caminho dos testes. A verificação opcion"}},{"@type":"Question","name":"Gentil com os provedores: sem limite, sem bloqueio","acceptedAnswer":{"@type":"Answer","text":"Pedir demais aos pontos públicos poderia acionar o limite de requisições ou o firewall (WAF) de um provedor e estragar o resultado. Por isso o teste fica bem abaixo disso: Uma requisição por vez em cada host, com pausa de 250–370 ms entre as medições (no máximo 2–3 requisições por segundo por host). No máximo 2 hosts por provedor ao mesmo tempo e 8 no total (4 por padrão). No máximo 21 requisições por host em cada teste (1 de aquecimento + até 20). Não existe modo contínuo. Um host é deixado de lado depois de 3 falhas seguidas, em vez de ser tentado sem parar. As requisições são anônimas: sem "}},{"@type":"Question","name":"Está usando proxy ou VPN?","acceptedAnswer":{"@type":"Answer","text":"Se o seu tráfego passa por um proxy, o navegador mede você → proxy mais proxy → provedor, não a sua própria linha. O painel de rede procura os sinais de sempre: uma rede de saída num data center, um fuso horário que não bate com o país de saída, WARP, ou uma saída WebRTC diferente da HTTPS. Use Pegar regras diretas para mandar só os domínios de teste em conexão direta (Clash / Mihomo, Surge, Shadowrocket, Quantumult X, Loon, sing-box, Xray, SwitchyOmega ou uma lista simples) e verifique de novo. Se o que você quer medir é o próprio proxy, deixe-o ligado: aí os números mostram o desempenho real"}},{"@type":"Question","name":"Como ler o gráfico","acceptedAnswer":{"@type":"Answer","text":"Todas as linhas usam a mesma escala (logarítmica, de 2 ms a 3 s). Os pontos são as medições, a caixa sombreada cobre a metade do meio delas e o traço é a mediana. Caixa estreita quer dizer estável; caixa larga ou pontos espalhados querem dizer jitter. Um × vermelho conta as medições que deram timeout. Toque numa linha para ver cada medição em ordem, todas as estatísticas e o ponto usado. ✓ marca uma região dentro dos seus limites."}}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* 1ms.dog base — the file every tool page starts from: tokens for both themes, the reset, the page column, the top bar, and
+   the few components every tool shows (button, card, section title, key number, status pill, verdict, note, skeleton).
+   A tool owns exactly one part of it: the ACCENT block, its --ink and any extra colors. Everything else is shared, so a
+   page made by any 1ms.dog tool reads as the same site at a glance.
+   This file lives at assets/design/base.css in 1ms-shell and is copied into each tool's src/base.css by
+   `npm run design`; edit it here, never in a tool. Rules and the reasoning: docs/design.md. */
+:root {
+  /* surfaces and text: the same in every tool, light and dark */
+  --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
+  --fg: #141416; --muted: #6e6e78;
+  --shadow: #0000001c;
+  /* type: ten sizes by role, nothing in between (docs/design.md §2) */
+  --fs-micro: 11.5px;    /* units, axis labels, corner badges */
+  --fs-caption: 12px;    /* secondary notes, table footnotes */
+  --fs-small: 13px;      /* labels, secondary cells, the top bar */
+  --fs-body: 14px;       /* running text, table cells — body's own size */
+  --fs-title: 15px;      /* card and section titles (weight 700) */
+  --fs-lead: 17px;       /* the verdict sentence, a result's main value */
+  --fs-brand: 20px;      /* the tool's name in the top bar, nothing else */
+  --fs-h1: clamp(20px, 2.6vw, 26px);
+  --fs-num: clamp(22px, 2.8vw, 28px);       /* a key number in a tile or a row */
+  --fs-num-lg: clamp(36px, 5vw, 52px);      /* the one number a running test turns on */
+  /* radius: four steps by role, plus pills and circles */
+  --r-chip: 6px;   /* badges, small blocks inside a block */
+  --r-ctl-sm: 8px; /* a control 30px tall: a small button, the language picker */
+  --r-ctl: 10px;   /* a control 36px tall and up: buttons, inputs, the top bar */
+  --r: 12px;       /* cards and panels */
+  --r-lg: 16px;    /* the first-screen block, a large result card */
+  --r-pill: 999px;
+  /* spacing: multiples of 4 (an inline gap may be 6) */
+  --gap: 20px;           /* between the blocks of a page */
+  --pad: 16px 20px;      /* inside a card */
+  --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
+  --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0;
+  --shadow: #00000080;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0;
+  --shadow: #00000080;
+  color-scheme: dark;
+}
+
+/* ===== ACCENT: this tool's colors, the only part of this file it edits =====
+   --ink is the accent; --t1…--t5 keep the site-wide meaning; add a tool color in here, never outside. */
+:root {
+  --ink: #1a8a5a;
+  --ink-fg: #ffffff;
+  --pool: #1a8a5a;
+  --pool-soft: #1a8a5a1f;
+  --on-pool: #ffffff;
+  --sel: #1a8a5a;
+  --sel-soft: #1a8a5a1f;
+  --on-sel: #ffffff;
+  --knob: #ffffff;
+  --warn: #b86e00;
+  --warn-soft: #b86e001f;
+  --bad: #d23a2f;
+  --bad-soft: #d23a2f1a;
+  --g1: #1a8a5a;
+  --g2: #3d7d1e;
+  --g3: #8a6700;
+  --g4: #b0530a;
+  --g5: #d23a2f;
+  --logo-bg: transparent;
+  --logo-pad: 0px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  {
+  --bg: #1c1c1c;
+  --ink: #3ecf8e;
+  --ink-fg: #0b2a1c;
+  --pool: #3ecf8e;
+  --pool-soft: #3ecf8e24;
+  --on-pool: #0b2a1c;
+  --sel: #3ecf8e;
+  --sel-soft: #3ecf8e1a;
+  --on-sel: #0b2a1c;
+  --knob: #ffffff;
+  --warn: #f5a524;
+  --warn-soft: #f5a52424;
+  --bad: #f56565;
+  --bad-soft: #f5656522;
+  --g1: #3ecf8e;
+  --g2: #9fd356;
+  --g3: #f5c524;
+  --g4: #f59e42;
+  --g5: #f56565;
+  : };
+} }
+:root[data-theme="dark"] {
+  --ink: #3ecf8e;
+  --ink-fg: #0b2a1c;
+  --pool: #3ecf8e;
+  --pool-soft: #3ecf8e24;
+  --on-pool: #0b2a1c;
+  --sel: #3ecf8e;
+  --sel-soft: #3ecf8e1a;
+  --on-sel: #0b2a1c;
+  --knob: #ffffff;
+  --warn: #f5a524;
+  --warn-soft: #f5a52424;
+  --bad: #f56565;
+  --bad-soft: #f5656522;
+  --g1: #3ecf8e;
+  --g2: #9fd356;
+  --g3: #f5c524;
+  --g4: #f59e42;
+  --g5: #f56565;
+}
+/* ===== ACCENT ends ===== */
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+html { background: var(--bg); scrollbar-gutter: stable; }   /* reserve the scrollbar's space, so the page doesn't shift when one appears */
+body { background: var(--bg); color: var(--fg); font: var(--fs-body)/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+.app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: var(--gap); }
+main { display: flex; flex-direction: column; gap: var(--gap); }
+button, select { font: inherit; color: inherit; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.m { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+svg[viewBox="0 0 16 16"] { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* top bar: the page's own header (the site's bar above it is the shell's) */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; overflow: hidden; border-radius: var(--r-ctl); }
+.logo { display: block; width: 90px; height: 36px; flex: none; }
+.logo img { display: block; width: 90px; height: 36px; }
+.brand-name { font-size: var(--fs-brand); font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+@media (max-width: 720px) { .brand-name { font-size: var(--fs-lead); } }
+@media (max-width: 520px) { .brand-name { display: none; } .brand { flex: none; } }
+.logo-dark { display: none !important; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-light { display: none !important; } :root:not([data-theme="light"]) .logo-dark { display: block !important; } }
+:root[data-theme="dark"] .logo-light { display: none !important; }
+:root[data-theme="dark"] .logo-dark { display: block !important; }
+.top-acts { display: flex; gap: 8px; align-items: center; }
+.sel { position: relative; display: flex; align-items: center; height: 34px; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); padding-left: 10px; }
+.sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+/* the open list is drawn by the OS: without its own colors it stays light in the dark theme */
+select option, select optgroup { background-color: var(--panel); color: var(--fg); }
+select option:checked { background-color: var(--soft); }
+.sel select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; height: 100%; padding: 0 12px 0 7px; font-size: 16px; /* under 16px iOS zooms the page on tap */ cursor: pointer; outline: none; }
+.icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); cursor: pointer; padding: 0; }
+.icon-btn svg { width: 16px; height: 16px; }
+/* the GitHub mark is a filled shape, unlike the stroked icons */
+.gh svg { fill: currentColor; stroke: none; }
+#theme svg { display: none; }
+#theme[data-th="system"] .i-sys, #theme[data-th="light"] .i-light, #theme[data-th="dark"] .i-dark, #theme:not([data-th]) .i-sys { display: block; }
+
+/* page heading: one h1 and at most one line under it.
+   Class names here are deliberately not the short generic ones (.h1, .lead, .st, .dot, .note, .empty, .pad): a tool page
+   that already uses such a name keeps its own rule for the properties it sets and silently inherits the rest from here —
+   who's 18px status dot grew 9px of pill padding that way on 2026-11-12. What a page's own name cannot collide with, the
+   shared file may own. */
+.page-h { font-size: var(--fs-h1); font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.page-sub { font-size: var(--fs-body); color: var(--muted); }
+h2 { font-size: var(--fs-title); font-weight: 700; }
+
+/* everything that answers a question about this page is a card; depth comes from --line and --soft, not from shadows */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
+.card-pad { padding: var(--pad); }
+
+/* button: one shape in three weights. The primary is the tool's accent, and a page has at most one */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); color: var(--fg);
+  font-size: var(--fs-body); font-weight: 500; white-space: nowrap; cursor: pointer; }
+.btn svg { width: 15px; height: 15px; }
+.btn.pri { background: var(--ink); border-color: transparent; color: var(--ink-fg); font-weight: 600; }
+.btn.ghost { border-color: transparent; background: none; }
+.btn.sm { height: 30px; padding: 0 10px; border-radius: var(--r-ctl-sm); font-size: var(--fs-small); }
+.btn:disabled { opacity: .5; cursor: default; }
+@media (pointer: coarse) { .btn { height: 44px; } }
+
+/* key numbers: a row of tiles, label under value, every figure in --f-num so columns line up */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; }
+.kpi { padding: 12px 14px; border-radius: var(--r); background: var(--soft); min-width: 0; }
+.kpi b { display: block; font: 600 var(--fs-num)/1.15 var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.kpi span { display: block; margin-top: 4px; font-size: var(--fs-caption); color: var(--muted); }
+
+/* the verdict: a colored dot and one sentence, the same shape on every tool and the first thing in the first screen */
+.page-verdict { display: flex; align-items: center; gap: 10px; font-size: var(--fs-lead); font-weight: 600; line-height: 1.4; }
+.page-verdict .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.page-verdict.ok .dot { background: var(--t1); } .page-verdict.warn .dot { background: var(--warn); } .page-verdict.bad .dot { background: var(--t5); }
+
+/* a state in one word: the pill carries the color, the dot inside it repeats it */
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: var(--r-pill);
+  font-size: var(--fs-caption); font-weight: 600; background: var(--soft); color: var(--muted); white-space: nowrap; }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.pill.ok { color: var(--t1); background: color-mix(in srgb, var(--t1) 12%, transparent); }
+.pill.warn { color: var(--warn); background: var(--warn-soft); }
+.pill.bad { color: var(--t5); background: color-mix(in srgb, var(--t5) 12%, transparent); }
+
+.hint { font-size: var(--fs-caption); color: var(--muted); line-height: 1.5; }
+/* a value that has not arrived: same height as the text it will replace, so nothing below it moves. No min-width: the
+   block that holds it says how wide, and a minimum of our own would push a narrow one wider than its space */
+.skel { display: inline-block; height: 12px; max-width: 100%; border-radius: var(--r-chip);
+  background: var(--soft); vertical-align: middle; animation: skel-blink 1.4s ease-in-out infinite; }
+@keyframes skel-blink { 50% { opacity: .45; } }
+/* nothing to show here yet, or nothing this source could tell: never dressed up as a result */
+.blank { display: grid; place-items: center; min-height: 64px; padding: 12px; text-align: center; color: var(--muted); font-size: var(--fs-small); }
+
 /* Geist and Geist Mono (SIL OFL 1.1), self-hosted: Google Fonts is slow or unreachable for part of the audience.
    Variable fonts in Google Fonts' v5 subsets; each file covers every weight. Files never change: rename to replace. */
 @font-face{font-family:"Geist";font-style:normal;font-weight:400 700;font-display:swap;src:url(/assets/fonts/geist-cyrillic-ext.woff2) format("woff2");unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
@@ -100,44 +312,7 @@
 @font-face{font-family:"Geist Mono";font-style:normal;font-weight:400 600;font-display:swap;src:url(/assets/fonts/geist-mono-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
 @font-face{font-family:"Geist Mono";font-style:normal;font-weight:400 600;font-display:swap;src:url(/assets/fonts/geist-mono-latin.woff2) format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 /* Same design system as AWS Lightsail Cost Saver (ls.1ms.dog): tokens, toolbar, menu and pills are shared. */
-:root {
-  --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
-  --fg: #141416; --muted: #6e6e78; --ink: #1a8a5a; --ink-fg: #ffffff;
-  --pool: #1a8a5a; --pool-soft: #1a8a5a1f; --on-pool: #ffffff;
-  --sel: #1a8a5a; --sel-soft: #1a8a5a1f; --on-sel: #ffffff; --knob: #ffffff;
-  --warn: #b86e00; --warn-soft: #b86e001f;
-  --bad: #d23a2f; --bad-soft: #d23a2f1a;
-  /* tiers T0 → T4 */
-  --g1: #1a8a5a; --g2: #3d7d1e; --g3: #8a6700; --g4: #b0530a; --g5: #d23a2f;
-  --shadow: #00000024; --logo-bg: transparent; --logo-pad: 0px;
-  --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
-  --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
-  --r: 12px;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
-  --fg: #ededed; --muted: #a0a0a0; --ink: #3ecf8e; --ink-fg: #0b2a1c;
-  --pool: #3ecf8e; --pool-soft: #3ecf8e24; --on-pool: #0b2a1c;
-  --sel: #3ecf8e; --sel-soft: #3ecf8e1a; --on-sel: #0b2a1c; --knob: #ffffff;
-  --warn: #f5a524; --warn-soft: #f5a52424;
-  --bad: #f56565; --bad-soft: #f5656522;
-  --g1: #3ecf8e; --g2: #9fd356; --g3: #f5c524; --g4: #f59e42; --g5: #f56565;
-  --shadow: #00000099;
-  color-scheme: dark; } }
-:root[data-theme="dark"] {
-  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
-  --fg: #ededed; --muted: #a0a0a0; --ink: #3ecf8e; --ink-fg: #0b2a1c;
-  --pool: #3ecf8e; --pool-soft: #3ecf8e24; --on-pool: #0b2a1c;
-  --sel: #3ecf8e; --sel-soft: #3ecf8e1a; --on-sel: #0b2a1c; --knob: #ffffff;
-  --warn: #f5a524; --warn-soft: #f5a52424;
-  --bad: #f56565; --bad-soft: #f5656522;
-  --g1: #3ecf8e; --g2: #9fd356; --g3: #f5c524; --g4: #f59e42; --g5: #f56565;
-  --shadow: #00000099;
-  color-scheme: dark; }
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-html, body { margin: 0; }
+
 html { background: var(--bg); }
 body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
 .app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
@@ -149,7 +324,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lbl { font-size: 12px; color: var(--muted); }
 .note { font-size: 12px; color: var(--muted); }
 code { font-family: var(--f-num); font-size: 11.5px; background: var(--soft); border-radius: 4px; padding: 1px 4px; color: var(--fg); }
-a { color: inherit; }
 .c1 { color: var(--g1); } .c2 { color: var(--g2); } .c3 { color: var(--g3); } .c4 { color: var(--g4); } .c5 { color: var(--g5); } .c0 { color: var(--muted); }
 
 /* toolbar */
@@ -167,10 +341,8 @@ a { color: inherit; }
 .sel { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
 .sel select { border: 0; background: transparent; outline: none; max-width: 200px; cursor: pointer; }
 .sel option { background-color: var(--panel); color: var(--fg); }
-.sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
 .icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; list-style: none; color: var(--fg); flex: none; }
 .icon-btn::-webkit-details-marker { display: none; }
-.icon-btn svg { width: 16px; height: 16px; }
 .icon-btn:hover, .btn:hover, .sel:hover { border-color: var(--muted); }
 .icon-btn.sm { width: 28px; height: 28px; border-radius: 7px; }
 .icon-btn.sm svg { width: 14px; height: 14px; }
@@ -289,7 +461,6 @@ img.fav:not([src*="data:"]) { background: var(--soft); }
 .all-cta .btn { height: auto; min-height: 40px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-align: center; text-decoration: none; color: var(--fg); white-space: normal; }
 .tkd { font-size: 11px; font-weight: 600; color: var(--warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: 1px; white-space: nowrap; }
 .btn.sm { height: 28px; padding: 0 10px; font-size: 12.5px; }
-.btn:disabled { opacity: .5; cursor: default; }
 .sw { position: relative; width: 34px; height: 20px; flex: none; display: inline-block; }
 .sw input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
 .sw span { position: absolute; inset: 0; border-radius: 20px; background: var(--line); transition: background .2s; }
@@ -299,7 +470,6 @@ img.fav:not([src*="data:"]) { background: var(--soft); }
 input[type="range"] { width: 100%; accent-color: var(--sel); }
 .pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 22px; font-size: 12px; font-weight: 500; width: fit-content; white-space: nowrap; }
 .pill.good { color: var(--pool); background: var(--pool-soft); }
-.pill.warn { color: var(--warn); background: var(--warn-soft); }
 .pill.idle { color: var(--muted); background: var(--soft); }
 .tg { font: 600 11px/20px var(--f-num); padding: 0 7px; border-radius: 6px; white-space: nowrap; background: color-mix(in srgb, currentColor 14%, transparent); }
 .vb { flex: none; font: 600 10px/18px var(--f-num); padding: 0 5px; border-radius: 4px; background: var(--soft); color: var(--muted); letter-spacing: .02em; text-align: center; }
@@ -737,6 +907,7 @@ footer a { color: var(--muted); }
   .nb-acts > .btn > span { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.25; }
 }
 @media (prefers-reduced-motion: reduce) { .vd.new, .sp .runm, .bar i, .netbar.chk .nb-dot { animation: none; transition: none; } }
+
 </style>
 </head>
 <body>

@@ -88,6 +88,9 @@ function i18nGaps(tpl, I, E, langs) {
 
 export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
+  // the page's styles: the shared base.css (tokens, reset, top bar, shared components — kept in step with the suite by
+  // `npm run design` in 1ms-shell) in front of this page's own rules, still inline so the first paint has them
+  const css = (await readFile(new URL("base.css", src), "utf8")) + "\n" + (await readFile(new URL("style.css", src), "utf8"));
   const I = await loadI18n();
   const E = block(tpl, "ENDPOINTS", "ENDPOINTS"), spec = block(tpl, "RULES", "RULE_SPEC");
   // a region with no known place keeps an empty country and a "?" city, which the page draws as the region code; any
@@ -197,6 +200,7 @@ export async function build({ check = false } = {}) {
         .replace("{{homeHref}}", path(slug, "")).replace("{{homeCur}}", sub ? "" : ' aria-current="page"')
         .replace("{{landing}}", landing).replace("{{allCta}}", allCta).replace("{{vendorNav}}", vendorNav)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"))
+        .replace("{{css}}", () => css)
         .replace("{{vizHeights}}", JSON.stringify(vizHeights));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
       pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, lang, slug, sub, html });

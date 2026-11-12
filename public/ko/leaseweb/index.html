@@ -86,6 +86,218 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Me2Cloud","url":"https://m2c.1ms.dog/ko/leaseweb/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Leaseweb의 모든 리전 6곳에 대한 지연 시간·지터·타임아웃 비율을 내 브라우저에서 무료로 측정하세요. 통신사와 저녁 피크의 영향까지 반영되고, 설치는 필요 없어요.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"핑 사이트나 Looking Glass보다 내 네트워크에서 재는 게 정확한 이유","acceptedAnswer":{"@type":"Answer","text":"결론부터: 나에게 빠른지 알려면 내 네트워크에서 재야 해요. 대부분의 '클라우드 핑' 사이트와 업체의 Looking Glass는 그들의 서버에서 측정해요. 데이터센터 안, 좋은 회선에 물린 서버라서 알 수 있는 건 '데이터센터에서 데이터센터까지'의 속도뿐이에요. 내가 실제로 느끼는 부분, 즉 집이나 모바일 회선, 통신사 백본, 해외로 나가는 구간, 오늘 밤 얼마나 붐비는지는 잴 수 없어요. Me2Cloud는 모든 요청을 내 브라우저에서 보내요. 그래서 Wi-Fi, 공유기, 통신사, 통신사가 고르는 경로, 저녁 피크까지 모두 결과에 들어가요. 핑 사이트 / Looking Glass PC에서 ICMP ping Me2Cloud 어디서 측정하나 그들의 데이터센터 내 네트워크 내 네트워크 통신사와 저녁 피크 반영 안 됨 됨 됨 웹·앱과 같은 프로토콜(TCP 443) 경우에 따라 아님, ICMP 맞음, HTTPS 네트워크가 속도 제한·차단하나 가끔 자주 드묾 리전 수백 곳을 한 번에 일부 안 됨 됨 설치 필요 없음 없음 없음"}},{"@type":"Question","name":"측정은 이렇게 해요","acceptedAnswer":{"@type":"Answer","text":"먼저 워밍업 요청을 한 번 보내 DNS 조회, TCP 연결, TLS 암호화를 마쳐요. 이 시간은 보여 주지만 결과에는 넣지 않아요. 그다음 같은 연결 로 같은 호스트에 5회, 10회, 또는 20회 요청을 더 보내요. 한 번에 드는 건 왕복 1번과 업체 서버의 짧은 처리 시간뿐이에요. 업체마다 연결이 유지되는 걸 확인한 요청 방식을 써요. AWS, Azure, Google Cloud, DigitalOcean, Scaleway는 GET , Oracle, IBM Cloud, Alibaba Cloud, Tencent Cloud, Volcengine, Baidu AI Cloud, Naver Cloud, Huawei Cloud, Linode, Vultr, OVHcloud, IONOS Cloud, Aruba Cloud, Leaseweb, Gcore, Yandex Cloud는 HEAD (GET을 받으면 연결을 끊어서 값이 약 3배가 되기 때문), Hetzner는 CORS 모드의 GET 이에요(그렇지 않으면 브라우저가 응답 페이지를 중간에 자르고 연결도 끊겨요). 결과에는 중앙값 (가장 전형적인 값), 평균 , P90 (10번 중 9번은 이 값 이하), 지터 (연속된 두 측"}},{"@type":"Question","name":"HTTPS로 재는 게 ICMP ping보다 실제 체감에 가까운 이유","acceptedAnswer":{"@type":"Answer","text":"평소 트래픽과 같은 길로 가요. 웹사이트, API, 443 포트 터널, 게임 로그인, 다운로드는 모두 TCP를 써요. ICMP만 따로 줄 세우거나 속도를 줄이거나 다른 경로로 보내는 통신사가 많아서, 핑은 좋은데 페이지는 느리거나 그 반대인 경우가 흔해요. 속도 제한에 묻히지 않아요. 공유기와 클라우드는 ICMP를 제한하거나 버리는 일이 잦지만, 공개된 HTTPS 지점은 항상 응답해요. 실제 환경이 그대로 들어가요. DNS, IPv4·IPv6 선택, 프록시, 가속기는 모두 브라우저 트래픽에 적용돼요. 그래서 실제로 얻을 속도를 재게 돼요. 대신: 측정값마다 아주 안정적인 서버 처리 시간이 조금 들어가요. 실측으로 AWS는 0–5 ms, Alibaba Cloud는 약 8 ms, Huawei Cloud OBS는 약 20 ms였어요. 100 ms가 넘는다면 신경 쓸 필요 없고, 아주 가까운 리전은 ping보다 약간 높게 나와요."}},{"@type":"Question","name":"언제 잴까: 저녁 피크 시간을 노리세요","acceptedAnswer":{"@type":"Answer","text":"가정용 회선은 저녁 20:00–23:00 쯤 가장 붐비고, 해외로 나가는 구간은 더 심해요. 낮에 T1이던 리전이 밤에는 NPC까지 떨어지기도 해요. 낮에 한 번, 저녁 피크에 한 번 재 보세요. 피크 때 결과에는 '저녁 피크' 표시가 붙고, 결과 화면에서 바꿔 가며 비교할 수 있어요. 측정하는 동안 큰 다운로드, 동영상, 클라우드 동기화는 멈추세요. 유선이 Wi-Fi보다 정확하고, Wi-Fi라면 공유기 가까이에서 재세요. 모바일 데이터는 신호 세기에 따라 결과가 달라져요. 실제로 쓸 장소에서 재세요."}},{"@type":"Question","name":"이럴 때 쓰면 좋아요","acceptedAnswer":{"@type":"Answer","text":"서버, 게임 서버, CDN 오리진을 계약하기 전에 후보 리전을 추리기. 한 업체의 리전끼리, 또는 같은 도시의 업체끼리 비교하기. 지터와 타임아웃 비율이 게임, 화상 회의, 원격 데스크톱, SSH에 충분한지 확인하기. 프록시, 가속기, 새로 바꾼 인터넷이 정말 좋은지, 켜고 한 번, 끄고 한 번 재서 확인하기. 직접 추가한 측정 지점으로 내 서버나 CDN을 대형 업체와 나란히 비교하기."}},{"@type":"Question","name":"알 수 없는 것","acceptedAnswer":{"@type":"Answer","text":"한 위치의 값만 나와요. 내 회선을 재는 것이지, 내 사용자의 회선이 아니에요. 사용자 몇 명에게 측정을 부탁하고, 내보내서 비교하세요. 업체의 공개 지점을 재는 것이지, 앞으로 쓸 서버 자체가 아니에요. 각 리전의 공개 API나 스토리지 주소를 재요. 같은 리전의 서버는 보통 같은 네트워크를 쓰지만, 프리미엄 경로(예: CN2, BGP와 단일 통신사, Lightsail과 EC2)는 다를 수 있어요. 대역폭, UDP, 경로 추적은 재지 않아요. 왕복 시간만 재기 때문에 다운로드 속도, UDP 게임 트래픽, 중간 경유지는 알 수 없어요. 다운로드 속도는 속도 테스트 로 재세요. 브라우저 탓에 오차가 생겨요. 확장 프로그램, 프록시, VPN, 무거운 탭은 결과를 흔들어요. 무거운 탭은 닫고 이 페이지를 앞에 띄워 두세요. 일부 측정 지점은 몇몇 나라에서 연결되지 않을 수 있어요."}},{"@type":"Question","name":"개인정보: 테스트는 브라우저에서 보내고, 결과는 업로드하지 않아요","acceptedAnswer":{"@type":"Answer","text":"결과는 업로드하지 않고, 가입도 필요 없어요. '결과 공유'를 누를 때만, 채팅 앱에서 보여 줄 수 있도록 결과를 짧은 링크와 미리보기 이미지로 1ms.dog에 저장해요. 테스트 요청은 모두 브라우저에서 업체로 바로 가요. 위의 요청 기록 이나 브라우저 개발자 도구의 Network 탭에서 하나하나 볼 수 있어요. 네트워크 정보는 Cloudflare에서 받아요. 먼저 이 사이트의 /_ms/me 가 답하고, 최종적으로는 테스트와 같은 경로로 가는 speed.cloudflare.com/meta 와 /cdn-cgi/trace 의 값을 써요. 선택 사항인 WebRTC 확인은 stun.cloudflare.com 에 UDP 출구 주소를 물어봐요. 원하지 않으면 설정에서 끌 수 있어요. IPv4/IPv6 확인 때는 Cloudflare 밖의 ipify.org 와 ident.me 에도 물어봐요. 그중 하나가 네트워크에서 막혀도 IPv6가 없다고 잘못 판단하지 않기 위해서예요. 페이지에 오류가 나면, 고치기 위해 오류 내용, 페이지 주소, 브라우저 버전을 이 사이트로 보내요. 공유 기능을 쓰면 어떤 단계를 썼는지 익명으로 집계해요. 어느 쪽에도 측정 결과는 들어가지 않아요. 설"}},{"@type":"Question","name":"업체에 부담을 주지 않아요: 속도 제한도 차단도 없어요","acceptedAnswer":{"@type":"Answer","text":"공개 지점에 요청을 너무 세게 보내면 업체의 속도 제한이나 방화벽(WAF)에 걸리고, 결과도 틀어져요. 그래서 테스트 속도를 일부러 낮게 잡았어요: 호스트마다 한 번에 요청 1개만 보내고, 측정 사이에 250–370 ms를 쉬어요(호스트당 초당 최대 2–3개). 업체당 동시에 최대 2개 호스트, 전체로도 최대 8개(기본 4개). 테스트 한 번에 호스트당 최대 21개 요청(워밍업 1개 + 최대 20개). 계속 보내는 모드는 없어요. 3번 연속 실패한 호스트는 계속 재시도하지 않고 넘어가요. 요청은 모두 익명이에요. 쿠키도 리퍼러도 보내지 않고, 사전 요청(preflight)도 없어요. 응답은 수백 바이트이고, 가능한 곳에서는 HEAD를 쓰며, 큰 파일은 내려받지 않아요. 테스트 전체의 트래픽은 평범한 웹페이지 하나를 여는 것보다 적어요. 모든 측정 지점이 익명 요청에 정상 응답하는지 확인했어요(200, 403, 404 모두 측정에는 문제없어요)."}},{"@type":"Question","name":"프록시나 VPN을 쓰고 있다면?","acceptedAnswer":{"@type":"Answer","text":"트래픽이 프록시를 거치면, 브라우저가 재는 건 '나 → 프록시'와 '프록시 → 업체'를 더한 시간이지 내 회선이 아니에요. 네트워크 표시에서는 흔한 신호를 확인해요: 출구가 데이터센터 네트워크, 시간대와 출구 국가가 다름, WARP 켜짐, WebRTC와 HTTPS의 출구가 다름. 직접 연결 규칙 받기 로 테스트용 도메인만 직접 연결하게 한 뒤(Clash / Mihomo, Surge, Shadowrocket, Quantumult X, Loon, sing-box, Xray, SwitchyOmega, 도메인 목록 지원) 다시 확인하세요. 프록시 자체를 재고 싶다면 켠 채로 재세요. 그게 프록시의 실제 성능이에요."}},{"@type":"Question","name":"그래프 읽는 법","acceptedAnswer":{"@type":"Answer","text":"모든 줄의 막대는 같은 눈금(로그 눈금, 2 ms~3 s)을 써요. 점은 측정값 하나하나, 음영 상자는 가운데 절반의 범위, 세로선은 중앙값이에요. 상자가 좁을수록 안정적이에요. 상자가 넓거나 점이 흩어져 있으면 흔들림(지터)이 크다는 뜻이에요. 빨간 ×는 타임아웃된 횟수예요. 줄을 누르면 측정값의 순서별 변화, 모든 통계, 사용한 측정 지점을 볼 수 있어요. ✓는 조건에 맞는 리전이에요."}}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* 1ms.dog base — the file every tool page starts from: tokens for both themes, the reset, the page column, the top bar, and
+   the few components every tool shows (button, card, section title, key number, status pill, verdict, note, skeleton).
+   A tool owns exactly one part of it: the ACCENT block, its --ink and any extra colors. Everything else is shared, so a
+   page made by any 1ms.dog tool reads as the same site at a glance.
+   This file lives at assets/design/base.css in 1ms-shell and is copied into each tool's src/base.css by
+   `npm run design`; edit it here, never in a tool. Rules and the reasoning: docs/design.md. */
+:root {
+  /* surfaces and text: the same in every tool, light and dark */
+  --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
+  --fg: #141416; --muted: #6e6e78;
+  --shadow: #0000001c;
+  /* type: ten sizes by role, nothing in between (docs/design.md §2) */
+  --fs-micro: 11.5px;    /* units, axis labels, corner badges */
+  --fs-caption: 12px;    /* secondary notes, table footnotes */
+  --fs-small: 13px;      /* labels, secondary cells, the top bar */
+  --fs-body: 14px;       /* running text, table cells — body's own size */
+  --fs-title: 15px;      /* card and section titles (weight 700) */
+  --fs-lead: 17px;       /* the verdict sentence, a result's main value */
+  --fs-brand: 20px;      /* the tool's name in the top bar, nothing else */
+  --fs-h1: clamp(20px, 2.6vw, 26px);
+  --fs-num: clamp(22px, 2.8vw, 28px);       /* a key number in a tile or a row */
+  --fs-num-lg: clamp(36px, 5vw, 52px);      /* the one number a running test turns on */
+  /* radius: four steps by role, plus pills and circles */
+  --r-chip: 6px;   /* badges, small blocks inside a block */
+  --r-ctl-sm: 8px; /* a control 30px tall: a small button, the language picker */
+  --r-ctl: 10px;   /* a control 36px tall and up: buttons, inputs, the top bar */
+  --r: 12px;       /* cards and panels */
+  --r-lg: 16px;    /* the first-screen block, a large result card */
+  --r-pill: 999px;
+  /* spacing: multiples of 4 (an inline gap may be 6) */
+  --gap: 20px;           /* between the blocks of a page */
+  --pad: 16px 20px;      /* inside a card */
+  --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
+  --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0;
+  --shadow: #00000080;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
+  --fg: #ededed; --muted: #a0a0a0;
+  --shadow: #00000080;
+  color-scheme: dark;
+}
+
+/* ===== ACCENT: this tool's colors, the only part of this file it edits =====
+   --ink is the accent; --t1…--t5 keep the site-wide meaning; add a tool color in here, never outside. */
+:root {
+  --ink: #1a8a5a;
+  --ink-fg: #ffffff;
+  --pool: #1a8a5a;
+  --pool-soft: #1a8a5a1f;
+  --on-pool: #ffffff;
+  --sel: #1a8a5a;
+  --sel-soft: #1a8a5a1f;
+  --on-sel: #ffffff;
+  --knob: #ffffff;
+  --warn: #b86e00;
+  --warn-soft: #b86e001f;
+  --bad: #d23a2f;
+  --bad-soft: #d23a2f1a;
+  --g1: #1a8a5a;
+  --g2: #3d7d1e;
+  --g3: #8a6700;
+  --g4: #b0530a;
+  --g5: #d23a2f;
+  --logo-bg: transparent;
+  --logo-pad: 0px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  {
+  --bg: #1c1c1c;
+  --ink: #3ecf8e;
+  --ink-fg: #0b2a1c;
+  --pool: #3ecf8e;
+  --pool-soft: #3ecf8e24;
+  --on-pool: #0b2a1c;
+  --sel: #3ecf8e;
+  --sel-soft: #3ecf8e1a;
+  --on-sel: #0b2a1c;
+  --knob: #ffffff;
+  --warn: #f5a524;
+  --warn-soft: #f5a52424;
+  --bad: #f56565;
+  --bad-soft: #f5656522;
+  --g1: #3ecf8e;
+  --g2: #9fd356;
+  --g3: #f5c524;
+  --g4: #f59e42;
+  --g5: #f56565;
+  : };
+} }
+:root[data-theme="dark"] {
+  --ink: #3ecf8e;
+  --ink-fg: #0b2a1c;
+  --pool: #3ecf8e;
+  --pool-soft: #3ecf8e24;
+  --on-pool: #0b2a1c;
+  --sel: #3ecf8e;
+  --sel-soft: #3ecf8e1a;
+  --on-sel: #0b2a1c;
+  --knob: #ffffff;
+  --warn: #f5a524;
+  --warn-soft: #f5a52424;
+  --bad: #f56565;
+  --bad-soft: #f5656522;
+  --g1: #3ecf8e;
+  --g2: #9fd356;
+  --g3: #f5c524;
+  --g4: #f59e42;
+  --g5: #f56565;
+}
+/* ===== ACCENT ends ===== */
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+html { background: var(--bg); scrollbar-gutter: stable; }   /* reserve the scrollbar's space, so the page doesn't shift when one appears */
+body { background: var(--bg); color: var(--fg); font: var(--fs-body)/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+.app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: var(--gap); }
+main { display: flex; flex-direction: column; gap: var(--gap); }
+button, select { font: inherit; color: inherit; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.m { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+svg[viewBox="0 0 16 16"] { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* top bar: the page's own header (the site's bar above it is the shell's) */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; overflow: hidden; border-radius: var(--r-ctl); }
+.logo { display: block; width: 90px; height: 36px; flex: none; }
+.logo img { display: block; width: 90px; height: 36px; }
+.brand-name { font-size: var(--fs-brand); font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+@media (max-width: 720px) { .brand-name { font-size: var(--fs-lead); } }
+@media (max-width: 520px) { .brand-name { display: none; } .brand { flex: none; } }
+.logo-dark { display: none !important; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-light { display: none !important; } :root:not([data-theme="light"]) .logo-dark { display: block !important; } }
+:root[data-theme="dark"] .logo-light { display: none !important; }
+:root[data-theme="dark"] .logo-dark { display: block !important; }
+.top-acts { display: flex; gap: 8px; align-items: center; }
+.sel { position: relative; display: flex; align-items: center; height: 34px; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); padding-left: 10px; }
+.sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+/* the open list is drawn by the OS: without its own colors it stays light in the dark theme */
+select option, select optgroup { background-color: var(--panel); color: var(--fg); }
+select option:checked { background-color: var(--soft); }
+.sel select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; height: 100%; padding: 0 12px 0 7px; font-size: 16px; /* under 16px iOS zooms the page on tap */ cursor: pointer; outline: none; }
+.icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); cursor: pointer; padding: 0; }
+.icon-btn svg { width: 16px; height: 16px; }
+/* the GitHub mark is a filled shape, unlike the stroked icons */
+.gh svg { fill: currentColor; stroke: none; }
+#theme svg { display: none; }
+#theme[data-th="system"] .i-sys, #theme[data-th="light"] .i-light, #theme[data-th="dark"] .i-dark, #theme:not([data-th]) .i-sys { display: block; }
+
+/* page heading: one h1 and at most one line under it.
+   Class names here are deliberately not the short generic ones (.h1, .lead, .st, .dot, .note, .empty, .pad): a tool page
+   that already uses such a name keeps its own rule for the properties it sets and silently inherits the rest from here —
+   who's 18px status dot grew 9px of pill padding that way on 2026-11-12. What a page's own name cannot collide with, the
+   shared file may own. */
+.page-h { font-size: var(--fs-h1); font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.page-sub { font-size: var(--fs-body); color: var(--muted); }
+h2 { font-size: var(--fs-title); font-weight: 700; }
+
+/* everything that answers a question about this page is a card; depth comes from --line and --soft, not from shadows */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
+.card-pad { padding: var(--pad); }
+
+/* button: one shape in three weights. The primary is the tool's accent, and a page has at most one */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--panel); color: var(--fg);
+  font-size: var(--fs-body); font-weight: 500; white-space: nowrap; cursor: pointer; }
+.btn svg { width: 15px; height: 15px; }
+.btn.pri { background: var(--ink); border-color: transparent; color: var(--ink-fg); font-weight: 600; }
+.btn.ghost { border-color: transparent; background: none; }
+.btn.sm { height: 30px; padding: 0 10px; border-radius: var(--r-ctl-sm); font-size: var(--fs-small); }
+.btn:disabled { opacity: .5; cursor: default; }
+@media (pointer: coarse) { .btn { height: 44px; } }
+
+/* key numbers: a row of tiles, label under value, every figure in --f-num so columns line up */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; }
+.kpi { padding: 12px 14px; border-radius: var(--r); background: var(--soft); min-width: 0; }
+.kpi b { display: block; font: 600 var(--fs-num)/1.15 var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.kpi span { display: block; margin-top: 4px; font-size: var(--fs-caption); color: var(--muted); }
+
+/* the verdict: a colored dot and one sentence, the same shape on every tool and the first thing in the first screen */
+.page-verdict { display: flex; align-items: center; gap: 10px; font-size: var(--fs-lead); font-weight: 600; line-height: 1.4; }
+.page-verdict .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.page-verdict.ok .dot { background: var(--t1); } .page-verdict.warn .dot { background: var(--warn); } .page-verdict.bad .dot { background: var(--t5); }
+
+/* a state in one word: the pill carries the color, the dot inside it repeats it */
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: var(--r-pill);
+  font-size: var(--fs-caption); font-weight: 600; background: var(--soft); color: var(--muted); white-space: nowrap; }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.pill.ok { color: var(--t1); background: color-mix(in srgb, var(--t1) 12%, transparent); }
+.pill.warn { color: var(--warn); background: var(--warn-soft); }
+.pill.bad { color: var(--t5); background: color-mix(in srgb, var(--t5) 12%, transparent); }
+
+.hint { font-size: var(--fs-caption); color: var(--muted); line-height: 1.5; }
+/* a value that has not arrived: same height as the text it will replace, so nothing below it moves. No min-width: the
+   block that holds it says how wide, and a minimum of our own would push a narrow one wider than its space */
+.skel { display: inline-block; height: 12px; max-width: 100%; border-radius: var(--r-chip);
+  background: var(--soft); vertical-align: middle; animation: skel-blink 1.4s ease-in-out infinite; }
+@keyframes skel-blink { 50% { opacity: .45; } }
+/* nothing to show here yet, or nothing this source could tell: never dressed up as a result */
+.blank { display: grid; place-items: center; min-height: 64px; padding: 12px; text-align: center; color: var(--muted); font-size: var(--fs-small); }
+
 /* Geist and Geist Mono (SIL OFL 1.1), self-hosted: Google Fonts is slow or unreachable for part of the audience.
    Variable fonts in Google Fonts' v5 subsets; each file covers every weight. Files never change: rename to replace. */
 @font-face{font-family:"Geist";font-style:normal;font-weight:400 700;font-display:swap;src:url(/assets/fonts/geist-cyrillic-ext.woff2) format("woff2");unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
@@ -100,44 +312,7 @@
 @font-face{font-family:"Geist Mono";font-style:normal;font-weight:400 600;font-display:swap;src:url(/assets/fonts/geist-mono-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
 @font-face{font-family:"Geist Mono";font-style:normal;font-weight:400 600;font-display:swap;src:url(/assets/fonts/geist-mono-latin.woff2) format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 /* Same design system as AWS Lightsail Cost Saver (ls.1ms.dog): tokens, toolbar, menu and pills are shared. */
-:root {
-  --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
-  --fg: #141416; --muted: #6e6e78; --ink: #1a8a5a; --ink-fg: #ffffff;
-  --pool: #1a8a5a; --pool-soft: #1a8a5a1f; --on-pool: #ffffff;
-  --sel: #1a8a5a; --sel-soft: #1a8a5a1f; --on-sel: #ffffff; --knob: #ffffff;
-  --warn: #b86e00; --warn-soft: #b86e001f;
-  --bad: #d23a2f; --bad-soft: #d23a2f1a;
-  /* tiers T0 → T4 */
-  --g1: #1a8a5a; --g2: #3d7d1e; --g3: #8a6700; --g4: #b0530a; --g5: #d23a2f;
-  --shadow: #00000024; --logo-bg: transparent; --logo-pad: 0px;
-  --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
-  --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
-  --r: 12px;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
-  --fg: #ededed; --muted: #a0a0a0; --ink: #3ecf8e; --ink-fg: #0b2a1c;
-  --pool: #3ecf8e; --pool-soft: #3ecf8e24; --on-pool: #0b2a1c;
-  --sel: #3ecf8e; --sel-soft: #3ecf8e1a; --on-sel: #0b2a1c; --knob: #ffffff;
-  --warn: #f5a524; --warn-soft: #f5a52424;
-  --bad: #f56565; --bad-soft: #f5656522;
-  --g1: #3ecf8e; --g2: #9fd356; --g3: #f5c524; --g4: #f59e42; --g5: #f56565;
-  --shadow: #00000099;
-  color-scheme: dark; } }
-:root[data-theme="dark"] {
-  --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
-  --fg: #ededed; --muted: #a0a0a0; --ink: #3ecf8e; --ink-fg: #0b2a1c;
-  --pool: #3ecf8e; --pool-soft: #3ecf8e24; --on-pool: #0b2a1c;
-  --sel: #3ecf8e; --sel-soft: #3ecf8e1a; --on-sel: #0b2a1c; --knob: #ffffff;
-  --warn: #f5a524; --warn-soft: #f5a52424;
-  --bad: #f56565; --bad-soft: #f5656522;
-  --g1: #3ecf8e; --g2: #9fd356; --g3: #f5c524; --g4: #f59e42; --g5: #f56565;
-  --shadow: #00000099;
-  color-scheme: dark; }
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-html, body { margin: 0; }
+
 html { background: var(--bg); }
 body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
 .app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
@@ -149,7 +324,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lbl { font-size: 12px; color: var(--muted); }
 .note { font-size: 12px; color: var(--muted); }
 code { font-family: var(--f-num); font-size: 11.5px; background: var(--soft); border-radius: 4px; padding: 1px 4px; color: var(--fg); }
-a { color: inherit; }
 .c1 { color: var(--g1); } .c2 { color: var(--g2); } .c3 { color: var(--g3); } .c4 { color: var(--g4); } .c5 { color: var(--g5); } .c0 { color: var(--muted); }
 
 /* toolbar */
@@ -167,10 +341,8 @@ a { color: inherit; }
 .sel { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
 .sel select { border: 0; background: transparent; outline: none; max-width: 200px; cursor: pointer; }
 .sel option { background-color: var(--panel); color: var(--fg); }
-.sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
 .icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; list-style: none; color: var(--fg); flex: none; }
 .icon-btn::-webkit-details-marker { display: none; }
-.icon-btn svg { width: 16px; height: 16px; }
 .icon-btn:hover, .btn:hover, .sel:hover { border-color: var(--muted); }
 .icon-btn.sm { width: 28px; height: 28px; border-radius: 7px; }
 .icon-btn.sm svg { width: 14px; height: 14px; }
@@ -289,7 +461,6 @@ img.fav:not([src*="data:"]) { background: var(--soft); }
 .all-cta .btn { height: auto; min-height: 40px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-align: center; text-decoration: none; color: var(--fg); white-space: normal; }
 .tkd { font-size: 11px; font-weight: 600; color: var(--warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: 1px; white-space: nowrap; }
 .btn.sm { height: 28px; padding: 0 10px; font-size: 12.5px; }
-.btn:disabled { opacity: .5; cursor: default; }
 .sw { position: relative; width: 34px; height: 20px; flex: none; display: inline-block; }
 .sw input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
 .sw span { position: absolute; inset: 0; border-radius: 20px; background: var(--line); transition: background .2s; }
@@ -299,7 +470,6 @@ img.fav:not([src*="data:"]) { background: var(--soft); }
 input[type="range"] { width: 100%; accent-color: var(--sel); }
 .pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 22px; font-size: 12px; font-weight: 500; width: fit-content; white-space: nowrap; }
 .pill.good { color: var(--pool); background: var(--pool-soft); }
-.pill.warn { color: var(--warn); background: var(--warn-soft); }
 .pill.idle { color: var(--muted); background: var(--soft); }
 .tg { font: 600 11px/20px var(--f-num); padding: 0 7px; border-radius: 6px; white-space: nowrap; background: color-mix(in srgb, currentColor 14%, transparent); }
 .vb { flex: none; font: 600 10px/18px var(--f-num); padding: 0 5px; border-radius: 4px; background: var(--soft); color: var(--muted); letter-spacing: .02em; text-align: center; }
@@ -737,6 +907,7 @@ footer a { color: var(--muted); }
   .nb-acts > .btn > span { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.25; }
 }
 @media (prefers-reduced-motion: reduce) { .vd.new, .sp .runm, .bar i, .netbar.chk .nb-dot { animation: none; transition: none; } }
+
 </style>
 </head>
 <body>
