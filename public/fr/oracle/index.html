@@ -339,7 +339,11 @@ a.tl:hover { text-decoration: underline; }
 .eye { border: 0; background: none; padding: 0; color: var(--muted); cursor: pointer; display: inline-grid; place-items: center; vertical-align: middle; margin-left: 4px; }
 .eye svg { width: 14px; height: 14px; }
 .ctrl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.pl > summary { height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; white-space: nowrap; }
+/* vertical-align: an empty inline-flex summary sits on the text baseline, and the line's descender added 6 px to the
+   chip until the app filled it in (the filter row then lost them, moving everything below on a slow first load) */
+.pl > summary { vertical-align: top; height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; white-space: nowrap; }
+/* the filter chips carry the default picks in the markup below, so the row wraps the way the app will draw it before
+   the app runs; a visitor's own picks re-wrap it once, at app start */
 .pl > summary:hover, .pl[open] > summary { border-color: var(--sel); }
 .pl > summary svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
 .pl > summary b { font-weight: 600; }
@@ -737,7 +741,7 @@ footer a { color: var(--muted); }
       <button class="tool-btn" type="button" id="aiBtn" aria-haspopup="dialog"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M7 1.8l1.3 3.9 3.9 1.3-3.9 1.3L7 12.2 5.7 8.3 1.8 7l3.9-1.3z"/><path d="M12.5 10.2l.6 1.7 1.7.6-1.7.6-.6 1.7-.6-1.7-1.7-.6 1.7-.6z"/></svg><span data-i="ai_btn">Utiliser avec l'IA</span></button>
       <label class="sel" id="langWrap">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>
-        <select id="lang" data-al="a_lang" aria-label="Langue"></select>
+        <select id="lang" data-al="a_lang" aria-label="Langue"><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr" selected>Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
       </label>
       <button class="icon-btn" type="button" data-help="0" id="helpBtn" data-al="a_help" aria-label="Aide"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg></button>
       <a class="icon-btn gh" href="https://github.com/yt1988/me2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
@@ -788,15 +792,15 @@ footer a { color: var(--muted); }
     <h1>Oracle Cloud est-il rapide depuis chez vous ?</h1>
 
     <div>
-      <div class="netbar chk" id="netbar"></div>
+      <div class="netbar chk" id="netbar"><span class="nb-dot"></span><span class="nb-st" data-i="checking">Vérification…</span><span class="nb-main"><span class="m">&nbsp;</span></span><span class="nb-acts"><span class="pill idle">&nbsp;</span><button class="btn sm" type="button" style="visibility:hidden" tabindex="-1" aria-hidden="true"><span data-i="rulesBtn">Obtenir les règles directes</span></button><button class="icon-btn sm" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button><button class="icon-btn sm" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></div>
       <div class="netdet" id="netdet" hidden></div>
     </div>
 
     <div class="ctrl" id="ctrl">
-      <details class="menu pl" id="plV"><summary></summary><div class="pop l" id="popV"></div></details>
-      <details class="menu pl" id="plA"><summary></summary><div class="pop l" id="popA"></div></details>
-      <details class="menu pl" id="plN"><summary></summary><div class="pop l" id="popN"></div></details>
-      <details class="menu pl" id="plM"><summary></summary><div class="pop l" id="popM"></div></details>
+      <details class="menu pl" id="plV"><summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg><span class="pl-k" data-i="pl_vendors">Fournisseurs</span><b><span data-i="allVendors">Tous les fournisseurs</span> + <span data-i="cdn_h">CDN</span></b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popV"></div></details>
+      <details class="menu pl" id="plA"><summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg><span class="pl-k" data-i="pl_areas">Zones</span><b><span data-i="allAreas">Toutes les zones</span></b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popA"></div></details>
+      <details class="menu pl" id="plN"><summary><span>🌐</span><span data-i="p_web">Site web / API</span><b class="num">≤250ms</b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popN"></div></details>
+      <details class="menu pl" id="plM"><summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg><span data-i="m_std">Standard</span><b class="num">×10 · IPv4</b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popM"></div></details>
     </div>
 
     <div class="run">

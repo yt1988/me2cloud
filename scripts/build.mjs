@@ -106,6 +106,8 @@ export async function build({ check = false } = {}) {
   // app code: the big inline script becomes a shared, content-hashed file
   const scripts = [...tpl.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   if (scripts.length !== 2) throw new Error("expected the pre-paint script and the app script in src/page.html");
+  // the app's own language list, [code, native name], read here so the menu the page ships cannot drift from it
+  const langNames = JSON.parse(/const LANGS = (\[[\s\S]*?\]);/.exec(scripts[1][1])[1]);
   const source = scripts[1][1];
   new Function(source);                                                 // must parse
   // down to ES2019 (old in-app browsers, Chrome 70 and Safari 12 era, can not parse ?. or ??: one unparsable token and
@@ -185,8 +187,12 @@ export async function build({ check = false } = {}) {
       const vendorNav = `<nav class="vlinks" aria-label="${esc(T("nav_h"))}"><b>${esc(T("nav_h"))}</b>${vids.map(x => `<a href="${path(slug, x)}"${x === v ? ' aria-current="page"' : ""}>${esc(vn(x))}</a>`).join("")}</nav>`;
       const paths = Object.fromEntries(langs.map(([l, s]) => [l, path(s, sub)]));
       const data = { lang, paths, page: v ? { vendor: v } : {}, i18n: lang === "en" ? { en } : { [lang]: d, en } };
+      // the language menu is filled before the app runs: an empty <select> is narrower, and at 520 px the header wrapped
+      // when the app filled it, moving the page down. The names come from the app's own LANGS line, so they cannot drift
+      const langOptions = langNames.filter(([l]) => paths[l]).map(([l, n]) => `<option value="${l}"${l === lang ? " selected" : ""}>${n}</option>`).join("");
       const html = body
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
+        .replace("{{langOptions}}", langOptions)
         .replace("{{head}}", head).replace("{{helpNav}}", helpNav).replace("{{helpSel}}", helpSel).replace("{{helpC}}", helpC)
         .replace("{{homeHref}}", path(slug, "")).replace("{{homeCur}}", sub ? "" : ' aria-current="page"')
         .replace("{{landing}}", landing).replace("{{allCta}}", allCta).replace("{{vendorNav}}", vendorNav)
