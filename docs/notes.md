@@ -81,3 +81,16 @@ Technical reasons behind choices the code does not explain, and what was measure
   - Hiding the hero in CSS rather than letting the app collapse it keeps the result's place fixed from the first paint.
     The exception is a link that does not decode: the hero returns there without any input, one shift of about the
     hero's own height, and the "This result can't be read" note is shown with it.
+  - What the decode draws below the picks is reserved as well, or it slides the page: the speed-test line under the
+    picks (`#speedL`, 19.5 px plus its 10 px margin) is shown empty from the first paint; on a phone the banner
+    (84 px + margin) and the picks' heading (which wraps to 59 px) are reserved at the height they really take.
+    Live 2026-11-13 before this: 0.067–0.098 on a share link, from `#resWrap` growing 264→293 and the table below it.
+  - **The all-regions table cannot be reserved, and showing it late is accepted.** Its height follows how many regions
+    the link carries (226 px for three rows, thousands for a link from a full run), so no skeleton matches it. Folding
+    it behind one row took the share page to 0.002 but hides a result, and the owner ruled that out (2026-11-13:
+    "功能和结果展现是第一优先的。不能为了单纯的数据指标好看"). Only its card head is laid out from the first paint,
+    so the rows grow into a card the reader already sees. Measured locally with the app script held back 900 ms:
+    0.010 at 1280×900, 0.024 at 375×667 — the second one is the network bar losing 30 px when the check finishes,
+    which happens on every page and is not part of this.
+  - `[hidden]` in base.css is `display: none !important`, so a rule that shows a hidden element from CSS needs
+    `!important` and enough specificity to beat it; without them it loses silently.

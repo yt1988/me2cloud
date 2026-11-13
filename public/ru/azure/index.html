@@ -837,6 +837,19 @@ a.dl { font-size: 12.5px; color: var(--fg); align-self: flex-start; }
 :root[data-view="share"] #ctrl,
 :root[data-view="share"] .run { display: none; }
 :root[data-view="share"] .hero { padding-top: 14px; padding-bottom: 14px; }
+/* The speed-test line is drawn once the result is in, but a shared result always has one: reserved from the first paint
+   so the chart below does not slide down by its 29 px when the link is decoded. */
+:root[data-view="share"] #speedL:empty { display: block !important; min-height: 1.5em; }
+/* The table under the chart is the whole set the sharer ran: its height follows how many regions the link carries, so
+   it cannot be reserved before the link is decoded. Its own header still is, so the rows grow into the card the reader
+   already sees instead of a card appearing and pushing the blocks below it. */
+:root[data-view="share"] #listCard { display: block !important; }
+/* on a phone the banner and the picks' heading take two lines: reserve what they really take, not the desktop height */
+@media (max-width: 520px) {
+  :root[data-share] #resWrap::before { height: 98px; }
+  :root[data-recv] #resWrap > .ms-recv { min-height: 84px; }
+  :root[data-share] .pd-h { min-height: 59px; }
+}
 /* the command-line block is a second way to run a test, not part of someone's result: it would push the picks off a
    phone's first screen (196 px between the hero and the banner), so it stays on this visitor's own page */
 :root[data-view="share"] .cli { display: none; }
