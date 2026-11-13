@@ -32,7 +32,10 @@
   --pad: 16px 20px;      /* inside a card */
   --f-ui: "Geist", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Yu Gothic", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans", system-ui, sans-serif;
   --f-num: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
-  color-scheme: light;
+  /* this page has a dark theme (the media query below, and the switch's data-theme), so it says so: Safari's Adaptive
+     Dark Mode only leaves a page alone when it declares dark support, and the browser draws scrollbars, form controls
+     and the caret for the scheme declared here (2026-11-13, webkit.org/blog/18541) */
+  color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
@@ -45,6 +48,9 @@
   --shadow: #00000080;
   color-scheme: dark;
 }
+/* a light page picked while the system is dark: the media query above skips it, but color-scheme at :root would still
+   say "light dark", and the browser would draw dark scrollbars and controls on a light page */
+:root[data-theme="light"] { color-scheme: light; }
 
 /* ===== ACCENT: this tool's colors, the only part of this file it edits =====
    --ink is the accent; --t1…--t5 keep the site-wide meaning; add a tool color in here, never outside. */
