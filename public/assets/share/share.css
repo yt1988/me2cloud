@@ -35,3 +35,8 @@
   font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
 .ms-recv-b:hover{filter:brightness(1.08)}
 .ms-recv-b:focus-visible{outline:2px solid var(--ink,#2563eb);outline-offset:2px}
+
+/* the dialog in a browser without <dialog>.showModal: a fixed layer over a shade (share.js openDlg) */
+.ms-share.ms-share-fb{position:fixed;inset:0;z-index:120;display:block;height:fit-content;max-height:calc(100dvh - 32px);overflow:auto;margin:auto}
+.ms-share-shade{position:fixed;inset:0;z-index:110;background:#0008}
+html.ms-share-lock{overflow:hidden}

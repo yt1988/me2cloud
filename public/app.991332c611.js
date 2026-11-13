@@ -1958,7 +1958,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
-    const { received } = await import("/assets/share/share.js?v=9");
+    const { received } = await import("/assets/share/share.js?v=10");
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 6e4, at: $("#sharedT"), test: testSame });
@@ -2159,7 +2159,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
         text(fit(s, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]);
       });
     };
-    const { share } = await import("/assets/share/share.js?v=9");
+    const { share } = await import("/assets/share/share.js?v=10");
     share({
       lang: LANG,
       name: "Me2Cloud",

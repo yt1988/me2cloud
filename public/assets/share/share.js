@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 9;
+export const VERSION = 10;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -240,6 +240,29 @@ export function share(o) {
   const list = keys => new Intl.ListFormat(lang, { type: "conjunction" }).format(keys.filter(k => t[k]).map(k => t[k]));
   const show = (o.show || []).filter(k => WHAT.includes(k)), never = (o.never || []).filter(k => WHAT.includes(k));
   let dlg = null, run = 0, blob = null, pending = null, wanted = false;
+  // `<dialog>` is not in every browser the tools get (iOS Safari < 15.4, Firefox < 98, in-app WebViews). There it
+  // would neither open nor hide — `showModal is not a function` — so it goes up as a fixed layer over a shade,
+  // closed by Escape or a click outside (trace hit the same thing, #112 item 3)
+  const canModal = () => typeof HTMLDialogElement === "function" && typeof HTMLDialogElement.prototype.showModal === "function";
+  let shade = null;
+  const onKey = e => { if (e.key === "Escape") closeDlg(); };
+  function openDlg() {
+    if (canModal()) { dlg.showModal(); return; }
+    dlg.setAttribute("open", ""); dlg.classList.add("ms-share-fb");
+    shade = document.createElement("div"); shade.className = "ms-share-shade";
+    shade.addEventListener("click", closeDlg);
+    document.body.appendChild(shade);
+    document.addEventListener("keydown", onKey);
+    document.documentElement.classList.add("ms-share-lock");
+  }
+  function closeDlg() {
+    if (!dlg) return;
+    if (canModal()) { if (dlg.open) dlg.close(); return; }
+    dlg.removeAttribute("open"); dlg.classList.remove("ms-share-fb");
+    if (shade) { shade.remove(); shade = null; }
+    document.removeEventListener("keydown", onKey);
+    document.documentElement.classList.remove("ms-share-lock");
+  }
   // the visitor shares this link (copies it or the image, saves the image, or opens the system share sheet)
   const publish = () => { wanted = true; if (pending) storePreview(pending.sl, pending.c, pending.bg).catch(() => {}); };   // shared before the card was drawn: refresh stores it once ready
 
@@ -259,8 +282,8 @@ export function share(o) {
         + (never.length ? gap + t.never.replace("{list}", list(never)) : "")))}</p>`;
     document.body.appendChild(dlg);
     const $ = s => dlg.querySelector(s), box = $(".ms-share-chk input");
-    $(".ms-share-x").onclick = () => dlg.close();
-    dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });   // a click on the backdrop
+    $(".ms-share-x").onclick = () => closeDlg();
+    dlg.addEventListener("click", e => { if (e.target === dlg) closeDlg(); });   // a click on the backdrop
     if (box) box.onchange = refresh;
     const flash = (b, ok) => { const was = b.textContent; b.textContent = ok ? t.copied : t.failed; setTimeout(() => { b.textContent = was; }, 1500); };
     $('[data-a="link"]').onclick = async e => {
@@ -354,10 +377,10 @@ export function share(o) {
       more.classList.toggle("pri", phone); link.classList.toggle("pri", !phone);
       more.textContent = phone ? R[lang].send : t.more;
       if (phone) more.parentElement.prepend(more);
-      if (!dlg.open) { dlg.showModal(); ev("open", lang); }
+      if (!dlg.open) { openDlg(); ev("open", lang); }
       refresh();
     },
-    close() { if (dlg && dlg.open) dlg.close(); },
+    close() { if (dlg && dlg.open) closeDlg(); },
     refresh() { if (dlg && dlg.open) refresh(); },
   };
 }
