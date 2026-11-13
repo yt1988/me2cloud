@@ -444,18 +444,6 @@ export default {
   tk_tag: "en panne",
   d_v6: "Testé en IPv6 (via un hôte doté d'une adresse IPv6).",
   d_dual: "L'hôte de ce point a de l'IPv4 et de l'IPv6. Si votre réseau a de l'IPv6, le navigateur a pu l'utiliser même en mode IPv4.",
-  ai_btn: "Utiliser avec l'IA",
-  ai_h: "L'utiliser avec un assistant IA",
-  ai_sub: "Une IA ne peut pas mesurer votre ligne à votre place, mais elle peut vous aider à lire les résultats et à préparer un test.",
-  ai_res_h: "Demander à une IA d'analyser vos résultats",
-  ai_res_p: "Collez ce résumé dans ChatGPT, Claude ou un autre assistant. Il contient votre réseau, vos limites et les meilleures régions, avec une question à la fin.",
-  ai_res_none: "Lancez d'abord un test ; le résumé de vos résultats apparaîtra ici.",
-  ai_q: "Question : d'après ces résultats, quels fournisseurs et quelles régions choisir pour mon usage, et à quoi dois-je faire attention ?",
-  ai_link_h: "Laisser une IA préparer le test",
-  ai_link_p: "Envoyez ce texte à un assistant avec votre besoin. Il vous construira un lien Me2Cloud avec les bons fournisseurs, zones et limites.",
-  ai_linkPrompt: "Lis {u} et donne-moi un lien Me2Cloud qui teste les régions que je devrais envisager. Ma situation : (où sont vos utilisateurs, l'usage, votre budget).",
-  ai_dev_h: "Pour les développeurs et les agents",
-  ai_dev_p: "Fichiers lisibles par une machine : la liste des points de mesure, les listes de règles proxy et llms.txt, qui décrit les paramètres de lien et le format du lien de partage.",
   ip_h: "Version IP",
   vendors: {
     aws: {

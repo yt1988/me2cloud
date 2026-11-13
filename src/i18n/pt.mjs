@@ -444,18 +444,6 @@ export default {
   tk_tag: "fora do ar",
   d_v6: "Testado por IPv6 (com um host que tem endereço IPv6).",
   d_dual: "O host deste ponto tem IPv4 e IPv6. Se a sua rede tem IPv6, o navegador pode ter usado IPv6 mesmo no modo IPv4.",
-  ai_btn: "Usar com IA",
-  ai_h: "Use com um assistente de IA",
-  ai_sub: "Uma IA não consegue medir a sua linha por você, mas pode ajudar a ler os resultados e preparar um teste.",
-  ai_res_h: "Peça a uma IA para analisar seus resultados",
-  ai_res_p: "Cole este resumo no ChatGPT, no Claude ou em qualquer assistente. Ele traz a sua rede, os seus limites e as melhores regiões, com uma pergunta no final.",
-  ai_res_none: "Faça um teste primeiro; o resumo dos seus resultados vai aparecer aqui.",
-  ai_q: "Pergunta: com base nestes resultados, quais provedores e regiões devo escolher para o meu uso, e com o que devo tomar cuidado?",
-  ai_link_h: "Deixe uma IA preparar o teste",
-  ai_link_p: "Mande este texto para um assistente junto com o que você precisa. Ele monta um link do Me2Cloud com os provedores, áreas e limites certos.",
-  ai_linkPrompt: "Leia {u} e me dê um link do Me2Cloud que teste as regiões que eu deveria considerar. Minha situação: (onde estão seus usuários, para que é e seu orçamento).",
-  ai_dev_h: "Para desenvolvedores e agentes",
-  ai_dev_p: "Arquivos legíveis por máquina: a lista de pontos de medição, as listas de regras de proxy e o llms.txt, que documenta os parâmetros do link e o formato do link compartilhado.",
   ip_h: "Versão do IP",
   vendors: {
     aws: {

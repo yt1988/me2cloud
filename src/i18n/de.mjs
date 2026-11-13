@@ -443,18 +443,6 @@ export default {
   tk_tag: "gestört",
   d_v6: "Über IPv6 getestet (über einen Host mit IPv6-Adresse).",
   d_dual: "Der Host dieses Messpunkts hat IPv4 und IPv6. Hat dein Netz IPv6, hat der Browser es vielleicht auch im IPv4-Modus benutzt.",
-  ai_btn: "Mit KI nutzen",
-  ai_h: "Mit einem KI-Assistenten nutzen",
-  ai_sub: "Eine KI kann deine Leitung nicht für dich messen, aber sie hilft dir, die Ergebnisse zu lesen und einen Test vorzubereiten.",
-  ai_res_h: "Ergebnisse von einer KI auswerten lassen",
-  ai_res_p: "Füge diese Zusammenfassung in ChatGPT, Claude oder einen anderen Assistenten ein. Sie enthält dein Netz, deine Grenzen und die besten Regionen, am Ende steht eine Frage.",
-  ai_res_none: "Mach zuerst einen Test; hier erscheint dann die Zusammenfassung deiner Ergebnisse.",
-  ai_q: "Frage: Welche Anbieter und Regionen passen laut diesen Ergebnissen zu meinem Einsatz, und worauf sollte ich achten?",
-  ai_link_h: "Einen Test von der KI vorbereiten lassen",
-  ai_link_p: "Schick einem Assistenten diesen Text zusammen mit deinem Bedarf. Er baut dir einen Me2Cloud-Link mit den passenden Anbietern, Gebieten und Grenzen.",
-  ai_linkPrompt: "Lies {u} und gib mir einen Me2Cloud-Link, der die Regionen testet, die für mich in Frage kommen. Meine Lage: (wo deine Nutzer sind, wofür es ist, dein Budget).",
-  ai_dev_h: "Für Entwickler und Agenten",
-  ai_dev_p: "Maschinenlesbare Dateien: die Liste der Messpunkte, die Proxy-Regelsätze und llms.txt mit den Link-Parametern und dem Format des Teilen-Links.",
   ip_h: "IP-Version",
   vendors: {
     aws: {

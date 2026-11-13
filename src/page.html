@@ -62,7 +62,6 @@
       <span class="brand-name" data-i="name">Me2Cloud</span>
     </a>
     <div class="tools">
-      <button class="tool-btn" type="button" id="aiBtn" aria-haspopup="dialog"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M7 1.8l1.3 3.9 3.9 1.3-3.9 1.3L7 12.2 5.7 8.3 1.8 7l3.9-1.3z"/><path d="M12.5 10.2l.6 1.7 1.7.6-1.7.6-.6 1.7-.6-1.7-1.7-.6 1.7-.6z"/></svg><span data-i="ai_btn">Work with AI</span></button>
       <label class="sel" id="langWrap">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>
         <select id="lang" data-al="a_lang" aria-label="Language">{{langOptions}}</select>
@@ -196,14 +195,6 @@
     <div class="dlg-h"><div><h3 id="cliT"><span data-i="cli_h">Test from a server: vps2cloud</span><a class="gh-link" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h3><div class="note" data-i="cli_sub"></div></div>
       <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="dlg-b" id="cliBody"></div>
-  </div>
-</div>
-
-<div class="scrim" id="aiDlg" hidden>
-  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="aiT">
-    <div class="dlg-h"><div><h3 id="aiT" data-i="ai_h">Work with AI</h3><div class="note" data-i="ai_sub"></div></div>
-      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="dlg-b" id="aiBody"></div>
   </div>
 </div>
 
@@ -1857,34 +1848,6 @@
     }).open();
   }
 
-  /* ---------- work with AI: hand the results to an assistant, or let one build a test link ---------- */
-  // plain-text summary of the current results, structured so any AI assistant can reason about it
-  function aiSummary() {
-    const list = rankList().filter(x => x.st.ok), L = shareLoc(), N = NEED();
-    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${country(x.e.country) ? ", " + country(x.e.country) : ""}): median ${fmt(x.st.med)} ms, jitter ±${fmt(x.st.jit)} ms, ${pkt() ? "packet loss" : "timeout rate"} ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
-    const best = [...new Set(list.map(x => x.e.vendor))].map(v => list.filter(x => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
-    return [
-      "Me2Cloud latency results (HTTPS round trips measured in my own browser; median of " + (VIEW.mode || MODES[S.mode]) + " samples per region)",
-      "Network: " + [L.city, L.cc, L.org].filter(Boolean).join(", ") + (L.proxy ? " (through a proxy)" : " (direct)") + " · " + (VIEW.ip === "v6" ? "IPv6" : "IPv4") + " · " + new Date(VIEW.ts || Date.now()).toISOString().slice(0, 16).replace("T", " ") + " UTC" + (VIEW.peak ? " (evening peak)" : ""),
-      "My requirements: median ≤ " + (N.lat || "any") + " ms, jitter ≤ " + (N.jit || "any") + " ms, timeout rate ≤ " + (N.loss || 0) + "%",
-      "Tiers: T0 ≤ 30 ms, T1 ≤ 80, T2 ≤ 150, T3 ≤ 250, T4 above",
-      "", "Best regions (" + list.length + " measured):", ...list.slice().sort(byScore).slice(0, 15).map(line),
-      "", "Best region of each provider:", ...best.map(line),
-      "", t("ai_q")
-    ].join("\n");
-  }
-  function renderAI() {
-    const has = rankList().some(x => x.st.ok), base = location.origin;
-    const prompt = t("ai_linkPrompt", { u: base + "/llms.txt" });
-    $("#aiBody").innerHTML = `
-      <section class="ai-sec"><h4>${esc(t("ai_res_h"))}</h4><p>${esc(t(has ? "ai_res_p" : "ai_res_none"))}</p>
-        ${has ? `<div class="code"><textarea readonly rows="8" data-ta="ai1">${esc(aiSummary())}</textarea><button class="btn sm" type="button" data-copyai="ai1">${t("copy")}</button></div>` : ""}</section>
-      <section class="ai-sec"><h4>${esc(t("ai_link_h"))}</h4><p>${esc(t("ai_link_p"))}</p>
-        <div class="code"><textarea readonly rows="3" data-ta="ai2">${esc(prompt)}</textarea><button class="btn sm" type="button" data-copyai="ai2">${t("copy")}</button></div></section>
-      <section class="ai-sec"><h4>${esc(t("ai_dev_h"))}</h4><p>${esc(t("ai_dev_p"))}</p>
-        <div class="ai-links"><a href="/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="/endpoints.json" target="_blank" rel="noopener">endpoints.json</a><a href="/rules/clash.yaml" target="_blank" rel="noopener">rules/clash.yaml · surge.list · loon.list · quanx.list · singbox.json</a></div></section>`;
-  }
-
   /* ---------- misc UI ---------- */
   let toastT = 0;
   function toast(msg) { const el = $("#toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, Math.max(2200, msg.length * 110)); }
@@ -1983,10 +1946,8 @@
     if (el.matches("[data-copyta]")) { copyText($(`#ruleBody [data-ta="${el.dataset.copyta}"]`).value); return; }
     if (el.matches("[data-close]")) { closeDlg(); return; }
     if (el.id === "logBtn") { renderLog(); openDlg("logDlg"); return; }
-    if (el.id === "aiBtn") { renderAI(); openDlg("aiDlg"); return; }
     if (el.matches("[data-cli]")) { renderCli(); openDlg("cliDlg"); return; }
     if (el.matches("[data-cmd]")) { copyText(el.querySelector("code").textContent); el.classList.add("done"); setTimeout(() => el.classList.remove("done"), 1200); return; }
-    if (el.matches("[data-copyai]")) { copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value); return; }
     if (el.matches("[data-retest]")) { const ep = ALL.find(x => x.id === el.dataset.retest); if (ep) runTests([ep], MODES.precise, 1, true); return; }
     if (el.matches("[data-copy]")) { copyText(el.dataset.copy); return; }
     if (el.matches("[data-del]")) { dropCustom(c => c.k === el.dataset.del); return; }

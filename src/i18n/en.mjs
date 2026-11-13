@@ -375,18 +375,6 @@ export default {
   tk_tag: "down",
   d_v6: "Tested over IPv6 (through a host with an IPv6 address).",
   d_dual: "This endpoint's host has both IPv4 and IPv6. If your network has IPv6, the browser may have used it even in IPv4 mode.",
-  ai_btn: "Use with AI",
-  ai_h: "Use it with an AI assistant",
-  ai_sub: "An AI can't test your line for you, but it can help you read the results and set up a test.",
-  ai_res_h: "Ask an AI about your results",
-  ai_res_p: "Paste this summary into ChatGPT, Claude or any assistant. It includes your network, your limits and the best regions, with a question at the end.",
-  ai_res_none: "Run a test first. A summary of your results will show up here.",
-  ai_q: "Question: based on these results, which regions and providers should I pick for my use case, and what should I watch out for?",
-  ai_link_h: "Let an AI prepare a test",
-  ai_link_p: "Send an assistant this prompt along with what you need. It'll build a Me2Cloud link with the right providers, areas and limits.",
-  ai_linkPrompt: "Read {u} and give me a Me2Cloud link that tests the regions I should consider. My situation: (where your users are, what it's for, your budget).",
-  ai_dev_h: "For developers and agents",
-  ai_dev_p: "Machine-readable files: the endpoint list, the proxy rule sets, and llms.txt, which documents the link parameters and the share link format.",
   vendors: {
     aws: {
       kind: "DynamoDB /ping",

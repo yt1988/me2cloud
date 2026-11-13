@@ -2183,36 +2183,6 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
       ts: VIEW.ts || Date.now()
     }).open();
   }
-  function aiSummary() {
-    const list = rankList().filter((x) => x.st.ok), L = shareLoc(), N = NEED();
-    const line = (x, i) => `${i + 1}. ${x.e.vname} ${x.e.region} (${x.e.cityEn || x.e.city}${country(x.e.country) ? ", " + country(x.e.country) : ""}): median ${fmt(x.st.med)} ms, jitter \xB1${fmt(x.st.jit)} ms, ${pkt() ? "packet loss" : "timeout rate"} ${Math.round(x.st.loss * 100)}%, ${tierCode(grade(x.st.med))}${x.pass ? ", fits" : ""}`;
-    const best = [...new Set(list.map((x) => x.e.vendor))].map((v) => list.filter((x) => x.e.vendor === v).sort(byScore)[0]).sort(byScore);
-    return [
-      "Me2Cloud latency results (HTTPS round trips measured in my own browser; median of " + (VIEW.mode || MODES[S.mode]) + " samples per region)",
-      "Network: " + [L.city, L.cc, L.org].filter(Boolean).join(", ") + (L.proxy ? " (through a proxy)" : " (direct)") + " \xB7 " + (VIEW.ip === "v6" ? "IPv6" : "IPv4") + " \xB7 " + new Date(VIEW.ts || Date.now()).toISOString().slice(0, 16).replace("T", " ") + " UTC" + (VIEW.peak ? " (evening peak)" : ""),
-      "My requirements: median \u2264 " + (N.lat || "any") + " ms, jitter \u2264 " + (N.jit || "any") + " ms, timeout rate \u2264 " + (N.loss || 0) + "%",
-      "Tiers: T0 \u2264 30 ms, T1 \u2264 80, T2 \u2264 150, T3 \u2264 250, T4 above",
-      "",
-      "Best regions (" + list.length + " measured):",
-      ...list.slice().sort(byScore).slice(0, 15).map(line),
-      "",
-      "Best region of each provider:",
-      ...best.map(line),
-      "",
-      t("ai_q")
-    ].join("\n");
-  }
-  function renderAI() {
-    const has = rankList().some((x) => x.st.ok), base = location.origin;
-    const prompt = t("ai_linkPrompt", { u: base + "/llms.txt" });
-    $("#aiBody").innerHTML = `
-      <section class="ai-sec"><h4>${esc(t("ai_res_h"))}</h4><p>${esc(t(has ? "ai_res_p" : "ai_res_none"))}</p>
-        ${has ? `<div class="code"><textarea readonly rows="8" data-ta="ai1">${esc(aiSummary())}</textarea><button class="btn sm" type="button" data-copyai="ai1">${t("copy")}</button></div>` : ""}</section>
-      <section class="ai-sec"><h4>${esc(t("ai_link_h"))}</h4><p>${esc(t("ai_link_p"))}</p>
-        <div class="code"><textarea readonly rows="3" data-ta="ai2">${esc(prompt)}</textarea><button class="btn sm" type="button" data-copyai="ai2">${t("copy")}</button></div></section>
-      <section class="ai-sec"><h4>${esc(t("ai_dev_h"))}</h4><p>${esc(t("ai_dev_p"))}</p>
-        <div class="ai-links"><a href="/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="/endpoints.json" target="_blank" rel="noopener">endpoints.json</a><a href="/rules/clash.yaml" target="_blank" rel="noopener">rules/clash.yaml \xB7 surge.list \xB7 loon.list \xB7 quanx.list \xB7 singbox.json</a></div></section>`;
-  }
   let toastT = 0;
   function toast(msg) {
     const el = $("#toast");
@@ -2476,11 +2446,6 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
       openDlg("logDlg");
       return;
     }
-    if (el.id === "aiBtn") {
-      renderAI();
-      openDlg("aiDlg");
-      return;
-    }
     if (el.matches("[data-cli]")) {
       renderCli();
       openDlg("cliDlg");
@@ -2490,10 +2455,6 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
       copyText(el.querySelector("code").textContent);
       el.classList.add("done");
       setTimeout(() => el.classList.remove("done"), 1200);
-      return;
-    }
-    if (el.matches("[data-copyai]")) {
-      copyText($(`#aiBody [data-ta="${el.dataset.copyai}"]`).value);
       return;
     }
     if (el.matches("[data-retest]")) {

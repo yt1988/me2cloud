@@ -35,7 +35,7 @@ A shared result is `https://m2c.1ms.dog/#s=<data>`. `<data>` is base64url of def
   "r": { "<provider>": [[region, median, p25, p75, p90, jitter, loss %, samples], ...] } }
 ```
 
-Median, p25, p75, p90 and jitter are milliseconds × 10. In the web app, "Work with AI" also copies a plain-text summary of the results for an assistant.
+Median, p25, p75, p90 and jitter are milliseconds × 10.
 
 ## How a sample is measured
 

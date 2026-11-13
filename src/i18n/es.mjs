@@ -445,18 +445,6 @@ export default {
   tk_tag: "caído",
   d_v6: "Medido por IPv6 (con un host que tiene dirección IPv6).",
   d_dual: "El host de este punto tiene IPv4 e IPv6. Si tu red tiene IPv6, el navegador pudo usarlo incluso en modo IPv4.",
-  ai_btn: "Usar con IA",
-  ai_h: "Úsalo con un asistente de IA",
-  ai_sub: "Una IA no puede medir tu línea por ti, pero sí ayudarte a leer los resultados y preparar una prueba.",
-  ai_res_h: "Pregúntale a una IA por tus resultados",
-  ai_res_p: "Pega este resumen en ChatGPT, Claude o cualquier asistente. Incluye tu red, tus límites y las mejores regiones, con una pregunta al final.",
-  ai_res_none: "Haz una prueba primero; aquí aparecerá el resumen de tus resultados.",
-  ai_q: "Pregunta: según estos resultados, ¿qué proveedores y regiones me convienen para mi caso y qué debo tener en cuenta?",
-  ai_link_h: "Deja que una IA prepare la prueba",
-  ai_link_p: "Envíale a un asistente este texto junto con lo que necesitas. Te armará un enlace de Me2Cloud con los proveedores, zonas y límites adecuados.",
-  ai_linkPrompt: "Lee {u} y dame un enlace de Me2Cloud que mida las regiones que debería considerar. Mi caso: (dónde están tus usuarios, para qué es y tu presupuesto).",
-  ai_dev_h: "Para desarrolladores y agentes",
-  ai_dev_p: "Archivos legibles por máquinas: la lista de puntos de medición, las listas de reglas para proxy y llms.txt, que documenta los parámetros del enlace y el formato del enlace compartido.",
   ip_h: "Versión de IP",
   vendors: {
     aws: {
