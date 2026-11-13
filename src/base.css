@@ -46,11 +46,14 @@
   --bg: #1c1c1c; --panel: #232323; --soft: #2a2a2a; --line: #363636;
   --fg: #ededed; --muted: #a0a0a0;
   --shadow: #00000080;
-  color-scheme: dark;
+  color-scheme: only dark;
 }
-/* a light page picked while the system is dark: the media query above skips it, but color-scheme at :root would still
-   say "light dark", and the browser would draw dark scrollbars and controls on a light page */
-:root[data-theme="light"] { color-scheme: light; }
+/* a theme picked in the switch is fixed: `only` is what tells the browser not to darken it on its own. A plain `light`
+   still counts as "this element supports light alone" and Chrome's Auto Dark Mode (and Safari's Adaptive Dark Mode)
+   convert the whole page — the light page came out as a browser-made dark one (2026-11-13, reported against the site).
+   A browser without `only` (Safari 27.3 beta 1) drops this declaration and keeps the `light dark` from :root, which
+   those browsers skip as well; its scrollbars and controls then follow the system instead of the picked theme. */
+:root[data-theme="light"] { color-scheme: only light; }
 
 /* ===== ACCENT: this tool's colors, the only part of this file it edits =====
    --ink is the accent; --t1…--t5 keep the site-wide meaning; add a tool color in here, never outside. */
