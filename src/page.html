@@ -28,7 +28,7 @@
         // built by /assets/share/, whose stylesheet is asked for now: arriving with the banner, it left it unstyled
         // for a frame, and the space its banner replaced was already gone
         if (location.hash.slice(0, 3) === "#s=") {
-          n = 1; d.setAttribute("data-share", "");
+          n = 1; d.setAttribute("data-share", ""); d.setAttribute("data-view", "share");
           var sl = d.ownerDocument.createElement("link");
           sl.rel = "stylesheet"; sl.href = "/assets/share/share.css?v=9"; d.ownerDocument.head.appendChild(sl);
         }
@@ -826,7 +826,7 @@
     const ctl = new AbortController();
     RUN = { ctl, total: list.length, done: 0, t0: performance.now(), n, list };
     runnerStart();
-    if (VIEW.shared) { clearHash(); $("#sharedT").hidden = true; hideReceived(); }
+    if (VIEW.shared) { clearHash(); $("#sharedT").hidden = true; hideReceived(); leaveShareView(); }
     if (!$("#shareBad").hidden) { clearHash(); $("#shareBad").hidden = true; }
     if (!keep || !VIEW.live) { R = new Map(); VIEW = { ts: Date.now(), live: true, peak: isPeak(new Date()), mode: n, ip: S.ip, need: Object.assign({}, S.need) }; }
     for (const e of list) R.set(e.id, { s: [], w: null, m: e.method, st: "queued" });
@@ -1724,6 +1724,8 @@
   // the space a shared result's banner and picks take is reserved before the first paint (see the data-share styles):
   // it is given up only once the banner is in the page, in the same frame, so nothing moves in between
   const clearShareSkel = () => { const d = document.documentElement; d.removeAttribute("data-share"); d.removeAttribute("data-recv"); };
+  // leaving someone else's result (or a link that did not decode): the hero's title, chips and start button return
+  const leaveShareView = () => { clearShareSkel(); document.documentElement.removeAttribute("data-view"); };
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
@@ -1742,7 +1744,8 @@
   }
   function hideReceived() { recvFor = null; if (RECV) { RECV.remove(); RECV = null; } }
   function renderShared() {
-    const P = VIEW.shared;
+    const P = VIEW.shared, d = document.documentElement;
+    if (P) d.setAttribute("data-view", "share"); else d.removeAttribute("data-view");
     $("#sharedT").hidden = !P;
     if (!P) { hideReceived(); clearShareSkel(); return; }
     showReceived(P);
@@ -2039,7 +2042,7 @@
   addEventListener("hashchange", async () => {
     sharePending = /(?:^#|&)s=/.test(location.hash);
     const ok = await loadShared(); sharePending = false;
-    if (ok) renderShared(); else clearShareSkel(); renderAll();
+    if (ok) renderShared(); else leaveShareView(); renderAll();
   });
   $("#runBtn").addEventListener("click", () => {
     if (RUN) { RUN.ctl.abort(); return; }
@@ -2108,7 +2111,7 @@
   (window.requestIdleCallback || (f => setTimeout(f, 1500)))(() => { new Image().src = "/assets/shiba-run.png"; }, { timeout: 3000 });
   // custom nodes with no automatic country yet, or one from an earlier way of looking it up (before geo 3), get looked up now
   S.custom.filter(c => !c.ccSet && c.geo !== 3).forEach(locateCustom);
-  loadShared().then(ok => { sharePending = false; if (ok) renderShared(); else clearShareSkel(); renderAll(); });
+  loadShared().then(ok => { sharePending = false; if (ok) renderShared(); else leaveShareView(); renderAll(); });
 })();
 </script>
 </body>

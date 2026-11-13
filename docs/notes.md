@@ -67,3 +67,17 @@ Technical reasons behind choices the code does not explain, and what was measure
   whether `location.pathname` is one of the language home paths in `data-paths`: with `data-root`, English provider
   pages reserved 28 lanes for a one-lane chart and the other languages' home pages reserved one for 28 (found while
   measuring a share link on `/zh-cn/`, 2026-11-12).
+- **A share link opens on the result, not on the tool's pitch.** The hero (title, filter chips, start button) is what a
+  visitor needs on their own page, and on someone else's result it pushed what they came for below the fold: at
+  375×667 the hero was 502 px and the banner with the result started at 820 px (2026-11-13). The banner the shared
+  component inserts already carries "Test mine", which runs the shared picks on the visitor's own line, so on a share
+  page the hero keeps only the network bar (the visitor's own line, 112 px) and the rest comes back with that test.
+  The command-line block goes with it: it is a second way to run a test, and its 196 px was enough to keep the picks
+  off the first screen. Measured at 375×667: banner 820 → 254, picks 1044 → 478; at 1280×900 the picks end at 438.
+  - The state is a root attribute of its own, `data-view="share"`, because `data-share` is only the pre-paint skeleton
+    and the app drops it as soon as the banner is in the page; a rule keyed on it came back to life one frame later.
+    `data-view` is set by the pre-paint (and by `renderShared` when a link is pasted into an open page) and cleared by
+    `leaveShareView()` when the visitor leaves the result.
+  - Hiding the hero in CSS rather than letting the app collapse it keeps the result's place fixed from the first paint.
+    The exception is a link that does not decode: the hero returns there without any input, one shift of about the
+    hero's own height, and the "This result can't be read" note is shown with it.

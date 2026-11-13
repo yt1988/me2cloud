@@ -787,6 +787,7 @@
       clearHash();
       $("#sharedT").hidden = true;
       hideReceived();
+      leaveShareView();
     }
     if (!$("#shareBad").hidden) {
       clearHash();
@@ -1955,6 +1956,10 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     d.removeAttribute("data-share");
     d.removeAttribute("data-recv");
   };
+  const leaveShareView = () => {
+    clearShareSkel();
+    document.documentElement.removeAttribute("data-view");
+  };
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
@@ -1985,7 +1990,9 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     }
   }
   function renderShared() {
-    const P = VIEW.shared;
+    const P = VIEW.shared, d = document.documentElement;
+    if (P) d.setAttribute("data-view", "share");
+    else d.removeAttribute("data-view");
     $("#sharedT").hidden = !P;
     if (!P) {
       hideReceived();
@@ -2628,7 +2635,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     const ok = await loadShared();
     sharePending = false;
     if (ok) renderShared();
-    else clearShareSkel();
+    else leaveShareView();
     renderAll();
   });
   $("#runBtn").addEventListener("click", () => {
@@ -2781,7 +2788,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
   loadShared().then((ok) => {
     sharePending = false;
     if (ok) renderShared();
-    else clearShareSkel();
+    else leaveShareView();
     renderAll();
   });
 })();
