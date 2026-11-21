@@ -1,6 +1,7 @@
 // Me2Cloud text: ru. Keys missing here fall back to en.mjs.
 export default {
   name: "Me2Cloud",
+  skip: "Перейти к основному содержимому",
   a_lang: "Язык",
   a_help: "Справка",
   a_settings: "Настройки",

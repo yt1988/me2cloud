@@ -5,7 +5,7 @@
   const isCdn = (v) => String(v).startsWith("cdn:");
   const LANGS = [["zh-CN", "\u7B80\u4F53\u4E2D\u6587"], ["zh-TW", "\u7E41\u9AD4\u4E2D\u6587"], ["en", "English"], ["ja", "\u65E5\u672C\u8A9E"], ["ko", "\uD55C\uAD6D\uC5B4"], ["es", "Espa\xF1ol"], ["fr", "Fran\xE7ais"], ["de", "Deutsch"], ["pt", "Portugu\xEAs"], ["ru", "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"]];
   const DATA = JSON.parse(document.getElementById("me2-data").textContent);
-  const I18N = DATA.i18n, LANG_PATHS = DATA.paths, PAGE = DATA.page || {};
+  const I18N = window.ME2_I18N || {}, LANG_PATHS = DATA.paths, PAGE = DATA.page || {};
   const KEY = "me2cloud:v1", RES_KEY = "me2cloud:last", HIST_KEY = "me2cloud:history", LANG_KEY = "me2cloud:lang", THEME_KEY = "me2cloud:theme";
   const MODES = { quick: 5, std: 10, precise: 20 };
   const PRESETS = { game: [60, 10, 0], call: [150, 30, 1], ssh: [120, 20, 1], web: [250, 50, 2], any: [0, 0, 0] };
@@ -39,9 +39,9 @@
   const plural = {};
   const pk = (lang, k, v) => v && typeof v.n === "number" ? k + "_" + (plural[lang] = plural[lang] || new Intl.PluralRules(lang)).select(v.n) : null;
   const t = (k, v) => {
-    var _a, _b, _c, _d;
-    const D = I18N[LANG] || {}, p = pk(LANG, k, v), q = pk("en", k, v);
-    let s = (_d = (_c = (_b = (_a = p && D[p]) != null ? _a : D[k]) != null ? _b : q && I18N.en[q]) != null ? _c : I18N.en[k]) != null ? _d : k;
+    var _a, _b;
+    const p = pk(LANG, k, v);
+    let s = (_b = (_a = p && I18N[p]) != null ? _a : I18N[k]) != null ? _b : k;
     if (v) for (const p2 in v) s = s.split("{" + p2 + "}").join(v[p2]);
     return s;
   };
@@ -215,15 +215,15 @@
   };
   const cityName = (c, code) => {
     if (!c || c === "?") return code;
-    const m = /^(.*?)( \d)?$/.exec(c), C = (I18N[LANG] || {}).cities || {};
+    const m = /^(.*?)( \d)?$/.exec(c), C = I18N.cities || {};
     return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || "");
   };
   const isCustom = (v) => String(v).startsWith("c:");
   const vnm = (v) => isCustom(v) ? v.slice(2) || t("custom") : vtext(v, "name");
   const vsh = (v) => isCustom(v) ? (v.slice(2) || "\u2605").slice(0, 4) : vshort[v] || "";
   const vtext = (v, k) => {
-    var _a, _b;
-    return isCdn(v) ? k === "name" ? (CDNS.find((c) => c.vendor === v) || {}).name || "" : k === "kind" ? "CDN" : k === "note" ? t("cdn_note") : "" : (((I18N[LANG] || {}).vendors || {})[v] || {})[k] || ((_a = (I18N.en.vendors || {})[v]) == null ? void 0 : _a[k]) || ((_b = ENDPOINTS.vendors[v]) == null ? void 0 : _b[k]) || "";
+    var _a;
+    return isCdn(v) ? k === "name" ? (CDNS.find((c) => c.vendor === v) || {}).name || "" : k === "kind" ? "CDN" : k === "note" ? t("cdn_note") : "" : ((I18N.vendors || {})[v] || {})[k] || ((_a = ENDPOINTS.vendors[v]) == null ? void 0 : _a[k]) || "";
   };
   const vshort = {
     aws: "AWS",
@@ -1721,7 +1721,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     }
     h += `<div class="note">${esc(t("rules_note_" + f))}${json ? " " + esc(t("rules_json_note")) : ""}</div>`;
     $("#ruleBody").innerHTML = h;
-    $("#ruleSteps").innerHTML = ((I18N[LANG] || {}).rules_steps || I18N.en.rules_steps).map((s) => `<li>${s}</li>`).join("");
+    $("#ruleSteps").innerHTML = (I18N.rules_steps || []).map((s) => `<li>${s}</li>`).join("");
   }
   function openDlg(id) {
     $$("details.menu[open]").forEach((d) => {

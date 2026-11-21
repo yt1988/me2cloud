@@ -21,6 +21,12 @@ body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-ui); -web
 button, input, select, textarea { font: inherit; color: inherit; }
 .num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
 :focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
+/* "Skip to main content": the first thing Tab reaches, out of sight until it is focused (transform, so it never
+   takes up or shifts layout) */
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 100; transform: translateY(-200%);
+  padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r-ctl-sm);
+  background: var(--panel); color: var(--fg); font-size: var(--fs-small); text-decoration: none; }
+.skip-link:focus { transform: none; }
 .lbl { font-size: 12px; color: var(--muted); }
 .note { font-size: 12px; color: var(--muted); }
 code { font-family: var(--f-num); font-size: 11.5px; background: var(--soft); border-radius: 4px; padding: 1px 4px; color: var(--fg); }

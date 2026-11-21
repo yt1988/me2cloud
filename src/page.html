@@ -30,7 +30,7 @@
         if (location.hash.slice(0, 3) === "#s=") {
           n = 1; d.setAttribute("data-share", ""); d.setAttribute("data-view", "share");
           var sl = d.ownerDocument.createElement("link");
-          sl.rel = "stylesheet"; sl.href = "/assets/share/share.css?v=9"; d.ownerDocument.head.appendChild(sl);
+          sl.rel = "stylesheet"; sl.href = "/assets/share/share.css?v=10"; d.ownerDocument.head.appendChild(sl);
         }
         else if (list) for (var i = 0; i < list.length; i++) if (!seen[list[i]]) { seen[list[i]] = 1; n++; }
         if (n) H = n * (n <= 2 ? 84 : n <= 5 ? 60 : 46) + 94;
@@ -50,12 +50,11 @@
 </script>
 {{head}}
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<style>
-{{css}}
-</style>
+<link rel="stylesheet" href="/assets/{{cssName}}">
 </head>
 <body>
-<div class="app">
+<a class="skip-link" href="#main" data-i="skip">Skip to main content</a>
+<main class="app" id="main" tabindex="-1">
   <header class="top">
     <a class="brand-row" href="{{homeHref}}"{{homeCur}}>
       <span class="logo" id="brandLogo"><img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms"><img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms"></span>
@@ -167,7 +166,7 @@
   {{landing}}
   {{vendorNav}}
   <footer><span id="footTxt"></span> · <a href="https://github.com/yt1988/me2cloud" target="_blank" rel="noopener noreferrer">GitHub</a></footer>
-</div>
+</main>
 
 <div class="scrim" id="rules" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="rulesT">
@@ -222,9 +221,11 @@
   const isCdn = v => String(v).startsWith("cdn:");
 
   const LANGS = [["zh-CN","简体中文"],["zh-TW","繁體中文"],["en","English"],["ja","日本語"],["ko","한국어"],["es","Español"],["fr","Français"],["de","Deutsch"],["pt","Português"],["ru","Русский"]];
-  // per-page data written by scripts/build.mjs: language texts (this language + English), language URLs, landing page
+  // scripts/build.mjs writes two pieces of data: this language's texts, with the English fallback already filled in,
+  // as window.ME2_I18N in a shared file every page of the language caches; and per-page data (language URLs, the
+  // landing page's provider) in the page itself
   const DATA = JSON.parse(document.getElementById("me2-data").textContent);
-  const I18N = DATA.i18n, LANG_PATHS = DATA.paths, PAGE = DATA.page || {};
+  const I18N = window.ME2_I18N || {}, LANG_PATHS = DATA.paths, PAGE = DATA.page || {};
 
   const KEY = "me2cloud:v1", RES_KEY = "me2cloud:last", HIST_KEY = "me2cloud:history",
     LANG_KEY = "me2cloud:lang", THEME_KEY = "me2cloud:theme";
@@ -283,8 +284,8 @@
   const plural = {};
   const pk = (lang, k, v) => v && typeof v.n === "number" ? k + "_" + (plural[lang] = plural[lang] || new Intl.PluralRules(lang)).select(v.n) : null;
   const t = (k, v) => {
-    const D = I18N[LANG] || {}, p = pk(LANG, k, v), q = pk("en", k, v);
-    let s = (p && D[p]) ?? D[k] ?? (q && I18N.en[q]) ?? I18N.en[k] ?? k;
+    const p = pk(LANG, k, v);
+    let s = (p && I18N[p]) ?? I18N[k] ?? k;
     if (v) for (const p in v) s = s.split("{" + p + "}").join(v[p]);
     return s;
   };
@@ -370,14 +371,14 @@
   let enRegions = null;
   const EN_REGION = cc => { try { enRegions = enRegions || new Intl.DisplayNames(["en"], { type: "region" }); return cc ? enRegions.of(cc) : ""; } catch (e) { return ""; } };
   // a city in the page language: "Beijing 4" -> "北京 4"; unknown or unlisted names fall back to English or the region code
-  const cityName = (c, code) => { if (!c || c === "?") return code; const m = /^(.*?)( \d)?$/.exec(c), C = (I18N[LANG] || {}).cities || {}; return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || ""); };
+  const cityName = (c, code) => { if (!c || c === "?") return code; const m = /^(.*?)( \d)?$/.exec(c), C = I18N.cities || {}; return (C[m[1]] || (m[1] === "Taiwan" ? country("TW") : m[1])) + (m[2] || ""); };
   // a custom group is a provider whose id is "c:" + its name; the unnamed group shows as "Custom"
   const isCustom = v => String(v).startsWith("c:");
   const vnm = v => isCustom(v) ? v.slice(2) || t("custom") : vtext(v, "name");
   const vsh = v => isCustom(v) ? (v.slice(2) || "★").slice(0, 4) : vshort[v] || "";
   // a CDN's name is its brand; its kind is "CDN" and its note says the nearest edge answers
   const vtext = (v, k) => isCdn(v) ? (k === "name" ? (CDNS.find(c => c.vendor === v) || {}).name || "" : k === "kind" ? "CDN" : k === "note" ? t("cdn_note") : "")
-    : (((I18N[LANG] || {}).vendors || {})[v] || {})[k] || (I18N.en.vendors || {})[v]?.[k] || ENDPOINTS.vendors[v]?.[k] || "";
+    : ((I18N.vendors || {})[v] || {})[k] || ENDPOINTS.vendors[v]?.[k] || "";
   const vshort = { aws: "AWS", oracle: "OCI", vultr: "VLT", azure: "AZ", gcp: "GCP", aliyun: "ALI", tencent: "TC", huawei: "HWC", linode: "LIN", digitalocean: "DO", ovh: "OVH", hetzner: "HTZ", ibm: "IBM", scaleway: "SCW", volcengine: "VOLC", baidu: "BAI", naver: "NAV", ionos: "ION", aruba: "ARU", leaseweb: "LSW", gcore: "GC", yandex: "YC", custom: "★",
     "cdn:cloudflare": "CF", "cdn:akamai": "AKA", "cdn:cloudfront": "CFR", "cdn:google": "GOOG", "cdn:fastly": "FST", "cdn:azure": "AFD" };
   // country -> area: the regions we ship, plus the countries custom nodes often sit in
@@ -1536,7 +1537,7 @@
     }
     h += `<div class="note">${esc(t("rules_note_" + f))}${json ? " " + esc(t("rules_json_note")) : ""}</div>`;
     $("#ruleBody").innerHTML = h;
-    $("#ruleSteps").innerHTML = ((I18N[LANG] || {}).rules_steps || I18N.en.rules_steps).map(s => `<li>${s}</li>`).join("");
+    $("#ruleSteps").innerHTML = (I18N.rules_steps || []).map(s => `<li>${s}</li>`).join("");
   }
   function openDlg(id) { $$("details.menu[open]").forEach(d => { d.open = false; }); $("#" + id).hidden = false; document.documentElement.style.overflow = "hidden"; $("#" + id + " [data-close]").focus(); }
   function closeDlg() { $$(".scrim").forEach(s => { s.hidden = true; }); document.documentElement.style.overflow = ""; }

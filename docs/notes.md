@@ -94,3 +94,24 @@ Technical reasons behind choices the code does not explain, and what was measure
     which happens on every page and is not part of this.
   - `[hidden]` in base.css is `display: none !important`, so a rule that shows a hidden element from CSS needs
     `!important` and enough specificity to beat it; without them it loses silently.
+- **Styles and texts are cached files, not inline.** Until 2026-11-21 every page carried about 70 KB of `<style>`
+  and 60 KB of `me2-data` (the page language's texts plus the whole English dictionary behind them), and neither can
+  be cached: the page is `no-cache` and the next language or provider page sends all of it again. The home page was
+  242 KB raw / 67 KB compressed where the other tools are 20–36 KB (audit #136, item 2). Now `build.mjs` writes
+  `assets/app.<hash>.css` (the same `base.css` + `style.css`, minified) and one `assets/l.<lang>.<hash>.js` of texts
+  per language, both `immutable` in `_headers`; `me2-data` holds only the page's own data (`paths`, `page`). The page
+  goes to 49 KB raw / 13 KB compressed, the stylesheet and the language file are fetched once per visitor and shared
+  by every page (25 per language). Two details worth keeping:
+  - **The English fallback is resolved at build time**, in `runtimeTexts()`: the browser gets one dictionary. It keeps
+    `t()`'s old order (own plural form, own base key, English plural form, English base key), so a language that has
+    its own base key does not pick up an English plural form it never wrote.
+  - **`docs` is not shipped** (a third of a language's text): the questions and answers are rendered into each page
+    by the build, and nothing reads them at runtime. `scripts/i18n-tool.mjs missing` still lists only plural forms.
+  The share component's stylesheet was also asked for twice, as `?v=9` by the pre-paint and `?v=10` by the component;
+  both use the component's `VERSION` now.
+- **Skip link and `<main id="main">` (2026-11-21, audit #136 item 3).** `<main class="app">` is the content column as
+  on dig, so the link skips the shell's navigation bar in front of the tool; `tabindex="-1"` is there so Enter really
+  moves focus, not just the scroll position (`document.activeElement` is `main`), and the header with the language and
+  settings buttons stays inside it, as the page's own controls. `.skip-link` is `position: fixed` and moved out of
+  sight with `transform`, so it never takes up or shifts layout; it appears at the top-left when Tab reaches it. It is
+  m2c's own class, in `src/style.css`, until the shell ships a shared one.

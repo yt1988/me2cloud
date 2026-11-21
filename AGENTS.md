@@ -12,7 +12,8 @@ Me2Cloud (https://m2c.1ms.dog) measures latency, jitter and timeout rate from th
 - `src/page.html`: the page, including the app code, the styles and the endpoint registry (the `ENDPOINTS` block).
 - `src/i18n/*.mjs`: the text, in 10 languages (en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru). Missing keys fall back to `en.mjs`.
 - `scripts/build.mjs`: builds `public/` from those: one page per language, a landing page per provider and language,
-  `app.<hash>.js`, `endpoints.json`, proxy rule sets, the sitemap and `_headers`.
+  `app.<hash>.js`, `assets/app.<hash>.css`, one `assets/l.<lang>.<hash>.js` of texts per language, `endpoints.json`,
+  proxy rule sets, the sitemap and `_headers`.
 - `src/worker.js`: sees only paths that are not files in `public/`. It serves the command-line version
   ([vps2cloud](https://github.com/yt1988/vps2cloud)): its installers (`/i`, `/i.ps1`), its release files (`/dl/…`),
   the latest version (`/v`), share-link entry (`/r`) and `/tokyo.json` (below).

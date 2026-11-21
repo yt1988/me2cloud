@@ -3,6 +3,8 @@
 //   index.html, <lang>/index.html          one page per translated language
 //   <provider>/, <lang>/<provider>/        a landing page per provider and language
 //   app.<hash>.js                          the app code, shared and cached by every page
+//   assets/app.<hash>.css                  the styles, shared and cached by every page
+//   assets/l.<lang>.<hash>.js              one language's texts, shared by every page in it
 //   endpoints.json, rules/*                public data: endpoint registry and proxy rule sets
 //   sitemap.xml, robots.txt, _headers      SEO and security headers (CSP)
 // Usage: node scripts/build.mjs          write the files
@@ -21,6 +23,7 @@ const TW = { "zh-CN": "中国台湾", "zh-TW": "中國台灣", en: "Taiwan, Chin
 const LANGS = [["en", "", "en_US"], ["zh-CN", "zh-cn", "zh_CN"], ["zh-TW", "zh-tw", "zh_TW"], ["ja", "ja", "ja_JP"], ["ko", "ko", "ko_KR"],
   ["es", "es", "es_ES"], ["fr", "fr", "fr_FR"], ["de", "de", "de_DE"], ["pt", "pt", "pt_BR"], ["ru", "ru", "ru_RU"]];
 
+const hash = s => createHash("sha256").update(s).digest("hex").slice(0, 10);
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const fill = (s, v) => { for (const k in v) s = s.split("{" + k + "}").join(v[k]); return s; };
 const sha = s => createHash("sha256").update(s).digest("base64");
@@ -86,11 +89,29 @@ function i18nGaps(tpl, I, E, langs) {
   return gaps;
 }
 
+// The browser's copy of the page texts: this language with the English fallback already filled in, so every page
+// ships one dictionary instead of two. Plural forms keep the order t() used to ask in (own plural form, own base
+// key, English plural form, English base key): a language that has its own base key keeps it rather than picking
+// up an English plural form it never wrote.
+function runtimeTexts(en, own) {
+  const out = { ...en, ...own };
+  for (const k of Object.keys(en)) {
+    const m = /^(.*)_(zero|one|two|few|many|other)$/.exec(k);
+    if (m && m[1] in own && !(k in own)) delete out[k];
+  }
+  // the questions and answers are in every page already (the help dialog is rendered here); nothing reads them at
+  // runtime, and they are a third of a language's text
+  delete out.docs;
+  return out;
+}
+
 export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
   // the page's styles: the shared base.css (tokens, reset, top bar, shared components — kept in step with the suite by
-  // `npm run design` in 1ms-shell) in front of this page's own rules, still inline so the first paint has them
-  const css = (await readFile(new URL("base.css", src), "utf8")) + "\n" + (await readFile(new URL("style.css", src), "utf8"));
+  // `npm run design` in 1ms-shell) in front of this page's own rules, as one content-hashed file every page caches
+  const cssSource = (await readFile(new URL("base.css", src), "utf8")) + "\n" + (await readFile(new URL("style.css", src), "utf8"));
+  const css = (await transform(cssSource, { loader: "css", minify: true, legalComments: "none" })).code;
+  const cssName = `app.${hash(css)}.css`;
   const I = await loadI18n();
   const E = block(tpl, "ENDPOINTS", "ENDPOINTS"), spec = block(tpl, "RULES", "RULE_SPEC");
   // a region with no known place keeps an empty country and a "?" city, which the page draws as the region code; any
@@ -121,13 +142,17 @@ export async function build({ check = false } = {}) {
     supported: { "template-literal": true }, legalComments: "inline" })).code;
   // (a crude check, strings and regular expressions included: rewrite any text that trips it)
   if (/\?\.(?![0-9])|\?\?/.test(app)) throw new Error("the app script still has ?. or ?? after the ES2019 transform");
-  const appName = `app.${createHash("sha256").update(app).digest("hex").slice(0, 10)}.js`;
-  const shell = tpl.replace(scripts[1][0], `<script type="application/json" id="me2-data">{{data}}</script>\n<script src="/${appName}"></script>`);
+  const appName = `app.${hash(app)}.js`;
+  const shell = tpl.replace(scripts[1][0], `<script type="application/json" id="me2-data">{{data}}</script>\n<script src="/assets/{{strings}}"></script>\n<script src="/${appName}"></script>`);
 
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
-  const pages = [];                                                     // { lang, slug, sub, html }
+  const pages = [], langFiles = {};                                     // { lang, slug, sub, html }; the per-language strings
   for (const [lang, slug, locale] of langs) {
     const d = I[lang], en = I.en, T = k => d[k] ?? en[k] ?? k;
+    // one strings file per language, shared by its home page and all of its provider pages
+    const sjs = `window.ME2_I18N=${JSON.stringify(runtimeTexts(en, d)).replace(/</g, "\\u003c")};\n`;
+    const sName = `l.${lang.toLowerCase()}.${hash(sjs)}.js`;
+    langFiles["assets/" + sName] = sjs;
     // a sentence with a count: key_one, key_few … for the count's plural category when the language has one, as on the page
     const PR = new Intl.PluralRules(lang), PRen = new Intl.PluralRules("en");
     const TN = (k, n) => d[k + "_" + PR.select(n)] ?? d[k] ?? en[k + "_" + PRen.select(n)] ?? en[k] ?? k;
@@ -189,7 +214,7 @@ export async function build({ check = false } = {}) {
       const allCta = v ? `<p class="all-cta"><a class="btn" href="${path(slug, "")}">${esc(fill(T("lp_all"), { v: vids.length, n: E.endpoints.length }))} →</a></p>` : "";
       const vendorNav = `<nav class="vlinks" aria-label="${esc(T("nav_h"))}"><b>${esc(T("nav_h"))}</b>${vids.map(x => `<a href="${path(slug, x)}"${x === v ? ' aria-current="page"' : ""}>${esc(vn(x))}</a>`).join("")}</nav>`;
       const paths = Object.fromEntries(langs.map(([l, s]) => [l, path(s, sub)]));
-      const data = { lang, paths, page: v ? { vendor: v } : {}, i18n: lang === "en" ? { en } : { [lang]: d, en } };
+      const data = { lang, paths, page: v ? { vendor: v } : {} };
       // the language menu is filled before the app runs: an empty <select> is narrower, and at 520 px the header wrapped
       // when the app filled it, moving the page down. The names come from the app's own LANGS line, so they cannot drift
       const langOptions = langNames.filter(([l]) => paths[l]).map(([l, n]) => `<option value="${l}"${l === lang ? " selected" : ""}>${n}</option>`).join("");
@@ -200,7 +225,8 @@ export async function build({ check = false } = {}) {
         .replace("{{homeHref}}", path(slug, "")).replace("{{homeCur}}", sub ? "" : ' aria-current="page"')
         .replace("{{landing}}", landing).replace("{{allCta}}", allCta).replace("{{vendorNav}}", vendorNav)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"))
-        .replace("{{css}}", () => css)
+        .replace("{{strings}}", sName)
+        .replace("{{cssName}}", cssName)
         .replace("{{vizHeights}}", JSON.stringify(vizHeights));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
       pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, lang, slug, sub, html });
@@ -236,6 +262,12 @@ export async function build({ check = false } = {}) {
   Cache-Control: public, max-age=31536000, immutable
 /assets/*
   Cache-Control: public, max-age=604800
+/assets/app.*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+/assets/l.*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
 /assets/share/*
   ! Cache-Control
   Cache-Control: public, max-age=0, must-revalidate
@@ -259,6 +291,8 @@ export async function build({ check = false } = {}) {
 
   const files = {
     [appName]: app,
+    ["assets/" + cssName]: css,
+    ...langFiles,
     "endpoints.json": JSON.stringify({ schema: 1, verified: E.verified, source: "https://github.com/yt1988/me2cloud",
       howTo: "From a browser: fetch(url + '?_=' + random, { method, mode: 'no-cors', cache: 'no-store', credentials: 'omit' }). Send one warm-up request (not counted), then time each request on the reused connection. method IMG means new Image().src = url and timing onerror/onload. method CORS means a GET with mode 'cors' whose body is read to the end (await res.arrayBuffer()) before the time is taken; outside a browser, a plain GET that drains the body. cdns (kind cdn) are one global address per CDN, answered by the edge nearest the client: nobust means send the URL exactly as given, with no added query (a cache-buster sends some CDNs to the origin), relying on cache: 'no-store' (outside a browser, no query and no cache), GET only.",
       vendors: E.vendors, endpoints: E.endpoints, cdns: E.cdns || [] }, null, 1) + "\n",
@@ -281,12 +315,16 @@ export async function build({ check = false } = {}) {
     await mkdir(new URL(".", url), { recursive: true });
     await writeFile(url, text);
   }
-  // old app bundles and pages of languages that no longer build
-  const old = (await readdir(pub)).filter(f => /^app\.[0-9a-f]+\.js$/.test(f) && f !== appName);
+  // old app bundles, stylesheets and strings files, and pages of languages that no longer build
+  const keep = new Set([cssName, ...Object.keys(langFiles).map(f => f.slice("assets/".length))]);
+  const old = [
+    ...(await readdir(pub)).filter(f => /^app\.[0-9a-f]+\.js$/.test(f) && f !== appName),
+    ...(await readdir(new URL("assets/", pub)).catch(() => [])).filter(f => !keep.has(f) && (/^app\.[0-9a-f]+\.css$/.test(f) || /^l\.[a-z-]+\.[0-9a-f]+\.js$/.test(f))).map(f => "assets/" + f),
+  ];
   if (check && old.length) stale.push(...old.map(f => f + " (old)"));
   else for (const f of old) await rm(new URL(f, pub));
   if (check && stale.length) { console.error(`Out of date: ${stale.slice(0, 8).join(", ")}${stale.length > 8 ? " …" : ""}. Run: node scripts/build.mjs`); process.exitCode = 1; return; }
-  console.log(`${check ? "up to date" : "built"}: ${pages.length} pages (${langs.map(l => l[0]).join(", ")}), ${appName}, endpoints.json (${E.endpoints.length}), ${Object.keys(files).filter(f => f.startsWith("rules/")).length} rule sets, sitemap, _headers`);
+  console.log(`${check ? "up to date" : "built"}: ${pages.length} pages (${langs.map(l => l[0]).join(", ")}), ${appName}, ${cssName}, ${Object.keys(langFiles).length} strings files, endpoints.json (${E.endpoints.length}), ${Object.keys(files).filter(f => f.startsWith("rules/")).length} rule sets, sitemap, _headers`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
