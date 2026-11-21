@@ -109,9 +109,10 @@ Technical reasons behind choices the code does not explain, and what was measure
     by the build, and nothing reads them at runtime. `scripts/i18n-tool.mjs missing` still lists only plural forms.
   The share component's stylesheet was also asked for twice, as `?v=9` by the pre-paint and `?v=10` by the component;
   both use the component's `VERSION` now.
-- **Skip link and `<main id="main">` (2026-11-21, audit #136 item 3).** `<main class="app">` is the content column as
-  on dig, so the link skips the shell's navigation bar in front of the tool; `tabindex="-1"` is there so Enter really
-  moves focus, not just the scroll position (`document.activeElement` is `main`), and the header with the language and
-  settings buttons stays inside it, as the page's own controls. `.skip-link` is `position: fixed` and moved out of
-  sight with `transform`, so it never takes up or shifts layout; it appears at the top-left when Tab reaches it. It is
-  m2c's own class, in `src/style.css`, until the shell ships a shared one.
+- **`<main id="main">`, and no skip link of our own (2026-11-21, audit #136 item 3).** The content column is
+  `<main class="app" id="main">`, as on dig, so the skip link skips the shell's navigation bar in front of the tool;
+  the header with the language and settings buttons stays inside it, as the page's own controls. `tabindex="-1"` is
+  there so Enter really moves focus, not just the scroll position (`document.activeElement` is `main`). The link
+  itself is the shell's: it shipped `ms-skip` suite-wide the same day (1ms-shell 46c5382), prepended before the bar,
+  and `npm run check` fails a tool that writes its own. A local copy was tried first and removed: it only became
+  reachable after the shell's seven tab stops, and two links doing one job is worse than one.

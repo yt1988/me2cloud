@@ -1,7 +1,6 @@
 // Me2Cloud text: ko. Keys missing here fall back to en.mjs.
 export default {
   name: "Me2Cloud",
-  skip: "본문으로 건너뛰기",
   a_lang: "언어",
   a_help: "도움말",
   a_settings: "설정",

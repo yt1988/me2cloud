@@ -1,7 +1,6 @@
 // Me2Cloud text: zh-CN. Keys missing here fall back to en.mjs.
 export default {
   name: "Me2Cloud",
-  skip: "跳到主要内容",
   a_lang: "语言",
   a_help: "帮助",
   a_settings: "设置",
