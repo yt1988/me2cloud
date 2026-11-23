@@ -127,6 +127,6 @@ Technical reasons behind choices the code does not explain, and what was measure
   primary is enough), which is the false "检测到代理" this page must not show. iCloud Private Relay stays here, as
   agreed: it is a Safari behaviour, not an exit rule. Three gaps in core were reported to the shell rather than
   patched here: its `TZ_CC` is a subset of this page's (30 zones, e.g. `Europe/Brussels`, `Australia/Perth`), so the
-  time-zone line and the "your country" filter keep the fuller table until core carries them; its `why` never reaches
-  "warp" because AS13335 is in `DC_ASN` first, so the WARP line stays here; and a VPN brand (Mullvad, Proton) comes
-  back as `r_vpn`, which this page renders with the `r_dc` wording since it has no separate line.
+  time-zone line and the "your country" filter keep the fuller table until core carries them; and a VPN brand
+  (Mullvad, Proton) comes back as `r_vpn`, which this page renders with the `r_dc` wording since it has no separate
+  line. VERSION 2 (662db31) made `why: "warp"` reachable, so the page no longer adds the WARP line itself.

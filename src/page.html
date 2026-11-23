@@ -1037,7 +1037,7 @@
     // a VPN brand and a data centre are the same finding to this page, which offers no separate line for either
     const dc = why("r_dc") || why("r_vpn");
     if (dc) reasons.push(t("r_dc", { org: esc(dc.org || "") + (dc.asn ? " (AS" + dc.asn + ")" : "") }));
-    if (N.warp && N.warp !== "off") reasons.push(t("r_warp"));
+    if (why("r_warp")) reasons.push(t("r_warp"));
     const tzc = TZ_HOME[tz];
     if (tzc && N.cc && tzc !== N.cc && !(tzc === "CN" && ["HK", "MO"].includes(N.cc))) reasons.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(N.cc)) }));
     const rr = why("r_rtc");

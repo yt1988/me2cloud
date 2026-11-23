@@ -1,6 +1,6 @@
 (function() {
   "use strict";
-  const VERSION = "1";
+  const VERSION = "2";
   const ANCHORS = {
     cn: "https://probe.dog.1msapp.com:9443/conn",
     // TX.SHA: a mainland domain not in any split-tunnel list
@@ -110,8 +110,8 @@
   function kindOf(exit, { warp = "" } = {}) {
     const org = exit.org || "";
     if (VPN_RE.test(org)) return { kind: "proxy", why: "vpn" };
-    if (DC_ASN.has(Number(exit.asn)) || DC_RE.test(org)) return { kind: "proxy", why: "dc" };
     if (Number(exit.asn) === 13335 && warp && warp !== "off") return { kind: "proxy", why: "warp" };
+    if (DC_ASN.has(Number(exit.asn)) || DC_RE.test(org)) return { kind: "proxy", why: "dc" };
     if (!org && !exit.asn) return { kind: "unknown", why: "no-geo" };
     return { kind: "direct", why: "residential" };
   }
@@ -1252,7 +1252,7 @@
     const reasons = [];
     const dc = why("r_dc") || why("r_vpn");
     if (dc) reasons.push(t("r_dc", { org: esc(dc.org || "") + (dc.asn ? " (AS" + dc.asn + ")" : "") }));
-    if (N.warp && N.warp !== "off") reasons.push(t("r_warp"));
+    if (why("r_warp")) reasons.push(t("r_warp"));
     const tzc = TZ_HOME[tz];
     if (tzc && N.cc && tzc !== N.cc && !(tzc === "CN" && ["HK", "MO"].includes(N.cc))) reasons.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(N.cc)) }));
     const rr = why("r_rtc");

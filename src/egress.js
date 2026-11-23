@@ -1,4 +1,4 @@
-// vendored from 1ms.dog/src/egress.js VERSION 1 (3b38822) — copy it again, do not edit rules here
+// vendored from 1ms.dog/src/egress.js VERSION 2 (662db31) — copy it again, do not edit rules here
 // One exit verdict for the whole site. docs/egress-contract.md has the rules; this file implements them.
 //
 // Every page that says 「直连 / 代理」 calls classify() with the addresses it saw and the two anchors, instead of
@@ -8,7 +8,7 @@
 //
 // Vendored copies keep this header and add the canonical commit, so `grep VERSION` finds a stale copy.
 
-export const VERSION = "1";
+export const VERSION = "2";
 
 // The two anchors: our own probes, grey-cloud, answering GET /conn with the caller's address.
 export const ANCHORS = {
@@ -101,8 +101,9 @@ export function pathOf(exit, anchors = {}) {
 export function kindOf(exit, { warp = "" } = {}) {
   const org = exit.org || "";
   if (VPN_RE.test(org)) return { kind: "proxy", why: "vpn" };
-  if (DC_ASN.has(Number(exit.asn)) || DC_RE.test(org)) return { kind: "proxy", why: "dc" };
+  // Cloudflare's own ASN is a proxy exit either way; WARP on is the more precise reason, so it comes first.
   if (Number(exit.asn) === 13335 && warp && warp !== "off") return { kind: "proxy", why: "warp" };
+  if (DC_ASN.has(Number(exit.asn)) || DC_RE.test(org)) return { kind: "proxy", why: "dc" };
   if (!org && !exit.asn) return { kind: "unknown", why: "no-geo" };
   return { kind: "direct", why: "residential" };
 }
