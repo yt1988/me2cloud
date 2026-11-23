@@ -1,4 +1,4 @@
-// vendored from 1ms.dog/src/egress.js VERSION 2 (662db31) — copy it again, do not edit rules here
+// vendored from 1ms.dog/src/egress.js VERSION 3 (73f1272) — copy it again, do not edit rules here
 // One exit verdict for the whole site. docs/egress-contract.md has the rules; this file implements them.
 //
 // Every page that says 「直连 / 代理」 calls classify() with the addresses it saw and the two anchors, instead of
@@ -8,7 +8,7 @@
 //
 // Vendored copies keep this header and add the canonical commit, so `grep VERSION` finds a stale copy.
 
-export const VERSION = "2";
+export const VERSION = "3";
 
 // The two anchors: our own probes, grey-cloud, answering GET /conn with the caller's address.
 export const ANCHORS = {
@@ -29,21 +29,19 @@ export const VPN_RE = /mullvad|proton ?vpn|proton ag|\bnordvpn\b|expressvpn|surf
 export const AI_BLOCKED = new Set(["CN", "HK", "MO", "RU", "IR", "KP", "SY", "CU", "BY"]);
 
 // The time zones the CN split-tunnel logic needs, plus the majors. A caller may pass its own `tzCountry`.
-export const TZ_CC = {
-  "Asia/Shanghai": "CN", "Asia/Chongqing": "CN", "Asia/Urumqi": "CN", "Asia/Harbin": "CN",
-  "Asia/Hong_Kong": "HK", "Asia/Macau": "MO", "Asia/Taipei": "TW",
-  "Asia/Tokyo": "JP", "Asia/Seoul": "KR", "Asia/Singapore": "SG", "Asia/Kuala_Lumpur": "MY",
-  "Asia/Bangkok": "TH", "Asia/Jakarta": "ID", "Asia/Manila": "PH", "Asia/Ho_Chi_Minh": "VN",
-  "Asia/Kolkata": "IN", "Asia/Calcutta": "IN", "Asia/Dubai": "AE", "Asia/Tel_Aviv": "IL",
-  "Europe/London": "GB", "Europe/Paris": "FR", "Europe/Berlin": "DE", "Europe/Amsterdam": "NL",
-  "Europe/Madrid": "ES", "Europe/Rome": "IT", "Europe/Moscow": "RU", "Europe/Warsaw": "PL",
-  "Europe/Kyiv": "UA", "Europe/Kiev": "UA", "Europe/Istanbul": "TR", "Europe/Zurich": "CH",
-  "Europe/Stockholm": "SE", "Europe/Oslo": "NO", "Europe/Helsinki": "FI", "Europe/Dublin": "IE",
-  "America/New_York": "US", "America/Chicago": "US", "America/Denver": "US", "America/Los_Angeles": "US",
-  "America/Toronto": "CA", "America/Vancouver": "CA", "America/Sao_Paulo": "BR", "America/Mexico_City": "MX",
-  "Australia/Sydney": "AU", "Australia/Melbourne": "AU", "Pacific/Auckland": "NZ",
-  "UTC": "UN", "Etc/UTC": "UN", "Etc/GMT": "UN",
-};
+export const TZ_CC = Object.fromEntries((
+  "Asia/Shanghai:CN Asia/Chongqing:CN Asia/Harbin:CN Asia/Urumqi:CN Asia/Hong_Kong:HK Asia/Macau:MO Asia/Taipei:TW Asia/Tokyo:JP " +
+  "Asia/Seoul:KR Asia/Singapore:SG Asia/Kuala_Lumpur:MY Asia/Bangkok:TH Asia/Jakarta:ID Asia/Manila:PH Asia/Ho_Chi_Minh:VN Asia/Saigon:VN " +
+  "Asia/Kolkata:IN Asia/Calcutta:IN Asia/Dubai:AE Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Tel_Aviv:IL Asia/Karachi:PK " +
+  "Europe/London:GB Europe/Dublin:IE Europe/Paris:FR Europe/Berlin:DE Europe/Amsterdam:NL Europe/Brussels:BE Europe/Zurich:CH Europe/Rome:IT " +
+  "Europe/Madrid:ES Europe/Lisbon:PT Europe/Stockholm:SE Europe/Oslo:NO Europe/Helsinki:FI Europe/Copenhagen:DK Europe/Warsaw:PL Europe/Vienna:AT " +
+  "Europe/Prague:CZ Europe/Moscow:RU Europe/Istanbul:TR Europe/Kiev:UA Europe/Kyiv:UA Europe/Athens:GR Europe/Bucharest:RO Europe/Budapest:HU " +
+  "Australia/Sydney:AU Australia/Melbourne:AU Australia/Brisbane:AU Australia/Perth:AU Australia/Adelaide:AU Pacific/Auckland:NZ " +
+  "America/New_York:US America/Chicago:US America/Denver:US America/Los_Angeles:US America/Phoenix:US America/Anchorage:US Pacific/Honolulu:US " +
+  "America/Toronto:CA America/Vancouver:CA America/Montreal:CA America/Edmonton:CA America/Mexico_City:MX America/Sao_Paulo:BR America/Santiago:CL " +
+  "America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE " +
+  "UTC:UN Etc/UTC:UN Etc/GMT:UN"
+).split(" ").map(p => p.split(":")));
 
 export const tzCountry = tz => TZ_CC[tz] || null;
 
@@ -140,11 +138,19 @@ export function classify({ answers = [], anchors = {}, warp = "", tz = "", cc = 
     if (primary.kind === "proxy" && primary.why !== "anchor") {
       reasons.unshift({ k: primary.why === "vpn" ? "r_vpn" : primary.why === "warp" ? "r_warp" : "r_dc", org: primary.org, asn: primary.asn });
     }
-    const fam4 = exits.find(e => e.v4), fam6 = exits.find(e => e.v6);
-    if (fam4 && fam6 && fam4.key !== fam6.key && (fam4.key === primary.key || fam6.key === primary.key)) {
-      reasons.push({ k: "r_fam", a: (fam4.key === primary.key ? fam4 : fam6).ip, b: (fam4.key === primary.key ? fam6 : fam4).ip });
+    // Single-stack probes are compared with the reference exit of their own family: a dual-stack line
+    // has a v4 and a v6 address and they are never equal, so comparing the two families to each other
+    // would call every dual-stack visitor a proxy.
+    const famRef = { 4: primary.v4, 6: primary.v6 };
+    for (const a of answers) {
+      if (!a || !a.stack || !a.ip) continue;
+      const fam = a.ip.includes(":") ? 6 : 4;
+      const ref = famRef[fam];
+      if (ref && netOf(ref) !== netOf(a.ip)) reasons.push({ k: "r_fam", a: a.ip, b: ref });
     }
-    if (rtc && rtc !== primary.ip && (rtc.includes(":") === primary.ip.includes(":"))) reasons.push({ k: "r_rtc", ip: rtc });
+    if (rtc && primary.ip && rtc.includes(":") === primary.ip.includes(":") && netOf(rtc) !== netOf(primary.ip)) {
+      reasons.push({ k: "r_rtc", ip: rtc });
+    }
     const verdict = primary.kind === "proxy" || reasons.some(r => r.k === "r_tz" || r.k === "r_rtc" || r.k === "r_fam")
       ? "proxy" : primary.kind === "unknown" ? "unknown" : "direct";
     return { exits, primary, verdict, reasons };

@@ -294,6 +294,7 @@ export default {
   px_okNote: "Seu IP de saída, sua rede e seu fuso horário batem, então parece uma conexão direta. Mesmo assim, um proxy no roteador ou uma rede corporativa pode passar despercebido: confira se a rede acima é a sua operadora de verdade.",
   px_unknownNote: "A verificação da Cloudflare foi bloqueada, então não dá para saber se há um proxy ligado. O teste funciona normalmente.",
   r_dc: "Sua rede de saída é {org}, um data center. Internet de casa não aparece assim: o mais provável é que você esteja usando VPN ou proxy, ou que este aparelho seja um servidor na nuvem.",
+  r_vpn: "Sua rede de saída é {org}, um serviço de VPN. Uma linha residencial não é assim, então o tráfico passa por essa VPN.",
   r_warp: "O Cloudflare WARP está ligado.",
   ipHidden: "IP ocultado pelo Safari",
   px_hiddenNote: `A opção "Limitar Rastreamento de Endereço IP" do Safari trata algumas requisições desta verificação como rastreadores e as envia pelo relay da Apple. Por isso o IP público, a rede e a latência até a Cloudflare acima são do relay, e a localização vem do fuso horário do seu aparelho. Os pontos de teste da nuvem normalmente não estão nessa lista e continuam diretos, então seus resultados não são afetados.`,

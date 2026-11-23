@@ -142,6 +142,7 @@ export default {
   px_okNote: "Your exit IP, network and time zone all match, so this looks like a direct connection. A proxy on your router or a company network can still go unnoticed; just check that the network above is your real ISP.",
   px_unknownNote: "The Cloudflare check was blocked, so we can't tell whether a proxy is on. The test itself still works.",
   r_dc: "Your exit network is {org}, a data center. Home lines don't look like this, so you're most likely on a VPN or proxy, or this device is itself a cloud server.",
+  r_vpn: "Your exit network is {org}, a VPN service. A home line does not look like this, so your traffic is going through that VPN.",
   r_warp: "Cloudflare WARP is on.",
   ipHidden: "IP hidden by Safari",
   px_hiddenNote: "Safari's Limit IP Address Tracking treats some of this check's requests as trackers and sends them through Apple's relay. So the public IP, network and Cloudflare latency above belong to the relay, and the location comes from your device's time zone. The cloud test endpoints normally aren't on that tracker list and still go direct, so your results aren't affected.",

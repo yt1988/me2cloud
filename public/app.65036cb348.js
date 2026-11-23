@@ -1,6 +1,6 @@
 (function() {
   "use strict";
-  const VERSION = "2";
+  const VERSION = "3";
   const ANCHORS = {
     cn: "https://probe.dog.1msapp.com:9443/conn",
     // TX.SHA: a mainland domain not in any split-tunnel list
@@ -12,57 +12,7 @@
   const DC_ASN = /* @__PURE__ */ new Set([16509, 14618, 15169, 396982, 8075, 8068, 13335, 209242, 54113, 45102, 37963, 45090, 132203, 55990, 14061, 20473, 63949, 16276, 24940, 31898, 9009, 212238, 20940, 19527]);
   const VPN_RE = /mullvad|proton ?vpn|proton ag|\bnordvpn\b|expressvpn|surfshark|private internet access|\bpia\b|windscribe|ipvanish|cyberghost|purevpn|vyprvpn|tunnelbear|hide\.?me|azirevpn|perfect privacy|\bivpn\b|\bovpn\b|airvpn|torguard|hotspot shield|zenmate|privatevpn|ivacy|atlas vpn|mozilla vpn|hide my ass|\bhma\b/i;
   const AI_BLOCKED = /* @__PURE__ */ new Set(["CN", "HK", "MO", "RU", "IR", "KP", "SY", "CU", "BY"]);
-  const TZ_CC = {
-    "Asia/Shanghai": "CN",
-    "Asia/Chongqing": "CN",
-    "Asia/Urumqi": "CN",
-    "Asia/Harbin": "CN",
-    "Asia/Hong_Kong": "HK",
-    "Asia/Macau": "MO",
-    "Asia/Taipei": "TW",
-    "Asia/Tokyo": "JP",
-    "Asia/Seoul": "KR",
-    "Asia/Singapore": "SG",
-    "Asia/Kuala_Lumpur": "MY",
-    "Asia/Bangkok": "TH",
-    "Asia/Jakarta": "ID",
-    "Asia/Manila": "PH",
-    "Asia/Ho_Chi_Minh": "VN",
-    "Asia/Kolkata": "IN",
-    "Asia/Calcutta": "IN",
-    "Asia/Dubai": "AE",
-    "Asia/Tel_Aviv": "IL",
-    "Europe/London": "GB",
-    "Europe/Paris": "FR",
-    "Europe/Berlin": "DE",
-    "Europe/Amsterdam": "NL",
-    "Europe/Madrid": "ES",
-    "Europe/Rome": "IT",
-    "Europe/Moscow": "RU",
-    "Europe/Warsaw": "PL",
-    "Europe/Kyiv": "UA",
-    "Europe/Kiev": "UA",
-    "Europe/Istanbul": "TR",
-    "Europe/Zurich": "CH",
-    "Europe/Stockholm": "SE",
-    "Europe/Oslo": "NO",
-    "Europe/Helsinki": "FI",
-    "Europe/Dublin": "IE",
-    "America/New_York": "US",
-    "America/Chicago": "US",
-    "America/Denver": "US",
-    "America/Los_Angeles": "US",
-    "America/Toronto": "CA",
-    "America/Vancouver": "CA",
-    "America/Sao_Paulo": "BR",
-    "America/Mexico_City": "MX",
-    "Australia/Sydney": "AU",
-    "Australia/Melbourne": "AU",
-    "Pacific/Auckland": "NZ",
-    "UTC": "UN",
-    "Etc/UTC": "UN",
-    "Etc/GMT": "UN"
-  };
+  const TZ_CC = Object.fromEntries("Asia/Shanghai:CN Asia/Chongqing:CN Asia/Harbin:CN Asia/Urumqi:CN Asia/Hong_Kong:HK Asia/Macau:MO Asia/Taipei:TW Asia/Tokyo:JP Asia/Seoul:KR Asia/Singapore:SG Asia/Kuala_Lumpur:MY Asia/Bangkok:TH Asia/Jakarta:ID Asia/Manila:PH Asia/Ho_Chi_Minh:VN Asia/Saigon:VN Asia/Kolkata:IN Asia/Calcutta:IN Asia/Dubai:AE Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Tel_Aviv:IL Asia/Karachi:PK Europe/London:GB Europe/Dublin:IE Europe/Paris:FR Europe/Berlin:DE Europe/Amsterdam:NL Europe/Brussels:BE Europe/Zurich:CH Europe/Rome:IT Europe/Madrid:ES Europe/Lisbon:PT Europe/Stockholm:SE Europe/Oslo:NO Europe/Helsinki:FI Europe/Copenhagen:DK Europe/Warsaw:PL Europe/Vienna:AT Europe/Prague:CZ Europe/Moscow:RU Europe/Istanbul:TR Europe/Kiev:UA Europe/Kyiv:UA Europe/Athens:GR Europe/Bucharest:RO Europe/Budapest:HU Australia/Sydney:AU Australia/Melbourne:AU Australia/Brisbane:AU Australia/Perth:AU Australia/Adelaide:AU Pacific/Auckland:NZ America/New_York:US America/Chicago:US America/Denver:US America/Los_Angeles:US America/Phoenix:US America/Anchorage:US Pacific/Honolulu:US America/Toronto:CA America/Vancouver:CA America/Montreal:CA America/Edmonton:CA America/Mexico_City:MX America/Sao_Paulo:BR America/Santiago:CL America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE UTC:UN Etc/UTC:UN Etc/GMT:UN".split(" ").map((p) => p.split(":")));
   const tzCountry = (tz) => TZ_CC[tz] || null;
   function netOf(ip) {
     if (!ip) return "";
@@ -138,11 +88,16 @@
       if (primary.kind === "proxy" && primary.why !== "anchor") {
         reasons.unshift({ k: primary.why === "vpn" ? "r_vpn" : primary.why === "warp" ? "r_warp" : "r_dc", org: primary.org, asn: primary.asn });
       }
-      const fam4 = exits.find((e) => e.v4), fam6 = exits.find((e) => e.v6);
-      if (fam4 && fam6 && fam4.key !== fam6.key && (fam4.key === primary.key || fam6.key === primary.key)) {
-        reasons.push({ k: "r_fam", a: (fam4.key === primary.key ? fam4 : fam6).ip, b: (fam4.key === primary.key ? fam6 : fam4).ip });
+      const famRef = { 4: primary.v4, 6: primary.v6 };
+      for (const a of answers) {
+        if (!a || !a.stack || !a.ip) continue;
+        const fam = a.ip.includes(":") ? 6 : 4;
+        const ref2 = famRef[fam];
+        if (ref2 && netOf(ref2) !== netOf(a.ip)) reasons.push({ k: "r_fam", a: a.ip, b: ref2 });
       }
-      if (rtc && rtc !== primary.ip && rtc.includes(":") === primary.ip.includes(":")) reasons.push({ k: "r_rtc", ip: rtc });
+      if (rtc && primary.ip && rtc.includes(":") === primary.ip.includes(":") && netOf(rtc) !== netOf(primary.ip)) {
+        reasons.push({ k: "r_rtc", ip: rtc });
+      }
       const verdict = primary.kind === "proxy" || reasons.some((r) => r.k === "r_tz" || r.k === "r_rtc" || r.k === "r_fam") ? "proxy" : primary.kind === "unknown" ? "unknown" : "direct";
       return { exits, primary, verdict, reasons };
     }
@@ -175,7 +130,6 @@
   const CT_ORDER = ["as", "na", "eu", "oc", "sa", "me", "af"];
   const AX_MIN = 2, AX_MAX = 3e3, TICKS = [5, 10, 20, 50, 100, 200, 500, 1e3, 2e3];
   const PEAK = [20, 23];
-  const TZ_HOME = { ...TZ_CC, ...Object.fromEntries("Asia/Saigon:VN Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Karachi:PK Europe/Brussels:BE Europe/Lisbon:PT Europe/Copenhagen:DK Europe/Vienna:AT Europe/Prague:CZ Europe/Athens:GR Europe/Bucharest:RO Europe/Budapest:HU Australia/Brisbane:AU Australia/Perth:AU Australia/Adelaide:AU America/Phoenix:US America/Anchorage:US Pacific/Honolulu:US America/Montreal:CA America/Edmonton:CA America/Santiago:CL America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE".split(" ").map((p) => p.split(":"))) };
   const RULE_SPEC = [
     { "v": "_detect", "d": "speed.cloudflare.com" },
     { "v": "_detect", "d": "stun.cloudflare.com" },
@@ -763,7 +717,7 @@
   });
   const flagCode = (cc) => cc === "TW" ? "cn" : cc.toLowerCase();
   const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${flagCode(cc)}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
-  const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_HOME[NET.tz] ? TZ_HOME[NET.tz] : NET.cc || "";
+  const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_CC[NET.tz] ? TZ_CC[NET.tz] : NET.cc || "";
   const excluded = (e) => {
     if (S.home === "all" || !e.country || !homeCC()) return false;
     const mine = e.country === homeCC();
@@ -1243,22 +1197,18 @@
     const fam = (x) => x.includes(":") ? 6 : 4;
     const rtcMain = (rtc || []).find((x) => N.ip && fam(x) === fam(N.ip)) || "";
     const answers = N.ip ? [{ id: "main", group: "web", ip: N.ip, org: N.org || "", asn: N.asn || null, family: fam(N.ip) }] : [];
-    for (const [f, got] of [[4, N.ip4], [6, N.ip6]]) {
-      const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find((x) => fam(x) === f);
-      if (got && ref && netOf(got) !== netOf(ref)) answers.push({ id: "stack" + f, group: "stack", ip: got, family: f });
-    }
-    const V = classify({ mode: "single", answers, warp: N.warp, cc: N.cc, rtc: rtcMain });
-    const why = (k) => V.reasons.find((r) => r.k === k);
-    const reasons = [];
-    const dc = why("r_dc") || why("r_vpn");
-    if (dc) reasons.push(t("r_dc", { org: esc(dc.org || "") + (dc.asn ? " (AS" + dc.asn + ")" : "") }));
-    if (why("r_warp")) reasons.push(t("r_warp"));
-    const tzc = TZ_HOME[tz];
-    if (tzc && N.cc && tzc !== N.cc && !(tzc === "CN" && ["HK", "MO"].includes(N.cc))) reasons.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(N.cc)) }));
-    const rr = why("r_rtc");
-    if (rr) reasons.push(t("r_rtc", { a: esc(rr.ip), b: esc(N.ip) }));
-    const rf = why("r_fam");
-    if (rf) reasons.push(t("r_fam", { f: "IPv" + fam(rf.b), a: esc(rf.b), b: esc(rf.a) }));
+    for (const [f, got] of [[4, N.ip4], [6, N.ip6]]) if (got) answers.push({ id: "stack" + f, group: "stack", ip: got, family: f, stack: true });
+    const V = classify({ mode: "single", answers, warp: N.warp, tz, cc: N.cc, rtc: rtcMain });
+    const tzc = tzCountry(tz) || "";
+    const reasons = V.reasons.map((r) => {
+      if (r.k === "r_dc") return t("r_dc", { org: esc(r.org || "") + (r.asn ? " (AS" + r.asn + ")" : "") });
+      if (r.k === "r_vpn") return t("r_vpn", { org: esc(r.org || "") + (r.asn ? " (AS" + r.asn + ")" : "") });
+      if (r.k === "r_warp") return t("r_warp");
+      if (r.k === "r_tz") return t("r_tz", { a: esc(country(r.home)), b: esc(country(r.cc)) });
+      if (r.k === "r_rtc") return t("r_rtc", { a: esc(r.ip), b: esc(N.ip) });
+      if (r.k === "r_fam") return t("r_fam", { f: "IPv" + fam(r.a), a: esc(r.a), b: esc(r.b) });
+      return "";
+    }).filter(Boolean);
     const ua = navigator.userAgent, safari = /AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Android/.test(ua);
     const RELAY_IP = /^(104\.28\.|146\.75\.|172\.2(2[4-9]|3[01])\.|2a09:bac[0-7]:|2a02:26f7:|2a04:4e41:)/i;
     const viaRelay = !N.self && N.warp === "off" && (N.asn === 36183 || safari && [13335, 209242, 54113].includes(N.asn));

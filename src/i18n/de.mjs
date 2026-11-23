@@ -293,6 +293,7 @@ export default {
   px_okNote: "Ausgangs-IP, Netz und Zeitzone passen zusammen, das sieht nach einer direkten Verbindung aus. Ein Proxy auf dem Router oder ein Firmennetz kann trotzdem unentdeckt bleiben. Prüf einfach, ob oben dein echter Internetanbieter steht.",
   px_unknownNote: "Die Cloudflare-Prüfung wurde blockiert, daher lässt sich nicht sagen, ob ein Proxy aktiv ist. Der Test selbst funktioniert trotzdem.",
   r_dc: "Dein Ausgangsnetz ist {org}, ein Rechenzentrum. Ein Anschluss zu Hause sieht so nicht aus: Höchstwahrscheinlich nutzt du ein VPN oder einen Proxy, oder dieses Gerät ist selbst ein Cloud-Server.",
+  r_vpn: "Dein Ausgangsnetz ist {org}, ein VPN-Dienst. Ein Hausanschluss sieht nicht so aus, dein Datenverkehr läuft also über dieses VPN.",
   r_warp: "Cloudflare WARP ist an.",
   ipHidden: "IP von Safari verborgen",
   px_hiddenNote: "Safaris Option „IP-Adresse verbergen“ stuft einige Anfragen dieser Prüfung als Tracker ein und schickt sie über Apples Relay. Die öffentliche IP, das Netz und die Cloudflare-Latenz oben gehören deshalb zum Relay, und der Standort kommt aus der Zeitzone deines Geräts. Die Cloud-Messpunkte stehen normalerweise nicht auf dieser Liste und laufen weiter direkt, deine Ergebnisse sind also nicht betroffen.",

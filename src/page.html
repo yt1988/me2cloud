@@ -242,16 +242,6 @@
   const CT_ORDER = ["as", "na", "eu", "oc", "sa", "me", "af"];
   const AX_MIN = 2, AX_MAX = 3000, TICKS = [5, 10, 20, 50, 100, 200, 500, 1000, 2000];
   const PEAK = [20, 23];
-  // The zones the page names that the vendored core's TZ_CC does not carry yet. The "your country" filter and the
-  // r_tz reason need the device's own country, and a missing zone would fall back to the exit's instead; asked for
-  // in the egress report, and this block goes away once core has them.
-  const TZ_HOME = { ...TZ_CC, ...Object.fromEntries(("Asia/Saigon:VN Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Karachi:PK " +
-    "Europe/Brussels:BE Europe/Lisbon:PT Europe/Copenhagen:DK Europe/Vienna:AT Europe/Prague:CZ Europe/Athens:GR " +
-    "Europe/Bucharest:RO Europe/Budapest:HU Australia/Brisbane:AU Australia/Perth:AU Australia/Adelaide:AU " +
-    "America/Phoenix:US America/Anchorage:US Pacific/Honolulu:US America/Montreal:CA America/Edmonton:CA " +
-    "America/Santiago:CL America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR " +
-    "Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE")
-    .split(" ").map(p => p.split(":")))};
   // Bypass rules: w = wildcard on the test hosts only, s = domain suffix (used where a tool has no wildcard rule),
   // d = one host. Tools with wildcards get the narrow form, so unrelated traffic of a provider is never sent direct.
   // scripts/build.mjs turns this list into the remote rule sets under /rules/.
@@ -655,7 +645,7 @@
   const flagCode = cc => cc === "TW" ? "cn" : cc.toLowerCase();
   const flag = (cc, cls) => /^[A-Z]{2}$/.test(cc || "") ? `<img class="${cls || "flag"}" src="/flags/${flagCode(cc)}.svg" alt="${esc(country(cc))}" width="20" height="15" loading="lazy">` : "";
   // the visitor's own country: the exit IP's, or the time zone's when a proxy hides it
-  const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_HOME[NET.tz] ? TZ_HOME[NET.tz] : NET.cc || "";
+  const homeCC = () => NET.state !== "done" ? "" : NET.verdict === "warn" && TZ_CC[NET.tz] ? TZ_CC[NET.tz] : NET.cc || "";
   // own-country filter: "excl" leaves those regions out, "only" keeps just them
   // custom nodes follow the own-country filter like providers' regions; one with no known country is never filtered out
   const excluded = e => { if (S.home === "all" || !e.country || !homeCC()) return false; const mine = e.country === homeCC(); return S.home === "excl" ? mine : !mine; };
@@ -1019,31 +1009,24 @@
     N.has6 = N.ip6 ? true : N.ip4 ? false : null;          // both failed: blocked, so unknown rather than "no IPv6"
     // One verdict for the whole site (docs/egress-contract.md): the vendored classify() decides whether this exit is
     // direct or a proxy and which reasons apply; the page only turns them into text. The main exit is the path the
-    // tests take (/meta, else the trace, else /_ms/me). A single-stack check joins in only when it leaves from a
-    // different network than the main exit, or than WebRTC's address of its family: those are extra addresses of one
-    // connection, and two answers that agree must not be counted as two exits.
+    // tests take (/meta, else the trace, else /_ms/me). The single-stack checks and WebRTC's address are extra
+    // addresses of the same connection, marked `stack` so core compares each with the reference exit of its own
+    // family (a /16 or /64): a dual-stack line must not be read as two exits.
     const fam = x => x.includes(":") ? 6 : 4;
     const rtcMain = (rtc || []).find(x => N.ip && fam(x) === fam(N.ip)) || "";
     const answers = N.ip ? [{ id: "main", group: "web", ip: N.ip, org: N.org || "", asn: N.asn || null, family: fam(N.ip) }] : [];
-    for (const [f, got] of [[4, N.ip4], [6, N.ip6]]) {
-      const ref = N.ip && fam(N.ip) === f ? N.ip : (rtc || []).find(x => fam(x) === f);
-      if (got && ref && netOf(got) !== netOf(ref)) answers.push({ id: "stack" + f, group: "stack", ip: got, family: f });
-    }
-    // tz stays with the page's own table: core's TZ_CC is a subset of it (asked about in the egress report), and
-    // passing tz would drop the time-zone line for the zones core does not carry yet
-    const V = classify({ mode: "single", answers, warp: N.warp, cc: N.cc, rtc: rtcMain });
-    const why = k => V.reasons.find(r => r.k === k);
-    const reasons = [];
-    // a VPN brand and a data centre are the same finding to this page, which offers no separate line for either
-    const dc = why("r_dc") || why("r_vpn");
-    if (dc) reasons.push(t("r_dc", { org: esc(dc.org || "") + (dc.asn ? " (AS" + dc.asn + ")" : "") }));
-    if (why("r_warp")) reasons.push(t("r_warp"));
-    const tzc = TZ_HOME[tz];
-    if (tzc && N.cc && tzc !== N.cc && !(tzc === "CN" && ["HK", "MO"].includes(N.cc))) reasons.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(N.cc)) }));
-    const rr = why("r_rtc");
-    if (rr) reasons.push(t("r_rtc", { a: esc(rr.ip), b: esc(N.ip) }));
-    const rf = why("r_fam");
-    if (rf) reasons.push(t("r_fam", { f: "IPv" + fam(rf.b), a: esc(rf.b), b: esc(rf.a) }));
+    for (const [f, got] of [[4, N.ip4], [6, N.ip6]]) if (got) answers.push({ id: "stack" + f, group: "stack", ip: got, family: f, stack: true });
+    const V = classify({ mode: "single", answers, warp: N.warp, tz, cc: N.cc, rtc: rtcMain });
+    const tzc = tzCountry(tz) || "";
+    const reasons = V.reasons.map(r => {
+      if (r.k === "r_dc") return t("r_dc", { org: esc(r.org || "") + (r.asn ? " (AS" + r.asn + ")" : "") });
+      if (r.k === "r_vpn") return t("r_vpn", { org: esc(r.org || "") + (r.asn ? " (AS" + r.asn + ")" : "") });
+      if (r.k === "r_warp") return t("r_warp");
+      if (r.k === "r_tz") return t("r_tz", { a: esc(country(r.home)), b: esc(country(r.cc)) });
+      if (r.k === "r_rtc") return t("r_rtc", { a: esc(r.ip), b: esc(N.ip) });
+      if (r.k === "r_fam") return t("r_fam", { f: "IPv" + fam(r.a), a: esc(r.a), b: esc(r.b) });
+      return "";
+    }).filter(Boolean);
     // Apple's relay (Cloudflare, Akamai, Fastly egress) as the main exit comes in two forms. With iCloud Private Relay
     // every Safari request goes through it, the tests included: a warning of its own, since direct rules can't route
     // around it. With only "Limit IP Address Tracking" on, Safari relays just the domains on its tracker list, which
