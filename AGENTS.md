@@ -10,6 +10,9 @@ Me2Cloud (https://m2c.1ms.dog) measures latency, jitter and timeout rate from th
 22 cloud providers. It is a static site served by a Cloudflare Worker with static assets:
 
 - `src/page.html`: the page, including the app code, the styles and the endpoint registry (the `ENDPOINTS` block).
+- `src/egress.js`: the exit verdict the page shows (direct or proxied), a copy of 1ms.dog's `src/egress.js`;
+  `scripts/build.mjs` fills it into the page's `EGRESS` block. Copy the shell's file again rather than editing rules
+  here, and keep its `vendored from … VERSION` line at the top.
 - `src/i18n/*.mjs`: the text, in 10 languages (en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru). Missing keys fall back to `en.mjs`.
 - `scripts/build.mjs`: builds `public/` from those: one page per language, a landing page per provider and language,
   `app.<hash>.js`, `assets/app.<hash>.css`, one `assets/l.<lang>.<hash>.js` of texts per language, `endpoints.json`,
@@ -90,6 +93,9 @@ node scripts/build.mjs
   - The theme, language cookie and navigation bar are added by 1ms-shell in front of the Worker.
 - **Privacy.** Results stay in the browser unless the visitor shares them. Share links never carry the IP address or
   custom endpoints. Nothing is logged.
+- **The exit verdict.** The page does not judge "direct or proxied" itself: `src/egress.js` (vendored, the rules are
+  `docs/egress-contract.md` in 1ms-shell) decides it from the addresses the page saw, and the page turns its
+  reasons into text. Do not grow a second data-centre regex or time-zone table here.
 - **Words.** "Packet loss" is used only for ICMP results from vps2cloud. A request or handshake that did not finish in
   time is a timeout. See `docs/notes.md`.
 

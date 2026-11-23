@@ -116,3 +116,17 @@ Technical reasons behind choices the code does not explain, and what was measure
   itself is the shell's: it shipped `ms-skip` suite-wide the same day (1ms-shell 46c5382), prepended before the bar,
   and `npm run check` fails a tool that writes its own. A local copy was tried first and removed: it only became
   reachable after the shell's seven tab stops, and two links doing one job is worse than one.
+- **The exit verdict is the shell's file, filled in at build time (2026-11-23).** The network check no longer carries
+  its own data-centre regex and WARP/ASN reading: `src/egress.js` is a copy of 1ms.dog's `src/egress.js` (its rules
+  are `docs/egress-contract.md` there), and `scripts/build.mjs` fills it into the page's `EGRESS` block with the
+  `export` keywords stripped, so there is one implementation and no extra request. The page still decides *what to
+  feed it*: the main exit is the tests' path (`/meta`, else the trace, else `/_ms/me`), and a single-stack check joins
+  in only when it leaves from a different `/16` or `/64` than the main exit, or than WebRTC's address of its family.
+  Those are extra addresses of one connection; handing both families in unconditionally would make `classify()` read
+  a dual-stack home line as two exits (its `r_fam` compares the families with each other, and either one being the
+  primary is enough), which is the false "检测到代理" this page must not show. iCloud Private Relay stays here, as
+  agreed: it is a Safari behaviour, not an exit rule. Three gaps in core were reported to the shell rather than
+  patched here: its `TZ_CC` is a subset of this page's (30 zones, e.g. `Europe/Brussels`, `Australia/Perth`), so the
+  time-zone line and the "your country" filter keep the fuller table until core carries them; its `why` never reaches
+  "warp" because AS13335 is in `DC_ASN` first, so the WARP line stays here; and a VPN brand (Mullvad, Proton) comes
+  back as `r_vpn`, which this page renders with the `r_dc` wording since it has no separate line.

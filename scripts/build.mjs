@@ -132,7 +132,15 @@ export async function build({ check = false } = {}) {
   if (scripts.length !== 2) throw new Error("expected the pre-paint script and the app script in src/page.html");
   // the app's own language list, [code, native name], read here so the menu the page ships cannot drift from it
   const langNames = JSON.parse(/const LANGS = (\[[\s\S]*?\]);/.exec(scripts[1][1])[1]);
-  const source = scripts[1][1];
+  // the exit verdict has one implementation for the whole site: src/egress.js is a copy of the shell's file (its
+  // rules are docs/egress-contract.md), filled into the page's EGRESS block with the `export` keywords stripped, so
+  // the page and the shell judge a connection the same way without a second request
+  const egress = await readFile(new URL("egress.js", src), "utf8");
+  if (!/^\/\/ vendored from 1ms\.dog\/src\/egress\.js VERSION \d+/.test(egress))
+    throw new Error("src/egress.js lost its vendored-from header: copy 1ms.dog/src/egress.js again");
+  const EGRESS_BLOCK = /\/\* EGRESS:BEGIN[\s\S]*?EGRESS:END \*\//;
+  if (!EGRESS_BLOCK.test(scripts[1][1])) throw new Error("the app script has no EGRESS block for src/egress.js");
+  const source = scripts[1][1].replace(EGRESS_BLOCK, () => `/* EGRESS:BEGIN (from src/egress.js) */\n${egress.replace(/^export (?=(?:const|function)\b)/gm, "")}  /* EGRESS:END */`);
   new Function(source);                                                 // must parse
   // down to ES2019 (old in-app browsers, Chrome 70 and Safari 12 era, can not parse ?. or ??: one unparsable token and
   // the whole script does nothing). Not minified, so the shipped code reads like the source.
