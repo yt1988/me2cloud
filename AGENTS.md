@@ -161,6 +161,11 @@ repository.
 Small commits, with a message that says what changed for the visitor. Technical reasons the code does not show go in
 `docs/notes.md`.
 
+`public/` is generated and committed: stage it with `git add -A public`, not `git add -u`. New hashed files (an
+`app.<hash>.js`, a language's `l.<lang>.<hash>.js`) are untracked and `-u` skips them, leaving the pages pointing at a
+file that is not in the repository. `npm test` catches that, but only after the push, and the deploy has then already
+failed.
+
 ## 提交说明
 
 - 用英文，一句话说清改了什么。
