@@ -51,7 +51,17 @@ jobs:
           want=$(grep -o 'app\.[0-9a-f]*\.js' public/index.html | head -1)
           for i in 1 2 3 4 5 6; do
             got=$(curl -fsS "https://$HOST/" | grep -o 'app\.[0-9a-f]*\.js' | head -1 || true)
-            [ "$got" = "$want" ] && { echo "live: $got"; exit 0; }
+            [ "$got" = "$want" ] && break
             sleep 10
           done
-          echo "::error::https://$HOST/ serves ${got:-nothing}, expected $want"; exit 1
+          [ "$got" = "$want" ] || { echo "::error::https://$HOST/ serves ${got:-nothing}, expected $want"; exit 1; }
+          echo "live: $got"
+          # Every hashed file the live page names must be served: a tree that carries the page but not the file it
+          # points at (a new bundle left out of the commit) looks deployed and has no script.
+          for page in / /zh-cn/; do
+            for f in $(curl -fsS "https://$HOST$page" | grep -oE '/(app\.[0-9a-f]+\.js|assets/app\.[0-9a-f]+\.css|assets/l\.[a-z-]+\.[0-9a-f]+\.js)' | sort -u); do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "https://$HOST$f")
+              echo "$code $f"
+              [ "$code" = 200 ] || { echo "::error::$f is named by $page but serves $code"; exit 1; }
+            done
+          done
