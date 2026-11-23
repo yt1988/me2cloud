@@ -117,7 +117,7 @@ Technical reasons behind choices the code does not explain, and what was measure
   and `npm run check` fails a tool that writes its own. A local copy was tried first and removed: it only became
   reachable after the shell's seven tab stops, and two links doing one job is worse than one.
 - **The exit verdict is the shell's file, filled in at build time (2026-11-23).** The network check no longer carries
-  its own data-centre regex and WARP/ASN reading: `src/egress.js` is a copy of 1ms.dog's `src/egress.js` (VERSION 3;
+  its own data-centre regex and WARP/ASN reading: `src/egress.js` is a copy of 1ms.dog's `src/egress.js` (VERSION 4;
   its rules are `docs/egress-contract.md` there), and `scripts/build.mjs` fills it into the page's `EGRESS` block with
   the `export` keywords stripped, so there is one implementation and no extra request. The page decides *what to feed
   it*: the main exit is the tests' path (`/meta`, else the trace, else `/_ms/me`) and the single-stack checks and
@@ -126,4 +126,5 @@ Technical reasons behind choices the code does not explain, and what was measure
   stays here, as agreed: it is a Safari behaviour, not an exit rule. The VERSION 1 report to the shell (cross-family
   `r_fam`, a short `TZ_CC`, an unreachable `why: "warp"`, a sentence for `r_vpn`, an exact-address `r_rtc`) is fixed
   in VERSION 2 and 3, so this page has no table or rule of its own left: the time-zone line, the "your country"
-  filter and the VPN line all come from core.
+  filter and the VPN line all come from core. `npm run shared` in 1ms-shell compares the copy with the shell's
+  (allowing the `// vendored from …` first line) and fails if a tool writes one of the shared tables itself.
