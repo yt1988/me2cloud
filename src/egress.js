@@ -1,4 +1,4 @@
-// vendored from 1ms.dog/src/egress.js VERSION 6 (aa4e9f8) — copy it again, do not edit rules here
+// vendored from 1ms.dog/src/egress.js VERSION 7 (414073e) — copy it again, do not edit rules here
 // One exit verdict for the whole site. docs/egress-contract.md has the rules; this file implements them.
 //
 // Every page that says 「直连 / 代理」 calls classify() with the addresses it saw and the two anchors, instead of
@@ -8,13 +8,30 @@
 //
 // Vendored copies keep this header and add the canonical commit, so `grep VERSION` finds a stale copy.
 
-export const VERSION = "6";
+export const VERSION = "7";
 
-// The two anchors: our own probes, grey-cloud, answering GET /conn with the caller's address.
-export const ANCHORS = {
-  cn: "https://probe.dog.1msapp.com:9443/conn", // TX.SHA: a mainland domain not in any split-tunnel list
-  intl: "https://probe.1ms.dog/conn",          // Tokyo: the same binary, the same answer shape
-};
+// Where our own probes live is deploy-time data, not repository content (docs/tool-contract.md §2): the page
+// carries `<meta name="ms-anchors" content="cn=…;intl=…">` and the values arrive from the Worker's env, so a
+// self-hosted copy gets {} and the page hides what it cannot measure. One parser for all four ms-* metas.
+export function endpoints(name, doc = globalThis.document) {
+  const out = {};
+  const el = doc && doc.querySelector ? doc.querySelector(`meta[name="${name}"]`) : null;
+  const text = (el && el.getAttribute("content")) || "";
+  for (const part of String(text).split(";")) {
+    const at = part.indexOf("=");
+    if (at < 1) continue;
+    const k = part.slice(0, at).trim(), v = part.slice(at + 1).trim();
+    if (k && v) out[k] = v;
+  }
+  return out;
+}
+
+// The two anchors: our own probes, grey-cloud, answering GET /conn with the caller's address. Both values are
+// full URLs, so a caller fetches them as they are. Nothing injected → both empty, and pathOf() says unknown-path.
+export function readAnchors(doc = globalThis.document) {
+  const e = endpoints("ms-anchors", doc);
+  return { cn: e.cn || "", intl: e.intl || "" };
+}
 
 // Which anchor a probe's group is measured against. `udp` (STUN) is evidence only: it says what UDP sees,
 // not what a destination sees, so it has no anchor of its own.

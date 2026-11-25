@@ -1,12 +1,22 @@
 (function() {
   "use strict";
-  const VERSION = "6";
-  const ANCHORS = {
-    cn: "https://probe.dog.1msapp.com:9443/conn",
-    // TX.SHA: a mainland domain not in any split-tunnel list
-    intl: "https://probe.1ms.dog/conn"
-    // Tokyo: the same binary, the same answer shape
-  };
+  const VERSION = "7";
+  function endpoints(name, doc = globalThis.document) {
+    const out = {};
+    const el = doc && doc.querySelector ? doc.querySelector(`meta[name="${name}"]`) : null;
+    const text = el && el.getAttribute("content") || "";
+    for (const part of String(text).split(";")) {
+      const at = part.indexOf("=");
+      if (at < 1) continue;
+      const k = part.slice(0, at).trim(), v = part.slice(at + 1).trim();
+      if (k && v) out[k] = v;
+    }
+    return out;
+  }
+  function readAnchors(doc = globalThis.document) {
+    const e = endpoints("ms-anchors", doc);
+    return { cn: e.cn || "", intl: e.intl || "" };
+  }
   const GROUP_ANCHOR = { cn: "cn", intl: "intl", ai: "intl", web: "intl", stack: "intl", udp: null };
   const DC_RE = /amazon|google|microsoft|azure|digitalocean|vultr|choopa|constant company|linode|akamai|ovh|hetzner|oracle|alibaba|aliyun|tencent|huawei|m247|datacamp|cloudflare|leaseweb|contabo|hostinger|it7|racknerd|colocrossing|psychz|zenlayer|g-core|gcore|hostwinds|scaleway|ionos|kamatera|upcloud|bandwagon|dmit|cogent|quadranet|servers\.com|packet|equinix|fastly|cdn77|datapacket|tzulo|hostdare|greencloud|nexeon|frantech|buyvm|ucloud|kingsoft|baidu cloud|bytedance|volcano|fastnet data|hosting|\bvps\b|data ?cent/i;
   const DC_ASN = /* @__PURE__ */ new Set([16509, 14618, 15169, 396982, 8075, 8068, 13335, 209242, 54113, 45102, 37963, 45090, 132203, 55990, 14061, 20473, 63949, 16276, 24940, 31898, 9009, 212238, 20940, 19527]);
