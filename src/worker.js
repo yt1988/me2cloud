@@ -49,7 +49,7 @@ export default {
       return release(m[1], m[2], req, ctx);
     }
 
-    if (url.pathname === "/tokyo.json") return tokyo(req, ctx);
+    if (url.pathname === "/tokyo.json") return tokyo(req, ctx, env);
 
     return new Response(req.method === "HEAD" ? null : "Not found\n", {
       status: 404,
@@ -59,15 +59,16 @@ export default {
 };
 
 // per region and IP family: the 24-hour median and share of runs answered, and since when it has been unreachable
-const TOKYO = "https://data.1ms.dog:2083/me2cloud/summary.json";
 const TOKYO_KEY = "https://m2c.1ms.dog/__tokyo";
-async function tokyo(req, ctx) {
+async function tokyo(req, ctx, env) {
+  const root = (env.DATA_URL || "").replace(/\/+$/, "");
+  if (!root) return new Response("{}", { status: 502, headers: { "content-type": "application/json", "cache-control": "no-store" } });
   const cache = caches.default;
   let res = await cache.match(TOKYO_KEY);
   if (!res) {
     let j = null;
     try {
-      const up = await fetch(TOKYO, { signal: AbortSignal.timeout(5000) });
+      const up = await fetch(root + "/me2cloud/summary.json", { signal: AbortSignal.timeout(5000) });
       if (up.ok) j = await up.json();
     } catch {}
     if (!j || !j.regions) return new Response("{}", { status: 502, headers: { "content-type": "application/json", "cache-control": "no-store" } });

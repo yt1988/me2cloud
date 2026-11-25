@@ -6,7 +6,7 @@ and the user are assigned in 1ms-shell `docs/processes.md` ("专用服务器"); 
 - **What it does**: every 15 minutes, from minute 7 (`1ms-me2cloud-watch.timer`), one run of
   [vps2cloud](https://github.com/yt1988/vps2cloud) in TCP mode: 3 handshakes per region over IPv4 and IPv6, with no TLS and no ICMP.
   The endpoint list is `https://m2c.1ms.dog/endpoints.json`, fetched at most every 6 hours.
-- **What it publishes**: files in `/srv/1ms-data/me2cloud/`, served read-only at `https://data.1ms.dog:2083/me2cloud/`, which the Worker fetches.
+- **What it publishes**: files in `/srv/1ms-data/me2cloud/`, served read-only at `https://<your-domain>/me2cloud/`, which the Worker fetches.
   Each file is written to a temporary file and renamed, so a reader never sees half a file.
   - `latest.json`: the last run, with median, p90, jitter, timeout rate (field `loss`, a share of the handshakes) and error per region and IP family.
   - `summary.json`: for each region and family (`v4`, `v6`), these fields:
@@ -60,7 +60,7 @@ systemctl start 1ms-me2cloud-watch && journalctl -u 1ms-me2cloud-watch -n 20 --n
 ```
 
 ```bash
-curl -s https://data.1ms.dog:2083/me2cloud/summary.json | head -c 400
+curl -s https://<your-domain>/me2cloud/summary.json | head -c 400
 ```
 
 ## vps2cloud release check (by hand, before a release)

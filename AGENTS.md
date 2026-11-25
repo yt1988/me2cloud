@@ -61,6 +61,10 @@ the Worker), then purges `m2c.1ms.dog` from the edge cache, since a zone cache r
 repository secrets `CLOUDFLARE_API_TOKEN` (Workers edit and Zone Cache Purge) and `CLOUDFLARE_ACCOUNT_ID`. Forks skip
 the job. Watch it with `gh run watch`, then check the live page serves the new `app.<hash>.js`.
 
+The Worker reads the results directory from `DATA_URL` (`/tokyo.json`, its `/me2cloud/` part). Set it as a
+secret with `wrangler secret put DATA_URL` (or in the dashboard), never in `wrangler.toml`: a plain `[vars]` value is
+wiped by the next Workers Builds deploy. Without it `/tokyo.json` answers 502 and the page hides that block.
+
 Changes to `server/watch/` on `main` also publish a watcher release (`.github/workflows/watch.yml`, see below).
 The page has no releases.
 
@@ -105,7 +109,7 @@ A small Go program, run by a systemd timer on a server of your own, that checks 
 [vps2cloud](https://github.com/yt1988/vps2cloud) every 15 minutes. It runs in TCP mode: 3 handshakes per region over
 IPv4 and IPv6, with no TLS and no ICMP. It keeps 7 days of medians in its state directory and writes `latest.json`
 and `summary.json` into a directory that a web server publishes read-only. The Worker's `/tokyo.json` fetches
-`summary.json` (the `TOKYO` address in `src/worker.js`) and keeps it 5 minutes. It cuts the file down to what the
+`summary.json` (from `DATA_URL`, its `/me2cloud/` part) and keeps it 5 minutes. It cuts the file down to what the
 page shows: a reference line in each region's details, and a mark on regions the server cannot reach either. The
 file formats are in `server/watch/README.md`. The page works without the watcher; the reference line simply does
 not appear.
@@ -137,7 +141,7 @@ not appear.
 6. Verify:
    - `systemctl start <unit>` and `journalctl -u <unit> -n 20`. A run takes about 25 s and peaks near 25 MB.
    - `curl -s https://<data-host>/me2cloud/summary.json | head -c 300`.
-   - Point `TOKYO` in `src/worker.js` at that address, deploy, and check `/tokyo.json`.
+   - Set `DATA_URL` to that address (a secret), deploy, and check `/tokyo.json`.
 
 It needs no keys or certificates of its own; the HTTPS certificate belongs to the web server in front. The unit sets
 these limits:

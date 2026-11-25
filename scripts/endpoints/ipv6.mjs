@@ -15,7 +15,10 @@ const ALT6 = {
 const E = JSON.parse(await readFile(new URL("../../public/endpoints.json", import.meta.url), "utf8"));
 // An AAAA record is not proof: some hosts publish one and refuse port 443 on it. The Tokyo watch (server/watch)
 // connects to every host over IPv6; a refused connection there takes the family away. A timeout is not counted.
-const REFUSED6 = await fetch("https://data.1ms.dog:2083/me2cloud/latest.json", { signal: AbortSignal.timeout(15000) })
+const DATA_URL = (process.env.DATA_URL || "").replace(/\/+$/, "");
+let REFUSED6 = new Set();
+if (!DATA_URL) console.warn("DATA_URL not set, AAAA records taken as they are");
+else REFUSED6 = await fetch(`${DATA_URL}/me2cloud/latest.json`, { signal: AbortSignal.timeout(15000) })
   .then(r => r.json()).then(j => new Set(j.regions.filter(x => x.fam === 6 && x.med == null && /refused/i.test(x.error || "")).map(x => x.id)))
   .catch(e => { console.warn("Tokyo watch not reachable, AAAA records taken as they are:", e.message); return new Set(); });
 const out = {};
