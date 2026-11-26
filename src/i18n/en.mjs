@@ -21,6 +21,7 @@ export default {
   share_old: "This browser is too old to open this result. Open the link in a current browser, or test your own.",
   share_test: "Test my own",
   share_none: "Run a test first, then share",
+  share_loadFail: "The share dialog didn't load. Refresh the page and try again.",
   sharedNoRaw: "Shared results include the statistics, not every sample.",
   card_title: "How fast the clouds are from my place",
   card_cta: "How fast are the clouds from your place?",

@@ -1719,7 +1719,12 @@
   async function showReceived(P) {
     if (recvFor === P) return;
     recvFor = P;
-    const { received } = await import("/assets/share/share.js?v=10");
+    // the share component is a file of its own, fetched when a result arrives: if that fetch fails, the page would
+    // otherwise sit with the banner's space reserved and nothing in it, and say nothing at all
+    let mod;
+    try { mod = await import("/assets/share/share.js?v=10"); }
+    catch (e) { recvFor = null; clearShareSkel(); toast(t("share_loadFail")); return; }
+    const { received } = mod;
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
     RECV = received({ lang: LANG, ts: P.t * 60000, at: $("#sharedT"), test: testSame });
@@ -1835,7 +1840,12 @@
       let bx = P; counts.forEach((c, i) => { const w = (W - 2 * P) * c / tot; g.fillStyle = C.t[i + 1]; g.fillRect(bx, by, w, 20); bx += w; }); g.restore();
       counts.forEach((c, i) => { const s = `${tierCode(i + 1)} ${tierName(i + 1)} ${c}`; kit.fit(g, s, (W - 2 * P) / 5 - 8, 24, 16, 600); text(fit(s, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]); });
     };
-    const { share } = await import("/assets/share/share.js?v=10");
+    // same file, same reason: this is the click that has to do something, so a failed fetch says so instead of
+    // leaving the button looking broken
+    let mod;
+    try { mod = await import("/assets/share/share.js?v=10"); }
+    catch (e) { toast(t("share_loadFail")); return; }
+    const { share } = mod;
     share({
       lang: LANG, name: "Me2Cloud", file: "me2cloud-" + stamp(),
       show: ["city", "isp"], never: ["ip"], canShow: !!where,

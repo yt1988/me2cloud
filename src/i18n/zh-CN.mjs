@@ -177,6 +177,7 @@ export default {
   share_old: "这个浏览器太旧，打不开这条结果。请换用新版浏览器打开链接，或者测测你自己的。",
   share_test: "我也测测",
   share_none: "先测一次，再来分享",
+  share_loadFail: "分享窗口没能打开，刷新页面再试一次。",
   sharedNoRaw: "分享的结果只带统计数字，看不到每一次采样。",
   card_title: "从我家到各大云，到底有多快",
   card_cta: "测测从你家到各大云有多快",

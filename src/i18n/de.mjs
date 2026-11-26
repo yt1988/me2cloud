@@ -173,6 +173,7 @@ export default {
   share_old: "Dieser Browser ist zu alt, um dieses Ergebnis zu öffnen. Öffne den Link in einem aktuellen Browser oder teste deine eigene Verbindung.",
   share_test: "Selbst testen",
   share_none: "Erst testen, dann teilen",
+  share_loadFail: "Teilen ließ sich nicht öffnen. Lade die Seite neu und versuch es noch einmal.",
   sharedNoRaw: "Geteilte Ergebnisse enthalten die Statistik, nicht jede einzelne Messung.",
   card_title: "So schnell ist die Cloud bei mir zu Hause",
   card_cta: "Wie schnell ist die Cloud bei dir zu Hause?",

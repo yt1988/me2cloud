@@ -141,6 +141,11 @@ Technical reasons behind choices the code does not explain, and what was measure
   WebKit on the live page before the change, 103 of 103 icons failed a dark-reader-style decode; on the new build, 0 of
   52, and 0 of 52 with the CLI dialog's runtime icons in the DOM. What remains live after this is the shell's own icons
   (`ms-slash`, `ms-chev`, the tool-list glyphs, `ms-tg-arrow`), which its rewrite covers once it ships.
+  **The share component's two `import()`s catch.** `/assets/share/share.js` is a separate file fetched when the visitor
+  shares or opens a shared result; a failed fetch used to leave the button doing nothing and the banner's reserved
+  space empty, with only an unhandled rejection in the console. Both call sites now toast `share_loadFail` in the
+  page's language and, for a shared result, release the skeleton. Nothing about the shared file changes, so its
+  `VERSION` and the 19 copies stay as they are (issue #146 reported 8 such failures, all one device in one hour).
 - **A vendoring commit ships its build (2026-11-26).** `src/egress.js` reaching VERSION 8 went in without the
   regenerated `public/`, so Deploy stopped at `npm test` ("Out of date: app.3b733e3fd8.js") and the live site stayed on
   the old bundle — the same shape as the VERSION 4 incident, caught by CI this time instead of by a 404. `npm test`

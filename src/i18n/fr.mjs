@@ -173,6 +173,7 @@ export default {
   share_old: "Ce navigateur est trop ancien pour ouvrir ce résultat. Ouvrez le lien dans un navigateur récent, ou testez votre propre connexion.",
   share_test: "Tester le mien",
   share_none: "Lancez d'abord un test, puis partagez-le",
+  share_loadFail: "La fenêtre de partage n'a pas pu s'ouvrir. Rechargez la page et réessayez.",
   sharedNoRaw: "Les résultats partagés contiennent les statistiques, pas chaque mesure.",
   card_title: "Le cloud est-il rapide depuis chez moi ?",
   card_cta: "Le cloud est-il rapide depuis chez vous ?",

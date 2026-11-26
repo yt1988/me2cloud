@@ -21,6 +21,7 @@ export default {
   share_old: "這個瀏覽器太舊，打不開這筆結果。請改用新版瀏覽器開啟連結，或測測你自己的。",
   share_test: "我也來測",
   share_none: "先測一次再分享",
+  share_loadFail: "分享視窗沒能開啟，重新整理頁面再試一次。",
   sharedNoRaw: "分享的結果只有統計數字，看不到每一次的取樣。",
   card_title: "從我家到各大雲端，到底有多快",
   card_cta: "測測從你家到各大雲端有多快",

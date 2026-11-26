@@ -173,6 +173,7 @@ export default {
   share_old: "Este navegador es demasiado antiguo para abrir este resultado. Abre el enlace en un navegador actual o haz tu propia prueba.",
   share_test: "Medir el mío",
   share_none: "Haz una prueba primero y luego compártela",
+  share_loadFail: "No se pudo abrir la ventana para compartir. Recarga la página e inténtalo de nuevo.",
   sharedNoRaw: "Los resultados compartidos incluyen las estadísticas, no cada medición.",
   card_title: "Qué tan rápida va la nube desde mi casa",
   card_cta: "¿Qué tan rápida va la nube desde tu casa?",
