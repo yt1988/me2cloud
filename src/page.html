@@ -61,13 +61,13 @@
     </a>
     <div class="tools">
       <label class="sel" id="langWrap">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>
         <select id="lang" data-al="a_lang" aria-label="Language">{{langOptions}}</select>
       </label>
-      <button class="icon-btn" type="button" data-help="0" id="helpBtn" data-al="a_help" aria-label="Help"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg></button>
-      <a class="icon-btn gh" href="https://github.com/yt1988/me2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
+      <button class="icon-btn" type="button" data-help="0" id="helpBtn" data-al="a_help" aria-label="Help"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg></button>
+      <a class="icon-btn gh" href="https://github.com/yt1988/me2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
       <details class="menu" id="settings">
-        <summary class="icon-btn" data-al="a_settings" aria-label="Settings"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 4h7M12 4h2M2 12h2M7 12h7"/><circle cx="10.5" cy="4" r="1.6"/><circle cx="5.5" cy="12" r="1.6"/></svg></summary>
+        <summary class="icon-btn" data-al="a_settings" aria-label="Settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 4h7M12 4h2M2 12h2M7 12h7"/><circle cx="10.5" cy="4" r="1.6"/><circle cx="5.5" cy="12" r="1.6"/></svg></summary>
         <div class="pop">
           <section class="pg">
             <div class="pg-h" data-i="theme">Theme</div>
@@ -92,11 +92,11 @@
             <div class="pg-h" data-i="secData">Data</div>
             <label class="sel" style="width:100%" id="histWrap"><select id="hist" style="max-width:none;width:100%"></select></label>
             <div class="list">
-              <button class="list-i" id="logBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg><span data-i="log_h">Request log</span></button>
-              <button class="list-i" id="copyLinkBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.5 2.5 0 0 1 3.5 3.5l-1 1M9 11.5l-1 1a2.5 2.5 0 0 1-3.5-3.5l1-1"/></svg><span data-i="copyLink">Copy setup link</span></button>
-              <button class="list-i" id="csvBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.5L8 10.7l3.2-3.2M3 13.5h10"/></svg><span data-i="expCsv">Export CSV</span></button>
-              <button class="list-i" id="jsonBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.5L8 10.7l3.2-3.2M3 13.5h10"/></svg><span data-i="expJson">Export JSON</span></button>
-              <label class="list-i" for="importFile"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.5v-8M4.8 5.5L8 2.3l3.2 3.2M3 13.5h10"/></svg><span data-i="imp">Import JSON</span></label>
+              <button class="list-i" id="logBtn" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg><span data-i="log_h">Request log</span></button>
+              <button class="list-i" id="copyLinkBtn" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.5 2.5 0 0 1 3.5 3.5l-1 1M9 11.5l-1 1a2.5 2.5 0 0 1-3.5-3.5l1-1"/></svg><span data-i="copyLink">Copy setup link</span></button>
+              <button class="list-i" id="csvBtn" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.5L8 10.7l3.2-3.2M3 13.5h10"/></svg><span data-i="expCsv">Export CSV</span></button>
+              <button class="list-i" id="jsonBtn" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.5L8 10.7l3.2-3.2M3 13.5h10"/></svg><span data-i="expJson">Export JSON</span></button>
+              <label class="list-i" for="importFile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.5v-8M4.8 5.5L8 2.3l3.2 3.2M3 13.5h10"/></svg><span data-i="imp">Import JSON</span></label>
             </div>
             <input type="file" id="importFile" accept="application/json,.json" hidden>
           </section>
@@ -113,15 +113,15 @@
     <h1 data-i="heroT">How fast are the clouds from your place?</h1>
 
     <div>
-      <div class="netbar chk" id="netbar"><span class="nb-dot"></span><span class="nb-st" data-i="checking">Checking…</span><span class="nb-main"><span class="m">&nbsp;</span></span><span class="nb-acts"><span class="pill idle">&nbsp;</span><button class="btn sm" type="button" style="visibility:hidden" tabindex="-1" aria-hidden="true"><span data-i="rulesBtn">Get bypass rules</span></button><button class="icon-btn sm" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button><button class="icon-btn sm" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></div>
+      <div class="netbar chk" id="netbar"><span class="nb-dot"></span><span class="nb-st" data-i="checking">Checking…</span><span class="nb-main"><span class="m">&nbsp;</span></span><span class="nb-acts"><span class="pill idle">&nbsp;</span><button class="btn sm" type="button" style="visibility:hidden" tabindex="-1" aria-hidden="true"><span data-i="rulesBtn">Get bypass rules</span></button><button class="icon-btn sm" type="button" aria-hidden="true" tabindex="-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button><button class="icon-btn sm" type="button" aria-hidden="true" tabindex="-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></div>
       <div class="netdet" id="netdet" hidden></div>
     </div>
 
     <div class="ctrl" id="ctrl">
-      <details class="menu pl" id="plV"><summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg><span class="pl-k" data-i="pl_vendors">Providers</span><b><span data-i="allVendors">All providers</span> + <span data-i="cdn_h">CDN</span></b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popV"></div></details>
-      <details class="menu pl" id="plA"><summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg><span class="pl-k" data-i="pl_areas">Areas</span><b><span data-i="allAreas">All areas</span></b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popA"></div></details>
-      <details class="menu pl" id="plN"><summary><span>🌐</span><span data-i="p_web">Website / API</span><b class="num">≤250ms</b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popN"></div></details>
-      <details class="menu pl" id="plM"><summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg><span data-i="m_std">Standard</span><b class="num">×10 · IPv4</b><svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popM"></div></details>
+      <details class="menu pl" id="plV"><summary><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg><span class="pl-k" data-i="pl_vendors">Providers</span><b><span data-i="allVendors">All providers</span> + <span data-i="cdn_h">CDN</span></b><svg xmlns="http://www.w3.org/2000/svg" class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popV"></div></details>
+      <details class="menu pl" id="plA"><summary><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg><span class="pl-k" data-i="pl_areas">Areas</span><b><span data-i="allAreas">All areas</span></b><svg xmlns="http://www.w3.org/2000/svg" class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popA"></div></details>
+      <details class="menu pl" id="plN"><summary><span>🌐</span><span data-i="p_web">Website / API</span><b class="num">≤250ms</b><svg xmlns="http://www.w3.org/2000/svg" class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popN"></div></details>
+      <details class="menu pl" id="plM"><summary><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg><span data-i="m_std">Standard</span><b class="num">×10 · IPv4</b><svg xmlns="http://www.w3.org/2000/svg" class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></summary><div class="pop l" id="popM"></div></details>
     </div>
 
     <div class="run">
@@ -133,15 +133,15 @@
   <div class="share-bad" id="shareBad" role="note" hidden><span data-i="share_bad">This result can't be read</span><button class="btn sm ink" type="button" id="shareBadGo" data-i="share_test">Test mine</button></div>
 
   <section class="card cli">
-    <span class="cli-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg></span>
+    <span class="cli-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg></span>
     <h3 class="cli-t" data-i="cli_h">Test from your server too</h3>
-    <button class="cmdline" type="button" data-cmd data-al="copy" data-tl="copy"><code id="cliCmd">curl -fsSL https://m2c.1ms.dog/i | sh</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
-    <div class="cli-links"><button class="lnk" type="button" data-cli aria-haspopup="dialog" aria-controls="cliDlg" data-i="cli_more">More ways</button><a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></div>
+    <button class="cmdline" type="button" data-cmd data-al="copy" data-tl="copy"><code id="cliCmd">curl -fsSL https://m2c.1ms.dog/i | sh</code><svg xmlns="http://www.w3.org/2000/svg" class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+    <div class="cli-links"><button class="lnk" type="button" data-cli aria-haspopup="dialog" aria-controls="cliDlg" data-i="cli_more">More ways</button><a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></div>
   </section>
 
   <section id="resWrap" hidden>
     <p class="shared-t" id="sharedT" hidden></p>
-    <div class="pd-h" style="margin:0 2px 10px"><b id="podiumT" data-i="picks_h">Our picks for you</b><span class="note" id="podiumS"></span><button class="btn sm ink" type="button" id="shareBtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.5M5 5.2L8 2.3l3 2.9M3.5 8.5v4.5h9V8.5"/></svg><span data-i="share_btn">Share</span></button></div>
+    <div class="pd-h" style="margin:0 2px 10px"><b id="podiumT" data-i="picks_h">Our picks for you</b><span class="note" id="podiumS"></span><button class="btn sm ink" type="button" id="shareBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.5M5 5.2L8 2.3l3 2.9M3.5 8.5v4.5h9V8.5"/></svg><span data-i="share_btn">Share</span></button></div>
     <div class="podium" id="podium"><div class="pd pend" aria-hidden="true"><span class="rk">#1</span><span class="ms">…</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div><div class="pd pend" aria-hidden="true"><span class="rk">#2</span><span class="ms">…</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div><div class="pd pend" aria-hidden="true"><span class="rk">#3</span><span class="ms">…</span><span class="inf"><span class="nm">&nbsp;</span><span class="sb"><span class="tg">&nbsp;</span></span></span></div></div>
     <p class="pd-x" id="speedL" hidden></p>
   </section>
@@ -155,7 +155,7 @@
   <section class="card" id="listCard" hidden>
     <div class="card-h"><h3 data-i="res_h">All regions</h3>
       <div class="ltools">
-        <label class="search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg><input id="q" type="search" data-ph="search" placeholder="Search"></label>
+        <label class="search"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg><input id="q" type="search" data-ph="search" placeholder="Search"></label>
         <label class="tgl"><span class="sw"><input type="checkbox" id="onlyPass"><span></span></span><span data-i="onlyPass">Only what fits</span></label>
       </div></div>
     <div class="groups" id="groups"></div>
@@ -170,7 +170,7 @@
 <div class="scrim" id="rules" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="rulesT">
     <div class="dlg-h"><div><h3 id="rulesT" data-i="rules_h">Bypass rules</h3><div class="note" data-i="rules_sub"></div></div>
-      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="dlg-b">
       <div class="tabs" id="ruleTabs" role="tablist"></div>
       <div id="ruleBody" class="rbody"></div>
@@ -182,16 +182,16 @@
 <div class="scrim" id="help" hidden>
   <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
     <div class="dlg-h"><div><h3 id="helpT" data-i="doc_h">How it works</h3></div>
-      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="help-b"><nav class="help-nav" id="helpNav" role="tablist">{{helpNav}}</nav>
-      <div class="help-pick"><button class="icon-btn sm" type="button" data-hstep="-1" data-al="a_prev" aria-label="Previous"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4L6 8l4 4"/></svg></button><select id="helpSel" aria-labelledby="helpT">{{helpSel}}</select><button class="icon-btn sm" type="button" data-hstep="1" data-al="a_next" aria-label="Next"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></button></div><div class="help-c" id="helpC">{{helpC}}</div></div>
+      <div class="help-pick"><button class="icon-btn sm" type="button" data-hstep="-1" data-al="a_prev" aria-label="Previous"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4L6 8l4 4"/></svg></button><select id="helpSel" aria-labelledby="helpT">{{helpSel}}</select><button class="icon-btn sm" type="button" data-hstep="1" data-al="a_next" aria-label="Next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></button></div><div class="help-c" id="helpC">{{helpC}}</div></div>
   </div>
 </div>
 
 <div class="scrim" id="cliDlg" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
-    <div class="dlg-h"><div><h3 id="cliT"><span data-i="cli_h">Test from a server: vps2cloud</span><a class="gh-link" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h3><div class="note" data-i="cli_sub"></div></div>
-      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-h"><div><h3 id="cliT"><span data-i="cli_h">Test from a server: vps2cloud</span><a class="gh-link" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h3><div class="note" data-i="cli_sub"></div></div>
+      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="dlg-b" id="cliBody"></div>
   </div>
 </div>
@@ -199,7 +199,7 @@
 <div class="scrim" id="logDlg" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="logT">
     <div class="dlg-h"><div><h3 id="logT" data-i="log_h">Request log</h3><div class="note" data-i="log_note"></div></div>
-      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" data-al="a_close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="dlg-b"><div class="log" id="log"></div></div>
   </div>
 </div>
@@ -266,7 +266,7 @@
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const fmt = v => v == null || !isFinite(v) ? "–" : v < 10 ? v.toFixed(1) : String(Math.round(v));
-  const caret = '<svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg>';
+  const caret = '<svg xmlns="http://www.w3.org/2000/svg" class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg>';
 
   /* ---------- language ---------- */
   const LANG = document.documentElement.lang || "en";
@@ -532,7 +532,7 @@
   // editing in place: a node (CEDIT = its key) or a group name (GEDIT = its id); CADD = the add panel is open
   // COPEN = the node whose details are showing (address, country, edit, delete)
   let CEDIT = null, GEDIT = null, CADD = false, COPEN = null;
-  const PEN = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>`;
+  const PEN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>`;
   // the country mark on a chip: the flag, or "…" while looking it up, or "?" when it wasn't found
   const ccMark = c => c.cc && !LOC[c.k] ? flag(c.cc) : `<span class="cnq${LOC[c.k] === "ing" ? "" : " bad"}">${LOC[c.k] === "ing" ? "…" : "?"}</span>`;
   // per group: a heading (icon, name, count, rename, delete) and one small chip per node (flag + name), many to a line;
@@ -559,7 +559,7 @@
       + `<button type="button" class="x" data-del="${esc(c.k)}" aria-label="${esc(t("del"))}" title="${esc(t("del"))}">×</button></div>`;
   }
   // a node being edited: name, address and group in its own row; the check saves, the cross cancels (Enter / Esc too)
-  const CHECK = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
+  const CHECK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
   function editRow(c) {
     const groups = [...new Set([""].concat(GIDS().map(v => v.slice(2))))];
     return `<div class="cn on">${favOf(c.url)}<input class="inp cn-in" id="ceName" maxlength="40" value="${esc(c.name)}" placeholder="${esc(t("cust_name_ph"))}" aria-label="${esc(t("cust_name_ph"))}">`
@@ -1059,9 +1059,9 @@
     N.state = "done"; N.partial = false;
     NET = N; renderNet(); renderCtrl();
   }
-  const ICON_EYE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
-  const ICON_EYEOFF = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
-  const ICON_EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
+  const ICON_EYE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
+  const ICON_EYEOFF = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
+  const ICON_EXT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
   // sibling tools: the host announces each with <meta name="<id>" content="https://…"> (egress, ipqs, asn, ipv6, speed, …);
   // links go to the page in this language, and without the meta there is no link
   const toolUrl = (id, path = "") => { const b = (document.querySelector(`meta[name="${id}"]`) || {}).content; return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : ""; };
@@ -1090,8 +1090,8 @@
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"${ck && !N.partial && !N.recheck ? ` style="visibility:hidden" tabindex="-1" aria-hidden="true"` : ""}><span>${t("rulesBtn")}</span></button>`}
-        <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
-        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
+        <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
+        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
     const det = $("#netdet");
     if (ck) {
@@ -1131,9 +1131,9 @@
   }
 
   /* ---------- controls ---------- */
-  const SVG_V = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg>';
-  const SVG_A = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>';
-  const SVG_M = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg>';
+  const SVG_V = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg>';
+  const SVG_A = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>';
+  const SVG_M = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg>';
   // what the pills show: the chosen names themselves ("AWS, Vultr +2"), not a count
   const sumList = (names, total, allLabel) => names.length === total && total > 1 ? allLabel : names.slice(0, 2).join(t("sep")) + (names.length > 2 ? " +" + (names.length - 2) : "");
   const allNone = k => `<span class="lk"><button type="button" data-all="${k}">${t("all")}</button> · <button type="button" data-none="${k}">${t("none")}</button></span>`;
@@ -1214,7 +1214,7 @@
     const btn = $("#runBtn"), sel = selected().length;
     if (RUN) {
       btn.className = "go stop";
-      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>${t("stop")}`;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>${t("stop")}`;
       let got = 0; const need = RUN.total * RUN.n;
       for (const e of RUN.list) { const r = R.get(e.id); if (r) got += r.st === "done" || r.st === "fail" ? RUN.n : Math.min(RUN.n, r.s.length); }
       const p = need ? got / need : 0, el = (performance.now() - RUN.t0) / 1000, left = p > .03 ? el / p - el : null;
@@ -1234,7 +1234,7 @@
       $("#runEta").textContent = left != null ? t("eta", { t: dur(Math.round(left)) }) : "";
     } else {
       btn.className = "go"; btn.disabled = !sel;
-      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>${t(R.size && VIEW.live ? "again" : "start")}`;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>${t(R.size && VIEW.live ? "again" : "start")}`;
       $("#bar").hidden = true; $("#runEta").textContent = "";
       // this area sets up the next test; when the shown results were taken is said with the results (vizSub)
       $("#runT").innerHTML = sel ? `<b>${t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) })}</b>` : `<b>${esc(t("pickFirst"))}</b>`;
@@ -1426,7 +1426,7 @@
     s.forEach((v, i) => { if (v == null) { pen = false; return; } path += (pen ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); pen = true; });
     const ticks = [0, mx / 2, mx].map(v => `<text x="${P.l - 6}" y="${Y(v) + 3}" text-anchor="end">${Math.round(v)}</text><line x1="${P.l}" x2="${W - P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/>`).join("");
     const dots = s.map((v, i) => v == null ? `<text x="${X(i)}" y="${P.t + 8}" text-anchor="middle" style="fill:var(--bad);font-weight:700">×</text>` : `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="currentColor"><title>#${i + 1}: ${fmt(v)} ms</title></circle>`).join("");
-    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="c${grade(st.med)}" role="img" aria-label="${esc(t("chartAria"))}">${ticks}
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="c${grade(st.med)}" role="img" aria-label="${esc(t("chartAria"))}">${ticks}
       ${st.ok ? `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(st.med)}" y2="${Y(st.med)}" stroke="currentColor" stroke-dasharray="4 4" opacity=".7"/>` : ""}
       <path d="${path}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>${dots}</svg>`;
   }
@@ -1857,7 +1857,7 @@
     return `curl -fsSL ${SITE}/i | sh` + (one.length === 1 ? " -s -- -p " + one[0] : "");
   }
   function renderCli() {
-    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg xmlns="http://www.w3.org/2000/svg" class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`;
     const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
     $("#cliBody").innerHTML = [
@@ -1867,7 +1867,7 @@
       sec("cli_opts", line("vps2cloud -p aws,gcp --continent as", t("cli_o_pick")) + line("vps2cloud --ip both", t("cli_o_ip")) +
         line("vps2cloud --cdn", t("cli_o_cdn")) + line("vps2cloud -m icmp", t("cli_o_icmp")) + line("vps2cloud -o md", t("cli_o_md"))),
       sec("cli_win", line(`irm ${SITE}/i.ps1 | iex`, t("cli_win_s")) + `<a class="dl" href="${esc(win)}">vps2cloud-windows-amd64.exe ↓</a>`),
-      `<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(t("cli_src"))}<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>`,
+      `<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(t("cli_src"))}<svg xmlns="http://www.w3.org/2000/svg" class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>`,
     ].join("");
   }
   async function copyText(s) {

@@ -126,6 +126,13 @@ export async function build({ check = false } = {}) {
   const vizHeights = { home: vizLanes * vizLh + 94, one: 84 + 94 };
   const gaps = i18nGaps(tpl, I, E, langs);
   if (gaps.length) throw new Error(`untranslated text (${gaps.length}): ${gaps.slice(0, 12).join(" | ")}${gaps.length > 12 ? " …" : ""}`);
+  // every inline icon says it is SVG (#146 一.3). The parser puts a bare <svg> in the SVG namespace by itself, so the
+  // attribute looks redundant and is easy to drop — but the namespace is not an attribute, `outerHTML` leaves it out,
+  // and an extension that reloads the icon as an image can't decode it (Safari's Dark Reader did this to every icon on
+  // the page). The shell writes it on for the markup it sends; this page's own icons, in the markup and in the app
+  // code that builds them at runtime, must carry it themselves, and nothing else here would notice it going away.
+  const bareSvg = [...tpl.matchAll(/<svg\b[^>]*>/g)].map(m => m[0]).filter(t => !t.includes('xmlns="http://www.w3.org/2000/svg"'));
+  if (bareSvg.length) throw new Error(`${bareSvg.length} inline <svg> without xmlns: ${bareSvg.slice(0, 3).join(" | ")}`);
 
   // app code: the big inline script becomes a shared, content-hashed file
   const scripts = [...tpl.matchAll(/<script>([\s\S]*?)<\/script>/g)];

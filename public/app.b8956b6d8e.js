@@ -168,7 +168,7 @@
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const fmt = (v) => v == null || !isFinite(v) ? "\u2013" : v < 10 ? v.toFixed(1) : String(Math.round(v));
-  const caret = '<svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg>';
+  const caret = '<svg xmlns="http://www.w3.org/2000/svg" class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg>';
   const LANG = document.documentElement.lang || "en";
   const plural = {};
   const pk = (lang, k, v) => v && typeof v.n === "number" ? k + "_" + (plural[lang] = plural[lang] || new Intl.PluralRules(lang)).select(v.n) : null;
@@ -607,7 +607,7 @@
     $("#plV").open = true;
   }
   let CEDIT = null, GEDIT = null, CADD = false, COPEN = null;
-  const PEN = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>`;
+  const PEN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M10.6 2.6l2.8 2.8L6 12.8H3.2V10z"/></svg>`;
   const ccMark = (c) => c.cc && !LOC[c.k] ? flag(c.cc) : `<span class="cnq${LOC[c.k] === "ing" ? "" : " bad"}">${LOC[c.k] === "ing" ? "\u2026" : "?"}</span>`;
   function customList() {
     return GIDS().map((v) => {
@@ -618,7 +618,7 @@
   function nodeRow(c) {
     return `<div class="cn">${favOf(c.url)}<span class="cn-h" title="${esc(c.url)}">${esc(c.url.replace(/^https:\/\//, "").replace(/\/$/, ""))}</span><label class="cn-cc${c.ccSet ? " set" : ""}" title="${esc((c.ccSet ? "" : t("cust_auto") + " \xB7 ") + (country(c.cc) || t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail")))}">` + (c.cc && !LOC[c.k] ? flag(c.cc) + `<span class="st">${esc(country(c.cc))}</span>` : `<span class="st${LOC[c.k] === "ing" ? "" : " bad"}">${esc(t(LOC[c.k] === "ing" ? "cust_geo_ing" : "cust_geo_fail"))}</span>`) + `<select data-cc="${esc(c.k)}" aria-label="${esc(t("cust_cc"))}"><option value="">${esc(t("cust_auto") + (c.cc && !c.ccSet ? " \xB7 " + country(c.cc) : ""))}</option>${c.ccSet ? `<option value="${c.cc}" selected>${esc(country(c.cc))}</option>` : ""}</select></label><button type="button" class="x" data-edit="${esc(c.k)}" aria-label="${esc(t("cust_edit"))}" title="${esc(t("cust_edit"))}">${PEN}</button><button type="button" class="x" data-del="${esc(c.k)}" aria-label="${esc(t("del"))}" title="${esc(t("del"))}">\xD7</button></div>`;
   }
-  const CHECK = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
+  const CHECK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
   function editRow(c) {
     const groups = [...new Set([""].concat(GIDS().map((v) => v.slice(2))))];
     return `<div class="cn on">${favOf(c.url)}<input class="inp cn-in" id="ceName" maxlength="40" value="${esc(c.name)}" placeholder="${esc(t("cust_name_ph"))}" aria-label="${esc(t("cust_name_ph"))}"><input class="inp cn-in u" id="ceUrl" maxlength="500" value="${esc(c.url)}" aria-label="URL"><select class="inp" id="ceGroup" aria-label="${esc(t("cust_group"))}">${groups.map((g) => `<option value="${esc(g)}"${g === c.g ? " selected" : ""}>${esc(g || t("cust_nogroup"))}</option>`).join("")}</select><button type="button" class="x ok" data-esave="${esc(c.k)}" aria-label="${esc(t("cust_save"))}" title="${esc(t("cust_save"))}">${CHECK}</button><button type="button" class="x" data-ecancel aria-label="${esc(t("cust_cancel"))}" title="${esc(t("cust_cancel"))}">\xD7</button></div>`;
@@ -1261,9 +1261,9 @@
     renderNet();
     renderCtrl();
   }
-  const ICON_EYE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
-  const ICON_EYEOFF = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
-  const ICON_EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
+  const ICON_EYE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>';
+  const ICON_EYEOFF = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.9 11.7A6 6 0 0 1 8 12.5C3.9 12.5 1.5 8 1.5 8a11.6 11.6 0 0 1 2.8-3.1"/></svg>';
+  const ICON_EXT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
   const toolUrl = (id, path = "") => {
     const b = (document.querySelector(`meta[name="${id}"]`) || {}).content;
     return b ? b.replace(/\/+$/, "") + (LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/") + path : "";
@@ -1302,8 +1302,8 @@
       <span class="nb-acts">
         <span class="pill ${peak ? "warn" : "idle"}" title="${esc(t(peak ? "peakTip" : "offPeakTip", { now: new Intl.DateTimeFormat(LANG, { hour: "2-digit", minute: "2-digit", hour12: false }).format(/* @__PURE__ */ new Date()) }))}">${t(peak ? "peakNow" : "offPeak")}</span>
         ${N.relay ? "" : `<button class="btn sm ${warn ? "warn" : ""}" type="button" data-rules title="${esc(t("rulesBtn"))}"${ck && !N.partial && !N.recheck ? ` style="visibility:hidden" tabindex="-1" aria-hidden="true"` : ""}><span>${t("rulesBtn")}</span></button>`}
-        <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
-        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
+        <button class="icon-btn sm" type="button" id="recheckBtn" title="${esc(t("recheck"))}" aria-label="${esc(t("recheck"))}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3"/></svg></button>
+        <button class="icon-btn sm" type="button" id="netMore" aria-expanded="${netOpen}" title="${esc(t("netDetails"))}" aria-label="${esc(t("netDetails"))}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="${netOpen ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"}"/></svg></button>
       </span>`;
     const det = $("#netdet");
     if (ck) {
@@ -1338,9 +1338,9 @@
       <div class="kv"><span class="lbl">WebRTC</span><span class="v ip${blur}"${tip2(rtc)}>${rtc ? N.rtc.map(ipx).join("<br>") : "\u2013"}</span><span class="s">${s(esc(N.tz || ""))}</span></div>
       ${note}`;
   }
-  const SVG_V = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg>';
-  const SVG_A = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>';
-  const SVG_M = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg>';
+  const SVG_V = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.4-6A4.5 4.5 0 0 1 12.7 7a2.8 2.8 0 0 1-.2 5.5z"/></svg>';
+  const SVG_A = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c2 2 2 10.4 0 12.4M8 1.8c-2 2-2 10.4 0 12.4"/></svg>';
+  const SVG_M = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 13V9M6 13V5M10 13V7M14 13V3"/></svg>';
   const sumList = (names, total, allLabel) => names.length === total && total > 1 ? allLabel : names.slice(0, 2).join(t("sep")) + (names.length > 2 ? " +" + (names.length - 2) : "");
   const allNone = (k) => `<span class="lk"><button type="button" data-all="${k}">${t("all")}</button> \xB7 <button type="button" data-none="${k}">${t("none")}</button></span>`;
   function homeSection() {
@@ -1419,7 +1419,7 @@
     const btn = $("#runBtn"), sel = selected().length;
     if (RUN) {
       btn.className = "go stop";
-      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>${t("stop")}`;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>${t("stop")}`;
       let got = 0;
       const need = RUN.total * RUN.n;
       for (const e of RUN.list) {
@@ -1445,7 +1445,7 @@
     } else {
       btn.className = "go";
       btn.disabled = !sel;
-      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>${t(R.size && VIEW.live ? "again" : "start")}`;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>${t(R.size && VIEW.live ? "again" : "start")}`;
       $("#bar").hidden = true;
       $("#runEta").textContent = "";
       $("#runT").innerHTML = sel ? `<b>${t("startSub", { n: sel, t: dur(estimate(sel, MODES[S.mode])) })}</b>` : `<b>${esc(t("pickFirst"))}</b>`;
@@ -1703,7 +1703,7 @@
     });
     const ticks = [0, mx / 2, mx].map((v) => `<text x="${P.l - 6}" y="${Y(v) + 3}" text-anchor="end">${Math.round(v)}</text><line x1="${P.l}" x2="${W - P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/>`).join("");
     const dots = s.map((v, i) => v == null ? `<text x="${X(i)}" y="${P.t + 8}" text-anchor="middle" style="fill:var(--bad);font-weight:700">\xD7</text>` : `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="currentColor"><title>#${i + 1}: ${fmt(v)} ms</title></circle>`).join("");
-    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="c${grade(st.med)}" role="img" aria-label="${esc(t("chartAria"))}">${ticks}
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="c${grade(st.med)}" role="img" aria-label="${esc(t("chartAria"))}">${ticks}
       ${st.ok ? `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(st.med)}" y2="${Y(st.med)}" stroke="currentColor" stroke-dasharray="4 4" opacity=".7"/>` : ""}
       <path d="${path}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>${dots}</svg>`;
   }
@@ -2328,7 +2328,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     return `curl -fsSL ${SITE}/i | sh` + (one.length === 1 ? " -s -- -p " + one[0] : "");
   }
   function renderCli() {
-    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-cmd title="${esc(t("copy"))}"><code>${esc(cmd)}</code><svg xmlns="http://www.w3.org/2000/svg" class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`;
     const win = SITE + "/dl/latest/vps2cloud-windows-amd64.exe";
     $("#cliBody").innerHTML = [
@@ -2337,7 +2337,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
       sec("cli_wget", line(`wget -qO- ${SITE}/i | sh`)),
       sec("cli_opts", line("vps2cloud -p aws,gcp --continent as", t("cli_o_pick")) + line("vps2cloud --ip both", t("cli_o_ip")) + line("vps2cloud --cdn", t("cli_o_cdn")) + line("vps2cloud -m icmp", t("cli_o_icmp")) + line("vps2cloud -o md", t("cli_o_md"))),
       sec("cli_win", line(`irm ${SITE}/i.ps1 | iex`, t("cli_win_s")) + `<a class="dl" href="${esc(win)}">vps2cloud-windows-amd64.exe \u2193</a>`),
-      `<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(t("cli_src"))}<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>`
+      `<a class="cli-gh" href="https://github.com/yt1988/vps2cloud" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" class="gh-ic" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(t("cli_src"))}<svg xmlns="http://www.w3.org/2000/svg" class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>`
     ].join("");
   }
   async function copyText(s) {
