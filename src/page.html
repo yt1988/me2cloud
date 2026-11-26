@@ -1724,7 +1724,7 @@
     // front it hands the visitor one line for this (msShareDown, in the visitor's language); an embed and a self-hosted
     // page have no shell, so ours says it there.
     let mod;
-    try { mod = await import("/assets/share/share.js?v=10"); }
+    try { mod = await import("/assets/share/share.js?v=11"); }
     catch (e) { recvFor = null; clearShareSkel(); window.msShareDown ? window.msShareDown() : toast(t("share_loadFail")); return; }
     const { received } = mod;
     if (VIEW.shared !== P) return;
@@ -1845,7 +1845,7 @@
     // same file, same reason: this is the click that has to do something, so a failed fetch says so instead of
     // leaving the button looking broken. Same helper, same fallback.
     let mod;
-    try { mod = await import("/assets/share/share.js?v=10"); }
+    try { mod = await import("/assets/share/share.js?v=11"); }
     catch (e) { window.msShareDown ? window.msShareDown() : toast(t("share_loadFail")); return; }
     const { share } = mod;
     share({

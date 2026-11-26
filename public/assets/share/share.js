@@ -3,7 +3,7 @@
 // /assets/share/ (share.js, share.css, qr.js) and load it when someone shares; 1ms-shell's check compares the copies
 // with its own. Change it there, never in a tool. See docs/tool-contract.md, "Share".
 //
-//   const { share } = await import("/assets/share/share.js?v=9");   // ?v=VERSION: see the caching note below
+//   const { share } = await import("/assets/share/share.js?v=11");   // ?v=VERSION: see the caching note below
 //   const s = share({
 //     lang: "zh-CN",                      // the page's language; unknown ones fall back to English
 //     name: "网速测试",                    // the tool's name, in the card's header
@@ -47,7 +47,7 @@
 //   r.done("/zh-cn/c/<theirs>/<mine>");   // compare mode only: their test is done, offer the comparison
 //   r.remove();
 
-export const VERSION = 10;
+export const VERSION = 11;
 
 const T = {
   en: { h: "Share result", copy_link: "Copy link", copy_img: "Copy image", dl: "Download image", more: "More ways to share",
@@ -229,7 +229,9 @@ const loadCSS = () => cssP || (cssP = new Promise(res => {
   l.onload = l.onerror = res; document.head.appendChild(l);
 }));
 
-const ICON_X = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+// This icon is inserted into the dialog at runtime (below), so the shell's HTMLRewriter never sees it: the namespace
+// has to be here in the source (docs/tool-contract.md §3, #146 一.3).
+const ICON_X = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
 export function share(o) {

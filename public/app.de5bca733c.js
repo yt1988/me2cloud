@@ -2095,7 +2095,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     recvFor = P;
     let mod;
     try {
-      mod = await import("/assets/share/share.js?v=10");
+      mod = await import("/assets/share/share.js?v=11");
     } catch (e) {
       recvFor = null;
       clearShareSkel();
@@ -2307,7 +2307,7 @@ ${u}loon.list, policy=DIRECT, tag=Me2Cloud, enabled=true`;
     };
     let mod;
     try {
-      mod = await import("/assets/share/share.js?v=10");
+      mod = await import("/assets/share/share.js?v=11");
     } catch (e) {
       window.msShareDown ? window.msShareDown() : toast(t("share_loadFail"));
       return;
