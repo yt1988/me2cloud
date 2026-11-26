@@ -1,6 +1,6 @@
 (function() {
   "use strict";
-  const VERSION = "7";
+  const VERSION = "8";
   function endpoints(name, doc = globalThis.document) {
     const out = {};
     const el = doc && doc.querySelector ? doc.querySelector(`meta[name="${name}"]`) : null;
@@ -16,6 +16,17 @@
   function readAnchors(doc = globalThis.document) {
     const e = endpoints("ms-anchors", doc);
     return { cn: e.cn || "", intl: e.intl || "" };
+  }
+  function servers(value) {
+    return String(value || "").split(",").map((item) => {
+      const u = item.trim();
+      if (!u) return null;
+      const at = u.indexOf("@");
+      if (at < 0) return { city: "", url: u };
+      const city = u.slice(0, at).trim().toLowerCase();
+      const url = u.slice(at + 1).trim();
+      return url ? { city, url } : null;
+    }).filter(Boolean);
   }
   const GROUP_ANCHOR = { cn: "cn", intl: "intl", ai: "intl", web: "intl", stack: "intl", udp: null };
   const DC_RE = /amazon|google|microsoft|azure|digitalocean|vultr|choopa|constant company|linode|akamai|ovh|hetzner|oracle|alibaba|aliyun|tencent|huawei|m247|datacamp|cloudflare|leaseweb|contabo|hostinger|it7|racknerd|colocrossing|psychz|zenlayer|g-core|gcore|hostwinds|scaleway|ionos|kamatera|upcloud|bandwagon|dmit|cogent|quadranet|servers\.com|packet|equinix|fastly|cdn77|datapacket|tzulo|hostdare|greencloud|nexeon|frantech|buyvm|ucloud|kingsoft|baidu cloud|bytedance|volcano|fastnet data|hosting|\bvps\b|data ?cent/i;
