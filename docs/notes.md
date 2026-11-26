@@ -131,3 +131,18 @@ Technical reasons behind choices the code does not explain, and what was measure
   from those targets flagged every Dutch or Swedish line as a proxy); VERSION 5 did that and was held back, VERSION 6
   restores the place-based table. `npm run shared` in 1ms-shell compares the copy with the shell's
   (allowing the `// vendored from …` first line) and fails if a tool writes one of the shared tables itself.
+- **Every icon says it is SVG (#146 一.3, 2026-11-26).** Safari's Dark Reader serializes each `<svg>` with
+  `outerHTML` and reloads the copy as an image; the namespace is not an attribute, so a copy without `xmlns` is not a
+  decodable SVG document and the console fills with `Unable to load image data:image/svg+xml…`. m2c was the worst tool
+  in the log (19 `ms-chev`, 6 `ms-slash`). The shell writes the attribute on for markup it sends, but a script's
+  `innerHTML` never passes through HTMLRewriter, so this page's own icons carry it: 31 in the markup and 18 in the
+  string-built ones the app draws (caret, sparkline, playback icons, the CLI dialog's). In a page the attribute is
+  invisible, so nothing would notice it going away — `scripts/build.mjs` now fails on any bare `<svg>`. Measured in
+  WebKit on the live page before the change, 103 of 103 icons failed a dark-reader-style decode; on the new build, 0 of
+  52, and 0 of 52 with the CLI dialog's runtime icons in the DOM. What remains live after this is the shell's own icons
+  (`ms-slash`, `ms-chev`, the tool-list glyphs, `ms-tg-arrow`), which its rewrite covers once it ships.
+- **A vendoring commit ships its build (2026-11-26).** `src/egress.js` reaching VERSION 8 went in without the
+  regenerated `public/`, so Deploy stopped at `npm test` ("Out of date: app.3b733e3fd8.js") and the live site stayed on
+  the old bundle — the same shape as the VERSION 4 incident, caught by CI this time instead of by a 404. `npm test`
+  locally before the push is what says `public/` matches `src/`; the egress version alone does not change the page's
+  markup, so the only visible trace is the script hash a page names.
