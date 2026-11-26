@@ -1720,10 +1720,12 @@
     if (recvFor === P) return;
     recvFor = P;
     // the share component is a file of its own, fetched when a result arrives: if that fetch fails, the page would
-    // otherwise sit with the banner's space reserved and nothing in it, and say nothing at all
+    // otherwise sit with the banner's space reserved and nothing in it, and say nothing at all. Where the shell is in
+    // front it hands the visitor one line for this (msShareDown, in the visitor's language); an embed and a self-hosted
+    // page have no shell, so ours says it there.
     let mod;
     try { mod = await import("/assets/share/share.js?v=10"); }
-    catch (e) { recvFor = null; clearShareSkel(); toast(t("share_loadFail")); return; }
+    catch (e) { recvFor = null; clearShareSkel(); window.msShareDown ? window.msShareDown() : toast(t("share_loadFail")); return; }
     const { received } = mod;
     if (VIEW.shared !== P) return;
     if (RECV) RECV.remove();
@@ -1841,10 +1843,10 @@
       counts.forEach((c, i) => { const s = `${tierCode(i + 1)} ${tierName(i + 1)} ${c}`; kit.fit(g, s, (W - 2 * P) / 5 - 8, 24, 16, 600); text(fit(s, (W - 2 * P) / 5 - 8), P + (W - 2 * P) / 5 * i, by + 54, C.t[i + 1]); });
     };
     // same file, same reason: this is the click that has to do something, so a failed fetch says so instead of
-    // leaving the button looking broken
+    // leaving the button looking broken. Same helper, same fallback.
     let mod;
     try { mod = await import("/assets/share/share.js?v=10"); }
-    catch (e) { toast(t("share_loadFail")); return; }
+    catch (e) { window.msShareDown ? window.msShareDown() : toast(t("share_loadFail")); return; }
     const { share } = mod;
     share({
       lang: LANG, name: "Me2Cloud", file: "me2cloud-" + stamp(),
