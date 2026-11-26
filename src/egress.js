@@ -1,4 +1,4 @@
-// vendored from 1ms.dog/src/egress.js VERSION 7 (414073e) — copy it again, do not edit rules here
+// vendored from 1ms.dog/src/egress.js VERSION 8 (be881c8)
 // One exit verdict for the whole site. docs/egress-contract.md has the rules; this file implements them.
 //
 // Every page that says 「直连 / 代理」 calls classify() with the addresses it saw and the two anchors, instead of
@@ -8,7 +8,7 @@
 //
 // Vendored copies keep this header and add the canonical commit, so `grep VERSION` finds a stale copy.
 
-export const VERSION = "7";
+export const VERSION = "8";
 
 // Where our own probes live is deploy-time data, not repository content (docs/tool-contract.md §2): the page
 // carries `<meta name="ms-anchors" content="cn=…;intl=…">` and the values arrive from the Worker's env, so a
@@ -31,6 +31,22 @@ export function endpoints(name, doc = globalThis.document) {
 export function readAnchors(doc = globalThis.document) {
   const e = endpoints("ms-anchors", doc);
   return { cn: e.cn || "", intl: e.intl || "" };
+}
+
+// A comma list of our own servers as `city@url`, e.g. ms-servers' `reach=tyo@https://….sha@https://….lax@https://…`.
+// The city is an IATA code, the same one the deployment names its hosts by, so a page names a server "Tokyo" or
+// "Los Angeles" from the list itself instead of counting positions. A bare `url` still parses, with city "": older
+// injections and self-hosted copies keep working, and a caller that needs a name falls back to whatever it did.
+export function servers(value) {
+  return String(value || "").split(",").map(item => {
+    const u = item.trim();
+    if (!u) return null;
+    const at = u.indexOf("@");
+    if (at < 0) return { city: "", url: u };
+    const city = u.slice(0, at).trim().toLowerCase();
+    const url = u.slice(at + 1).trim();
+    return url ? { city, url } : null;
+  }).filter(Boolean);
 }
 
 // Which anchor a probe's group is measured against. `udp` (STUN) is evidence only: it says what UDP sees,
